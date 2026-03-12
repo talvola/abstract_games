@@ -10,6 +10,7 @@ export default defineConfig({
       input: {
         main: resolve(__dirname, 'index.html'),
         yodd: resolve(__dirname, 'yodd/index.html'),
+        oust: resolve(__dirname, 'oust/index.html'),
       },
     },
   },
