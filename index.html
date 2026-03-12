@@ -3,10 +3,48 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>YODD</title>
+    <title>Abstract Games</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body {
+        font-family: 'Courier New', monospace;
+        background: #1a1612;
+        color: #c9a96e;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 60px 20px;
+      }
+      h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
+      .subtitle { color: #8a7a5a; margin-bottom: 3rem; }
+      .games { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; }
+      .game-card {
+        border: 2px solid #c9a96e;
+        border-radius: 12px;
+        padding: 30px 40px;
+        text-decoration: none;
+        color: #c9a96e;
+        transition: background 0.2s, transform 0.2s;
+        text-align: center;
+        min-width: 200px;
+      }
+      .game-card:hover {
+        background: rgba(201, 169, 110, 0.1);
+        transform: translateY(-2px);
+      }
+      .game-card h2 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+      .game-card p { color: #8a7a5a; font-size: 0.9rem; }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
+    <h1>Abstract Games</h1>
+    <p class="subtitle">A collection of abstract strategy games</p>
+    <div class="games">
+      <a class="game-card" href="yodd/">
+        <h2>YODD</h2>
+        <p>A hexagonal board game by Luis Bola&ntilde;os Mures</p>
+      </a>
+    </div>
   </body>
 </html>
