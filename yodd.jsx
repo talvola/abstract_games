@@ -458,6 +458,7 @@ export default function YoddGame() {
                 <p><strong style={{ color: "#c9a96e" }}>The Odd Rule:</strong> After each turn, the <em>total</em> number of groups on the board must be odd.</p>
                 <p><strong style={{ color: "#c9a96e" }}>Passing:</strong> You may pass instead of placing, unless it would violate the odd rule.</p>
                 <p><strong style={{ color: "#c9a96e" }}>Game End:</strong> Both players pass consecutively. Fewest groups wins.</p>
+                <p style={{ marginTop: 8 }}><a href="https://boardgamegeek.com/boardgame/105173/yodd" target="_blank" rel="noopener noreferrer" style={{ color: "#c9a96e" }}>More info on BoardGameGeek</a></p>
               </div>
               <button onClick={() => setShowRules(false)} style={{ ...styles.btn("primary"), marginTop: 16, width: "100%" }}>Got It</button>
             </div>
@@ -655,6 +656,7 @@ export default function YoddGame() {
               <p><strong style={{ color: "#c9a96e" }}>The Odd Rule:</strong> After each turn, the <em>total</em> number of groups on the board must be odd.</p>
               <p><strong style={{ color: "#c9a96e" }}>Passing:</strong> You may pass instead of placing, unless it would violate the odd rule.</p>
               <p><strong style={{ color: "#c9a96e" }}>Game End:</strong> Both players pass consecutively. Fewest groups wins.</p>
+              <p style={{ marginTop: 8 }}><a href="https://boardgamegeek.com/boardgame/105173/yodd" target="_blank" rel="noopener noreferrer" style={{ color: "#c9a96e" }}>More info on BoardGameGeek</a></p>
             </div>
             <button onClick={() => setShowRules(false)} style={{ ...styles.btn("primary"), marginTop: 16, width: "100%" }}>Got It</button>
           </div>
