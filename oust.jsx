@@ -350,6 +350,7 @@ export default function OustGame() {
       justifyContent: "center",
       width: "100%",
       maxWidth: 420,
+      minHeight: 38,
     },
     btn: (variant) => ({
       padding: "8px 16px",
@@ -609,12 +610,12 @@ export default function OustGame() {
       {/* Error */}
       <div style={styles.error}>{errorMsg}</div>
 
-      {/* Controls */}
-      {!gameOver && turnHistory.length > 0 && (
-        <div style={styles.controls}>
+      {/* Controls (fixed height to prevent layout shift) */}
+      <div style={styles.controls}>
+        {!gameOver && turnHistory.length > 0 && (
           <button style={styles.btn("")} onClick={undoLastPlacement}>Undo</button>
-        </div>
-      )}
+        )}
+      </div>
 
       {/* Game Over */}
       {gameOver && (
