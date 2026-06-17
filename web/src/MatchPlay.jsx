@@ -7,6 +7,7 @@ import Board from './Board'
 export default function MatchPlay({ id, me, go }) {
   const [m, setM] = useState(null)
   const [error, setError] = useState('')
+  const [thinking, setThinking] = useState(false)
   const busy = useRef(false)
 
   function load() {
@@ -17,18 +18,34 @@ export default function MatchPlay({ id, me, go }) {
     load()
   }, [id])
 
+  const botToMove = m && !m.terminal && m.players?.[m.current_player]?.type === 'bot'
+
+  // When it's a bot's turn (after our move, or on load mid-bot-turn), let it
+  // play. Runs AFTER our move has already rendered.
   useEffect(() => {
-    if (!m || m.terminal || m.my_turn) return
+    if (!botToMove) return
+    let cancelled = false
+    setThinking(true)
+    api.advanceMatch(id)
+      .then((a) => { if (!cancelled) setM(a) })
+      .catch((e) => { if (!cancelled) setError(String(e.message || e)) })
+      .finally(() => { if (!cancelled) setThinking(false) })
+    return () => { cancelled = true }
+  }, [botToMove, m?.current_player, id]) // eslint-disable-line
+
+  // Poll only while waiting on a human opponent (bot turns are handled above).
+  useEffect(() => {
+    if (!m || m.terminal || m.my_turn || botToMove) return
     const t = setInterval(load, 3000)
     return () => clearInterval(t)
-  }, [m?.my_turn, m?.terminal, id]) // eslint-disable-line
+  }, [m?.my_turn, m?.terminal, botToMove, id]) // eslint-disable-line
 
   async function play(move) {
     if (busy.current || !m.my_turn) return
     busy.current = true
     try {
       const r = await api.matchMove(id, move)
-      setM(r)
+      setM(r) // render our move immediately; the effect above advances any bot
     } catch (e) {
       setError(String(e.message || e))
     } finally {
@@ -48,6 +65,8 @@ export default function MatchPlay({ id, me, go }) {
     else { status = m.my_seat == null ? `${m.players[m.winner]?.name} wins` : 'You lost'; color = '#e86050' }
   } else if (m.my_turn) {
     status = 'Your turn'; color = '#5cba6b'
+  } else if (thinking || botToMove) {
+    status = `${opponent} is thinking…`; color = '#8a7a62'
   } else {
     status = `Waiting for ${opponent}`; color = '#8a7a62'
   }

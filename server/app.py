@@ -452,12 +452,29 @@ def make_match_move(
     if body.move not in game.legal_moves(state):
         raise HTTPException(400, f"illegal move {body.move!r}")
 
+    # Apply ONLY the human move and return immediately, so the client paints it
+    # before any bot starts thinking. The bot's reply is fetched via /advance.
     G.apply_human_move(match, game, body.move)
-    if match.status == "active":
-        G.advance_bots(match, game)
     db.commit()
     db.refresh(match)
     notify_turn(db, match, user.id, background)
+    return match_view(match, user.id)
+
+
+@app.post("/api/matches/{match_id}/advance")
+def advance_match(match_id: str, db: Session = Depends(get_db), user: User = Depends(current_user)):
+    """If it's a bot's turn, play it (looping multi-move turns). No-op otherwise.
+    Kept separate from /move so the human's move renders first."""
+    match = db.get(Match, match_id)
+    if not match:
+        raise HTTPException(404, "match not found")
+    if seat_of(match, user.id) is None:
+        raise HTTPException(403, "you are not a player in this match")
+    if match.status == "active" and match.players[match.current_player].get("type") == "bot":
+        _, game = registry.get(match.game_uid)
+        G.advance_bots(match, game)
+        db.commit()
+        db.refresh(match)
     return match_view(match, user.id)
 
 
