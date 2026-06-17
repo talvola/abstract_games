@@ -2,14 +2,24 @@ import { useEffect, useState } from 'react'
 
 // Generic renderer + move input. Draws ANY game from its RenderSpec and derives
 // interaction from the legal-move list. A move is a ">"-separated PATH of cell
-// ids (cell ids themselves use "," — e.g. "2,1>2,3"). So:
-//   * placement games  -> single-cell moves -> one click.
-//   * from-to games    -> "from>to" moves   -> click source, then target.
-// The component tracks a selection prefix and only offers legal continuations.
+// ids (cells use "," so they never clash with ">"), optionally followed by a
+// "=CHOICE" suffix for a move that needs a pick (e.g. pawn promotion "2,4>2,5=Q").
+//   * placement games -> single-cell moves -> one click.
+//   * from-to games    -> "from>to"        -> click source, then target.
+//   * choice moves     -> a picker appears when a destination has >1 option.
 
 const OWNER_FILL = ['#d23b3b', '#3b6fd2']
 const OWNER_STROKE = ['#7a1414', '#173a7a']
 const colors = (o) => ({ fill: OWNER_FILL[o] ?? '#aaa', stroke: OWNER_STROKE[o] ?? '#555' })
+const PIECE_NAMES = { Q: 'Queen', R: 'Rook', N: 'Knight', B: 'Bishop', K: 'King', P: 'Pawn' }
+
+// "2,4>2,5=Q" -> { cells: ["2,4","2,5"], choice: "Q" }
+function parseMove(m) {
+  const eq = m.indexOf('=')
+  const pathPart = eq >= 0 ? m.slice(0, eq) : m
+  return { cells: pathPart.split('>'), choice: eq >= 0 ? m.slice(eq + 1) : null }
+}
+const sameCells = (a, b) => a.length === b.length && a.every((c, i) => c === b[i])
 
 function squareCells(b) {
   const cells = []
@@ -29,34 +39,36 @@ function hexPoly(cx, cy, s) {
     return `${cx + s * Math.cos(a)},${cy + s * Math.sin(a)}`
   }).join(' ')
 }
-
 const eqPrefix = (path, sel) => sel.every((c, i) => path[i] === c)
 
 export default function Board({ spec, legalMoves, onMove, disabled }) {
   const [sel, setSel] = useState([])
-  // Reset selection whenever the position/turn changes.
-  useEffect(() => setSel([]), [JSON.stringify(legalMoves), disabled])
+  const [promo, setPromo] = useState(null) // { cells, options: [{choice, move}] }
+  useEffect(() => { setSel([]); setPromo(null) }, [JSON.stringify(legalMoves), disabled])
 
   if (!spec) return null
   const board = spec.board
-  const paths = (legalMoves || []).map((m) => m.split('>'))
+  const moves = (legalMoves || []).map((m) => ({ raw: m, ...parseMove(m) }))
+  const paths = moves.map((m) => m.cells)
 
-  // legal next cells given the current selection prefix
   const nextCells = new Set()
   for (const p of paths) if (p.length > sel.length && eqPrefix(p, sel)) nextCells.add(p[sel.length])
   const selSet = new Set(sel)
-  const sources = new Set(paths.map((p) => p[0])) // cells a move can start from
+  const sources = new Set(paths.map((p) => p[0]))
   const firstStep = sel.length === 0
 
   function click(cellId) {
-    if (disabled) return
+    if (disabled || promo) return
     const cand = [...sel, cellId]
-    const complete = paths.some((p) => p.length === cand.length && eqPrefix(p, cand))
-    const extends_ = paths.some((p) => p.length > cand.length && eqPrefix(p, cand))
-    if (complete) { onMove(cand.join('>')); setSel([]) }
-    else if (extends_) setSel(cand)
-    else if (sel.length && sources.has(cellId)) setSel([cellId]) // switch to another piece
-    else setSel([])                                              // deselect
+    const matches = moves.filter((m) => sameCells(m.cells, cand))
+    if (matches.length === 1) { onMove(matches[0].raw); setSel([]); return }
+    if (matches.length > 1) {                       // a move that needs a choice (e.g. promotion)
+      setPromo({ cells: cand, options: matches.map((m) => ({ choice: m.choice, move: m.raw })) })
+      return
+    }
+    if (paths.some((p) => p.length > cand.length && eqPrefix(p, cand))) setSel(cand)
+    else if (sel.length && sources.has(cellId)) setSel([cellId])
+    else setSel([])
   }
 
   const isHex = board.type === 'hex'
@@ -73,44 +85,49 @@ export default function Board({ spec, legalMoves, onMove, disabled }) {
   const vb = `${Math.min(...xs) - m} ${Math.min(...ys) - m} ${Math.max(...xs) - Math.min(...xs) + 2 * m} ${Math.max(...ys) - Math.min(...ys) + 2 * m}`
 
   return (
-    <svg viewBox={vb} style={{ width: '100%', maxWidth: 540, height: 'auto', touchAction: 'manipulation' }}>
-      {cells.map((c) => {
-        const cx = px(c.x), cy = px(c.y)
-        const piece = pieces[c.id]
-        const selected = selSet.has(c.id)
-        // destination of the currently-selected piece (green)
-        const isTarget = !firstStep && nextCells.has(c.id) && !disabled && !selected
-        // a move can START here (pick a piece, or place on an empty cell) — amber
-        const isSource = sources.has(c.id) && !disabled && !selected && !isTarget
-        const clickable = selected || isTarget || isSource
+    <div className="board-wrap">
+      <svg viewBox={vb} style={{ width: '100%', maxWidth: 540, height: 'auto', touchAction: 'manipulation' }}>
+        {cells.map((c) => {
+          const cx = px(c.x), cy = px(c.y)
+          const piece = pieces[c.id]
+          const selected = selSet.has(c.id)
+          const isTarget = !firstStep && nextCells.has(c.id) && !disabled && !selected
+          const isSource = sources.has(c.id) && !disabled && !selected && !isTarget
+          const clickable = selected || isTarget || isSource
 
-        const fill = selected ? '#6b5520'
-          : isTarget ? '#2f4030'
-          : hl[c.id] === 'last-move' ? '#3a3228' : '#2a2620'
-        const stroke = selected ? '#e7c87a'
-          : isTarget ? '#5cba6b'
-          : isSource && piece ? '#7a6a3a'   // subtle: this piece is movable
-          : '#4a4238'
-        return (
-          <g key={c.id} onClick={clickable ? () => click(c.id) : undefined} style={{ cursor: clickable ? 'pointer' : 'default' }}>
-            {isHex
-              ? <polygon points={hexPoly(cx, cy, R)} fill={fill} stroke={stroke} strokeWidth={selected || isTarget ? 2.5 : 1.5} />
-              : <rect x={cx - R} y={cy - R} width={2 * R} height={2 * R} fill={fill} stroke={stroke} strokeWidth={selected || isTarget ? 2.5 : 1.5} />}
+          const fill = selected ? '#6b5520' : isTarget ? '#2f4030'
+            : hl[c.id] === 'last-move' ? '#3a3228' : '#2a2620'
+          const stroke = selected ? '#e7c87a' : isTarget ? '#5cba6b'
+            : isSource && piece ? '#7a6a3a' : '#4a4238'
+          return (
+            <g key={c.id} onClick={clickable ? () => click(c.id) : undefined} style={{ cursor: clickable ? 'pointer' : 'default' }}>
+              {isHex
+                ? <polygon points={hexPoly(cx, cy, R)} fill={fill} stroke={stroke} strokeWidth={selected || isTarget ? 2.5 : 1.5} />
+                : <rect x={cx - R} y={cy - R} width={2 * R} height={2 * R} fill={fill} stroke={stroke} strokeWidth={selected || isTarget ? 2.5 : 1.5} />}
+              {isTarget && piece && <circle cx={cx} cy={cy} r={R * 0.9} fill="none" stroke="#5cba6b" strokeWidth="3" />}
+              {piece && (piece.label
+                ? <text x={cx} y={cy} textAnchor="middle" dominantBaseline="central" fontSize={R * 1.1} fontWeight="bold" fill={colors(piece.owner).fill}>{piece.label}</text>
+                : <circle cx={cx} cy={cy} r={R * 0.66} fill={colors(piece.owner).fill} stroke={colors(piece.owner).stroke} strokeWidth="2" />)}
+              {isTarget && !piece && <circle cx={cx} cy={cy} r={R * 0.3} fill="#5cba6b" opacity="0.85" />}
+              {isSource && !piece && <circle cx={cx} cy={cy} r={R * 0.18} fill="#c9a96e" opacity="0.7" />}
+            </g>
+          )
+        })}
+      </svg>
 
-            {/* capture target: green ring around the enemy piece */}
-            {isTarget && piece && <circle cx={cx} cy={cy} r={R * 0.9} fill="none" stroke="#5cba6b" strokeWidth="3" />}
-
-            {piece && (piece.label
-              ? <text x={cx} y={cy} textAnchor="middle" dominantBaseline="central" fontSize={R * 1.1} fontWeight="bold" fill={colors(piece.owner).fill}>{piece.label}</text>
-              : <circle cx={cx} cy={cy} r={R * 0.66} fill={colors(piece.owner).fill} stroke={colors(piece.owner).stroke} strokeWidth="2" />)}
-
-            {/* empty destination of selected piece: green dot */}
-            {isTarget && !piece && <circle cx={cx} cy={cy} r={R * 0.3} fill="#5cba6b" opacity="0.85" />}
-            {/* legal placement on an empty cell (no selection step): amber dot */}
-            {isSource && !piece && <circle cx={cx} cy={cy} r={R * 0.18} fill="#c9a96e" opacity="0.7" />}
-          </g>
-        )
-      })}
-    </svg>
+      {promo && (
+        <div className="promo-picker">
+          <div className="promo-title">Promote to</div>
+          <div className="promo-options">
+            {promo.options.map((o) => (
+              <button key={o.choice} onClick={() => { onMove(o.move); setPromo(null); setSel([]) }}>
+                {PIECE_NAMES[o.choice] || o.choice}
+              </button>
+            ))}
+            <button className="promo-cancel" onClick={() => { setPromo(null); setSel([]) }}>Cancel</button>
+          </div>
+        </div>
+      )}
+    </div>
   )
 }

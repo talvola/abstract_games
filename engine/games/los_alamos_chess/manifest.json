@@ -10,5 +10,5 @@
   "category": "Chess & chess-like",
   "tags": ["chess", "square", "capture"],
   "bgg_url": "https://en.wikipedia.org/wiki/Los_Alamos_chess",
-  "description": "Simplified 6x6 chess (no bishops, no castling, no double pawn step). First chess-like game played by a computer (1956). Pawns auto-promote to Queen."
+  "description": "Simplified 6x6 chess (no bishops, no castling, no double pawn step). First chess-like game played by a computer (1956)."
 }

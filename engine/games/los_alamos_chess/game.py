@@ -2,13 +2,12 @@
 
 Differences from orthodox chess: 6x6 board, no bishops (the queen still moves in
 all 8 directions), no castling, no double pawn step, no en passant. Pawns
-promote on the far rank — here they AUTO-PROMOTE TO QUEEN (a simplification:
-real Los Alamos allows Q/R/N; choosing the piece needs promotion-picker UI,
-which is a noted follow-up).
+promote on the far rank to Queen, Rook, or Knight (no bishop).
 
 Moves use the platform's clickable cell-path notation: "fromCol,fromRow>toCol,
-toRow", e.g. "2,1>2,2". White = player 0 (rows 0-1, moving up); Black = player 1
-(rows 4-5, moving down).
+toRow", e.g. "2,1>2,2". A promotion adds a choice suffix: "from>to=Q" (=Q/=R/=N)
+— the UI shows a picker. White = player 0 (rows 0-1, up); Black = player 1
+(rows 4-5, down).
 
 Draw rules (also guarantee termination for random play): stalemate, a 50-ply
 no-capture-no-pawn-move rule, and a hard 200-ply cap.
@@ -164,15 +163,29 @@ class LosAlamosChess(Game):
                 moves.append((frm, to))
         return moves
 
+    def _is_promotion(self, board: dict, frm, to) -> bool:
+        pl, t = board[frm]
+        return t == "P" and ((to[1] == N - 1 and pl == WHITE) or (to[1] == 0 and pl == BLACK))
+
     def legal_moves(self, s: ChessState) -> list[str]:
         if self._draw(s):
             return []
-        return [f"{f[0]},{f[1]}>{t[0]},{t[1]}" for f, t in self._legal(s)]
+        out = []
+        for f, t in self._legal(s):
+            base = f"{f[0]},{f[1]}>{t[0]},{t[1]}"
+            if self._is_promotion(s.board, f, t):
+                out += [base + "=Q", base + "=R", base + "=N"]
+            else:
+                out.append(base)
+        return out
 
     def _draw(self, s: ChessState) -> bool:
         return s.halfmove >= DRAW_HALFMOVE or s.ply >= PLY_CAP
 
     def apply_move(self, s: ChessState, move: str, rng=None) -> ChessState:
+        promo = None
+        if "=" in move:
+            move, promo = move.split("=")
         fs, ts = move.split(">")
         frm, to = _cell(fs), _cell(ts)
         pl, t = s.board[frm]
@@ -180,7 +193,7 @@ class LosAlamosChess(Game):
         b = dict(s.board)
         b.pop(frm)
         if t == "P" and (to[1] == N - 1 and pl == WHITE or to[1] == 0 and pl == BLACK):
-            t = "Q"
+            t = promo if promo in ("Q", "R", "N") else "Q"
         b[to] = (pl, t)
         reset = capture or s.board[frm][1] == "P"
         return ChessState(

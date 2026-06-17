@@ -87,10 +87,15 @@ renderer, so you never write UI. Supported boards today: `square` and `hex`.
 ```
 
 Cell ids must equal the cell strings you use in moves: `"col,row"` (0-based) for
-square, `"q,r"` (axial) for hex. **For the platform's click-to-move to work, a
-move string should be a cell id** — i.e. write placement-style games where
-"the move" is "the cell you click". (Other move notations validate and play
-fine via the API, but won't be clickable in the current web UI.)
+square, `"q,r"` (axial) for hex. For click-to-move, a move is a **`>`-separated
+path of cell ids**:
+
+- placement → a single cell, e.g. `"2,3"` (one click);
+- from–to (chess-like) → `"from>to"`, e.g. `"2,1>2,3"` (click source, then target);
+- needs a choice (e.g. promotion) → append `"=CHOICE"`, e.g. `"2,4>2,5=Q"`; the
+  UI shows a picker when a destination has several such options.
+
+(Other move notations still validate and play via the API, just not clickable.)
 
 Read `SPEC.md` for the complete reference, and `examples/tic_tac_toe/game.py`
 for the simplest end-to-end example.
