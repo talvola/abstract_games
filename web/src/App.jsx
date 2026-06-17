@@ -16,6 +16,7 @@ export default function App() {
   }, [])
 
   const go = (s) => setScreen(s)
+  const refreshGames = () => api.listGames().then((d) => setGames(d.games)).catch(() => {})
 
   return (
     <div className="app">
@@ -23,12 +24,12 @@ export default function App() {
         <h1 onClick={() => go({ name: 'home' })} style={{ cursor: 'pointer' }}>
           ABSTRACT GAMES
         </h1>
-        <div className="tagline">a generic platform · phase 2</div>
+        <div className="tagline">a generic platform · phase 3</div>
       </header>
       <main>
         {!games && <p>Loading…</p>}
         {games && screen.name === 'home' && (
-          <Home me={me} setMe={setMe} games={games} go={go} />
+          <Home me={me} setMe={setMe} games={games} go={go} refreshGames={refreshGames} />
         )}
         {games && screen.name === 'quickplay' && <QuickPlay games={games} go={go} />}
         {screen.name === 'match' && <MatchPlay id={screen.id} me={me} go={go} />}
@@ -37,7 +38,7 @@ export default function App() {
   )
 }
 
-function Home({ me, setMe, games, go }) {
+function Home({ me, setMe, games, go, refreshGames }) {
   return (
     <div className="home">
       <Auth me={me} setMe={setMe} />
@@ -50,7 +51,7 @@ function Home({ me, setMe, games, go }) {
       </div>
 
       {me ? (
-        <Lobby me={me} games={games} go={go} />
+        <Lobby me={me} games={games} go={go} refreshGames={refreshGames} />
       ) : (
         <p className="muted">
           Sign in to play correspondence games against other people and track ongoing matches.

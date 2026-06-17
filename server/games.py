@@ -1,11 +1,24 @@
-"""Engine integration: the game registry and the helpers that drive a stored
-Match through the engine (apply human moves, auto-play bot seats, build views)."""
+"""Engine integration: a reloadable game registry (bundled + uploaded games)
+plus the helpers that drive a stored Match through the engine and the upload
+pipeline (extract -> validate in a subprocess -> install -> hot-register).
+
+Trust note: per the project's deferred-sandbox decision, uploaded game code is
+trusted-ish. We still run validation in a *separate process* with a timeout so a
+broken or hostile module can't wedge the server during validation, and we guard
+against zip-slip on extraction. Real isolation (container/WASM) is future work.
+"""
 
 from __future__ import annotations
 
+import json
+import os
 import random
+import shutil
+import subprocess
 import sys
+import tempfile
 import uuid
+import zipfile
 from pathlib import Path
 
 from fastapi import HTTPException
@@ -15,21 +28,46 @@ ENGINE = ROOT / "engine"
 sys.path.insert(0, str(ENGINE))
 
 from agp import MCTSBot, PackageError, load  # noqa: E402
+from agp.loader import MANIFEST_NAME, load_manifest  # noqa: E402
 
-GAMES_DIR = ENGINE / "games"
+BUNDLED_DIR = ENGINE / "games"
+UPLOAD_DIR = Path(os.environ.get("AGP_UPLOAD_DIR", ROOT / "data" / "games"))
+ALLOW_UPLOADS = os.environ.get("AGP_ALLOW_UPLOADS", "true").lower() == "true"
+MAX_UPLOAD_BYTES = 5 * 1024 * 1024
+MAX_UPLOAD_FILES = 200
+META_NAME = ".agp_meta.json"
+
 _rng = random.Random()
 
 
 class Registry:
-    def __init__(self, games_dir: Path):
+    """Loads every package under the bundled and upload dirs. Reloadable so an
+    upload appears without a server restart."""
+
+    def __init__(self):
         self.entries: dict[str, dict] = {}
-        for pkg in sorted(p for p in games_dir.iterdir() if p.is_dir()):
-            try:
-                manifest, game = load(pkg)
-            except PackageError as e:
-                print(f"skip {pkg.name}: {e}", file=sys.stderr)
+        self.reload()
+
+    def reload(self) -> None:
+        entries: dict[str, dict] = {}
+        for source, base in (("bundled", BUNDLED_DIR), ("uploaded", UPLOAD_DIR)):
+            if not base.exists():
                 continue
-            self.entries[manifest["uid"]] = {"manifest": manifest, "game": game}
+            for pkg in sorted(p for p in base.iterdir() if p.is_dir()):
+                try:
+                    manifest, game = load(pkg)
+                except PackageError as e:
+                    print(f"skip {pkg}: {e}", file=sys.stderr)
+                    continue
+                meta = _read_meta(pkg)
+                entries[manifest["uid"]] = {
+                    "manifest": manifest,
+                    "game": game,
+                    "source": source,
+                    "path": pkg,
+                    "uploader": meta.get("uploader_name"),
+                }
+        self.entries = entries
 
     def get(self, uid: str):
         entry = self.entries.get(uid)
@@ -38,15 +76,119 @@ class Registry:
         return entry["manifest"], entry["game"]
 
 
-registry = Registry(GAMES_DIR)
+def _read_meta(pkg: Path) -> dict:
+    p = pkg / META_NAME
+    if p.exists():
+        try:
+            return json.loads(p.read_text())
+        except Exception:  # noqa: BLE001
+            return {}
+    return {}
+
+
+registry = Registry()
+
+
+# ===========================================================================
+#  upload pipeline
+# ===========================================================================
+def _safe_extract(zip_path: Path, dest: Path) -> None:
+    """Extract a zip, refusing path traversal (zip-slip) and oversized archives."""
+    with zipfile.ZipFile(zip_path) as zf:
+        infos = zf.infolist()
+        if len(infos) > MAX_UPLOAD_FILES:
+            raise HTTPException(400, "archive has too many files")
+        total = 0
+        for info in infos:
+            total += info.file_size
+            if total > 4 * MAX_UPLOAD_BYTES:
+                raise HTTPException(400, "archive expands too large")
+            target = (dest / info.filename).resolve()
+            if not str(target).startswith(str(dest.resolve())):
+                raise HTTPException(400, "unsafe path in archive")
+        zf.extractall(dest)
+
+
+def _resolve_pkg_root(extracted: Path) -> Path:
+    """Find the directory containing manifest.json (flat zip or single folder)."""
+    if (extracted / MANIFEST_NAME).exists():
+        return extracted
+    subdirs = [p for p in extracted.iterdir() if p.is_dir() and not p.name.startswith("_")]
+    for d in subdirs:
+        if (d / MANIFEST_NAME).exists():
+            return d
+    raise HTTPException(400, f"no {MANIFEST_NAME} found in archive")
+
+
+def _validate_in_subprocess(pkg_root: Path) -> tuple[bool, str]:
+    """Run `agp validate` in a child process with a timeout (isolation-lite)."""
+    try:
+        proc = subprocess.run(
+            [sys.executable, "-m", "agp.cli", "validate", str(pkg_root), "--games", "30"],
+            cwd=str(ENGINE),
+            env={**os.environ, "PYTHONPATH": str(ENGINE)},
+            capture_output=True,
+            text=True,
+            timeout=90,
+        )
+    except subprocess.TimeoutExpired:
+        return False, "validation timed out (the game may not terminate)"
+    return proc.returncode == 0, (proc.stdout or "") + (proc.stderr or "")
+
+
+def install_upload(zip_bytes: bytes, uploader_id: int, uploader_name: str) -> dict:
+    """Validate and install an uploaded game package. Returns its manifest.
+    Raises HTTPException with a helpful message on any failure."""
+    if not ALLOW_UPLOADS:
+        raise HTTPException(403, "uploads are disabled on this server")
+    if len(zip_bytes) > MAX_UPLOAD_BYTES:
+        raise HTTPException(400, "upload too large (max 5 MB)")
+
+    tmp = Path(tempfile.mkdtemp(prefix="agp_upload_"))
+    try:
+        zip_path = tmp / "pkg.zip"
+        zip_path.write_bytes(zip_bytes)
+        if not zipfile.is_zipfile(zip_path):
+            raise HTTPException(400, "not a valid .zip file")
+        extracted = tmp / "x"
+        extracted.mkdir()
+        _safe_extract(zip_path, extracted)
+        pkg_root = _resolve_pkg_root(extracted)
+
+        manifest = load_manifest(pkg_root)  # validates required keys + engine_api
+        uid = manifest["uid"]
+        existing = registry.entries.get(uid)
+        if existing and existing["source"] == "bundled":
+            raise HTTPException(409, f"{uid!r} is a built-in game and cannot be overwritten")
+
+        ok, report = _validate_in_subprocess(pkg_root)
+        if not ok:
+            raise HTTPException(422, "conformance validation failed:\n" + report[-2000:])
+
+        # Install: replace any prior upload of this uid.
+        dest = UPLOAD_DIR / uid
+        UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+        if dest.exists():
+            shutil.rmtree(dest)
+        shutil.copytree(pkg_root, dest)
+        (dest / META_NAME).write_text(json.dumps({
+            "uploader_id": uploader_id,
+            "uploader_name": uploader_name,
+        }))
+        registry.reload()
+        return manifest
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
 
 
 def new_id() -> str:
     return uuid.uuid4().hex
 
 
+# ===========================================================================
+#  match driving
+# ===========================================================================
 def position_view(game, state) -> dict:
-    """Render + actionable info for a position (no per-viewer fields)."""
     terminal = game.is_terminal(state)
     return {
         "render": game.render(state),
@@ -59,8 +201,6 @@ def position_view(game, state) -> dict:
 
 
 def advance_bots(match, game) -> None:
-    """While it's a bot seat's turn, play it. Mutates match.state/current_player/
-    status/winner in place and appends moves. Handles multi-move turns."""
     state = game.deserialize(match.state)
     ply = len(match.moves)
     while not game.is_terminal(state):

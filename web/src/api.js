@@ -42,6 +42,16 @@ export const api = {
   getMatch: (id) => get(`/api/matches/${id}`),
   matchMove: (id, move) => post(`/api/matches/${id}/move`, { move }),
 
+  // upload a game package (.zip)
+  uploadGame: async (file) => {
+    const fd = new FormData()
+    fd.append('file', file)
+    const res = await fetch('/api/games/upload', { method: 'POST', body: fd, credentials: 'same-origin' })
+    const data = await res.json().catch(() => ({}))
+    if (!res.ok) throw new Error(data.detail || `upload failed: ${res.status}`)
+    return data
+  },
+
   // stateless quick-play (no login)
   newGame: (uid, options) => post(`/api/games/${uid}/new`, { options }),
   move: (uid, state, move) => post(`/api/games/${uid}/move`, { state, move }),

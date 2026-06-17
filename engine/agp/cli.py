@@ -3,6 +3,7 @@
     agp validate  <package>            run the conformance harness
     agp playtest  <package> [--bot]    self-play; report results & lengths
     agp render    <package>            print the opening board (+ optional play)
+    agp pack      <package> [-o out]   zip a package for upload to the platform
 
 Designed so a Claude Code session can iterate on a new game with a crisp goal:
 "make ``agp validate`` pass", then eyeball ``agp render`` / ``agp playtest``.
@@ -98,6 +99,22 @@ def cmd_render(args) -> int:
     return 0
 
 
+def cmd_pack(args) -> int:
+    import zipfile
+
+    pkg = Path(args.package).resolve()
+    manifest, _ = _load(str(pkg))
+    out = Path(args.output) if args.output else pkg.parent / f"{manifest['uid']}.zip"
+    skip = {"__pycache__", ".git", ".agp_meta.json"}
+    with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as zf:
+        for f in sorted(pkg.rglob("*")):
+            if f.is_dir() or any(part in skip for part in f.parts):
+                continue
+            zf.write(f, f.relative_to(pkg))  # manifest.json at archive root
+    print(f"packed {manifest['uid']} -> {out}")
+    return 0
+
+
 def main(argv=None) -> int:
     p = argparse.ArgumentParser(prog="agp", description="Abstract Games Platform CLI")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -123,6 +140,11 @@ def main(argv=None) -> int:
     rd.add_argument("--size", type=int, default=None)
     rd.add_argument("--seed", type=int, default=0)
     rd.set_defaults(func=cmd_render)
+
+    pk = sub.add_parser("pack", help="zip a package for upload")
+    pk.add_argument("package")
+    pk.add_argument("-o", "--output", default=None, help="output .zip path")
+    pk.set_defaults(func=cmd_pack)
 
     args = p.parse_args(argv)
     return args.func(args)

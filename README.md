@@ -63,11 +63,31 @@ and stores move history. You can:
 Auth is email + password with a signed-cookie session (`AGP_SECRET_KEY` to set the
 signing key; `AGP_COOKIE_SECURE=true` behind HTTPS). Quick-play still needs no account.
 
+## Add a game without the platform source (Phase 3)
+
+Anyone can build a game with the **dev kit** and drop it into a running
+platform — no access to the platform's source, no redeploy:
+
+1. Download the kit from a running site (`/api/devkit`, or the "Add a game"
+   panel) — or build it locally with `python3 tools/build_devkit.py`
+   (→ `dist/gamedev-kit.zip`). The kit is self-contained: the `agp` SDK,
+   `SPEC.md`, a starter `template/`, a worked example, an `AGENTS.md` guide, and
+   a ready-to-use **Claude Code skill** (`build-abstract-game`).
+2. Implement the game against the contract until `agp validate` passes, then
+   `agp pack` it into a `.zip`.
+3. Upload the `.zip` via the **Add a game** panel (signed in). The server
+   re-validates it (conformance harness in a subprocess) and **hot-registers**
+   it — it's immediately playable against people or the AI.
+
+`gamedev-kit/` holds the kit's hand-written sources; `tools/build_devkit.py`
+assembles the full kit (copying the SDK from `engine/` so it never drifts).
+
 ## Status
 
 - **Phase 0 ✅** game contract + conformance + generic MCTS, proven on Tic-Tac-Toe and Oust.
 - **Phase 1 ✅** web UI: generic renderer (hex + square), hotseat & vs-bot play.
 - **Phase 2 ✅** accounts, persistent matches, lobby, async correspondence (human & bot).
-- **Phase 3 (next)** drop-in ZIP upload & registration; move the bot onto a background worker; "your turn" email/push.
+- **Phase 3 ✅** dev kit (SDK + spec + template + agent guide + Claude Code skill) and drop-in `.zip` upload, validation, and hot-registration.
+- **Later** real sandboxing for untrusted uploads · bot on a background worker · "your turn" email/push · stronger per-game AI.
 
 See the roadmap in [PLATFORM_PLAN.md](PLATFORM_PLAN.md).

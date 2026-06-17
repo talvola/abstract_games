@@ -117,3 +117,13 @@ main { display: flex; flex-direction: column; align-items: center; padding-top: 
 .match-head .game-name { color: var(--accent); font-weight: bold; letter-spacing: 0.1em; }
 .match-head .vs { color: var(--muted); font-size: 0.85rem; }
 .active-seat { color: var(--text); font-weight: bold; }
+
+.add-game a { color: var(--accent); }
+.upload-row { display: flex; gap: 10px; align-items: center; margin-top: 8px; flex-wrap: wrap; }
+.upload-row input[type=file] { color: var(--muted); font-size: 0.8rem; }
+.upload-msg { white-space: pre-wrap; font-size: 0.78rem; background: var(--panel);
+  border: 1px solid var(--line); border-radius: 6px; padding: 8px; margin-top: 8px; max-height: 160px; overflow: auto; }
+.upload-msg.good { border-color: #5cba6b; color: #5cba6b; }
+.upload-msg.bad { border-color: #e86050; color: #e86050; }
+
+.game-source { font-size: 0.68rem; color: var(--muted); }

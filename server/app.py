@@ -17,8 +17,11 @@ from __future__ import annotations
 import os
 import random
 
-from fastapi import Depends, FastAPI, HTTPException, Response
+from pathlib import Path
+
+from fastapi import Depends, FastAPI, File, HTTPException, Response, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
@@ -204,8 +207,32 @@ def list_games():
             "options": m.get("options", {}),
             "tags": m.get("tags", []),
             "bgg_url": m.get("bgg_url"),
+            "source": entry["source"],
+            "uploader": entry.get("uploader"),
         })
     return {"games": out}
+
+
+@app.post("/api/games/upload")
+async def upload_game(
+    file: UploadFile = File(...),
+    user: User = Depends(current_user),
+):
+    """Validate and register an uploaded game package (.zip). On success the
+    game is immediately playable -- no redeploy."""
+    data = await file.read()
+    manifest = G.install_upload(data, user.id, user.display_name)
+    return {"uid": manifest["uid"], "name": manifest["name"], "version": manifest["version"]}
+
+
+@app.get("/api/devkit")
+def download_devkit():
+    """Download the self-contained game-dev kit (SDK + spec + template + agent
+    guide). Lets an outside developer build a game without the platform source."""
+    kit = Path(__file__).resolve().parent.parent / "dist" / "gamedev-kit.zip"
+    if not kit.exists():
+        raise HTTPException(404, "dev kit not built yet (run tools/build_devkit.py)")
+    return FileResponse(kit, media_type="application/zip", filename="gamedev-kit.zip")
 
 
 # ===========================================================================

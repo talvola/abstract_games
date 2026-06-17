@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { api } from './api'
 
-export default function Lobby({ me, games, go }) {
+export default function Lobby({ me, games, go, refreshGames }) {
   const [seeks, setSeeks] = useState([])
   const [matches, setMatches] = useState([])
   const [error, setError] = useState('')
@@ -72,7 +72,48 @@ export default function Lobby({ me, games, go }) {
           </button>
         ))}
       </section>
+
+      <AddGame onUploaded={() => { refreshGames(); refresh() }} />
     </div>
+  )
+}
+
+function AddGame({ onUploaded }) {
+  const [file, setFile] = useState(null)
+  const [msg, setMsg] = useState('')
+  const [ok, setOk] = useState(false)
+  const [busy, setBusy] = useState(false)
+
+  async function upload() {
+    if (!file) return
+    setBusy(true); setOk(false); setMsg('Validating & registering…')
+    try {
+      const d = await api.uploadGame(file)
+      setOk(true)
+      setMsg(`Added “${d.name}” (v${d.version}). It's now playable below.`)
+      setFile(null)
+      onUploaded()
+    } catch (e) {
+      setMsg(String(e.message || e))
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  return (
+    <section className="add-game">
+      <h2>Add a game</h2>
+      <div className="muted small">
+        Upload a game package (.zip) built with the dev kit. It's validated and
+        registered on the spot — no redeploy.{' '}
+        <a href="/api/devkit" download>Download the dev kit ↓</a>
+      </div>
+      <div className="upload-row">
+        <input type="file" accept=".zip" onChange={(e) => setFile(e.target.files[0] || null)} />
+        <button className="start" onClick={upload} disabled={!file || busy}>Upload</button>
+      </div>
+      {msg && <pre className={`upload-msg ${ok ? 'good' : msg && !busy ? 'bad' : ''}`}>{msg}</pre>}
+    </section>
   )
 }
 
