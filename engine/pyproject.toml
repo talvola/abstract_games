@@ -1,0 +1,16 @@
+[project]
+name = "agp-engine"
+version = "0.1.0"
+description = "Abstract Games Platform engine: game contract, package loader, conformance harness, and generic MCTS opponent."
+requires-python = ">=3.10"
+dependencies = []
+
+[project.scripts]
+agp = "agp.cli:main"
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["agp"]
