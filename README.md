@@ -49,11 +49,25 @@ To add a game, follow **`engine/SPEC.md`**: write `manifest.json` + a `game.py`
 implementing `agp.game.Game`, drop it in `engine/games/<uid>/`, make
 `agp validate` pass — it then appears in the web UI automatically.
 
+## Accounts & correspondence (Phase 2)
+
+Signing in unlocks asynchronous play. The backend persists matches (SQLAlchemy;
+SQLite locally via `DATABASE_URL`, Postgres in production), enforces turn order,
+and stores move history. You can:
+
+- **Post an open challenge** (a *seek*) for another person to accept, or play the
+  **computer** (generic MCTS) — for any game.
+- Track ongoing games in a **lobby** with whose-turn badges; the match view polls
+  so an opponent's move appears without a manual refresh.
+
+Auth is email + password with a signed-cookie session (`AGP_SECRET_KEY` to set the
+signing key; `AGP_COOKIE_SECURE=true` behind HTTPS). Quick-play still needs no account.
+
 ## Status
 
 - **Phase 0 ✅** game contract + conformance + generic MCTS, proven on Tic-Tac-Toe and Oust.
 - **Phase 1 ✅** web UI: generic renderer (hex + square), hotseat & vs-bot play.
-- **Phase 2 (next)** accounts + Postgres + asynchronous correspondence play between humans.
-- **Phase 3** drop-in ZIP upload & registration; bot-as-opponent in correspondence.
+- **Phase 2 ✅** accounts, persistent matches, lobby, async correspondence (human & bot).
+- **Phase 3 (next)** drop-in ZIP upload & registration; move the bot onto a background worker; "your turn" email/push.
 
 See the roadmap in [PLATFORM_PLAN.md](PLATFORM_PLAN.md).
