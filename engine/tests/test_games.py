@@ -35,6 +35,15 @@ def test_checkers_conforms():
     assert check(game, manifest, games=20).ok
 
 
+def test_hex_conforms_and_never_draws():
+    manifest, game = _load("hex")
+    assert check(game, manifest, games=20, seed=3).ok
+    rng = random.Random(5)
+    for _ in range(20):
+        res = play_match(game, [RandomBot(rng), RandomBot(rng)], rng, options={"size": 7})
+        assert res["result"] == "terminal" and 0.0 not in res["returns"]  # Hex can't draw
+
+
 def test_checkers_forced_capture_and_multijump():
     _, game = _load("checkers")
     # a man with a jump available -> only the jump is legal; a double jump is one path

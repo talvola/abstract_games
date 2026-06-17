@@ -1,0 +1,15 @@
+{
+  "uid": "hex",
+  "name": "Hex",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Piet Hein / John Nash (1942-48) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Connection",
+  "tags": ["hex", "connection", "placement"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/4112/hex",
+  "options": { "size": { "choices": [7, 9, 11, 13], "default": 11 } },
+  "description": "Connection game on an NxN rhombus of hexagons (11 traditional). Place stones to link your two opposite edges with an unbroken chain. Draws are impossible."
+}

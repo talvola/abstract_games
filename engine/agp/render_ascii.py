@@ -43,14 +43,20 @@ def _square(board: dict, pieces: dict) -> str:
 
 
 def _hex(board: dict, pieces: dict) -> str:
-    """Indented rows of an axial hexagon (size = cells per side)."""
-    size = board["size"]
-    coords = [
-        (q, r)
-        for q in range(-(size - 1), size)
-        for r in range(-(size - 1), size)
-        if abs(q + r) <= size - 1
-    ]
+    """Indented rows of an axial hex board: a hexagon (size) or rhombus (w x h)."""
+    if board.get("shape") == "rhombus":
+        w, h = board["width"], board["height"]
+        coords = [(c, r) for r in range(h) for c in range(w)]
+        base = 0
+    else:
+        size = board["size"]
+        coords = [
+            (q, r)
+            for q in range(-(size - 1), size)
+            for r in range(-(size - 1), size)
+            if abs(q + r) <= size - 1
+        ]
+        base = size - 1
     rows = {}
     for (q, r) in coords:
         rows.setdefault(r, []).append((q, r))
@@ -61,6 +67,6 @@ def _hex(board: dict, pieces: dict) -> str:
             _glyph(pieces[f"{q},{r}"]) if f"{q},{r}" in pieces else "."
             for (q, r) in cells
         ]
-        indent = " " * (r + (size - 1))
+        indent = " " * (r + base)
         lines.append(indent + " ".join(glyphs))
     return "\n".join(lines)

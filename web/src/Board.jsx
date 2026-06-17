@@ -27,7 +27,13 @@ function squareCells(b) {
 }
 const SQRT3 = Math.sqrt(3)
 function hexCells(b) {
-  const s = b.size, cells = []
+  const cells = []
+  if (b.shape === 'rhombus') {
+    for (let r = 0; r < b.height; r++) for (let c = 0; c < b.width; c++)
+      cells.push({ id: `${c},${r}`, x: SQRT3 * (c + r / 2), y: 1.5 * r })
+    return cells
+  }
+  const s = b.size
   for (let q = -(s - 1); q <= s - 1; q++) for (let r = -(s - 1); r <= s - 1; r++)
     if (Math.abs(q + r) <= s - 1) cells.push({ id: `${q},${r}`, x: SQRT3 * q + (SQRT3 / 2) * r, y: 1.5 * r })
   return cells
@@ -80,12 +86,32 @@ export default function Board({ spec, legalMoves, onMove, disabled }) {
   const R = 30
   const px = (v) => v * (isHex ? R : R * 2.2)
   const xs = cells.map((c) => px(c.x)), ys = cells.map((c) => px(c.y))
-  const m = R * 1.6
+  const m = R * 1.9
   const vb = `${Math.min(...xs) - m} ${Math.min(...ys) - m} ${Math.max(...xs) - Math.min(...xs) + 2 * m} ${Math.max(...ys) - Math.min(...ys) + 2 * m}`
+
+  // Coloured edge frame for rhombus connection boards (which sides each seat connects).
+  let edgeLines = null
+  if (isHex && board.edges && board.shape === 'rhombus') {
+    const W = board.width - 1, H = board.height - 1, off = R * 0.95
+    const cnr = (c, r) => [px(SQRT3 * (c + r / 2)), px(1.5 * r)]
+    const [tl, tr, bl, br] = [cnr(0, 0), cnr(W, 0), cnr(0, H), cnr(W, H)]
+    const seg = (a, b, dx, dy, owner) => ({
+      x1: a[0] + dx, y1: a[1] + dy, x2: b[0] + dx, y2: b[1] + dy, c: SEAT_FILL[owner],
+    })
+    const e = board.edges
+    edgeLines = [
+      seg(tl, tr, 0, -off, e.top), seg(bl, br, 0, off, e.bottom),
+      seg(tl, bl, -off, 0, e.left), seg(tr, br, off, 0, e.right),
+    ].map((s, i) => (
+      <line key={`edge${i}`} x1={s.x1} y1={s.y1} x2={s.x2} y2={s.y2}
+        stroke={s.c} strokeWidth={R * 0.5} strokeLinecap="round" opacity="0.9" />
+    ))
+  }
 
   return (
     <div className="board-wrap">
       <svg viewBox={vb} style={{ width: '100%', maxWidth: 540, height: 'auto', touchAction: 'manipulation' }}>
+        {edgeLines}
         {cells.map((c) => {
           const cx = px(c.x), cy = px(c.y)
           const piece = pieces[c.id]
