@@ -9,6 +9,10 @@ if [ ! -d .venv ]; then
   python3 -m venv .venv
   .venv/bin/pip install -q -r server/requirements.txt
 fi
+# Local dev only: open game uploads for any signed-in user. Uploaded game code
+# runs in-process (RCE) — NEVER set this on a public/shared deployment. There,
+# set AGP_ADMIN_EMAILS to an allowlist instead, and keep this false.
+export AGP_ALLOW_OPEN_UPLOADS="${AGP_ALLOW_OPEN_UPLOADS:-true}"
 .venv/bin/uvicorn server.app:app --port 8000 --reload &
 BACK=$!
 

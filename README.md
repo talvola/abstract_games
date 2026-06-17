@@ -82,6 +82,18 @@ platform — no access to the platform's source, no redeploy:
 `gamedev-kit/` holds the kit's hand-written sources; `tools/build_devkit.py`
 assembles the full kit (copying the SDK from `engine/` so it never drifts).
 
+> **⚠️ Security — uploads are remote code execution.** A registered game's
+> `game.py` is imported and run **in-process** by the server (validation runs in
+> a subprocess, but accepted games then execute in the API process). There is no
+> sandbox yet, so uploading a package is equivalent to running arbitrary code on
+> the host. Uploads are therefore **closed by default** and gated:
+> - `AGP_ADMIN_EMAILS="you@x,friend@y"` — only those signed-in users may upload (recommended).
+> - `AGP_ALLOW_OPEN_UPLOADS=true` — any signed-in user may upload; **knowingly unsafe**, trusted/local instances only (`dev.sh` sets this for local use).
+>
+> With neither set, uploads are denied. Real isolation (subprocess/WASM/container
+> per game) is the prerequisite for opening uploads to untrusted users — see
+> `PLATFORM_PLAN.md`.
+
 ## Status
 
 - **Phase 0 ✅** game contract + conformance + generic MCTS, proven on Tic-Tac-Toe and Oust.

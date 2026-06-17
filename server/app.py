@@ -55,6 +55,12 @@ _COOKIE_SECURE = os.environ.get("AGP_COOKIE_SECURE", "false").lower() == "true"
 @app.on_event("startup")
 def _startup():
     init_db()
+    if G.OPEN_UPLOADS and not G.ADMIN_EMAILS:
+        print(
+            "WARNING: AGP_ALLOW_OPEN_UPLOADS is on with no admin allowlist — any "
+            "signed-in user can upload code that runs in-process. Use only on a "
+            "trusted/local instance.",
+        )
 
 
 # ===========================================================================
@@ -219,7 +225,16 @@ async def upload_game(
     user: User = Depends(current_user),
 ):
     """Validate and register an uploaded game package (.zip). On success the
-    game is immediately playable -- no redeploy."""
+    game is immediately playable -- no redeploy.
+
+    SECURITY: registered game code runs in-process (effectively RCE), so this is
+    gated to admins / explicitly-opened instances. See server/games.py."""
+    if not G.can_upload(user.email):
+        raise HTTPException(
+            403,
+            "uploads are restricted on this server; an operator must allowlist "
+            "your account (AGP_ADMIN_EMAILS) to add games",
+        )
     data = await file.read()
     manifest = G.install_upload(data, user.id, user.display_name)
     return {"uid": manifest["uid"], "name": manifest["name"], "version": manifest["version"]}
@@ -274,7 +289,9 @@ def logout(response: Response):
 
 @app.get("/api/auth/me")
 def me(user: User | None = Depends(optional_user)):
-    return user_public(user) if user else None
+    if not user:
+        return None
+    return {**user_public(user), "can_upload": G.can_upload(user.email)}
 
 
 # ===========================================================================

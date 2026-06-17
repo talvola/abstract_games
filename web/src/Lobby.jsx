@@ -73,7 +73,7 @@ export default function Lobby({ me, games, go, refreshGames }) {
         ))}
       </section>
 
-      <AddGame onUploaded={() => { refreshGames(); refresh() }} />
+      {me.can_upload && <AddGame onUploaded={() => { refreshGames(); refresh() }} />}
     </div>
   )
 }

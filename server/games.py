@@ -32,7 +32,34 @@ from agp.loader import MANIFEST_NAME, load_manifest  # noqa: E402
 
 BUNDLED_DIR = ENGINE / "games"
 UPLOAD_DIR = Path(os.environ.get("AGP_UPLOAD_DIR", ROOT / "data" / "games"))
-ALLOW_UPLOADS = os.environ.get("AGP_ALLOW_UPLOADS", "true").lower() == "true"
+
+# SECURITY — uploads are remote code execution.
+# A registered game's game.py is imported and executed IN-PROCESS by this API
+# server (on registry.reload() and on every move). There is no sandbox yet
+# (see PLATFORM_PLAN.md "Future: sandboxing"). Until one exists, uploading a
+# package == running arbitrary code on the server, so uploads are restricted to
+# trusted operators and CLOSED BY DEFAULT:
+#   * AGP_ADMIN_EMAILS="a@x,b@y"  -> only those signed-in users may upload.
+#   * AGP_ALLOW_OPEN_UPLOADS=true -> (no allowlist) any signed-in user may
+#       upload. Knowingly unsafe; only for a fully trusted/local instance.
+# With neither set, uploads are denied even for authenticated users.
+ADMIN_EMAILS = {
+    e.strip().lower() for e in os.environ.get("AGP_ADMIN_EMAILS", "").split(",") if e.strip()
+}
+OPEN_UPLOADS = os.environ.get("AGP_ALLOW_OPEN_UPLOADS", "false").lower() == "true"
+
+
+def can_upload(email: str) -> bool:
+    email = (email or "").lower()
+    if ADMIN_EMAILS:
+        return email in ADMIN_EMAILS
+    return OPEN_UPLOADS
+
+
+def uploads_enabled() -> bool:
+    return bool(ADMIN_EMAILS) or OPEN_UPLOADS
+
+
 MAX_UPLOAD_BYTES = 5 * 1024 * 1024
 MAX_UPLOAD_FILES = 200
 META_NAME = ".agp_meta.json"
@@ -138,9 +165,10 @@ def _validate_in_subprocess(pkg_root: Path) -> tuple[bool, str]:
 
 def install_upload(zip_bytes: bytes, uploader_id: int, uploader_name: str) -> dict:
     """Validate and install an uploaded game package. Returns its manifest.
-    Raises HTTPException with a helpful message on any failure."""
-    if not ALLOW_UPLOADS:
-        raise HTTPException(403, "uploads are disabled on this server")
+    Raises HTTPException with a helpful message on any failure.
+
+    NOTE: the caller (route) is responsible for authorizing the uploader via
+    can_upload(); this function trusts that check has passed."""
     if len(zip_bytes) > MAX_UPLOAD_BYTES:
         raise HTTPException(400, "upload too large (max 5 MB)")
 
