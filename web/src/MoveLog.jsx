@@ -1,6 +1,5 @@
 import { useEffect, useRef } from 'react'
-
-const SEAT_COLOR = ['#d23b3b', '#3b6fd2']
+import { SEAT_FILL } from './colors'
 
 // moves: [{ seat, label, player }]
 export default function MoveLog({ moves }) {
@@ -17,7 +16,7 @@ export default function MoveLog({ moves }) {
         {moves.map((m, i) => (
           <div className="movelog-row" key={i} title={m.player}>
             <span className="movelog-n">{i + 1}.</span>
-            <span className="movelog-dot" style={{ background: SEAT_COLOR[m.seat] ?? '#888' }} />
+            <span className="movelog-dot" style={{ background: SEAT_FILL[m.seat] ?? '#888' }} />
             <span className="movelog-label">{m.label}</span>
           </div>
         ))}

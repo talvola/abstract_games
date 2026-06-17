@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { api } from './api'
 import Board from './Board'
 import MoveLog from './MoveLog'
+import { SEAT_FILL } from './colors'
 
 // Correspondence match screen. Polls while waiting so an opponent's (or bot's)
 // move appears without a manual refresh.
@@ -78,9 +79,9 @@ export default function MatchPlay({ id, me, go }) {
         <div className="game-name">{m.game_name}</div>
         <div className="vs">
           {m.players.map((p, i) => (
-            <span key={i} className={i === m.current_player && !m.terminal ? 'active-seat' : ''}>
+            <span key={i} className={`seat-chip ${i === m.current_player && !m.terminal ? 'active-seat' : ''}`}>
+              <span className="seat-dot" style={{ background: SEAT_FILL[i] }} />
               {p.name}{p.type === 'bot' ? ' 🤖' : ''}{m.my_seat === i ? ' (you)' : ''}
-              {i === 0 ? '  ·  ' : ''}
             </span>
           ))}
         </div>

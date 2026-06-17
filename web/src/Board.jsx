@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { SEAT_FILL, SEAT_STROKE } from './colors'
 
 // Generic renderer + move input. Draws ANY game from its RenderSpec and derives
 // interaction from the legal-move list. A move is a ">"-separated PATH of cell
@@ -8,9 +9,7 @@ import { useEffect, useState } from 'react'
 //   * from-to games    -> "from>to"        -> click source, then target.
 //   * choice moves     -> a picker appears when a destination has >1 option.
 
-const OWNER_FILL = ['#d23b3b', '#3b6fd2']
-const OWNER_STROKE = ['#7a1414', '#173a7a']
-const colors = (o) => ({ fill: OWNER_FILL[o] ?? '#aaa', stroke: OWNER_STROKE[o] ?? '#555' })
+const colors = (o) => ({ fill: SEAT_FILL[o] ?? '#aaa', stroke: SEAT_STROKE[o] ?? '#555' })
 const PIECE_NAMES = { Q: 'Queen', R: 'Rook', N: 'Knight', B: 'Bishop', K: 'King', P: 'Pawn' }
 
 // "2,4>2,5=Q" -> { cells: ["2,4","2,5"], choice: "Q" }

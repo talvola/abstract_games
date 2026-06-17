@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { api } from './api'
 import Board from './Board'
 import MoveLog from './MoveLog'
+import { SEAT_FILL } from './colors'
 
 // Anonymous, no-account play using the stateless endpoints. Hotseat or vs the
 // MCTS bot; game state lives in the browser.
@@ -116,6 +117,14 @@ function Play({ match, setMatch, onExit }) {
 
   return (
     <div className="play">
+      <div className="vs">
+        {[0, 1].map((i) => (
+          <span key={i} className={`seat-chip ${i === cp && !view.terminal ? 'active-seat' : ''}`}>
+            <span className="seat-dot" style={{ background: SEAT_FILL[i] }} />
+            {seat(match, i)}
+          </span>
+        ))}
+      </div>
       <div className="status" style={{ borderColor: view.terminal ? '#c9a96e' : '#888' }}>{status}</div>
       <div className="play-area">
         <div className="board-col">
