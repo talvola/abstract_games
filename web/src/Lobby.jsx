@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { api } from './api'
+import { groupByCategory } from './QuickPlay'
 
 export default function Lobby({ me, games, go, refreshGames }) {
   const [seeks, setSeeks] = useState([])
@@ -163,8 +164,12 @@ function NewChallenge({ games, go, onCreated }) {
       <div className="form-grid">
         <label>Game</label>
         <select value={uid} onChange={(e) => setUid(e.target.value)}>
-          {games.map((g) => (
-            <option key={g.uid} value={g.uid}>{g.name}</option>
+          {groupByCategory(games).map(([cat, list]) => (
+            <optgroup key={cat} label={cat}>
+              {list.map((g) => (
+                <option key={g.uid} value={g.uid}>{g.name}</option>
+              ))}
+            </optgroup>
           ))}
         </select>
 

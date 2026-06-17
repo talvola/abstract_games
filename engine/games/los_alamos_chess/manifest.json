@@ -1,0 +1,14 @@
+{
+  "uid": "los_alamos_chess",
+  "name": "Los Alamos Chess",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Stein & Wells (1956) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["chess", "square", "capture"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Los_Alamos_chess",
+  "description": "Simplified 6x6 chess (no bishops, no castling, no double pawn step). First chess-like game played by a computer (1956). Pawns auto-promote to Queen."
+}

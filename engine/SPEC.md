@@ -27,6 +27,7 @@ Distribute as that folder or a `.zip` of it (flat, or a single top-level folder)
   "players": { "min": 2, "max": 2 },
   "has_randomness": false,      // true if apply_move/initial_state use rng
   "hidden_info": false,         // true if you implement player_view
+  "category": "N-in-a-row",     // groups the game in the lobby; see below
   "tags": ["square"],
   "bgg_url": "https://boardgamegeek.com/...",   // optional
   "options": { "size": { "choices": [4,5,6], "default": 5 } },  // optional variants
@@ -92,6 +93,26 @@ A JSON-able dict the generic renderer draws. Phase-0 shape:
 
 Cell ids are your move-notation cell strings: `"col,row"` for square, `"q,r"`
 (axial) for hex. The CLI's ASCII previewer understands `square` and `hex`.
+
+### Move notation & click-to-move
+
+A move is a **`>`-separated path of cell ids** (cell ids use `,`, so they never
+clash with `>`). The web UI derives click-to-move from this:
+
+- **Placement** games: a move is a single cell, e.g. `"2,3"` — one click.
+- **From–to** games (chess-like): a move is `"from>to"`, e.g. `"2,1>2,3"` — click
+  the source, then the destination. The UI offers only legal continuations.
+- Multi-step paths (`"a>b>c"`) are supported too (e.g. chained captures).
+
+Use this convention for any game you want clickable. Other notations still
+validate and play via the API.
+
+### Categories
+
+`category` groups your game in the lobby. Prefer an existing bucket so games
+cluster well; common ones: **"N-in-a-row"**, **"Chess & chess-like"**,
+**"Capture / annihilation"**, **"Connection"**. Anything else is fine and is
+shown under its own heading (no category → "Other").
 
 ## The authoring loop
 

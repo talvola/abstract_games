@@ -71,7 +71,7 @@ export default function MatchPlay({ id, me, go }) {
       <Board
         spec={m.render}
         legalMoves={m.my_turn ? m.legal_moves : []}
-        onCellClick={play}
+        onMove={play}
         disabled={!m.my_turn}
       />
       {m.render.caption && <div className="caption">{m.render.caption}</div>}

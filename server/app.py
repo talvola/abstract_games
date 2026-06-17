@@ -19,11 +19,13 @@ import random
 
 from pathlib import Path
 
-from fastapi import Depends, FastAPI, File, HTTPException, Response, UploadFile
+from fastapi import BackgroundTasks, Depends, FastAPI, File, HTTPException, Response, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
+
+from . import notify
 
 from . import games as G
 from .auth import (
@@ -121,6 +123,24 @@ def match_view(match: Match, me_id: int | None) -> dict:
     }
 
 
+def notify_turn(db: Session, match: Match, actor_id: int | None, background: BackgroundTasks) -> None:
+    """If it's now a *different* human's turn, email them. No-op for bots/self."""
+    if match.status != "active":
+        return
+    seat = match.players[match.current_player]
+    if seat.get("type") != "user" or seat.get("user_id") == actor_id:
+        return
+    user = db.get(User, seat["user_id"])
+    if not user:
+        return
+    others = [s.get("name") for i, s in enumerate(match.players) if i != match.current_player]
+    opponent = others[0] if len(others) == 1 else "your opponent"
+    background.add_task(
+        notify.notify_your_turn,
+        user.email, user.display_name, opponent, game_name(match.game_uid), match.id,
+    )
+
+
 def create_match(db: Session, game_uid: str, options: dict, players: list[dict]) -> Match:
     _, game = registry.get(game_uid)
     state = game.initial_state(options=options or {}, rng=_rng)
@@ -213,6 +233,7 @@ def list_games():
             "options": m.get("options", {}),
             "tags": m.get("tags", []),
             "bgg_url": m.get("bgg_url"),
+            "category": m.get("category", "Other"),
             "source": entry["source"],
             "uploader": entry.get("uploader"),
         })
@@ -333,7 +354,7 @@ def create_seek(body: SeekBody, db: Session = Depends(get_db), user: User = Depe
 
 
 @app.post("/api/seeks/{seek_id}/accept")
-def accept_seek(seek_id: str, db: Session = Depends(get_db), user: User = Depends(current_user)):
+def accept_seek(seek_id: str, background: BackgroundTasks, db: Session = Depends(get_db), user: User = Depends(current_user)):
     seek = db.get(Seek, seek_id)
     if not seek:
         raise HTTPException(404, "seek not found")
@@ -348,6 +369,7 @@ def accept_seek(seek_id: str, db: Session = Depends(get_db), user: User = Depend
     match = create_match(db, seek.game_uid, seek.options, players)
     db.delete(seek)
     db.commit()
+    notify_turn(db, match, user.id, background)  # if the creator is to move first
     return {"match_id": match.id}
 
 
@@ -410,6 +432,7 @@ def get_match(match_id: str, db: Session = Depends(get_db), user: User | None = 
 def make_match_move(
     match_id: str,
     body: MoveBody,
+    background: BackgroundTasks,
     db: Session = Depends(get_db),
     user: User = Depends(current_user),
 ):
@@ -434,6 +457,7 @@ def make_match_move(
         G.advance_bots(match, game)
     db.commit()
     db.refresh(match)
+    notify_turn(db, match, user.id, background)
     return match_view(match, user.id)
 
 

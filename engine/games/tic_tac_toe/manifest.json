@@ -7,6 +7,7 @@
   "players": { "min": 2, "max": 2 },
   "has_randomness": false,
   "hidden_info": false,
+  "category": "N-in-a-row",
   "tags": ["square", "alignment", "trivial"],
   "bgg_url": "https://boardgamegeek.com/boardgame/11901/tic-tac-toe",
   "description": "Classic 3x3 alignment game. The minimal reference module."

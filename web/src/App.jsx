@@ -13,6 +13,8 @@ export default function App() {
   useEffect(() => {
     api.me().then(setMe).catch(() => setMe(null))
     api.listGames().then((d) => setGames(d.games)).catch(() => setGames([]))
+    const deep = new URLSearchParams(window.location.search).get('match')
+    if (deep) setScreen({ name: 'match', id: deep })
   }, [])
 
   const go = (s) => setScreen(s)
