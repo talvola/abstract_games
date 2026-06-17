@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { api } from './api'
 import Board from './Board'
+import MoveLog from './MoveLog'
 
 // Anonymous, no-account play using the stateless endpoints. Hotseat or vs the
 // MCTS bot; game state lives in the browser.
@@ -70,12 +71,15 @@ function Menu({ games, go, onStart }) {
 function Play({ match, setMatch, onExit }) {
   const { uid, view } = match
   const busy = useRef(false)
+  const [log, setLog] = useState([])
+  const addLog = (r) => setLog((prev) => [...prev, { seat: r.mover, label: r.label }])
 
   async function applyMove(move) {
     if (busy.current || view.terminal) return
     busy.current = true
     try {
       const r = await api.move(uid, match.state, move)
+      addLog(r)
       setMatch((m) => ({ ...m, state: r.state, view: r.view }))
     } finally {
       busy.current = false
@@ -90,7 +94,9 @@ function Play({ match, setMatch, onExit }) {
       const b = await api.bot(uid, match.state, 300)
       if (cancelled) return
       const r = await api.move(uid, match.state, b.move)
-      if (!cancelled) setMatch((m) => ({ ...m, state: r.state, view: r.view }))
+      if (cancelled) return
+      addLog(r)
+      setMatch((m) => ({ ...m, state: r.state, view: r.view }))
     })()
     return () => { cancelled = true }
   }, [match.state, view.current_player, view.terminal]) // eslint-disable-line
@@ -111,8 +117,13 @@ function Play({ match, setMatch, onExit }) {
   return (
     <div className="play">
       <div className="status" style={{ borderColor: view.terminal ? '#c9a96e' : '#888' }}>{status}</div>
-      <Board spec={view.render} legalMoves={myTurn ? view.legal_moves : []} onMove={applyMove} disabled={!myTurn} />
-      {view.render.caption && <div className="caption">{view.render.caption}</div>}
+      <div className="play-area">
+        <div className="board-col">
+          <Board spec={view.render} legalMoves={myTurn ? view.legal_moves : []} onMove={applyMove} disabled={!myTurn} />
+          {view.render.caption && <div className="caption">{view.render.caption}</div>}
+        </div>
+        <MoveLog moves={log} />
+      </div>
       <div className="controls">
         <button onClick={onExit}>← New game</button>
       </div>

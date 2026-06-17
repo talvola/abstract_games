@@ -87,6 +87,13 @@ class Game(ABC):
         """A JSON-able RenderSpec describing the board for the generic renderer.
         ``perspective`` is the viewing player (for future hidden-info games)."""
 
+    # ---- optional: presentation niceties ----------------------------------
+    def describe_move(self, state: State, move: Move) -> str:
+        """A short human-readable label for ``move`` made in ``state`` (the
+        position *before* the move), for the move-history log. Default: the raw
+        move string. Override for nicer notation (e.g. chess 'Nb1-c3')."""
+        return str(move)
+
     # ---- optional: hidden information -------------------------------------
     def player_view(self, state: State, player: int) -> State:
         """State as ``player`` is allowed to see it. Default: full information."""

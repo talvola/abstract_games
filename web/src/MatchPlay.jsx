@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { api } from './api'
 import Board from './Board'
+import MoveLog from './MoveLog'
 
 // Correspondence match screen. Polls while waiting so an opponent's (or bot's)
 // move appears without a manual refresh.
@@ -87,13 +88,18 @@ export default function MatchPlay({ id, me, go }) {
 
       <div className="status" style={{ borderColor: color, color }}>{status}</div>
 
-      <Board
-        spec={m.render}
-        legalMoves={m.my_turn ? m.legal_moves : []}
-        onMove={play}
-        disabled={!m.my_turn}
-      />
-      {m.render.caption && <div className="caption">{m.render.caption}</div>}
+      <div className="play-area">
+        <div className="board-col">
+          <Board
+            spec={m.render}
+            legalMoves={m.my_turn ? m.legal_moves : []}
+            onMove={play}
+            disabled={!m.my_turn}
+          />
+          {m.render.caption && <div className="caption">{m.render.caption}</div>}
+        </div>
+        <MoveLog moves={(m.history || []).map((h) => ({ seat: h.seat, label: h.label, player: h.player }))} />
+      </div>
 
       <div className="controls">
         <button onClick={() => go({ name: 'home' })}>← Lobby</button>

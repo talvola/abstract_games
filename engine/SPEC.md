@@ -53,6 +53,7 @@ Implement these. See `games/tic_tac_toe/game.py` (minimal) and `games/oust/game.
 | `deserialize(data)` | inverse of `serialize` |
 | `render(state, perspective=None)` | JSON-able RenderSpec (see below); never pixels |
 | `move_to_str` / `parse_move` | optional; default to identity on strings |
+| `describe_move(state, move)` | optional; short label for the move log (state is *before* the move). Default = the raw move string; override for nicer notation (e.g. chess `Nb1-c3`) |
 | `player_view(state, player)` | only for hidden-info games; default = full info |
 
 ### Hard invariants (checked by `agp validate`)

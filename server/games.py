@@ -213,6 +213,29 @@ def new_id() -> str:
     return uuid.uuid4().hex
 
 
+def build_history(game, match) -> list[dict]:
+    """Replay the match's moves to produce labelled history for the move log:
+    [{ply, seat, player, label}]. Replay is needed because describe_move wants
+    the position *before* each move."""
+    try:
+        state = game.initial_state(options=match.options or {})
+    except Exception:  # noqa: BLE001
+        return []
+    out = []
+    for mr in sorted(match.moves, key=lambda r: r.ply):
+        try:
+            label = game.describe_move(state, mr.move)
+        except Exception:  # noqa: BLE001
+            label = mr.move
+        name = match.players[mr.seat].get("name") if mr.seat < len(match.players) else f"P{mr.seat}"
+        out.append({"ply": mr.ply, "seat": mr.seat, "player": name, "label": label})
+        try:
+            state = game.apply_move(state, mr.move)
+        except Exception:  # noqa: BLE001
+            break
+    return out
+
+
 # ===========================================================================
 #  match driving
 # ===========================================================================

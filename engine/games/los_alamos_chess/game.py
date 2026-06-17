@@ -229,6 +229,21 @@ class LosAlamosChess(Game):
             ply=d["ply"],
         )
 
+    def describe_move(self, s: ChessState, move: str) -> str:
+        promo = None
+        mv = move
+        if "=" in mv:
+            mv, promo = mv.split("=")
+        fs, ts = mv.split(">")
+        frm, to = _cell(fs), _cell(ts)
+        pl, t = s.board.get(frm, (None, "?"))
+        capture = to in s.board
+        alg = lambda c: f"{'abcdef'[c[0]]}{c[1] + 1}"  # noqa: E731
+        text = f"{t}{alg(frm)}{'x' if capture else '-'}{alg(to)}"
+        if promo:
+            text += f"={promo}"
+        return text
+
     def render(self, s: ChessState, perspective=None) -> dict:
         pieces = [
             {"cell": f"{c},{r}", "owner": pl, "label": t}

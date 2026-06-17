@@ -119,6 +119,7 @@ def match_view(match: Match, me_id: int | None) -> dict:
         and match.current_player == my_seat,
         "status": match.status,
         "winner": match.winner,
+        "history": G.build_history(game, match),
         **G.position_view(game, state),
     }
 
@@ -533,8 +534,11 @@ def stateless_move(uid: str, body: StatelessMoveBody):
         raise HTTPException(400, "game is over")
     if body.move not in game.legal_moves(state):
         raise HTTPException(400, f"illegal move {body.move!r}")
+    label = game.describe_move(state, body.move)
+    mover = game.current_player(state)
     state = game.apply_move(state, body.move, rng=_rng)
-    return {"state": game.serialize(state), "view": G.position_view(game, state)}
+    return {"state": game.serialize(state), "view": G.position_view(game, state),
+            "label": label, "mover": mover}
 
 
 @app.post("/api/games/{uid}/bot")
