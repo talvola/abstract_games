@@ -104,6 +104,8 @@ clash with `>`). The web UI derives click-to-move from this:
 - **From–to** games (chess-like): a move is `"from>to"`, e.g. `"2,1>2,3"` — click
   the source, then the destination. The UI offers only legal continuations.
 - Multi-step paths (`"a>b>c"`) are supported too (e.g. chained captures).
+- **Non-cell action moves** (a legal move that isn't a cell path, e.g. `"swap"`
+  for the pie rule, or `"pass"`) render as a labelled button below the board.
 - **Moves needing a choice** (e.g. pawn promotion): append `"=CHOICE"` to the
   move, e.g. `"2,4>2,5=Q"` / `"=R"` / `"=N"`. When a clicked destination matches
   several moves differing only by that suffix, the UI shows a small picker of

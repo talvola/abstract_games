@@ -164,6 +164,11 @@ main { display: flex; flex-direction: column; align-items: center; padding-top: 
 .promo-options button:hover { border-color: var(--accent); }
 .promo-options .promo-cancel { color: var(--muted); }
 
+.actions-bar { margin-top: 10px; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+.action-btn { background: rgba(201,169,110,0.15); border: 1px solid var(--accent); color: var(--accent);
+  padding: 8px 16px; border-radius: 6px; cursor: pointer; font-family: inherit; font-weight: bold; }
+.action-btn:hover { background: rgba(201,169,110,0.28); }
+
 .cat-group { margin-bottom: 10px; }
 .cat-label { font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase;
   color: var(--accent); opacity: 0.8; margin: 6px 0 4px; }

@@ -8,8 +8,11 @@ unbroken chain of your stones connecting your two opposite edges:
 A famous theorem: Hex can never end in a draw — once the board fills, exactly
 one player has connected. So termination is automatic (≤ N² moves).
 
-Moves are single cells "c,r" (a placement). Cells use axial-style neighbours so
-the same six-way adjacency as a hex grid applies.
+Moves are single cells "c,r" (a placement), plus the pie-rule action "swap"
+offered to the second player on move 2: instead of placing, they may take the
+opening by reflecting it across the main diagonal and recolouring it (Hex is
+symmetric under that reflection + colour swap), which equalises first-move
+advantage.
 """
 
 from __future__ import annotations
@@ -31,12 +34,16 @@ def _cell(s: str):
     return int(c), int(r)
 
 
+PIE_RULE = True  # offer the second player a "swap" on move 2
+
+
 @dataclass
 class HexState:
     size: int = 11
     board: dict = field(default_factory=dict)  # (c, r) -> 0/1
     to_move: int = RED
     winner: Optional[int] = None
+    ply: int = 0
 
 
 def _connects(board: dict, player: int, size: int) -> bool:
@@ -78,19 +85,28 @@ class Hex(Game):
     def legal_moves(self, s: HexState) -> list[str]:
         if s.winner is not None:
             return []
-        return [
+        moves = [
             f"{c},{r}"
             for r in range(s.size)
             for c in range(s.size)
             if (c, r) not in s.board
         ]
+        if PIE_RULE and s.ply == 1:  # second player's first turn
+            moves.append("swap")
+        return moves
 
     def apply_move(self, s: HexState, move: str, rng=None) -> HexState:
+        if move == "swap":
+            # take the opening: reflect the lone stone across c<->r, recolour to mover
+            (c, r), _ = next(iter(s.board.items()))
+            return HexState(size=s.size, board={(r, c): s.to_move},
+                            to_move=1 - s.to_move, winner=None, ply=s.ply + 1)
         c, r = _cell(move)
         board = dict(s.board)
         board[(c, r)] = s.to_move
         winner = s.to_move if _connects(board, s.to_move, s.size) else None
-        return HexState(size=s.size, board=board, to_move=1 - s.to_move, winner=winner)
+        return HexState(size=s.size, board=board, to_move=1 - s.to_move,
+                        winner=winner, ply=s.ply + 1)
 
     def is_terminal(self, s: HexState) -> bool:
         return s.winner is not None
@@ -108,6 +124,7 @@ class Hex(Game):
             "board": {f"{c},{r}": p for (c, r), p in s.board.items()},
             "to_move": s.to_move,
             "winner": s.winner,
+            "ply": s.ply,
         }
 
     def deserialize(self, d: dict) -> HexState:
@@ -116,9 +133,12 @@ class Hex(Game):
             board={_cell(k): v for k, v in d["board"].items()},
             to_move=d["to_move"],
             winner=d["winner"],
+            ply=d.get("ply", len(d["board"])),
         )
 
     def describe_move(self, s: HexState, move: str) -> str:
+        if move == "swap":
+            return "swap (pie)"
         c, r = _cell(move)
         letters = "abcdefghijklmnopqrstuvwxyz"
         col = letters[c] if c < len(letters) else str(c)

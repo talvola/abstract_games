@@ -20,6 +20,12 @@ function parseMove(m) {
 }
 const sameCells = (a, b) => a.length === b.length && a.every((c, i) => c === b[i])
 
+// A move is a cell path if every ">"-segment (minus any "=choice") is a cell id.
+const CELL_RE = /^-?\d+,-?\d+$/
+const isCellMove = (m) => m.split('>').every((seg) => CELL_RE.test(seg.split('=')[0]))
+// Non-cell legal moves render as action buttons (e.g. pie-rule "swap", "pass").
+const ACTION_LABELS = { swap: 'Swap (pie rule)', pass: 'Pass' }
+
 function squareCells(b) {
   const cells = []
   for (let r = 0; r < b.height; r++) for (let c = 0; c < b.width; c++) cells.push({ id: `${c},${r}`, x: c, y: r })
@@ -53,7 +59,9 @@ export default function Board({ spec, legalMoves, onMove, disabled }) {
 
   if (!spec) return null
   const board = spec.board
-  const moves = (legalMoves || []).map((m) => ({ raw: m, ...parseMove(m) }))
+  const cellMoves = (legalMoves || []).filter(isCellMove)
+  const actions = (legalMoves || []).filter((m) => !isCellMove(m))
+  const moves = cellMoves.map((m) => ({ raw: m, ...parseMove(m) }))
   const paths = moves.map((m) => m.cells)
 
   const nextCells = new Set()
@@ -140,6 +148,16 @@ export default function Board({ spec, legalMoves, onMove, disabled }) {
           )
         })}
       </svg>
+
+      {!disabled && actions.length > 0 && (
+        <div className="actions-bar">
+          {actions.map((a) => (
+            <button key={a} className="action-btn" onClick={() => onMove(a)}>
+              {ACTION_LABELS[a] || a}
+            </button>
+          ))}
+        </div>
+      )}
 
       {promo && (
         <div className="promo-picker">
