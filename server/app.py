@@ -461,6 +461,43 @@ def make_match_move(
     return match_view(match, user.id)
 
 
+@app.post("/api/matches/{match_id}/resign")
+def resign_match(match_id: str, db: Session = Depends(get_db), user: User = Depends(current_user)):
+    match = db.get(Match, match_id)
+    if not match:
+        raise HTTPException(404, "match not found")
+    seat = seat_of(match, user.id)
+    if seat is None:
+        raise HTTPException(403, "you are not a player in this match")
+    if match.status != "active":
+        return match_view(match, user.id)
+    _, game = registry.get(match.game_uid)
+    match.status = "finished"
+    # 2-player: the opponent wins. Otherwise just end it with no winner.
+    match.winner = (1 - seat) if game.num_players == 2 else None
+    db.commit()
+    db.refresh(match)
+    return match_view(match, user.id)
+
+
+@app.delete("/api/matches/{match_id}")
+def delete_match(match_id: str, db: Session = Depends(get_db), user: User = Depends(current_user)):
+    """Remove a match from your lobby. Allowed when it's finished or your only
+    opponents are bots; for a live game against a person, resign first."""
+    match = db.get(Match, match_id)
+    if not match:
+        return {"ok": True}
+    seat = seat_of(match, user.id)
+    if seat is None:
+        raise HTTPException(403, "you are not a player in this match")
+    others_bots = all(s.get("type") == "bot" for i, s in enumerate(match.players) if i != seat)
+    if match.status == "active" and not others_bots:
+        raise HTTPException(400, "resign this game before removing it")
+    db.delete(match)
+    db.commit()
+    return {"ok": True}
+
+
 # ===========================================================================
 #  stateless single-player (anonymous, no DB) -- Phase 1
 # ===========================================================================

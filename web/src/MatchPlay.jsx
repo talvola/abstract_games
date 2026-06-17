@@ -75,7 +75,21 @@ export default function MatchPlay({ id, me, go }) {
         disabled={!m.my_turn}
       />
       {m.render.caption && <div className="caption">{m.render.caption}</div>}
-      <Back go={go} />
+
+      <div className="controls">
+        <button onClick={() => go({ name: 'home' })}>← Lobby</button>
+        {!m.terminal && m.my_seat != null && (
+          <button
+            className="danger"
+            onClick={async () => {
+              if (!window.confirm('Resign this game? Your opponent wins.')) return
+              try { setM(await api.resignMatch(id)) } catch (e) { setError(String(e.message || e)) }
+            }}
+          >
+            Resign
+          </button>
+        )}
+      </div>
     </div>
   )
 }

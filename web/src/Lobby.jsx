@@ -65,12 +65,22 @@ export default function Lobby({ me, games, go, refreshGames }) {
         <h2>Your games</h2>
         {matches.length === 0 && <div className="muted small">No games yet.</div>}
         {matches.map((m) => (
-          <button className="match-row" key={m.id} onClick={() => go({ name: 'match', id: m.id })}>
-            <span>
-              {m.game_name} · vs <strong>{m.opponent}</strong>
-            </span>
-            <span className={`badge ${badgeClass(m)}`}>{badgeText(m)}</span>
-          </button>
+          <div className="match-row" key={m.id}>
+            <button className="match-open" onClick={() => go({ name: 'match', id: m.id })}>
+              <span>{m.game_name} · vs <strong>{m.opponent}</strong></span>
+              <span className={`badge ${badgeClass(m)}`}>{badgeText(m)}</span>
+            </button>
+            <button
+              className="row-remove"
+              title="Remove from lobby"
+              onClick={async () => {
+                try { await api.deleteMatch(m.id); refresh() }
+                catch (e) { alert(e.message || e) }
+              }}
+            >
+              ✕
+            </button>
+          </div>
         ))}
       </section>
 

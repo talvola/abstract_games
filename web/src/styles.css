@@ -103,10 +103,18 @@ main { display: flex; flex-direction: column; align-items: center; padding-top: 
   padding: 6px 14px; border-radius: 6px; cursor: pointer; }
 .seek-row button.accent { background: var(--accent); color: #1a1612; border: none; font-weight: bold; }
 
-.match-row { display: flex; justify-content: space-between; align-items: center; width: 100%;
+.match-row { display: flex; align-items: stretch; width: 100%;
   background: var(--panel); border: 1px solid var(--line); border-radius: 6px;
-  padding: 10px 12px; margin-bottom: 6px; cursor: pointer; color: var(--text); text-align: left; }
+  margin-bottom: 6px; overflow: hidden; }
 .match-row:hover { border-color: var(--accent); }
+.match-open { display: flex; justify-content: space-between; align-items: center; flex: 1;
+  background: none; border: none; color: var(--text); text-align: left; cursor: pointer;
+  padding: 10px 12px; font-family: inherit; }
+.row-remove { background: none; border: none; border-left: 1px solid var(--line);
+  color: var(--muted); cursor: pointer; padding: 0 14px; font-size: 1rem; }
+.row-remove:hover { color: #e86050; background: rgba(232,96,80,0.1); }
+.controls .danger { border-color: #7a3030; color: #e86050; }
+.controls .danger:hover { background: rgba(232,96,80,0.12); }
 .badge { font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 3px 8px; border-radius: 4px; }
 .badge.turn { background: rgba(92,186,107,0.2); color: #5cba6b; }
 .badge.wait { background: rgba(138,122,98,0.2); color: var(--muted); }

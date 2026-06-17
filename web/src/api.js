@@ -41,6 +41,8 @@ export const api = {
   myMatches: () => get('/api/matches'),
   getMatch: (id) => get(`/api/matches/${id}`),
   matchMove: (id, move) => post(`/api/matches/${id}/move`, { move }),
+  resignMatch: (id) => post(`/api/matches/${id}/resign`),
+  deleteMatch: (id) => del(`/api/matches/${id}`),
 
   // upload a game package (.zip)
   uploadGame: async (file) => {
