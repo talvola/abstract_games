@@ -45,6 +45,7 @@ export default function Board({ spec, legalMoves, onMove, disabled }) {
   const nextCells = new Set()
   for (const p of paths) if (p.length > sel.length && eqPrefix(p, sel)) nextCells.add(p[sel.length])
   const selSet = new Set(sel)
+  const sources = new Set(paths.map((p) => p[0])) // cells a move can start from
 
   function click(cellId) {
     if (disabled) return
@@ -53,7 +54,8 @@ export default function Board({ spec, legalMoves, onMove, disabled }) {
     const extends_ = paths.some((p) => p.length > cand.length && eqPrefix(p, cand))
     if (complete) { onMove(cand.join('>')); setSel([]) }
     else if (extends_) setSel(cand)
-    else setSel([])                       // clicked something illegal -> deselect
+    else if (sel.length && sources.has(cellId)) setSel([cellId]) // switch to another piece
+    else setSel([])                                              // deselect
   }
 
   const isHex = board.type === 'hex'
@@ -76,23 +78,27 @@ export default function Board({ spec, legalMoves, onMove, disabled }) {
         const piece = pieces[c.id]
         const target = nextCells.has(c.id) && !disabled
         const selected = selSet.has(c.id)
-        const clickable = target || selected
-        const fill = selected ? '#5a4a2a' : hl[c.id] === 'last-move' ? '#3a3228' : '#2a2620'
+        const source = sources.has(c.id) && !disabled
+        const clickable = target || selected || source
+        const fill = selected ? '#6b5520'
+          : target ? '#2f4030'                       // legal destination: green tint
+          : hl[c.id] === 'last-move' ? '#3a3228' : '#2a2620'
+        const stroke = selected ? '#e7c87a' : target ? '#5cba6b' : '#4a4238'
         return (
           <g key={c.id} onClick={clickable ? () => click(c.id) : undefined} style={{ cursor: clickable ? 'pointer' : 'default' }}>
             {isHex
-              ? <polygon points={hexPoly(cx, cy, R)} fill={fill} stroke={selected ? '#c9a96e' : '#4a4238'} strokeWidth={selected ? 2.5 : 1.5} />
-              : <rect x={cx - R} y={cy - R} width={2 * R} height={2 * R} fill={fill} stroke={selected ? '#c9a96e' : '#4a4238'} strokeWidth={selected ? 2.5 : 1.5} />}
+              ? <polygon points={hexPoly(cx, cy, R)} fill={fill} stroke={stroke} strokeWidth={selected || target ? 2.5 : 1.5} />
+              : <rect x={cx - R} y={cy - R} width={2 * R} height={2 * R} fill={fill} stroke={stroke} strokeWidth={selected || target ? 2.5 : 1.5} />}
 
             {/* capture/move target ring around an occupied target cell */}
-            {target && piece && <circle cx={cx} cy={cy} r={R * 0.86} fill="none" stroke="#c9a96e" strokeWidth="2.5" opacity="0.85" />}
+            {target && piece && <circle cx={cx} cy={cy} r={R * 0.9} fill="none" stroke="#5cba6b" strokeWidth="3" />}
 
             {piece && (piece.label
               ? <text x={cx} y={cy} textAnchor="middle" dominantBaseline="central" fontSize={R * 1.1} fontWeight="bold" fill={colors(piece.owner).fill}>{piece.label}</text>
               : <circle cx={cx} cy={cy} r={R * 0.66} fill={colors(piece.owner).fill} stroke={colors(piece.owner).stroke} strokeWidth="2" />)}
 
-            {/* empty legal target marker */}
-            {target && !piece && <circle cx={cx} cy={cy} r={R * 0.16} fill="#c9a96e" opacity="0.75" />}
+            {/* empty legal target marker (large, obvious) */}
+            {target && !piece && <circle cx={cx} cy={cy} r={R * 0.3} fill="#5cba6b" opacity="0.85" />}
           </g>
         )
       })}
