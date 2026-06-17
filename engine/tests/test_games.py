@@ -25,6 +25,27 @@ def test_oust_conforms():
     assert check(game, manifest, games=30).ok
 
 
+def test_chess_conforms():
+    manifest, game = _load("los_alamos_chess")
+    assert check(game, manifest, games=15).ok
+
+
+def test_checkers_conforms():
+    manifest, game = _load("checkers")
+    assert check(game, manifest, games=20).ok
+
+
+def test_checkers_forced_capture_and_multijump():
+    _, game = _load("checkers")
+    # a man with a jump available -> only the jump is legal; a double jump is one path
+    s = game.deserialize({"board": {"1,1": [0, "m"], "2,2": [1, "m"], "2,4": [1, "m"],
+                                    "0,0": [0, "k"], "7,7": [1, "k"]},
+                          "to_move": 0, "halfmove": 0, "ply": 0})
+    moves = game.legal_moves(s)
+    assert all("x" not in m and ">" in m for m in moves)  # all are jumps (paths)
+    assert "1,1>3,3>1,5" in moves  # the double jump as a single path
+
+
 def test_oust_never_draws():
     # The official rules state draws cannot occur.
     _, game = _load("oust")

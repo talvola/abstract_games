@@ -1,0 +1,14 @@
+{
+  "uid": "checkers",
+  "name": "Checkers",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "AGP port (American/English draughts)",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Checkers & draughts",
+  "tags": ["square", "draughts", "capture"],
+  "bgg_url": "https://en.wikipedia.org/wiki/English_draughts",
+  "description": "Standard 8x8 checkers (American/English draughts): diagonal moves on dark squares, mandatory jumps, multi-jumps, and kings. Capture all the opponent's pieces or leave them with no move."
+}

@@ -95,8 +95,9 @@ export default function Board({ spec, legalMoves, onMove, disabled }) {
           const isSource = sources.has(c.id) && !disabled && !selected && !isTarget
           const clickable = selected || isTarget || isSource
 
+          const baseFill = isHex ? '#2a2620' : (c.x + c.y) % 2 === 0 ? '#2a2620' : '#332e27'
           const fill = selected ? '#6b5520' : isTarget ? '#2f4030'
-            : hl[c.id] === 'last-move' ? '#3a3228' : '#2a2620'
+            : hl[c.id] === 'last-move' ? '#3a3228' : baseFill
           const stroke = selected ? '#e7c87a' : isTarget ? '#5cba6b'
             : isSource && piece ? '#7a6a3a' : '#4a4238'
           return (
