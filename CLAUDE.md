@@ -23,6 +23,8 @@ See PLATFORM_PLAN.md (roadmap) and engine/SPEC.md (game authoring contract).
 - **Guarantee termination** (conformance plays random games to a terminal): add no-progress + hard-ply-cap draw rules for games that could loop.
 - Optional hooks: `describe_move` (move-log notation), manifest `category` (lobby grouping). "Win as event" games store the result in state (e.g. Oust/chess `winner`), not inferred from the board.
 - Rule variants / board sizes → manifest `options` (auto-rendered as dropdowns); make a separate package only for a genuinely distinct game.
+- Ship a **`rules.md`** (one page, rules *as implemented* — the local source of truth) in each game package. The web UI shows it via a "Rules" button and serves it at `/api/games/<uid>/rules`; `manifest.bgg_url` becomes the "official source" link. Supported Markdown: headings, `**bold**`/`*italic*`/`` `code` ``, `-`/`1.` lists, `[links](url)`.
+- The lobby/quick-play game selector is a searchable, category-grouped `GamePicker` (`web/src/`); `manifest.category` and `tags` feed grouping and search.
 - Non-cell legal moves (e.g. `"swap"`, `"pass"`) auto-render as action buttons; `=CHOICE` moves show a picker.
 - **Chess-family games subclass `agp.chesslike.ChessLike`** (board model, slider/leaper move-gen, attack/check, draws, serialize/render). A variant just sets `WIDTH/HEIGHT`, a `PIECES` movement table (`{letter: (slide_dirs, leap_offsets)}`), `HEAVY` material, `setup_board()`, and three strategies — `PAWN` (`StandardPawn`/`BerolinaPawn`), `PROMOTION` (`LastRankPromotion`/`GrandPromotion`), `CASTLING` (`StandardCastling`/`NoCastling`). See `games/{chess,berolina,grand_chess,los_alamos_chess}` (~40 lines each). Validate new variants with a perft check against known node counts.
 
