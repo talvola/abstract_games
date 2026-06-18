@@ -132,9 +132,10 @@ def test_full_chess_perft_and_special_moves():
     after = game.apply_move(cs, "4,0>6,0").board
     assert after[(6, 0)] == (0, "K") and after[(5, 0)] == (0, "R") and (7, 0) not in after
 
-    # en passant: black pawn just double-stepped d7-d5, ep target d6
+    # en passant: black pawn just double-stepped d7-d5; ep target d6 (3,5),
+    # the pawn that may be captured is on d5 (3,4)  -> unified "target,captured".
     ep = st({"4,4": [0, "P"], "3,4": [1, "P"], "4,0": [0, "K"], "4,7": [1, "K"]},
-            ep="3,5")
+            ep="3,5,3,4")
     assert "4,4>3,5" in game.legal_moves(ep)
     eb = game.apply_move(ep, "4,4>3,5").board
     assert eb[(3, 5)] == (0, "P") and (3, 4) not in eb   # captured pawn removed
