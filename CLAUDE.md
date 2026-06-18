@@ -32,5 +32,6 @@ See PLATFORM_PLAN.md (roadmap) and engine/SPEC.md (game authoring contract).
 - Browser checks use pinchtab: click custom buttons by **ref** (text:/CSS clicks are unreliable); coordinate clicks are flaky (first click often misses) — verify with a screenshot/snap; screenshots occasionally capture a stale tab, re-run in a fresh session.
 
 ## Conventions
-- Frontend: one generic `Board` renderer driven by each game's RenderSpec — no per-game UI. Seat colors centralized in `web/src/colors.js`.
+- Frontend: one generic `Board` renderer driven by each game's RenderSpec (board types: `square`, `hex`, `polygons`) — no per-game UI. Seat colors centralized in `web/src/colors.js`.
+- Porting a Zillions of Games (.zrf) game: use the `zillions-to-platform` skill (`.claude/skills/`).
 - Git: solo project, commit directly to `main`.

@@ -8,3 +8,5 @@ agp.db
 *.db
 data/
 dev.env
+Langref.chm
+*.chm
