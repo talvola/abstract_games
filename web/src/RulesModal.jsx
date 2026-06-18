@@ -30,7 +30,7 @@ export default function RulesModal({ uid, name, onClose }) {
         {err && <div className="error small">{err}</div>}
         {!data && !err && <p className="muted">Loading…</p>}
         {data && <Markdown text={data.markdown} />}
-        {data?.source_url && (
+        {/^https?:\/\//i.test(data?.source_url || '') && (
           <div className="rules-source">
             <a href={data.source_url} target="_blank" rel="noopener noreferrer">Official rules / source ↗</a>
           </div>
