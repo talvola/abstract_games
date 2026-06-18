@@ -25,6 +25,37 @@ def test_oust_conforms():
     assert check(game, manifest, games=30).ok
 
 
+def test_yodd_conforms_and_rules():
+    manifest, game = _load("yodd")
+    assert check(game, manifest, games=12).ok
+    # opening: Red to move, only single-stone placements (no pass / no end)
+    s = game.initial_state(options={"size": 6})
+    assert game.current_player(s) == 0
+    lm0 = game.legal_moves(s)
+    assert "pass" not in lm0 and "end" not in lm0 and all("=" in m for m in lm0)
+    # Red places one stone; the opening turn auto-ends (cap = 1)
+    s = game.apply_move(s, "0,0=red")
+    assert game.current_player(s) == 1 and s.turn_cells == [] and len(s.board) == 1
+    # board has 1 group (odd) so Blue may pass; two passes end the game
+    assert "pass" in game.legal_moves(s)
+    s2 = game.apply_move(game.apply_move(s, "pass"), "pass")
+    assert game.is_terminal(s2)
+    # 1 red group vs 0 blue groups -> Blue (fewer) wins; never a draw
+    assert s2.winner == 1 and game.returns(s2) == [-1.0, 1.0]
+    # placing of EITHER colour: Blue drops a red stone next to Red's -> still 1
+    # group (odd), so the turn may end after one stone ("end" offered)
+    sb = game.apply_move(s, "1,0=red")
+    assert game.current_player(sb) == 1 and sb.turn_cells == ["1,0"]
+    assert "end" in game.legal_moves(sb)
+    # an isolated stone makes the total even -> must place a 2nd stone (no end/pass)
+    se = game.apply_move(s, "3,-3=blue")
+    assert game.current_player(se) == 1 and se.turn_cells == ["3,-3"]
+    lme = game.legal_moves(se)
+    assert "end" not in lme and "pass" not in lme and lme
+    se2 = game.apply_move(se, "-3,3=red")  # back to odd -> turn auto-ends
+    assert game.current_player(se2) == 0 and se2.turn_cells == [] and len(se2.board) == 3
+
+
 def test_chess_conforms():
     manifest, game = _load("los_alamos_chess")
     assert check(game, manifest, games=15).ok

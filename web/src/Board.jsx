@@ -11,6 +11,8 @@ import { SEAT_FILL, SEAT_STROKE } from './colors'
 
 const colors = (o) => ({ fill: SEAT_FILL[o] ?? '#aaa', stroke: SEAT_STROKE[o] ?? '#555' })
 const PIECE_NAMES = { Q: 'Queen', R: 'Rook', N: 'Knight', B: 'Bishop', K: 'King', P: 'Pawn' }
+// Friendly labels for any "=choice" suffix (chess promotion pieces, stone colours, …).
+const CHOICE_NAMES = { ...PIECE_NAMES, red: 'Red', blue: 'Blue' }
 
 // "2,4>2,5=Q" -> { cells: ["2,4","2,5"], choice: "Q" }
 function parseMove(m) {
@@ -24,7 +26,7 @@ const sameCells = (a, b) => a.length === b.length && a.every((c, i) => c === b[i
 const CELL_RE = /^-?\d+,-?\d+$/
 const isCellMove = (m) => m.split('>').every((seg) => CELL_RE.test(seg.split('=')[0]))
 // Non-cell legal moves render as action buttons (e.g. pie-rule "swap", "pass").
-const ACTION_LABELS = { swap: 'Swap (pie rule)', pass: 'Pass' }
+const ACTION_LABELS = { swap: 'Swap (pie rule)', pass: 'Pass', end: 'End turn' }
 
 function squareCells(b) {
   const cells = []
@@ -184,11 +186,11 @@ export default function Board({ spec, legalMoves, onMove, disabled }) {
 
       {promo && (
         <div className="promo-picker">
-          <div className="promo-title">Promote to</div>
+          <div className="promo-title">{promo.options.every((o) => PIECE_NAMES[o.choice]) ? 'Promote to' : 'Choose'}</div>
           <div className="promo-options">
             {promo.options.map((o) => (
               <button key={o.choice} onClick={() => { onMove(o.move); setPromo(null); setSel([]) }}>
-                {PIECE_NAMES[o.choice] || o.choice}
+                {CHOICE_NAMES[o.choice] || o.choice}
               </button>
             ))}
             <button className="promo-cancel" onClick={() => { setPromo(null); setSel([]) }}>Cancel</button>

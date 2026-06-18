@@ -1,0 +1,21 @@
+{
+  "uid": "yodd",
+  "name": "Yodd",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Luis Bolaños Mures / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Connection",
+  "options": {
+    "size": {
+      "choices": [6, 7, 8, 9],
+      "default": 6,
+      "label": "Board size (hexagon side)"
+    }
+  },
+  "tags": ["hex", "placement", "parity"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/105173/yodd",
+  "description": "Yodd, by Luis Bolaños Mures. On an empty hexhex board, players alternate placing one or two stones of EITHER colour (Red moves first, and only one stone on the opening turn). A group is a set of connected like-coloured stones, and at the end of every turn the TOTAL number of groups on the board must be odd. You may pass when it keeps the count odd; two passes in a row end the game, and whoever has FEWER groups of their own colour wins. Because the total is odd, the two counts can never tie — there are no draws. Boards of side 6–9 are recommended."
+}
