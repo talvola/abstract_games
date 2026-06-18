@@ -100,6 +100,7 @@ def test_grand_chess_pieces_and_promotion():
 
 
 def test_borderline():
+    from games.borderline.game import _attacks_king, WHITE, BLACK
     manifest, game = _load("borderline")
     assert check(game, manifest, games=8).ok
 
@@ -107,6 +108,18 @@ def test_borderline():
         return game.deserialize({
             "board": {f"{c},{r}": [pl, t] for (c, r), (pl, t) in pieces.items()},
             "king": f"{king[0]},{king[1]}", "to_move": tm, "ply": ply})
+
+    # the borderline gates the ATTACKER's position, not the king's: a piece may
+    # only attack the king once it has itself crossed the borderline (White from
+    # rows 4-6, Black from rows 0-2). The king is NOT safe just for being on the
+    # borderline (row 3).
+    # White rook that has crossed (row 5) attacks the king on the borderline:
+    assert _attacks_king(st({(3, 5): (0, "R")}, king=(3, 3)).board, (3, 3), WHITE)
+    # the same rook on its own side (row 2, not crossed) does NOT, though aligned:
+    assert not _attacks_king(st({(3, 2): (0, "R")}, king=(3, 3)).board, (3, 3), WHITE)
+    # Black attacks from rows 0-2; a Black queen on row 2 hits the king on row 3:
+    assert _attacks_king(st({(4, 2): (1, "Q")}, king=(3, 3)).board, (3, 3), BLACK)
+    assert not _attacks_king(st({(4, 4): (1, "Q")}, king=(3, 3)).board, (3, 3), BLACK)
 
     # opening: White to move, every move lands on an empty square (no captures)
     s = game.initial_state()

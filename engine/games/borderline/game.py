@@ -6,8 +6,10 @@
 * Pieces move by FIDE rules but CANNOT capture pieces -- they only move to empty
   squares. Only the king can be captured (which wins).
 * The king may stand only on ranks 3-5 (rows 2-4). Rank 4 (row 3) is the
-  "borderline". A piece may attack the king only beyond the borderline: White
-  threatens the king on rank 5 (row 4), Black on rank 3 (row 2); rank 4 is safe.
+  "borderline". A piece may attack the king only once IT has crossed the
+  borderline -- a White piece from ranks 5-7, a Black piece from ranks 1-3. The
+  king's own square is irrelevant: it is NOT safe just for being on the
+  borderline; a bishop that has crossed can still pin it there.
 * You may not move the king into the opponent's attack ("own check"), but you may
   push it into your own attack zone. If, on your turn, the king is in check (the
   opponent threatens it) and you cannot remove the threat, you lose.
@@ -41,17 +43,22 @@ def _on(c, r):
     return 0 <= c < N and 0 <= r < N
 
 
+def _beyond(attacker, pr) -> bool:
+    """Has a piece of ``attacker`` crossed the borderline into the far half? Only
+    a piece that has crossed may attack the king -- a White piece on ranks 5-7
+    (rows 4-6), a Black piece on ranks 1-3 (rows 0-2)."""
+    return pr > BORDER if attacker == WHITE else pr < BORDER
+
+
 def _attacks_king(board, king, attacker) -> bool:
-    """Can ``attacker`` capture the (neutral) king? Only beyond the borderline:
-    White attacks on rows 4-6, Black on rows 0-2 (the king only ever sits on
-    rows 2-4, so in practice White checks on row 4 and Black on row 2)."""
+    """Can ``attacker`` capture the (neutral) king? The attacking piece must have
+    crossed the borderline (see _beyond); the king's own square does not matter,
+    so the king is NOT automatically safe on the borderline. A piece that hasn't
+    crossed still blocks lines of sight, it just can't deliver the attack."""
     kc, kr = king
-    if attacker == WHITE and kr <= BORDER:
-        return False
-    if attacker == BLACK and kr >= BORDER:
-        return False
     for dc, dr in KNIGHT:
-        if board.get((kc + dc, kr + dr)) == (attacker, "N"):
+        sq = (kc + dc, kr + dr)
+        if board.get(sq) == (attacker, "N") and _beyond(attacker, sq[1]):
             return True
     for dirs, types in ((ORTHO, ("R", "Q")), (DIAG, ("B", "Q"))):
         for dc, dr in dirs:
@@ -59,7 +66,7 @@ def _attacks_king(board, king, attacker) -> bool:
             while _on(cc, rr):
                 occ = board.get((cc, rr))
                 if occ is not None:
-                    if occ[0] == attacker and occ[1] in types:
+                    if occ[0] == attacker and occ[1] in types and _beyond(attacker, rr):
                         return True
                     break
                 cc += dc
