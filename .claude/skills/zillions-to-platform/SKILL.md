@@ -81,16 +81,31 @@ follows a coordinate parity — derive it and verify against the BFS adjacency.
 
 ## 4. Translate piece moves
 
-Each `(piece (moves ...))` is a small move generator. Common cases:
-- **step / shift** (one cell): move to an adjacent empty (or enemy, for capture)
-  cell in a direction. A piece lists several directions; **only the directions
-  that land on a real cell are legal** (a cell's orientation makes some invalid).
-- **restricted directions** (e.g. geese "rightward"): the piece lists only a
-  subset of directions.
-- **slide** (rook/queen): step repeatedly while empty, optionally capture at the
-  end. **distance = pieces on the line** (Lines of Action) etc. — read carefully.
-- **jump / hop** (checkers): leap an adjacent enemy to the empty cell beyond;
-  often chained and mandatory.
+Each `(piece (moves ...))` is a cursor-based move generator (often via a `define`
+macro). The mini-language:
+- a bare **`<direction>`** steps the cursor one cell that way;
+- **`add`** emits a move ending at the cursor's current cell (→ a legal move);
+  `add q r b n` = promotion *choice*; `add-copy` = drop a new piece;
+- **`(verify <pred>)`** aborts this branch unless the predicate holds at the cursor;
+- **`(while <pred> ... )`** loops; **`cascade`** moves several pieces in one game
+  move (castling), **`from`/`mark`/`back`** control the cursor;
+- predicates test the cursor cell: `empty?`, `enemy?`, `friend?`, `not`, …
+
+Note: during generation the move is **not yet applied** — predicates see the
+*pre-move* board. Canonical patterns:
+```
+step    (dir add)                                   ; king/man one square
+slide   (dir (while empty? add dir))                ; rook (+ (verify enemy?) add to capture)
+cannon  ($1 (while empty? add $1) $1 (while empty? $1) (verify enemy?) add)  ; hop then capture
+```
+Also: **only directions landing on a real cell are legal** (a triangular cell's
+orientation makes some invalid); a piece may list a **restricted** subset (e.g.
+geese "rightward"); read **distance rules** carefully (Lines of Action moves *as
+many cells as pieces on the line*); jumps/hops (checkers) leap an enemy to the
+empty cell beyond, often chained and mandatory (see `move-priorities`).
+
+**`symmetry`** remaps directions per player — moves/goals are written once and
+mirrored for the opponent; expand both sides when porting.
 
 In our move notation a move is a `>`-separated **path of cell ids**; emit the
 visited cells (`"a>b"` for from-to, `"a>b>c"` for chains). A move needing a
