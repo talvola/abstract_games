@@ -11,7 +11,11 @@ function inline(text) {
     if (m[1]) out.push(<strong key={k++}>{m[2]}</strong>)
     else if (m[3]) out.push(<em key={k++}>{m[4]}</em>)
     else if (m[5]) out.push(<code key={k++}>{m[6]}</code>)
-    else if (m[7]) out.push(<a key={k++} href={m[9]} target="_blank" rel="noopener noreferrer">{m[8]}</a>)
+    else if (m[7]) {
+      const url = m[9].trim()
+      const href = /^(https?:|mailto:|\/|#)/i.test(url) ? url : '#'  // block javascript:/data:/etc.
+      out.push(<a key={k++} href={href} target="_blank" rel="noopener noreferrer">{m[8]}</a>)
+    }
     last = re.lastIndex
   }
   if (last < text.length) out.push(text.slice(last))
