@@ -30,8 +30,11 @@ const isCellMove = (m) => m.split('>').every((seg) => CELL_RE.test(seg.split('='
 const ACTION_LABELS = { swap: 'Swap (pie rule)', pass: 'Pass', end: 'End turn' }
 
 function squareCells(b) {
+  // Draw row 0 at the BOTTOM so the first player (whose pieces start on the low
+  // rows) sits at the bottom, as is traditional for chess. Display only — cell
+  // ids stay "col,row", so move generation and click-to-move are unaffected.
   const cells = []
-  for (let r = 0; r < b.height; r++) for (let c = 0; c < b.width; c++) cells.push({ id: `${c},${r}`, x: c, y: r })
+  for (let r = 0; r < b.height; r++) for (let c = 0; c < b.width; c++) cells.push({ id: `${c},${r}`, x: c, y: b.height - 1 - r })
   return cells
 }
 const SQRT3 = Math.sqrt(3)
