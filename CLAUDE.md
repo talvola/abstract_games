@@ -24,6 +24,7 @@ See PLATFORM_PLAN.md (roadmap) and engine/SPEC.md (game authoring contract).
 - Optional hooks: `describe_move` (move-log notation), manifest `category` (lobby grouping). "Win as event" games store the result in state (e.g. Oust/chess `winner`), not inferred from the board.
 - Rule variants / board sizes → manifest `options` (auto-rendered as dropdowns); make a separate package only for a genuinely distinct game.
 - Non-cell legal moves (e.g. `"swap"`, `"pass"`) auto-render as action buttons; `=CHOICE` moves show a picker.
+- **Chess-family games subclass `agp.chesslike.ChessLike`** (board model, slider/leaper move-gen, attack/check, draws, serialize/render). A variant just sets `WIDTH/HEIGHT`, a `PIECES` movement table (`{letter: (slide_dirs, leap_offsets)}`), `HEAVY` material, `setup_board()`, and three strategies — `PAWN` (`StandardPawn`/`BerolinaPawn`), `PROMOTION` (`LastRankPromotion`/`GrandPromotion`), `CASTLING` (`StandardCastling`/`NoCastling`). See `games/{chess,berolina,grand_chess,los_alamos_chess}` (~40 lines each). Validate new variants with a perft check against known node counts.
 
 ## Server
 - `DATABASE_URL` (default `sqlite:///./agp.db`). Uploads run game code IN-PROCESS (RCE) → gated, closed by default: `AGP_ADMIN_EMAILS` allowlist or `AGP_ALLOW_OPEN_UPLOADS=true`. Real sandbox is deferred.
