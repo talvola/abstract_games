@@ -1,0 +1,14 @@
+{
+  "uid": "borderline",
+  "name": "Borderline",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Gerd P. Degens (2022) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "variant"],
+  "bgg_url": "https://www.chessvariants.com/rules/borderline",
+  "description": "Borderline (Gerd P. Degens, 2022): a minimalist 7x7 chess variant. Each side has R N B Q B N R on its back rank (no pawns) and shares a single NEUTRAL king in the centre. Pieces move by FIDE rules but cannot capture each other — only the king can be captured. The king lives only on ranks 3-5; rank 4 is the 'borderline'. A piece may only attack the king beyond the borderline, so White threatens it on rank 5 and Black on rank 3, while rank 4 is safe. On your turn you move a piece or the king (which either player may move, but never into the opponent's attack). If the king is in check on your turn and you cannot save it, you lose. (Base version; the optional capture-with-respawn variant is omitted.)"
+}

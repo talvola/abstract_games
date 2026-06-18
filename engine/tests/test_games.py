@@ -99,6 +99,50 @@ def test_grand_chess_pieces_and_promotion():
     assert "0,8>0,9=R" in moves and "0,8>0,9=Q" not in moves               # only the lost type
 
 
+def test_borderline():
+    manifest, game = _load("borderline")
+    assert check(game, manifest, games=8).ok
+
+    def st(pieces, king, tm=0, ply=0):
+        return game.deserialize({
+            "board": {f"{c},{r}": [pl, t] for (c, r), (pl, t) in pieces.items()},
+            "king": f"{king[0]},{king[1]}", "to_move": tm, "ply": ply})
+
+    # opening: White to move, every move lands on an empty square (no captures)
+    s = game.initial_state()
+    assert game.current_player(s) == 0
+    assert all(">" in m for m in game.legal_moves(s)) and len(game.legal_moves(s)) > 0
+
+    # pieces cannot capture: a rook is blocked by (not allowed to take) any piece
+    nc = st({(0, 3): (0, "R"), (3, 3): (1, "B")}, king=(6, 4))
+    rm = {m for m in game.legal_moves(nc) if m.startswith("0,3>")}
+    assert "0,3>2,3" in rm and "0,3>3,3" not in rm and "0,3>4,3" not in rm
+
+    # king is confined to ranks 3-5 (rows 2-4): from row 4 it cannot step to row 5
+    kc = st({}, king=(3, 4))
+    km = {m for m in game.legal_moves(kc) if m.startswith("3,4>")}
+    assert "3,4>3,5" not in km and "3,4>3,3" in km and "3,4>2,4" in km
+
+    # the king may not be moved into the opponent's attack ("own check"), but may
+    # go to the borderline (safe) or into the mover's own zone
+    oc = st({(0, 2): (1, "R")}, king=(3, 3), tm=0)   # black rook controls row 2
+    lm = game.legal_moves(oc)
+    assert "3,3>3,2" not in lm                        # into Black's attack -> illegal
+    assert "3,3>3,4" in lm and "3,3>2,3" in lm        # White's zone / borderline -> ok
+
+    # in check you must address the threat: a move that ignores it is illegal
+    chk = st({(0, 2): (1, "R"), (6, 6): (0, "N")}, king=(3, 2), tm=0)
+    lm = game.legal_moves(chk)
+    assert not game.is_terminal(chk) and lm                 # the king can still flee to row 3
+    assert not any(m.startswith("6,6>") for m in lm)        # the knight can't save it
+
+    # capturing the king wins: White on row 4, Black on row 2
+    ww = st({(0, 4): (0, "R")}, king=(3, 4), tm=0)
+    assert game.is_terminal(ww) and game.returns(ww) == [1.0, -1.0]
+    bw = st({(0, 2): (1, "R")}, king=(3, 2), tm=1)
+    assert game.is_terminal(bw) and game.returns(bw) == [-1.0, 1.0]
+
+
 def test_chess_conforms():
     manifest, game = _load("los_alamos_chess")
     assert check(game, manifest, games=15).ok
