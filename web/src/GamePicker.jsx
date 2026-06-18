@@ -20,11 +20,15 @@ export function groupByCategory(games) {
 // the current selection and an onChange.
 export default function GamePicker({ games, value, onChange }) {
   const [q, setQ] = useState('')
+  const [cat, setCat] = useState(null)
   const [rules, setRules] = useState(null)
 
+  const cats = groupByCategory(games).map(([c]) => c)
   const query = q.trim().toLowerCase()
   const hay = (g) => [g.name, g.category, g.description, (g.tags || []).join(' ')].join(' ').toLowerCase()
-  const filtered = query ? games.filter((g) => hay(g).includes(query)) : games
+  const filtered = games.filter(
+    (g) => (!query || hay(g).includes(query)) && (!cat || (g.category || 'Other') === cat),
+  )
 
   return (
     <div className="game-picker">
@@ -35,6 +39,15 @@ export default function GamePicker({ games, value, onChange }) {
         value={q}
         onChange={(e) => setQ(e.target.value)}
       />
+      {cats.length > 1 && (
+        <div className="cat-chips">
+          <button type="button" className={`cat-chip ${!cat ? 'on' : ''}`} onClick={() => setCat(null)}>All</button>
+          {cats.map((c) => (
+            <button type="button" key={c} className={`cat-chip ${cat === c ? 'on' : ''}`}
+              onClick={() => setCat(cat === c ? null : c)}>{c}</button>
+          ))}
+        </div>
+      )}
       <div className="game-list">
         {filtered.length === 0 && <div className="muted small">No games match “{q}”.</div>}
         {groupByCategory(filtered).map(([cat, list]) => (

@@ -37,6 +37,14 @@ main { display: flex; flex-direction: column; align-items: center; padding-top: 
   border-radius: 8px; padding: 9px 12px; font-family: inherit; font-size: 0.85rem;
 }
 .game-search:focus { outline: none; border-color: var(--accent); }
+.cat-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.cat-chip {
+  background: transparent; border: 1px solid var(--line); color: var(--muted);
+  border-radius: 999px; padding: 4px 11px; font-size: 0.68rem; cursor: pointer;
+  letter-spacing: 0.05em; font-family: inherit;
+}
+.cat-chip:hover { border-color: var(--accent); color: var(--text); }
+.cat-chip.on { border-color: var(--accent); background: rgba(201,169,110,0.16); color: var(--accent); }
 .game-list { display: flex; flex-direction: column; gap: 8px; max-height: 380px; overflow-y: auto; }
 .game-card {
   display: flex; align-items: stretch; gap: 8px; background: var(--panel);
