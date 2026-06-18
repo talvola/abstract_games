@@ -109,6 +109,47 @@ def test_full_chess_perft_and_special_moves():
     assert game.is_terminal(s) and game.returns(s) == [-1.0, 1.0]
 
 
+def test_berolina_pawns():
+    manifest, game = _load("berolina")
+    assert check(game, manifest, games=6).ok
+
+    def st(pieces, **kw):
+        d = {"board": {f"{c},{r}": [pl, t] for (c, r), (pl, t) in pieces.items()},
+             "to_move": 0, "castling": "", "ep_to": None, "ep_cap": None,
+             "halfmove": 0, "ply": 0, "reps": {}}
+        d.update(kw)
+        return game.deserialize(d)
+
+    # Berolina pawn moves diagonally (1 or 2 on first move), never straight when quiet.
+    s0 = game.initial_state()
+    e2 = {m for m in game.legal_moves(s0) if m.startswith("4,1>")}
+    assert e2 == {"4,1>3,2", "4,1>5,2", "4,1>2,3", "4,1>6,3"}  # d3,f3 + c4,g4
+    assert "4,1>4,2" not in e2 and "4,1>4,3" not in e2          # never straight (quiet)
+
+    # captures STRAIGHT, not diagonally: e4 can take e5 (straight) but not d5 (diagonal)
+    cap = st({(4, 3): (0, "P"), (4, 4): (1, "P"), (3, 4): (1, "P"),
+              (4, 0): (0, "K"), (4, 7): (1, "K")})
+    cm = {m for m in game.legal_moves(cap) if m.startswith("4,3>")}
+    assert "4,3>4,4" in cm        # straight capture
+    assert "4,3>3,4" not in cm    # cannot capture the diagonal enemy
+    assert "4,3>5,4" in cm        # but may move onto the empty diagonal square
+
+    # a pawn gives check STRAIGHT ahead, not diagonally
+    chk = st({(4, 4): (1, "K"), (4, 3): (0, "P"), (0, 0): (0, "K")}, to_move=1)
+    assert "(check)" in game.render(chk)["caption"]            # e4 pawn checks e5 king
+    no = st({(3, 4): (1, "K"), (4, 3): (0, "P"), (0, 0): (0, "K")}, to_move=1)
+    assert "(check)" not in game.render(no)["caption"]         # diagonal: no check
+
+    # en passant on the diagonal double-step (the chessvariants example): black b4,
+    # white a2-c4 passing b3; black captures b4xb3, removing the c4 pawn.
+    ep = st({(0, 1): (0, "P"), (1, 3): (1, "P"), (4, 0): (0, "K"), (4, 7): (1, "K")})
+    ep = game.apply_move(ep, "0,1>2,3")                        # a2 -> c4 (diagonal double)
+    assert "1,3>1,2" in game.legal_moves(ep)                  # b4 may capture e.p. to b3
+    ep = game.apply_move(ep, "1,3>1,2")
+    b = game.serialize(ep)["board"]
+    assert b.get("1,2") == [1, "P"] and "2,3" not in b         # pawn on b3, c4 removed
+
+
 def test_checkers_conforms():
     manifest, game = _load("checkers")
     assert check(game, manifest, games=20).ok

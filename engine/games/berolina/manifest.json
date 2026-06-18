@@ -1,0 +1,14 @@
+{
+  "uid": "berolina",
+  "name": "Berolina Chess",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Edmund Hebermann (1926) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "variant"],
+  "bgg_url": "https://www.chessvariants.com/dpieces.dir/berlin.html",
+  "description": "Standard chess with the Berolina pawn (Edmund Hebermann, Berlin 1926): a pawn MOVES one square diagonally forward (two on its first move) and CAPTURES one square straight ahead — the reverse of an ordinary pawn. En passant applies to the diagonal double-step (capture onto the skipped square). All other pieces, castling, check and the draw rules are exactly as in standard chess. Pawns are more mobile but defend less, so draws are rare."
+}
