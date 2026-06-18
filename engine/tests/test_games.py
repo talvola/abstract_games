@@ -61,6 +61,54 @@ def test_chess_conforms():
     assert check(game, manifest, games=15).ok
 
 
+def test_full_chess_perft_and_special_moves():
+    manifest, game = _load("chess")
+    assert check(game, manifest, games=6).ok
+
+    # perft: leaf-node counts from the opening must match the known values --
+    # the gold standard for move-generation correctness (castling/ep/promotion).
+    def perft(s, d):
+        return 1 if d == 0 else sum(perft(game.apply_move(s, m), d - 1)
+                                    for m in game.legal_moves(s))
+    s0 = game.initial_state()
+    assert perft(s0, 1) == 20
+    assert perft(s0, 2) == 400
+    assert perft(s0, 3) == 8902
+
+    def st(board, **kw):
+        d = {"board": board, "to_move": 0, "castling": "", "ep": None,
+             "halfmove": 0, "ply": 0, "reps": {}}
+        d.update(kw)
+        return game.deserialize(d)
+
+    # castling: both rooks home, nothing between -> O-O and O-O-O available
+    cs = st({"4,0": [0, "K"], "0,0": [0, "R"], "7,0": [0, "R"], "4,7": [1, "K"]},
+            castling="KQ")
+    lm = game.legal_moves(cs)
+    assert "4,0>6,0" in lm and "4,0>2,0" in lm
+    after = game.apply_move(cs, "4,0>6,0").board
+    assert after[(6, 0)] == (0, "K") and after[(5, 0)] == (0, "R") and (7, 0) not in after
+
+    # en passant: black pawn just double-stepped d7-d5, ep target d6
+    ep = st({"4,4": [0, "P"], "3,4": [1, "P"], "4,0": [0, "K"], "4,7": [1, "K"]},
+            ep="3,5")
+    assert "4,4>3,5" in game.legal_moves(ep)
+    eb = game.apply_move(ep, "4,4>3,5").board
+    assert eb[(3, 5)] == (0, "P") and (3, 4) not in eb   # captured pawn removed
+
+    # promotion: four choices, and =N really makes a knight
+    pr = st({"0,6": [0, "P"], "4,0": [0, "K"], "7,7": [1, "K"]})
+    promos = [m for m in game.legal_moves(pr) if m.startswith("0,6>0,7")]
+    assert sorted(promos) == ["0,6>0,7=B", "0,6>0,7=N", "0,6>0,7=Q", "0,6>0,7=R"]
+    assert game.apply_move(pr, "0,6>0,7=N").board[(0, 7)] == (0, "N")
+
+    # fool's mate: 1. f3 e5 2. g4 Qh4#  -> Black (player 1) wins by checkmate
+    s = game.initial_state()
+    for mv in ("5,1>5,2", "4,6>4,4", "6,1>6,3", "3,7>7,3"):
+        s = game.apply_move(s, mv)
+    assert game.is_terminal(s) and game.returns(s) == [-1.0, 1.0]
+
+
 def test_checkers_conforms():
     manifest, game = _load("checkers")
     assert check(game, manifest, games=20).ok

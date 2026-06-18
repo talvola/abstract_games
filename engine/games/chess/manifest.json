@@ -1,0 +1,14 @@
+{
+  "uid": "chess",
+  "name": "Chess",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "AGP",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/171/chess",
+  "description": "Standard chess on an 8x8 board, with the full rules: castling (king- and queen-side), en passant, pawn double-step and promotion to Q/R/B/N, check, checkmate and stalemate. Draws by stalemate, the fifty-move rule, threefold repetition, and insufficient material. White (player 0) moves first."
+}
