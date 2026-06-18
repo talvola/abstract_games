@@ -35,6 +35,21 @@ def test_checkers_conforms():
     assert check(game, manifest, games=20).ok
 
 
+def test_fox_and_hounds_conforms_and_asymmetry():
+    manifest, game = _load("fox_and_hounds")
+    assert check(game, manifest, games=30).ok
+    s = game.initial_state()
+    assert game.current_player(s) == 0  # fox moves first
+    # hounds move only forward (never to a lower row)
+    h = game.deserialize({"board": {"1,0": 1, "4,7": 0}, "to_move": 1,
+                          "winner": None, "drawn": False, "ply": 0})
+    assert set(game.legal_moves(h)) == {"1,0>2,1", "1,0>0,1"}
+    # fox reaching row 0 wins
+    fw = game.deserialize({"board": {"1,1": 0, "3,0": 1}, "to_move": 0,
+                           "winner": None, "drawn": False, "ply": 0})
+    assert game.apply_move(fw, "1,1>0,0").winner == 0
+
+
 def test_loa_conforms_and_option():
     manifest, game = _load("lines_of_action")
     assert check(game, manifest, games=12, seed=1).ok

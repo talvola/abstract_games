@@ -1,0 +1,14 @@
+{
+  "uid": "fox_and_hounds",
+  "name": "Fox and Hounds",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "traditional / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Hunt",
+  "tags": ["square", "asymmetric", "hunt"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Fox_games",
+  "description": "Asymmetric hunt game on the dark squares of an 8x8 board. The lone Fox (moves any diagonal) tries to reach the far edge; the four Hounds (move only diagonally forward) try to trap it. Fox moves first."
+}
