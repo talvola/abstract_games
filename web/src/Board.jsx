@@ -85,17 +85,42 @@ export default function Board({ spec, legalMoves, onMove, disabled }) {
   }
 
   const isHex = board.type === 'hex'
-  const cells = isHex ? hexCells(board) : squareCells(board)
+  const isPoly = board.type === 'polygons'
   const pieces = {}
   for (const p of spec.pieces || []) pieces[p.cell] = p
   const hl = {}
   for (const h of spec.highlights || []) hl[h.cell] = h.kind
 
-  const R = 30
-  const px = (v) => v * (isHex ? R : R * 2.2)
-  const xs = cells.map((c) => px(c.x)), ys = cells.map((c) => px(c.y))
-  const m = R * 1.9
-  const vb = `${Math.min(...xs) - m} ${Math.min(...ys) - m} ${Math.max(...xs) - Math.min(...xs) + 2 * m} ${Math.max(...ys) - Math.min(...ys) + 2 * m}`
+  // Uniform shape model for every board type: {id, cx, cy, poly, r, parity}.
+  let R = 30, px = null, shapes
+  if (isPoly) {
+    shapes = (board.cells || []).map((c) => {
+      const pts = c.points
+      const cx = pts.reduce((a, p) => a + p[0], 0) / pts.length
+      const cy = pts.reduce((a, p) => a + p[1], 0) / pts.length
+      const rad = pts.reduce((a, p) => a + Math.hypot(p[0] - cx, p[1] - cy), 0) / pts.length
+      let parity = 0
+      const m2 = c.id.match(/^(-?\d+),(-?\d+)$/)
+      if (m2) parity = (((2 * +m2[2] - +m2[1]) % 3) + 3) % 3 ? 1 : 0
+      return { id: c.id, cx, cy, poly: pts.map((p) => p.join(',')).join(' '), r: rad * 0.6, parity }
+    })
+  } else {
+    const cells = isHex ? hexCells(board) : squareCells(board)
+    px = (v) => v * (isHex ? R : R * 2.2)
+    shapes = cells.map((c) => {
+      const cx = px(c.x), cy = px(c.y)
+      const poly = isHex ? hexPoly(cx, cy, R)
+        : `${cx - R},${cy - R} ${cx + R},${cy - R} ${cx + R},${cy + R} ${cx - R},${cy + R}`
+      return { id: c.id, cx, cy, poly, r: R, parity: (c.x + c.y) % 2 }
+    })
+  }
+
+  const allx = [], ally = []
+  shapes.forEach((s) => s.poly.split(' ').forEach((p) => {
+    const [x, y] = p.split(',').map(Number); allx.push(x); ally.push(y)
+  }))
+  const mrg = (Math.max(...allx) - Math.min(...allx)) * 0.05 + 12
+  const vb = `${Math.min(...allx) - mrg} ${Math.min(...ally) - mrg} ${Math.max(...allx) - Math.min(...allx) + 2 * mrg} ${Math.max(...ally) - Math.min(...ally) + 2 * mrg}`
 
   // Coloured edge frame for rhombus connection boards (which sides each seat connects).
   let edgeLines = null
@@ -120,30 +145,28 @@ export default function Board({ spec, legalMoves, onMove, disabled }) {
     <div className="board-wrap">
       <svg viewBox={vb} style={{ width: '100%', maxWidth: 540, height: 'auto', touchAction: 'manipulation' }}>
         {edgeLines}
-        {cells.map((c) => {
-          const cx = px(c.x), cy = px(c.y)
-          const piece = pieces[c.id]
-          const selected = selSet.has(c.id)
-          const isTarget = !firstStep && nextCells.has(c.id) && !disabled && !selected
-          const isSource = sources.has(c.id) && !disabled && !selected && !isTarget
+        {shapes.map((s) => {
+          const piece = pieces[s.id]
+          const selected = selSet.has(s.id)
+          const isTarget = !firstStep && nextCells.has(s.id) && !disabled && !selected
+          const isSource = sources.has(s.id) && !disabled && !selected && !isTarget
           const clickable = selected || isTarget || isSource
-
-          const baseFill = isHex ? '#2a2620' : (c.x + c.y) % 2 === 0 ? '#2a2620' : '#332e27'
+          const isGoal = hl[s.id] === 'goal'
+          const baseFill = s.parity ? '#332e27' : '#2a2620'
           const fill = selected ? '#6b5520' : isTarget ? '#2f4030'
-            : hl[c.id] === 'last-move' ? '#3a3228' : baseFill
+            : hl[s.id] === 'last-move' ? '#3a3228' : baseFill
           const stroke = selected ? '#e7c87a' : isTarget ? '#5cba6b'
-            : isSource && piece ? '#7a6a3a' : '#4a4238'
+            : isGoal ? '#c9a96e' : isSource && piece ? '#7a6a3a' : '#4a4238'
+          const sw = (selected || isTarget || isGoal ? 0.14 : 0.07) * s.r
           return (
-            <g key={c.id} onClick={clickable ? () => click(c.id) : undefined} style={{ cursor: clickable ? 'pointer' : 'default' }}>
-              {isHex
-                ? <polygon points={hexPoly(cx, cy, R)} fill={fill} stroke={stroke} strokeWidth={selected || isTarget ? 2.5 : 1.5} />
-                : <rect x={cx - R} y={cy - R} width={2 * R} height={2 * R} fill={fill} stroke={stroke} strokeWidth={selected || isTarget ? 2.5 : 1.5} />}
-              {isTarget && piece && <circle cx={cx} cy={cy} r={R * 0.9} fill="none" stroke="#5cba6b" strokeWidth="3" />}
+            <g key={s.id} onClick={clickable ? () => click(s.id) : undefined} style={{ cursor: clickable ? 'pointer' : 'default' }}>
+              <polygon points={s.poly} fill={fill} stroke={stroke} strokeWidth={sw} />
+              {isTarget && piece && <circle cx={s.cx} cy={s.cy} r={s.r * 0.9} fill="none" stroke="#5cba6b" strokeWidth={s.r * 0.1} />}
               {piece && (piece.label
-                ? <text x={cx} y={cy} textAnchor="middle" dominantBaseline="central" fontSize={R * 1.1} fontWeight="bold" fill={colors(piece.owner).fill}>{piece.label}</text>
-                : <circle cx={cx} cy={cy} r={R * 0.66} fill={colors(piece.owner).fill} stroke={colors(piece.owner).stroke} strokeWidth="2" />)}
-              {isTarget && !piece && <circle cx={cx} cy={cy} r={R * 0.3} fill="#5cba6b" opacity="0.85" />}
-              {isSource && !piece && <circle cx={cx} cy={cy} r={R * 0.18} fill="#c9a96e" opacity="0.7" />}
+                ? <text x={s.cx} y={s.cy} textAnchor="middle" dominantBaseline="central" fontSize={s.r * 1.0} fontWeight="bold" fill={colors(piece.owner).fill}>{piece.label}</text>
+                : <circle cx={s.cx} cy={s.cy} r={s.r * 0.6} fill={colors(piece.owner).fill} stroke={colors(piece.owner).stroke} strokeWidth={s.r * 0.07} />)}
+              {isTarget && !piece && <circle cx={s.cx} cy={s.cy} r={s.r * 0.3} fill="#5cba6b" opacity="0.85" />}
+              {isSource && !piece && <circle cx={s.cx} cy={s.cy} r={s.r * 0.18} fill="#c9a96e" opacity="0.7" />}
             </g>
           )
         })}

@@ -1,0 +1,17 @@
+{
+  "uid": "foxsox",
+  "name": "FoxSox",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Bob Henderson (Zillions) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Hunt",
+  "options": {
+    "size": { "choices": [4, 5, 6, 7, 8, 9], "default": 4, "label": "Board size (triangles per side)" }
+  },
+  "tags": ["triangular", "asymmetric", "hunt"],
+  "bgg_url": "https://www.zillions-of-games.com/cgi-bin/zilligames/submissions.cgi?do=show;id=3332",
+  "description": "Fox and Geese on a rhombus of triangular cells (Bob Henderson). The Geese (move only rightward) try to block the lone Fox (moves to any of its 3 neighbors); the Fox wins by reaching the far corner. Six board sizes from easy to fiendish. No captures."
+}

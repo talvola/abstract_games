@@ -35,6 +35,21 @@ def test_checkers_conforms():
     assert check(game, manifest, games=20).ok
 
 
+def test_foxsox_conforms_and_geometry():
+    manifest, game = _load("foxsox")
+    assert check(game, manifest, games=15).ok
+    for n, want in [(4, 32), (5, 50), (9, 162)]:
+        s = game.initial_state(options={"size": n})
+        cells = game.render(s)["board"]["cells"]
+        assert len(cells) == 2 * n * n == want         # rhombus of triangles
+        assert all(len(c["points"]) == 3 for c in cells)  # triangular cells
+        assert game.current_player(s) == 0             # geese move first
+    # fox reaching the goal corner wins (returns favour the fox = player 1)
+    fw = game.deserialize({"size": 4, "board": {"3,3": 1, "5,2": 0}, "to_move": 1,
+                           "winner": None, "drawn": False, "ply": 0})
+    assert game.apply_move(fw, "3,3>2,2").winner == 1
+
+
 def test_fox_and_hounds_conforms_and_asymmetry():
     manifest, game = _load("fox_and_hounds")
     assert check(game, manifest, games=30).ok
