@@ -18,7 +18,9 @@ Games Platform and is playable against people or the built-in AI.
    pip install -e .
    ```
 3. **Scaffold:** `cp -r template games/<uid>` (lowercase_snake uid), then edit
-   `games/<uid>/manifest.json` and `games/<uid>/game.py`.
+   `games/<uid>/manifest.json`, `games/<uid>/game.py`, and `games/<uid>/rules.md`
+   (a one-page writeup of the rules *as implemented*; the platform shows it in a
+   "Rules" dialog, with the manifest `bgg_url` as an "official source" link).
 4. **Iterate to green** — the definition of done is:
    ```bash
    agp validate games/<uid>      # must print: RESULT: OK

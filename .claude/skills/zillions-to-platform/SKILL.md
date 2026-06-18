@@ -122,9 +122,12 @@ label to `"colindex,rowindex"`) and keep the ZRF label only for `describe_move`.
 
 ## 5. Implement, validate, wire
 
-1. Write `engine/games/<uid>/{manifest.json, game.py}` against the contract.
-   Pick a `category` (reuse an existing one if it fits); put variants/sizes in
-   `options`. Add a `describe_move` for readable move-log notation.
+1. Write `engine/games/<uid>/{manifest.json, game.py, rules.md}` against the
+   contract. Pick a `category` (reuse an existing one if it fits); put
+   variants/sizes in `options`; set `bgg_url` to the source page. Add a
+   `describe_move` for readable move-log notation. **`rules.md`** is a one-page
+   writeup of the rules *as implemented* (note any interpretation you had to make
+   when the ZRF/source was ambiguous) — the UI shows it via a "Rules" button.
 2. **Guarantee termination** — if random play could loop, add a no-progress /
    ply-cap draw (conformance plays random games to a terminal).
 3. `cd engine && PYTHONPATH=. python3 -m agp.cli validate games/<uid>` until

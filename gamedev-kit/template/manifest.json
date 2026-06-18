@@ -9,6 +9,7 @@
   "hidden_info": false,
   "category": "N-in-a-row",
   "tags": ["square", "template"],
+  "bgg_url": "",
   "options": { "size": { "choices": [4, 5, 6], "default": 5 } },
   "description": "A working starter game (get k-in-a-row). Replace with your own rules."
 }

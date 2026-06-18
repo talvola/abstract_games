@@ -21,8 +21,11 @@ agp validate examples/tic_tac_toe   # sanity check: should print RESULT: OK
 1. **Copy the template** to a new folder named for your game's uid:
    `cp -r template games/<uid>` (lowercase_snake_case uid).
 2. **Edit `games/<uid>/manifest.json`** — set `uid`, `name`, `description`,
-   player count, tags, and any `options` (e.g. board size). Keep `engine_api` as
-   given.
+   player count, tags, any `options` (e.g. board size), and `bgg_url` (a link to
+   the official/source rules, if any). Keep `engine_api` as given.
+   Then **rewrite `games/<uid>/rules.md`** — a one-page writeup of the rules *as
+   you implement them* (the platform shows it in a "Rules" dialog, with `bgg_url`
+   as an "official source" link). Note any choice where sources disagree.
 3. **Implement `games/<uid>/game.py`** — replace the template logic with your
    rules. Read `SPEC.md` for the full contract; the short version is below.
 4. **Validate often:** `agp validate games/<uid>`. Fix what it reports.
