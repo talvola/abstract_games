@@ -112,6 +112,14 @@ visited cells (`"a>b"` for from-to, `"a>b>c"` for chains). A move needing a
 choice uses a `=X` suffix (promotion); a non-cell action (pie swap, pass) is its
 own token and renders as a button. See `engine/SPEC.md`.
 
+**Cell ids must be numeric `"col,row"`/`"q,r"`** — the generic Board renderer only
+treats a move as a click-to-move path when *every* `>`-segment matches
+`^-?\d+,-?\d+$` (that's how it tells cell paths from action tokens like `swap`).
+A ZRF uses alphanumeric labels (`E11`, `H8`); if you pass those through as cell
+ids, every move is misclassified as an *action* and dumps into a button row
+instead of click-to-move. Use numeric grid coordinates as the id (e.g. map the
+label to `"colindex,rowindex"`) and keep the ZRF label only for `describe_move`.
+
 ## 5. Implement, validate, wire
 
 1. Write `engine/games/<uid>/{manifest.json, game.py}` against the contract.

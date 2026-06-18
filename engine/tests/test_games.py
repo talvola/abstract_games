@@ -50,6 +50,32 @@ def test_foxsox_conforms_and_geometry():
     assert game.apply_move(fw, "3,3>2,2").winner == 1
 
 
+def test_goose_chase_conforms_and_geometry():
+    manifest, game = _load("goose_chase")
+    assert check(game, manifest, games=15).ok
+    # cell counts per board match the ZRF; every cell renders as a pentagon
+    want = {"2x2": 16, "3x2": 24, "3x3": 36, "4x3": 40,
+            "4x4": 64, "5x4": 60, "5x5": 100, "6x5": 84}
+    for board, n in want.items():
+        s = game.initial_state(options={"board": board})
+        cells = game.render(s)["board"]["cells"]
+        assert len(cells) == n
+        assert all(len(c["points"]) == 5 for c in cells)
+        assert game.current_player(s) == 0  # geese move first
+    # cell ids are numeric "col,row" coords (2x2: D9=3,2  E11=4,0  B8=1,3
+    # C6=2,5  E5=4,6  B4=1,7  A6=0,5  E1=4,10); the ZRF label shows in the log.
+    # The fox reaching the goal cell wins (returns favour the fox = player 1).
+    fw = game.deserialize({"board_key": "2x2", "board": {"3,2": 1, "1,3": 0},
+                           "to_move": 1, "winner": None, "drawn": False, "ply": 0})
+    nxt = game.apply_move(fw, "3,2>4,0")  # D9 -> E11 (the goal)
+    assert nxt.winner == 1 and game.returns(nxt) == [-1.0, 1.0]
+    assert game.describe_move(fw, "3,2>4,0") == "F D9-E11"
+    # geese move only sideways/away from the goal (never toward a lower row index)
+    gg = game.deserialize({"board_key": "2x2", "board": {"4,10": 1, "2,5": 0},
+                           "to_move": 0, "winner": None, "drawn": False, "ply": 0})
+    assert set(game.legal_moves(gg)) == {"2,5>4,6", "2,5>1,7", "2,5>0,5"}
+
+
 def test_fox_and_hounds_conforms_and_asymmetry():
     manifest, game = _load("fox_and_hounds")
     assert check(game, manifest, games=30).ok

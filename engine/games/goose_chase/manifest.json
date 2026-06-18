@@ -1,0 +1,31 @@
+{
+  "uid": "goose_chase",
+  "name": "Goose Chase",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Bob Henderson (Zillions) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Hunt",
+  "options": {
+    "board": {
+      "choices": ["2x2", "3x2", "3x3", "4x3", "4x4", "5x4", "5x5", "6x5"],
+      "default": "3x3",
+      "label": "Board",
+      "labels": {
+        "2x2": "2x2 — 16 cells, 4 geese",
+        "3x2": "3x2 — 24 cells, 4 geese",
+        "3x3": "3x3 — 36 cells, 5 geese",
+        "4x3": "4x3 — 40 cells, 4 geese",
+        "4x4": "4x4 — 64 cells, 5 geese",
+        "5x4": "5x4 — 60 cells, 5 geese",
+        "5x5": "5x5 — 100 cells, 6 geese",
+        "6x5": "6x5 — 84 cells, 5 geese"
+      }
+    }
+  },
+  "tags": ["pentagonal", "asymmetric", "hunt"],
+  "bgg_url": "https://www.zillions-of-games.com/cgi-bin/zilligames/submissions.cgi?do=show;id=3331",
+  "description": "A version of the classic Fox & Geese played on boards of pentagonal 'paver' (Cairo-tiling) cells. The lone Fox tries to reach the goal cell at the top; the Geese (which only move sideways or away from the goal) try to wall it off and stalemate it. No captures or jumps, so few geese can trap the fox. Eight board sizes from easy to fiendish."
+}
