@@ -190,7 +190,7 @@ class Borderline(Game):
             {"cell": f"{c},{r}", "owner": pl, "label": t}
             for (c, r), (pl, t) in s.board.items()
         ]
-        pieces.append({"cell": f"{s.king[0]},{s.king[1]}", "owner": 0, "label": "K"})
+        pieces.append({"cell": f"{s.king[0]},{s.king[1]}", "owner": 2, "label": "K"})
         highlights = [{"cell": f"{s.king[0]},{s.king[1]}", "kind": "goal"}]
         names = {WHITE: "White", BLACK: "Black"}
         if self.is_terminal(s):
