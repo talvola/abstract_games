@@ -1,0 +1,22 @@
+{
+  "uid": "lines_of_action",
+  "name": "Lines of Action",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Claude Soucie (1969) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Positional",
+  "options": {
+    "sim_connection": {
+      "choices": ["draw", "win"],
+      "default": "draw",
+      "label": "Simultaneous connection",
+      "labels": { "draw": "Draw (modern)", "win": "Win for mover (Soucie)" }
+    }
+  },
+  "tags": ["square", "connection", "movement"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Lines_of_Action",
+  "description": "Move pieces along lines a distance equal to the number of pieces on that line. Bring all your pieces into one connected group (8-connectivity) to win — but capturing the opponent down to a connected group lets THEM win."
+}

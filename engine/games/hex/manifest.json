@@ -11,6 +11,6 @@
   "category": "Connection",
   "tags": ["hex", "connection", "placement"],
   "bgg_url": "https://boardgamegeek.com/boardgame/4112/hex",
-  "options": { "size": { "choices": [7, 9, 11, 13], "default": 11 } },
+  "options": { "size": { "choices": [7, 9, 11, 13], "default": 11, "label": "Board size" } },
   "description": "Connection game on an NxN rhombus of hexagons (11 traditional). Place stones to link your two opposite edges with an unbroken chain. Draws are impossible."
 }

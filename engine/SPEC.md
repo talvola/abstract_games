@@ -30,10 +30,21 @@ Distribute as that folder or a `.zip` of it (flat, or a single top-level folder)
   "category": "N-in-a-row",     // groups the game in the lobby; see below
   "tags": ["square"],
   "bgg_url": "https://boardgamegeek.com/...",   // optional
-  "options": { "size": { "choices": [4,5,6], "default": 5 } },  // optional variants
+  "options": {                  // optional rule/variant selectors (shown as dropdowns)
+    "size": { "choices": [4,5,6], "default": 5, "label": "Board size" },
+    "sim_connection": { "choices": ["draw","win"], "default": "draw",
+                        "label": "Simultaneous connection",
+                        "labels": { "draw": "Draw", "win": "Win for mover" } }
+  },
   "description": "..."
 }
 ```
+
+`options` reach `initial_state(options=...)`; branch on them and store anything
+the rest of the game needs in the state. **Small rule variations belong in an
+`option`** (e.g. board size, a tie-break rule, a rule toggle) — the lobby shows
+each as a dropdown. Make a **separate game package** only when the variant is a
+distinct game with its own identity/name/strategy.
 
 ## The Game interface (`agp.game.Game`)
 

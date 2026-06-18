@@ -35,6 +35,18 @@ def test_checkers_conforms():
     assert check(game, manifest, games=20).ok
 
 
+def test_loa_conforms_and_option():
+    manifest, game = _load("lines_of_action")
+    assert check(game, manifest, games=12, seed=1).ok
+    assert len(game.legal_moves(game.initial_state())) == 36  # known LOA opening count
+    # sim_connection option: a move connecting both is a draw, or a win for mover
+    b = {"board": {"3,3": 0, "5,3": 1}, "to_move": 0, "winner": None, "drawn": False, "ply": 0}
+    draw = game.apply_move(game.deserialize({**b, "sim_win": False}), "3,3>5,3")
+    win = game.apply_move(game.deserialize({**b, "sim_win": True}), "3,3>5,3")
+    assert draw.drawn and draw.winner is None
+    assert win.winner == 0 and not win.drawn
+
+
 def test_hex_conforms_and_never_draws():
     manifest, game = _load("hex")
     assert check(game, manifest, games=20, seed=3).ok

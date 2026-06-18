@@ -3,6 +3,7 @@ import { api } from './api'
 import Board from './Board'
 import MoveLog from './MoveLog'
 import { SEAT_FILL } from './colors'
+import GameOptions, { defaultOptions } from './GameOptions'
 
 // Anonymous, no-account play using the stateless endpoints. Hotseat or vs the
 // MCTS bot; game state lives in the browser.
@@ -15,10 +16,9 @@ export default function QuickPlay({ games, go }) {
 function Menu({ games, go, onStart }) {
   const [uid, setUid] = useState(games[0]?.uid)
   const [mode, setMode] = useState('hotseat') // hotseat | bot
-  const [size, setSize] = useState(null)
+  const [opts, setOpts] = useState({})
   const game = games.find((g) => g.uid === uid)
-  const sizeOpt = game?.options?.size
-  useEffect(() => setSize(sizeOpt ? sizeOpt.default : null), [uid]) // eslint-disable-line
+  useEffect(() => setOpts(defaultOptions(game?.options)), [uid]) // eslint-disable-line
 
   return (
     <div className="menu">
@@ -38,12 +38,9 @@ function Menu({ games, go, onStart }) {
         ))}
       </div>
 
-      {sizeOpt && (
-        <div className="row">
-          <label>Board size</label>
-          <select value={size ?? ''} onChange={(e) => setSize(Number(e.target.value))}>
-            {sizeOpt.choices.map((c) => <option key={c} value={c}>{c}</option>)}
-          </select>
+      {game?.options && Object.keys(game.options).length > 0 && (
+        <div className="form-grid">
+          <GameOptions options={game.options} values={opts} onChange={(k, v) => setOpts((o) => ({ ...o, [k]: v }))} />
         </div>
       )}
 
@@ -58,7 +55,7 @@ function Menu({ games, go, onStart }) {
       <button
         className="start"
         onClick={async () => {
-          const r = await api.newGame(uid, size ? { size } : {})
+          const r = await api.newGame(uid, opts)
           onStart({ uid, name: game.name, mode, botSeat: mode === 'bot' ? 1 : null, state: r.state, view: r.view })
         }}
       >

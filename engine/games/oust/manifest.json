@@ -10,6 +10,6 @@
   "category": "Capture / annihilation",
   "tags": ["hex", "capture", "placement", "connection"],
   "bgg_url": "https://boardgamegeek.com/boardgame/34326/oust",
-  "options": { "size": { "choices": [4, 5, 6, 7, 8, 9], "default": 5 } },
+  "options": { "size": { "choices": [4, 5, 6, 7, 8, 9], "default": 5, "label": "Board size" } },
   "description": "Mark Steere's capture-by-placement game on a hexagonal board. Clear the board of all enemy stones to win. Draws cannot occur."
 }

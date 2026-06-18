@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { api } from './api'
 import { groupByCategory } from './QuickPlay'
+import GameOptions, { defaultOptions } from './GameOptions'
 
 export default function Lobby({ me, games, go, refreshGames }) {
   const [seeks, setSeeks] = useState([])
@@ -142,20 +143,19 @@ function badgeClass(m) {
 
 function NewChallenge({ games, go, onCreated }) {
   const [uid, setUid] = useState(games[0]?.uid)
-  const [size, setSize] = useState(null)
+  const [opts, setOpts] = useState({})
   const [opponent, setOpponent] = useState('human') // human | computer
   const [seat, setSeat] = useState('random')
   const [difficulty, setDifficulty] = useState(300)
   const [busy, setBusy] = useState(false)
 
   const game = games.find((g) => g.uid === uid)
-  const sizeOpt = game?.options?.size
-  useEffect(() => setSize(sizeOpt ? sizeOpt.default : null), [uid]) // eslint-disable-line
+  useEffect(() => setOpts(defaultOptions(game?.options)), [uid]) // eslint-disable-line
 
   async function create() {
     setBusy(true)
     try {
-      const options = size ? { size } : {}
+      const options = opts
       if (opponent === 'computer') {
         const r = await api.newBotMatch(uid, options, seat === 'random' ? 'random' : seat, difficulty)
         go({ name: 'match', id: r.match_id })
@@ -183,16 +183,7 @@ function NewChallenge({ games, go, onCreated }) {
           ))}
         </select>
 
-        {sizeOpt && (
-          <>
-            <label>Board size</label>
-            <select value={size ?? ''} onChange={(e) => setSize(Number(e.target.value))}>
-              {sizeOpt.choices.map((c) => (
-                <option key={c} value={c}>{c}</option>
-              ))}
-            </select>
-          </>
-        )}
+        <GameOptions options={game?.options} values={opts} onChange={(k, v) => setOpts((o) => ({ ...o, [k]: v }))} />
 
         <label>Opponent</label>
         <select value={opponent} onChange={(e) => setOpponent(e.target.value)}>
