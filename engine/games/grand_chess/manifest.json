@@ -1,0 +1,14 @@
+{
+  "uid": "grand_chess",
+  "name": "Grand Chess",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Christian Freeling (1984) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "variant"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/10985/grand-chess",
+  "description": "Grand Chess (Christian Freeling, 1984), on a 10x10 board. Adds two compound pieces: the Marshall (rook + knight) and the Cardinal (bishop + knight). Pawns start on the third rank and may step one or two squares on their first move. There is no castling. A pawn may promote ONLY to a piece type its owner has lost (so you can never field more of a piece than you started with) — optional on the last two ranks before the end, compulsory on the final rank; if no captured piece is available, a pawn is stuck on the ninth rank. Checkmate wins; stalemate and the usual material/repetition/fifty-move situations draw."
+}

@@ -12,7 +12,8 @@ import { SEAT_FILL, SEAT_STROKE } from './colors'
 const colors = (o) => ({ fill: SEAT_FILL[o] ?? '#aaa', stroke: SEAT_STROKE[o] ?? '#555' })
 const PIECE_NAMES = { Q: 'Queen', R: 'Rook', N: 'Knight', B: 'Bishop', K: 'King', P: 'Pawn' }
 // Friendly labels for any "=choice" suffix (chess promotion pieces, stone colours, …).
-const CHOICE_NAMES = { ...PIECE_NAMES, red: 'Red', blue: 'Blue' }
+const CHOICE_NAMES = { ...PIECE_NAMES, M: 'Marshall', C: 'Cardinal', red: 'Red', blue: 'Blue' }
+const PROMO_LETTERS = new Set(['Q', 'R', 'N', 'B', 'M', 'C'])
 
 // "2,4>2,5=Q" -> { cells: ["2,4","2,5"], choice: "Q" }
 function parseMove(m) {
@@ -186,11 +187,11 @@ export default function Board({ spec, legalMoves, onMove, disabled }) {
 
       {promo && (
         <div className="promo-picker">
-          <div className="promo-title">{promo.options.every((o) => PIECE_NAMES[o.choice]) ? 'Promote to' : 'Choose'}</div>
+          <div className="promo-title">{promo.options.some((o) => PROMO_LETTERS.has(o.choice)) ? 'Promote to' : 'Choose'}</div>
           <div className="promo-options">
             {promo.options.map((o) => (
-              <button key={o.choice} onClick={() => { onMove(o.move); setPromo(null); setSel([]) }}>
-                {CHOICE_NAMES[o.choice] || o.choice}
+              <button key={o.choice ?? 'none'} onClick={() => { onMove(o.move); setPromo(null); setSel([]) }}>
+                {o.choice == null ? 'No promotion' : (CHOICE_NAMES[o.choice] || o.choice)}
               </button>
             ))}
             <button className="promo-cancel" onClick={() => { setPromo(null); setSel([]) }}>Cancel</button>

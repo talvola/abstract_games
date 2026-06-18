@@ -56,6 +56,49 @@ def test_yodd_conforms_and_rules():
     assert game.current_player(se2) == 0 and se2.turn_cells == [] and len(se2.board) == 3
 
 
+def test_grand_chess_pieces_and_promotion():
+    manifest, game = _load("grand_chess")
+    assert check(game, manifest, games=4).ok
+
+    def st(pieces, **kw):
+        d = {"board": {f"{c},{r}": [pl, t] for (c, r), (pl, t) in pieces.items()},
+             "to_move": 0, "ep": None, "halfmove": 0, "ply": 0, "reps": {}}
+        d.update(kw)
+        return game.deserialize(d)
+
+    # Marshall = rook + knight (not bishop)
+    m = st({(4, 4): (0, "M"), (0, 0): (0, "K"), (9, 9): (1, "K")})
+    mm = {x for x in game.legal_moves(m) if x.startswith("4,4>")}
+    assert "4,4>4,9" in mm and "4,4>6,5" in mm and "4,4>6,6" not in mm
+
+    # Cardinal = bishop + knight (not rook)
+    c = st({(4, 4): (0, "C"), (0, 0): (0, "K"), (9, 0): (1, "K")})
+    cm = {x for x in game.legal_moves(c) if x.startswith("4,4>")}
+    assert "4,4>9,9" in cm and "4,4>6,5" in cm and "4,4>4,9" not in cm
+
+    # no castling
+    ks = st({(4, 0): (0, "K"), (0, 0): (0, "R"), (9, 0): (0, "R"), (4, 9): (1, "K")})
+    assert "4,0>6,0" not in game.legal_moves(ks) and "4,0>2,0" not in game.legal_moves(ks)
+
+    # promotion only to a captured (missing) piece type. Full white army present:
+    full = {(4, 1): (0, "K"), (3, 1): (0, "Q"), (5, 1): (0, "M"), (6, 1): (0, "C"),
+            (0, 0): (0, "R"), (9, 0): (0, "R"), (2, 1): (0, "B"), (7, 1): (0, "B"),
+            (1, 1): (0, "N"), (8, 1): (0, "N"), (4, 9): (1, "K")}
+    # ... with nothing missing, a pawn on the 10th rank has no promotion -> cannot
+    #     advance there at all; on the 9th rank (optional) it may only stay a pawn.
+    s = st({**full, (0, 8): (0, "P")})
+    assert not any(x.startswith("0,8>") for x in game.legal_moves(s))     # stuck on rank 9
+    s = st({**full, (0, 7): (0, "P")})
+    p8 = {x for x in game.legal_moves(s) if x.startswith("0,7>")}
+    assert p8 == {"0,7>0,8"}                                              # stay a pawn only
+
+    # remove a rook (as if captured) -> a rook becomes a legal promotion target
+    nrook = {k: v for k, v in full.items() if k != (9, 0)}
+    s = st({**nrook, (0, 8): (0, "P")})
+    moves = game.legal_moves(s)
+    assert "0,8>0,9=R" in moves and "0,8>0,9=Q" not in moves               # only the lost type
+
+
 def test_chess_conforms():
     manifest, game = _load("los_alamos_chess")
     assert check(game, manifest, games=15).ok
