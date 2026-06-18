@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { api } from './api'
 import Board from './Board'
 import MoveLog from './MoveLog'
+import RulesModal from './RulesModal'
 import { SEAT_FILL } from './colors'
 
 // Correspondence match screen. Polls while waiting so an opponent's (or bot's)
@@ -10,6 +11,7 @@ export default function MatchPlay({ id, me, go }) {
   const [m, setM] = useState(null)
   const [error, setError] = useState('')
   const [thinking, setThinking] = useState(false)
+  const [showRules, setShowRules] = useState(false)
   const busy = useRef(false)
 
   function load() {
@@ -104,6 +106,7 @@ export default function MatchPlay({ id, me, go }) {
 
       <div className="controls">
         <button onClick={() => go({ name: 'home' })}>← Lobby</button>
+        <button onClick={() => setShowRules(true)}>Rules</button>
         {!m.terminal && m.my_seat != null && (
           <button
             className="danger"
@@ -116,6 +119,7 @@ export default function MatchPlay({ id, me, go }) {
           </button>
         )}
       </div>
+      {showRules && <RulesModal uid={m.game_uid} name={m.game_name} onClose={() => setShowRules(false)} />}
     </div>
   )
 }

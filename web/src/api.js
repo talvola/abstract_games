@@ -22,6 +22,7 @@ const del = (p) => req('DELETE', p)
 export const api = {
   // catalogue
   listGames: () => get('/api/games'),
+  gameRules: (uid) => get(`/api/games/${uid}/rules`),
 
   // auth
   me: () => get('/api/auth/me'),

@@ -4,6 +4,8 @@ import Board from './Board'
 import MoveLog from './MoveLog'
 import { SEAT_FILL } from './colors'
 import GameOptions, { defaultOptions } from './GameOptions'
+import GamePicker from './GamePicker'
+import RulesModal from './RulesModal'
 
 // Anonymous, no-account play using the stateless endpoints. Hotseat or vs the
 // MCTS bot; game state lives in the browser.
@@ -23,20 +25,7 @@ function Menu({ games, go, onStart }) {
   return (
     <div className="menu">
       <label>Game</label>
-      <div className="game-list">
-        {groupByCategory(games).map(([cat, list]) => (
-          <div key={cat} className="cat-group">
-            <div className="cat-label">{cat}</div>
-            {list.map((g) => (
-              <button key={g.uid} className={`game-card ${g.uid === uid ? 'active' : ''}`} onClick={() => setUid(g.uid)}>
-                <div className="game-name">{g.name}{g.source === 'uploaded' ? ` · by ${g.uploader || 'community'}` : ''}</div>
-                <div className="game-desc">{g.description}</div>
-                <div className="game-tags">{g.tags.join(' · ')}</div>
-              </button>
-            ))}
-          </div>
-        ))}
-      </div>
+      <GamePicker games={games} value={uid} onChange={setUid} />
 
       {game?.options && Object.keys(game.options).length > 0 && (
         <div className="form-grid">
@@ -70,6 +59,7 @@ function Play({ match, setMatch, onExit }) {
   const { uid, view } = match
   const busy = useRef(false)
   const [log, setLog] = useState([])
+  const [rules, setRules] = useState(false)
   const addLog = (r) => setLog((prev) => [...prev, { seat: r.mover, label: r.label }])
 
   async function applyMove(move) {
@@ -132,7 +122,9 @@ function Play({ match, setMatch, onExit }) {
       </div>
       <div className="controls">
         <button onClick={onExit}>← New game</button>
+        <button onClick={() => setRules(true)}>Rules</button>
       </div>
+      {rules && <RulesModal uid={uid} name={match.name} onClose={() => setRules(false)} />}
     </div>
   )
 }
@@ -140,17 +132,4 @@ function Play({ match, setMatch, onExit }) {
 function seat(match, idx) {
   if (match.mode === 'bot') return idx === match.botSeat ? 'Computer' : 'You'
   return `Player ${idx + 1}`
-}
-
-// Group games by category, stable order, "Other" last.
-export function groupByCategory(games) {
-  const map = new Map()
-  for (const g of games) {
-    const c = g.category || 'Other'
-    if (!map.has(c)) map.set(c, [])
-    map.get(c).push(g)
-  }
-  return [...map.entries()].sort((a, b) =>
-    a[0] === 'Other' ? 1 : b[0] === 'Other' ? -1 : a[0].localeCompare(b[0]),
-  )
 }

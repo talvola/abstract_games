@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { api } from './api'
-import { groupByCategory } from './QuickPlay'
+import GamePicker from './GamePicker'
 import GameOptions, { defaultOptions } from './GameOptions'
 
 export default function Lobby({ me, games, go, refreshGames }) {
@@ -171,18 +171,8 @@ function NewChallenge({ games, go, onCreated }) {
   return (
     <section className="new-challenge">
       <h2>New game</h2>
+      <GamePicker games={games} value={uid} onChange={setUid} />
       <div className="form-grid">
-        <label>Game</label>
-        <select value={uid} onChange={(e) => setUid(e.target.value)}>
-          {groupByCategory(games).map(([cat, list]) => (
-            <optgroup key={cat} label={cat}>
-              {list.map((g) => (
-                <option key={g.uid} value={g.uid}>{g.name}</option>
-              ))}
-            </optgroup>
-          ))}
-        </select>
-
         <GameOptions options={game?.options} values={opts} onChange={(k, v) => setOpts((o) => ({ ...o, [k]: v }))} />
 
         <label>Opponent</label>
