@@ -16,7 +16,7 @@ and phased roadmap.
 | `server/` | **Phase 1** — FastAPI backend exposing the engine over HTTP (stateless; the client holds game state). |
 | `web/` | **Phase 1** — React + Vite frontend with a *generic* SVG renderer driven by each game's RenderSpec. Knows no game rules. |
 | `engine/games/` | Game packages: `tic_tac_toe` (minimal), `oust` (Mark Steere — hex, captures). |
-| `oust.jsx`, `yodd.jsx`, `src/` | The original standalone per-game React apps (being superseded by the platform). |
+| `legacy/` | The original standalone per-game React prototypes of Oust & Yodd, archived (both now run as platform engine modules). See `legacy/README.md`. |
 
 ## Run it (Phase 1)
 

@@ -7,7 +7,7 @@ See PLATFORM_PLAN.md (roadmap) and engine/SPEC.md (game authoring contract).
 - `engine/` — Python SDK (pure stdlib): `agp/` package, `games/<uid>/` packages, `SPEC.md`, `tests/`.
 - `server/` — FastAPI backend (SQLAlchemy, sqlite default). `web/` — React+Vite frontend.
 - `gamedev-kit/` — distributable SDK; build with `python3 tools/build_devkit.py` → `dist/gamedev-kit.zip`.
-- Legacy (superseded): `oust.jsx`, `yodd.jsx`, `src/`, root `index.html`/`vite.config.js`.
+- `legacy/` — the original standalone React prototypes of Oust & Yodd (archived, not part of the live app; both now run as engine modules). See `legacy/README.md`.
 
 ## Run / dev
 - `./dev.sh` — backend :8000 + frontend :5173 (Vite proxies `/api`); sources gitignored `dev.env` (e.g. `AGP_ADMIN_EMAILS`).
