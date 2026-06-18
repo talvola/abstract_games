@@ -237,8 +237,25 @@ def list_games():
             "category": m.get("category", "Other"),
             "source": entry["source"],
             "uploader": entry.get("uploader"),
+            "has_rules": (entry["path"] / "rules.md").exists(),
         })
     return {"games": out}
+
+
+@app.get("/api/games/{uid}/rules")
+def game_rules(uid: str):
+    entry = registry.entries.get(uid)
+    if entry is None:
+        raise HTTPException(404, f"unknown game {uid!r}")
+    path = entry["path"] / "rules.md"
+    if not path.exists():
+        raise HTTPException(404, f"no rules for {uid!r}")
+    return {
+        "uid": uid,
+        "name": entry["manifest"]["name"],
+        "markdown": path.read_text(encoding="utf-8"),
+        "source_url": entry["manifest"].get("bgg_url"),
+    }
 
 
 @app.post("/api/games/upload")

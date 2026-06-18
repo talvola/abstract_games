@@ -9,11 +9,19 @@ This is the contract a Claude Code session generates against. **Goal: make
 yourgame/
   manifest.json     # metadata (required)
   game.py           # one subclass of agp.game.Game (required)
-  rules.md          # optional human rules
+  rules.md          # human rules (recommended) — shown in-app via a "Rules" button
   assets/           # optional images
 ```
 
 Distribute as that folder or a `.zip` of it (flat, or a single top-level folder).
+
+**`rules.md`** is a one-page Markdown writeup of the rules **as implemented** — the
+local source of truth (variants/draw rules differ between sources, so document
+what *this* package actually does). The server serves it at
+`GET /api/games/<uid>/rules` and the web UI renders it in a "Rules" dialog, with
+a link to the official rules if `manifest.bgg_url` is set. Supported Markdown:
+headings (`#`/`##`/`###`), `**bold**`, `*italic*`, `` `code` ``, `-`/`1.` lists,
+`[links](url)`, and paragraphs.
 
 ## manifest.json
 
