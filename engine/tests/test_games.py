@@ -388,6 +388,32 @@ def test_connect_four():
     assert "0,1" in game.legal_moves(s) and "0,0" not in game.legal_moves(s)
 
 
+def test_breakthrough():
+    manifest, game = _load("breakthrough")
+    assert check(game, manifest, games=40).ok
+
+    # an enemy straight ahead blocks (no straight capture); diagonal enemy is
+    # capturable; the empty forward diagonal is also legal
+    s = game.deserialize({"board": {"3,3": 0, "4,4": 1, "3,4": 1},
+                          "to_move": 0, "winner": None})
+    assert sorted(m for m in game.legal_moves(s) if m.startswith("3,3>")) == \
+        ["3,3>2,4", "3,3>4,4"]
+
+    # capture overwrites the destination and removes the enemy pawn
+    cap = game.apply_move(s, "3,3>4,4")
+    assert cap.board[(4, 4)] == 0 and (3, 3) not in cap.board
+
+    # reaching the far row wins immediately
+    win = game.apply_move(
+        game.deserialize({"board": {"3,6": 0, "0,0": 1}, "to_move": 0, "winner": None}),
+        "3,6>3,7")
+    assert win.winner == 0 and game.is_terminal(win) and game.returns(win) == [1.0, -1.0]
+
+    # a side with no legal move loses
+    stuck = game.deserialize({"board": {"0,7": 0}, "to_move": 0, "winner": None})
+    assert game.is_terminal(stuck) and game.returns(stuck) == [-1.0, 1.0]
+
+
 def test_gomoku():
     manifest, game = _load("gomoku")
     assert check(game, manifest, games=20).ok

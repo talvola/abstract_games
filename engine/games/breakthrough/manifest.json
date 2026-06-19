@@ -1,0 +1,14 @@
+{
+  "uid": "breakthrough",
+  "name": "Breakthrough",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Dan Troyka (2000) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Capture / annihilation",
+  "tags": ["square", "race", "movement"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/3201/breakthrough",
+  "description": "Breakthrough (Dan Troyka, 2000) on an 8x8 board. Each side has two rows of identical pawns. A pawn moves one square straight or diagonally forward to an empty square, or captures one square diagonally forward. First pawn to reach the opponent's home row wins (a player with no move loses). Forward-only movement means the game always terminates and never draws."
+}
