@@ -388,6 +388,27 @@ def test_connect_four():
     assert "0,1" in game.legal_moves(s) and "0,0" not in game.legal_moves(s)
 
 
+def test_gomoku():
+    manifest, game = _load("gomoku")
+    assert check(game, manifest, games=20).ok
+
+    # board-size option flows into the render spec
+    s13 = game.initial_state(options={"size": 13})
+    assert game.render(s13)["board"] == {"type": "square", "width": 13, "height": 13}
+
+    # five-in-a-row (horizontal) wins for Black
+    s = game.initial_state(options={"size": 15})
+    for mv in ["0,0", "0,2", "1,0", "1,2", "2,0", "2,2", "3,0", "3,2", "4,0"]:
+        s = game.apply_move(s, mv)
+    assert game.is_terminal(s) and game.returns(s) == [1.0, -1.0]
+
+    # freestyle: a diagonal of five also wins
+    s = game.initial_state(options={"size": 15})
+    for mv in ["0,0", "0,1", "1,1", "0,2", "2,2", "0,3", "3,3", "0,4", "4,4"]:
+        s = game.apply_move(s, mv)
+    assert game.is_terminal(s) and game.returns(s) == [1.0, -1.0]
+
+
 def test_reversi():
     manifest, game = _load("reversi")
     assert check(game, manifest, games=30).ok

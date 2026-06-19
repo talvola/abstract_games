@@ -1,0 +1,17 @@
+{
+  "uid": "gomoku",
+  "name": "Gomoku",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "AGP",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "N-in-a-row",
+  "tags": ["square", "alignment", "stones"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/11929/go-moku",
+  "options": {
+    "size": { "choices": [13, 15, 19], "default": 15, "label": "Board size" }
+  },
+  "description": "Gomoku, Five in a Row (freestyle). Players alternately place stones on a square grid; the first to make an unbroken line of five or more of their own stones — horizontal, vertical, or diagonal — wins. Black moves first. Choose a 13x13, 15x15, or 19x19 board."
+}
