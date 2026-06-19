@@ -388,6 +388,39 @@ def test_connect_four():
     assert "0,1" in game.legal_moves(s) and "0,0" not in game.legal_moves(s)
 
 
+def test_brandub():
+    manifest, game = _load("brandub")
+    assert check(game, manifest, games=30).ok
+
+    s = game.initial_state()
+    assert game.current_player(s) == 0          # attackers move first
+    # the four corners are flagged as goals for the renderer
+    goals = {h["cell"] for h in game.render(s)["highlights"]}
+    assert goals == {"0,0", "6,0", "0,6", "6,6"}
+
+    # active custodial capture: an attacker lands to flank a defender man
+    s = game.deserialize({"board": {"3,1": "D", "4,1": "A", "0,1": "A", "3,3": "K"},
+                          "to_move": 0, "winner": None, "ply": 0})
+    s2 = game.apply_move(s, "0,1>2,1")
+    assert (3, 1) not in s2.board               # D sandwiched (2,1)A | (4,1)A
+
+    # King escaping to a corner wins for the defenders
+    esc = game.apply_move(
+        game.deserialize({"board": {"1,0": "K", "3,0": "A"}, "to_move": 1,
+                          "winner": None, "ply": 0}), "1,0>0,0")
+    assert esc.winner == 1 and game.is_terminal(esc) and game.returns(esc) == [-1.0, 1.0]
+
+    # King surrounded on all four sides is captured -> attackers win
+    cap = game.apply_move(
+        game.deserialize({"board": {"3,3": "K", "3,2": "A", "3,4": "A", "2,3": "A", "4,4": "A"},
+                          "to_move": 0, "winner": None, "ply": 0}), "4,4>4,3")
+    assert cap.winner == 0 and game.returns(cap) == [1.0, -1.0]
+
+    # only the King may land on a restricted square (throne/corner)
+    s = game.deserialize({"board": {"3,1": "A"}, "to_move": 0, "winner": None, "ply": 0})
+    assert "3,1>3,3" not in game.legal_moves(s)   # attacker may not stop on the throne
+
+
 def test_breakthrough():
     manifest, game = _load("breakthrough")
     assert check(game, manifest, games=40).ok

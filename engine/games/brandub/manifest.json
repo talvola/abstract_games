@@ -1,0 +1,14 @@
+{
+  "uid": "brandub",
+  "name": "Brandub",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "AGP (traditional Irish tafl)",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Capture / annihilation",
+  "tags": ["square", "asymmetric", "tafl", "hunt"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/19529/hnefatafl",
+  "description": "Brandub, the 7x7 Irish tafl. Asymmetric siege: the King and 4 defenders start on the central throne against 8 attackers ringing the edges (attackers move first). All pieces move like a rook. Men are captured by custodial flanking; the King must be surrounded on all four sides. Defenders win by escaping the King to a corner; attackers win by capturing the King."
+}
