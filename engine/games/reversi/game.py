@@ -21,12 +21,14 @@ from agp.game import Game
 N = 8
 NAMES = {0: "Black", 1: "White"}
 DIRS = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
+CENTER = [(3, 3), (3, 4), (4, 3), (4, 4)]   # the four central squares
 
 
 @dataclass
 class ReversiState:
     board: dict = field(default_factory=dict)   # (c, r) -> player
     to_move: int = 0
+    opening: str = "othello"                      # "othello" | "reversi"
 
 
 def _cell(s: str):
@@ -72,17 +74,28 @@ class Reversi(Game):
         return 2
 
     def initial_state(self, options=None, rng=None) -> ReversiState:
-        return ReversiState(board=_start_board())
+        opening = (options or {}).get("opening", "othello")
+        board = {} if opening == "reversi" else _start_board()
+        return ReversiState(board=board, opening=opening)
 
     def current_player(self, s: ReversiState) -> int:
         return s.to_move
 
+    def _in_opening(self, s: ReversiState) -> bool:
+        """Original-Reversi opening phase: the four central squares are still
+        being filled (alternating placements, no captures)."""
+        return s.opening == "reversi" and len(s.board) < len(CENTER)
+
     def is_terminal(self, s: ReversiState) -> bool:
+        if self._in_opening(s):
+            return False                      # centre not yet filled -> play continues
         return not _placements(s.board, 0) and not _placements(s.board, 1)
 
     def legal_moves(self, s: ReversiState) -> list[str]:
         if self.is_terminal(s):
             return []
+        if self._in_opening(s):
+            return [f"{c},{r}" for (c, r) in CENTER if (c, r) not in s.board]
         mine = _placements(s.board, s.to_move)
         if mine:
             return [f"{c},{r}" for c, r in mine]
@@ -90,13 +103,14 @@ class Reversi(Game):
 
     def apply_move(self, s: ReversiState, move: str, rng=None) -> ReversiState:
         if move == "pass":
-            return ReversiState(board=dict(s.board), to_move=1 - s.to_move)
+            return ReversiState(board=dict(s.board), to_move=1 - s.to_move, opening=s.opening)
         cell = _cell(move)
         board = dict(s.board)
-        for fc in _flips(board, cell, s.to_move):
-            board[fc] = s.to_move
+        if not self._in_opening(s):           # no captures during the centre opening
+            for fc in _flips(board, cell, s.to_move):
+                board[fc] = s.to_move
         board[cell] = s.to_move
-        return ReversiState(board=board, to_move=1 - s.to_move)
+        return ReversiState(board=board, to_move=1 - s.to_move, opening=s.opening)
 
     def _counts(self, s: ReversiState):
         b = sum(1 for p in s.board.values() if p == 0)
@@ -115,12 +129,14 @@ class Reversi(Game):
         return {
             "board": {f"{c},{r}": p for (c, r), p in s.board.items()},
             "to_move": s.to_move,
+            "opening": s.opening,
         }
 
     def deserialize(self, d: dict) -> ReversiState:
         return ReversiState(
             board={_cell(k): v for k, v in d["board"].items()},
             to_move=d["to_move"],
+            opening=d.get("opening", "othello"),
         )
 
     def describe_move(self, s: ReversiState, move: str) -> str:
@@ -137,6 +153,8 @@ class Reversi(Game):
             ret = self.returns(s)
             caption = (f"Draw {b}-{w}" if ret == [0.0, 0.0]
                        else f"{NAMES[0 if ret[0] > 0 else 1]} wins {max(b, w)}-{min(b, w)}")
+        elif self._in_opening(s):
+            caption = f"{NAMES[s.to_move]} to move (place a disc in the centre)"
         else:
             caption = f"{NAMES[s.to_move]} to move  ({b}-{w})"
         return {

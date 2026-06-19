@@ -578,6 +578,27 @@ def test_reversi():
     assert game.is_terminal(term)                    # full board -> no placements
     assert game.returns(term)[0] == 1.0              # Black majority wins
 
+    # original-Reversi opening option: empty board; first four moves fill the
+    # four central squares with no captures; then normal play
+    o = game.initial_state(options={"opening": "reversi"})
+    assert o.board == {} and not game.is_terminal(o)
+    assert sorted(game.legal_moves(o)) == ["3,3", "3,4", "4,3", "4,4"]
+    for mv in ["3,3", "3,4", "4,3", "4,4"]:           # Black,White,Black,White
+        assert game.serialize(game.deserialize(game.serialize(o)))  # round-trips w/ opening
+        o = game.apply_move(o, mv)
+    assert len(o.board) == 4                          # placed, nothing captured
+    assert game.legal_moves(o) and "pass" not in game.legal_moves(o)  # normal flips now
+
+    # the open-centre variant plays to a clean terminal under random moves
+    import random as _r
+    rng = _r.Random(3)
+    s = game.initial_state(options={"opening": "reversi"})
+    for _ in range(200):
+        if game.is_terminal(s):
+            break
+        s = game.apply_move(s, rng.choice(game.legal_moves(s)))
+    assert game.is_terminal(s) and len(game.returns(s)) == 2
+
 
 def test_freeform_mode():
     # A minimal unenforced game: an 8x8 board with two kings, no rules.

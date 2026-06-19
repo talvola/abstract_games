@@ -19,7 +19,16 @@ colour).
 The game ends when **neither player can move** (usually a full board). The player
 with **more discs** wins; an equal split is a **draw**.
 
+## Opening (option)
+
+- **Othello (fixed centre)** — the default. The four central squares start filled
+  diagonally (two of each colour), as in the commercial Othello game.
+- **Reversi (open centre)** — the original game. The board starts **empty**; the
+  first four moves are placed into the **four central squares**, alternating, with
+  **no captures**. Players choose where, so the centre can end up diagonal or
+  "parallel". Normal flipping play begins once the centre is full.
+
 ## Notes
 
-- Standard Othello opening and rules. The score (Black–White disc count) is shown
-  in the caption while you play.
+- Aside from the opening, both variants play identically. The score (Black–White
+  disc count) is shown in the caption while you play.

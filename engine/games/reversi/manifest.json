@@ -10,5 +10,16 @@
   "category": "Capture / annihilation",
   "tags": ["square", "flipping", "othello"],
   "bgg_url": "https://boardgamegeek.com/boardgame/2389/othello",
-  "description": "Reversi (Othello), the 8x8 flipping game. Place a disc so it brackets a straight line of opponent discs between the new disc and another of your own; every bracketed disc flips to your colour. Pass only when you cannot move. When neither player can move, the majority of discs wins; equal counts draw. Black moves first."
+  "options": {
+    "opening": {
+      "choices": ["othello", "reversi"],
+      "default": "othello",
+      "label": "Opening",
+      "labels": {
+        "othello": "Othello (fixed centre)",
+        "reversi": "Reversi (open centre)"
+      }
+    }
+  },
+  "description": "Reversi (Othello), the 8x8 flipping game. Place a disc so it brackets a straight line of opponent discs between the new disc and another of your own; every bracketed disc flips to your colour. Pass only when you cannot move. When neither player can move, the majority of discs wins; equal counts draw. Black moves first. Opening option: the modern Othello fixed diagonal start, or the original Reversi open centre (players place the first four discs into the four central squares with no captures)."
 }
