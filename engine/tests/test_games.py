@@ -434,6 +434,36 @@ def test_parse_fen():
     s = parse_fen("R/p", 3)   # rank "R" then end -> row1: R at col0; rank "p" -> row0
     assert s == {(0, 1): (0, "R"), (0, 0): (1, "p")}
 
+    # fen_dimensions reports the FULL rank count, even when the TOP ranks are
+    # empty (the bug a max-occupied-row height computation would hit)
+    from agp import fen_dimensions
+    assert fen_dimensions("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR", 8) == (8, 8)
+    top_empty = "8/8/8/8/8/8/pppppppp/rnbqkbnr"   # pieces only on the bottom two ranks
+    assert fen_dimensions(top_empty, 8) == (8, 8)
+    assert max(r for _, r in parse_fen(top_empty, 8)) == 1  # occupied rows are 0,1...
+    # ...so height must come from fen_dimensions (8), NOT max occupied row (2)
+
+
+def test_freeform_converter():
+    # the gamecourier-to-platform freeform converter must survive hostile names
+    # and empty-top-rank boards (regressions caught in code review)
+    import importlib.util
+    conv_path = (Path(__file__).resolve().parents[2]
+                 / ".claude/skills/gamecourier-to-platform/freeform_from_settings.py")
+    spec = importlib.util.spec_from_file_location("ff_conv", conv_path)
+    conv = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(conv)
+
+    # a double-quote in the name must NOT break the emitted game.py (json.dumps)
+    out = conv.build('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR', 8,
+                     'Foo "Bar" Chess', 'foo_bar', None, 'd.chess/x.html')
+    compile(out["game.py"], "game.py", "exec")              # parses as valid Python
+    assert '"Foo \\"Bar\\" Chess"' in out["game.py"]
+
+    # empty top ranks -> HEIGHT must be the full 8, not the max occupied row
+    out2 = conv.build('8/8/8/8/8/8/pppppppp/rnbqkbnr', 8, 'Bottomed', 'bottomed', None, None)
+    assert "HEIGHT = 8" in out2["game.py"]
+
 
 def test_apply_move_is_pure():
     _, game = _load("oust")

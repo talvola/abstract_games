@@ -107,6 +107,11 @@ def match_view(match: Match, me_id: int | None) -> dict:
     _, game = registry.get(match.game_uid)
     state = game.deserialize(match.state)
     my_seat = seat_of(match, me_id)
+    pos = G.position_view(game, state)
+    # The MATCH status is authoritative for terminality: resign/draw end a match
+    # via match.status without necessarily ending the engine state (e.g. /resign
+    # doesn't checkmate the board), so a finished match must read as terminal.
+    pos["terminal"] = match.status == "finished"
     return {
         "id": match.id,
         "game_uid": match.game_uid,
@@ -120,7 +125,7 @@ def match_view(match: Match, me_id: int | None) -> dict:
         "status": match.status,
         "winner": match.winner,
         "history": G.build_history(game, match),
-        **G.position_view(game, state),
+        **pos,
     }
 
 

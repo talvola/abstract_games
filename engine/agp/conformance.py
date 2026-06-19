@@ -116,20 +116,32 @@ def _check_freeform(game: Game, r: Report, s0) -> None:
     r.add(not game.is_terminal(s0), "initial state is not terminal")
     r.add(bool(game.legal_moves(s0)), "legal_moves() lists at least one action")
 
-    # A free board move (move the first occupied cell to some other cell) must be
-    # pure and round-trip.
+    # A free board move must actually RELOCATE a piece (not a self-target no-op,
+    # which would mask a mutate-in-place / drop / round-trip bug), be pure, and
+    # round-trip.
     pieces = game.render(s0).get("pieces", [])
     if pieces:
         frm = pieces[0]["cell"]
-        c, rr = frm.split(",")
-        to = f"{int(c)},{int(rr)}"  # self-target is fine for the purity check
+        c, rr = (int(x) for x in frm.split(","))
+        to = f"{c + 1},{rr}"                       # a different cell -> real relocation
         before = game.serialize(s0)
         s1 = game.apply_move(s0, f"{frm}>{to}")
         r.add(_equal_serialized(game.serialize(s0), before),
               "apply_move() did not mutate its input (free move)")
         r.add(roundtrips(s1), "serialize() round-trips after a free move")
+        moved = {p["cell"] for p in game.render(s1).get("pieces", [])}
+        r.add(to in moved and frm not in moved,
+              "a free move relocates the piece from source to destination")
 
-    # resign ends the game with well-formed returns.
+    # The discrete actions apply purely and behave: pass keeps play going,
+    # offer-draw -> accept-draw ends in a well-formed draw, resign ends the game.
+    for action in ("pass", "offer-draw", "decline-draw", "resign"):
+        if action in game.legal_moves(s0):
+            before = game.serialize(s0)
+            game.apply_move(s0, action)
+            if not _equal_serialized(game.serialize(s0), before):
+                r.add(False, f"apply_move({action!r}) mutated its input")
+
     s_end = game.apply_move(s0, "resign")
     if game.is_terminal(s_end):
         ret = game.returns(s_end)
@@ -137,6 +149,14 @@ def _check_freeform(game: Game, r: Report, s0) -> None:
               "returns() well-formed after resign")
     else:
         r.add(False, "resign did not produce a terminal state")
+
+    if "offer-draw" in game.legal_moves(s0):
+        offered = game.apply_move(s0, "offer-draw")
+        if "accept-draw" in game.legal_moves(offered):
+            drawn = game.apply_move(offered, "accept-draw")
+            ret = game.returns(drawn) if game.is_terminal(drawn) else None
+            r.add(ret is not None and len(ret) == game.num_players,
+                  "offer-draw -> accept-draw ends in a well-formed terminal")
 
 
 def _play_one(game: Game, rng, r: Report, max_moves: int) -> bool:

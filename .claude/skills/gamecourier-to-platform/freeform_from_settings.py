@@ -25,16 +25,18 @@ Writes manifest.json + game.py + rules.md into engine/games/<uid>/ (override wit
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 import sys
+import unicodedata
 from pathlib import Path
 
 # Import the engine's extended-FEN parser so this tool and the emitted package
 # agree on geometry exactly (and so we can validate the parse up front).
 ENGINE = Path(__file__).resolve().parents[3] / "engine"
 sys.path.insert(0, str(ENGINE))
-from agp.freeform import parse_fen  # noqa: E402
+from agp.freeform import fen_dimensions, parse_fen  # noqa: E402
 
 
 def extract(php: str, key: str) -> str | None:
@@ -57,8 +59,11 @@ def author_of(php: str) -> str | None:
 
 
 def slug(name: str) -> str:
-    s = re.sub(r"[^a-z0-9]+", "_", name.lower()).strip("_")
-    return s or "imported_game"
+    ascii_ = unicodedata.normalize("NFKD", name).encode("ascii", "ignore").decode()
+    s = re.sub(r"[^a-z0-9]+", "_", ascii_.lower()).strip("_")
+    # An all-non-ASCII name (e.g. CJK) would collapse to ""; derive a stable,
+    # non-colliding fallback instead of every such game sharing one uid.
+    return s or ("gc_" + hashlib.sha1(name.encode("utf-8")).hexdigest()[:8])
 
 
 def class_name(uid: str) -> str:
@@ -78,7 +83,7 @@ def build(code: str, cols: int, name: str, uid: str, author: str | None,
     board = parse_fen(code, cols)          # validates the FEN; raises on garbage
     if not board:
         raise SystemExit("error: parsed an empty board — check --code / --cols")
-    height = max(r for _, r in board) + 1
+    _, height = fen_dimensions(code, cols)  # full rank count (not max occupied row)
     src = source_url(rules_url)
 
     manifest = {
@@ -113,12 +118,12 @@ game, port it to a ChessLike/Game module instead (see the skill).
 
 from agp.freeform import FreeformGame, parse_fen
 
-CODE = "{code}"
+CODE = {json.dumps(code)}
 
 
 class {class_name(uid)}(FreeformGame):
-    uid = "{uid}"
-    name = "{name}"
+    uid = {json.dumps(uid)}
+    name = {json.dumps(name)}
     WIDTH = {cols}
     HEIGHT = {height}
 
@@ -165,7 +170,12 @@ def main(argv=None) -> int:
         php = Path(args.settings).read_text(encoding="utf-8", errors="ignore")
 
     code = args.code or (extract(php, "code") if php else None)
-    cols = args.cols or (int(c) if php and (c := extract(php, "cols")) else None)
+    cols = args.cols
+    if cols is None and php and (c := extract(php, "cols")):
+        try:
+            cols = int(c)
+        except ValueError:
+            ap.error(f"settings 'cols' is not an integer: {c!r}")
     name = args.name or (extract(php, "game") if php else None)
     rules_url = args.rules_url or (extract(php, "rulesurl") if php else None)
     author = author_of(php) if php else None

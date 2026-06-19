@@ -241,7 +241,10 @@ def build_history(game, match) -> list[dict]:
 # ===========================================================================
 import re
 
-_FREEFORM_MOVE_RE = re.compile(r"^(-?\d+,-?\d+)>(-?\d+,-?\d+)(=.+)?$")
+# A board move is "from>to" with an optional "=label" retype. The label is
+# bounded (alphanumeric, <=8) so honor-system input can't smuggle ">", huge
+# strings, or punctuation into a persisted piece label.
+_FREEFORM_MOVE_RE = re.compile(r"^(-?\d+,-?\d+)>(-?\d+,-?\d+)(=[A-Za-z0-9]{1,8})?$")
 _FREEFORM_REMOVE_RE = re.compile(r"^@(-?\d+,-?\d+)$")
 
 

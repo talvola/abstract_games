@@ -72,6 +72,27 @@ def parse_fen(code: str, cols: int) -> dict:
     Used by freeform imports (e.g. the gamecourier-to-platform skill) so a game's
     opening position round-trips from its settings file with no hand-transcription.
     """
+    ranks = _fen_ranks(code, cols)
+    height = len(ranks)
+    board: dict = {}
+    for ri, rank in enumerate(ranks):
+        row = height - 1 - ri              # first rank in the string is the top row
+        for col, val in enumerate(rank):
+            if val is not None and val != "-":
+                board[(col, row)] = val
+    return board
+
+
+def fen_dimensions(code: str, cols: int) -> tuple:
+    """``(width, height)`` of an extended FEN. Height = the number of ranks the
+    FEN encodes (so a board whose top ranks are empty keeps its full height —
+    don't infer height from the occupied cells)."""
+    return cols, len(_fen_ranks(code, cols))
+
+
+def _fen_ranks(code: str, cols: int) -> list:
+    """Tokenise an extended FEN into ranks (top-to-bottom), each a list of
+    ``(player, label)`` / ``None`` (empty) / ``"-"`` (non-cell)."""
     ranks: list[list] = []
     cur: list = []
 
@@ -107,7 +128,9 @@ def parse_fen(code: str, cols: int) -> dict:
             end_rank(None)                 # fill the rest of this rank with empties
             i += 1
         elif ch == "{":
-            j = code.index("}", i)
+            j = code.find("}", i)
+            if j < 0:
+                raise ValueError(f"unbalanced '{{' in FEN near offset {i}")
             label = code[i + 1:j]
             push((0 if label[:1].isupper() else 1, label))
             i = j + 1
@@ -119,15 +142,7 @@ def parse_fen(code: str, cols: int) -> dict:
             i += 1
     if cur:
         end_rank("-")
-
-    height = len(ranks)
-    board: dict = {}
-    for ri, rank in enumerate(ranks):
-        row = height - 1 - ri              # first rank in the string is the top row
-        for col, val in enumerate(rank):
-            if val is not None and val != "-":
-                board[(col, row)] = val
-    return board
+    return ranks
 
 
 @dataclass
