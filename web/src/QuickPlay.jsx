@@ -20,7 +20,9 @@ function Menu({ games, go, onStart }) {
   const [mode, setMode] = useState('hotseat') // hotseat | bot
   const [opts, setOpts] = useState({})
   const game = games.find((g) => g.uid === uid)
+  const freeform = !!game?.freeform
   useEffect(() => setOpts(defaultOptions(game?.options)), [uid]) // eslint-disable-line
+  useEffect(() => { if (freeform) setMode('hotseat') }, [freeform])
 
   return (
     <div className="menu">
@@ -37,9 +39,10 @@ function Menu({ games, go, onStart }) {
         <label>Opponent</label>
         <div className="seg">
           <button className={mode === 'hotseat' ? 'on' : ''} onClick={() => setMode('hotseat')}>Two players (hotseat)</button>
-          <button className={mode === 'bot' ? 'on' : ''} onClick={() => setMode('bot')}>vs Computer</button>
+          <button className={mode === 'bot' ? 'on' : ''} onClick={() => setMode('bot')} disabled={freeform}>vs Computer</button>
         </div>
       </div>
+      {freeform && <div className="muted small">Unenforced board — honor system, no computer opponent.</div>}
 
       <button
         className="start"
@@ -115,7 +118,7 @@ function Play({ match, setMatch, onExit }) {
       <div className="status" style={{ borderColor: view.terminal ? '#c9a96e' : '#888' }}>{status}</div>
       <div className="play-area">
         <div className="board-col">
-          <Board spec={view.render} legalMoves={myTurn ? view.legal_moves : []} onMove={applyMove} disabled={!myTurn} />
+          <Board spec={view.render} legalMoves={myTurn ? view.legal_moves : []} onMove={applyMove} disabled={!myTurn} freeform={view.freeform} />
           {view.render.caption && <div className="caption">{view.render.caption}</div>}
         </div>
         <MoveLog moves={log} />

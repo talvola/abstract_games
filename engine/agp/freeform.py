@@ -32,10 +32,13 @@ Moves (all strings, in the platform's clickable notation):
 * ``"@fc,fr"`` — remove the piece on a cell.
 * ``"pass"`` — yield the turn without moving.
 * ``"resign"`` — the player to move resigns (the opponent wins).
+* ``"offer-draw"`` — offer a draw and pass the turn; the opponent then sees
+  ``"accept-draw"`` (→ the game is a draw) and ``"decline-draw"``. Any ordinary
+  move also implicitly declines a pending offer.
 
-``legal_moves`` returns only the discrete *action* tokens (``pass`` / ``resign``)
-— the unrestricted board moves are validated structurally by the server, not
-enumerated here (the cross-product would be huge and the UI uses free drag).
+``legal_moves`` returns only the discrete *action* tokens — the unrestricted
+board moves are validated structurally by the server, not enumerated here (the
+cross-product would be huge and the UI uses free drag).
 """
 
 from __future__ import annotations
@@ -57,6 +60,7 @@ class FState:
     to_move: int = 0
     result: Optional[list] = None                    # per-player returns once over
     last: Optional[tuple] = None                     # (from, to) for highlighting
+    draw_offer: Optional[int] = None                 # seat with a pending draw offer
     ply: int = 0
 
 
@@ -93,16 +97,26 @@ class FreeformGame(Game):
         # only the discrete actions are enumerated. Non-empty until terminal.
         if state.result is not None:
             return []
-        return ["pass", "resign"]
+        if state.draw_offer is not None and state.draw_offer != state.to_move:
+            return ["accept-draw", "decline-draw", "pass", "resign"]
+        return ["pass", "resign", "offer-draw"]
 
     def apply_move(self, state: FState, move: str, rng=None) -> FState:
         board = dict(state.board)
         nxt = (state.to_move + 1) % self.NUM_PLAYERS
         last = None
         result = state.result
+        # Any move other than offering/accepting clears a pending draw offer
+        # (an ordinary move implicitly declines).
+        draw_offer = state.draw_offer if move in ("offer-draw", "accept-draw") else None
 
-        if move == "pass":
+        if move == "pass" or move == "decline-draw":
             pass
+        elif move == "offer-draw":
+            draw_offer = state.to_move
+        elif move == "accept-draw":
+            result = [0.0] * self.NUM_PLAYERS
+            nxt = state.to_move
         elif move == "resign":
             # the resigning player (to_move) loses; everyone else shares the win
             result = [1.0] * self.NUM_PLAYERS
@@ -121,7 +135,7 @@ class FreeformGame(Game):
                 last = (frm, to)
 
         return FState(board=board, to_move=nxt, result=result,
-                      last=last, ply=state.ply + 1)
+                      last=last, draw_offer=draw_offer, ply=state.ply + 1)
 
     def is_terminal(self, state: FState) -> bool:
         return state.result is not None
@@ -136,6 +150,7 @@ class FreeformGame(Game):
             "to_move": state.to_move,
             "result": list(state.result) if state.result is not None else None,
             "last": [list(state.last[0]), list(state.last[1])] if state.last else None,
+            "draw_offer": state.draw_offer,
             "ply": state.ply,
         }
 
@@ -149,6 +164,7 @@ class FreeformGame(Game):
             to_move=d["to_move"],
             result=list(d["result"]) if d.get("result") is not None else None,
             last=last,
+            draw_offer=d.get("draw_offer"),
             ply=d.get("ply", 0),
         )
 
@@ -169,6 +185,8 @@ class FreeformGame(Game):
                 f"{names[max(range(len(r)), key=lambda i: r[i])]} wins (resignation)"
         else:
             caption = f"{names[state.to_move]} to move — unenforced (honor system)"
+            if state.draw_offer is not None and state.draw_offer != state.to_move:
+                caption += " · draw offered"
         return {
             "board": self.board_spec(),
             "pieces": pieces,

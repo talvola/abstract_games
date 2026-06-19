@@ -1,6 +1,6 @@
-# Freeform (unenforced) game mode — spike
+# Freeform (unenforced) game mode
 
-Status: **engine foundation built + tested; server/web wiring pending.**
+Status: **shipped — engine + server + web, with a demo game, verified in-browser.**
 
 Game Courier hosts hundreds of variants because a preset can be *unenforced* — it
 defines a board + starting position and lets players move pieces freely on the
@@ -50,37 +50,50 @@ rejected.
 
 So an unenforced game package validates today:
 `manifest.json` with `"mode": "freeform"` + a `game.py` subclassing `FreeformGame`.
+Reference package: **`engine/games/freeform_chess`** ("Freeform Board (8×8)") — a
+standard chess array with no rules, in the **Sandbox** category.
 
-## What remains (separate PRs — touch server + web, can't verify headless here)
+Draw-agreement is handled **inside the engine state** (no DB column): `offer-draw`
+sets `draw_offer` and passes the turn; the opponent sees `accept-draw` (→ draw) /
+`decline-draw`, and any ordinary move implicitly declines. Because the offer lives
+in the serialized state, it survives correspondence polling with no schema change.
 
-1. **Manifest/SPEC.** Document the `"mode": "freeform"` key (added a short note to
-   `SPEC.md`). `mode` defaults to `"enforced"`.
-2. **Server** (`server/`): for a match whose game `mode == "freeform"`:
-   - accept a move if it is *structurally* valid — an action token, or a
-     `from>to`(`=X`)/`@cell` whose cells lie on the board — instead of checking
-     membership in `legal_moves`;
-   - end the match only on an explicit result action; add a **draw-agreement**
-     action pair (offer/accept) — `FreeformGame` currently handles `resign`;
-     mutual-draw is a server-mediated handshake (or extend `apply_move` with
-     `offer-draw`/`accept-draw` once the turn/seat model for it is decided);
-   - **disable the bot opponent** (no MCTS enqueue) for freeform matches.
-3. **Web** (`web/src/`): a freeform input mode on the generic `Board` — drag any
-   piece to any cell (don't restrict to legal continuations), plus action buttons
-   (pass / resign / offer-draw) and a small "set result" control; show an
-   "Unenforced — honor system" badge. The renderer already draws the RenderSpec;
-   this is an input-layer addition.
-4. **Importer.** Wire the `gamecourier-to-platform` freeform path (§7 of the skill)
-   to emit a `FreeformGame` subclass from a Game Courier settings file alone
-   (board geometry + setup, no GAME-Code interpretation).
+## What's built (server)
 
-## Open sub-questions for the server/web pass
+`server/games.py` + `server/app.py`:
+- `is_freeform(game)` (reads `enforced`) and `freeform_move_ok(game, state, move)`
+  — a **structural, topology-agnostic** validator: an action token, or a
+  `from>to`(`=X`)/`@cell` whose source cell is currently occupied (occupancy read
+  from `render()` so it works for any board type).
+- The correspondence move route and the stateless quick-play route **branch**:
+  enforced → `legal_moves` membership; freeform → `freeform_move_ok` (server is a
+  move-relay, not a referee).
+- `new_match` **rejects a bot opponent** for freeform games (400); the catalogue
+  (`/api/games`) exposes `mode` + `freeform`, and `position_view` exposes
+  `freeform` so the client can switch input modes.
+- Resign uses the existing `/resign` endpoint; draws go through the engine moves.
 
-- **Turn model:** strict alternation (current `FreeformGame` flips `to_move` each
-  move) vs. Game Courier's looser "side to move may make several piece moves."
-  Strict alternation is simplest; revisit if it feels wrong in play.
-- **Setup edits / piece drops:** Game Courier lets you add/remove pieces freely
-  (`@`/place). `FreeformGame` supports remove + retype; a generic "place piece X on
-  cell" move can be added when the web UI needs it.
-- **Result entry trust:** honor-system result-setting (either player can declare)
-  vs. requiring agreement. Start with resign + draw-agreement; defer free
-  result-declaration.
+## What's built (web)
+
+`web/src/`:
+- `Board.jsx` gains a **`freeform` input mode**: select any piece → click any
+  square to submit `from>to` (no legal-move restriction); only the selected source
+  is highlighted (no 64-target flood). Cells carry a `data-cell` attribute (stable
+  selector for testing). Friendly labels for `offer-draw`/`accept-draw`/
+  `decline-draw`/`resign`/`pass`.
+- `MatchPlay.jsx` / `QuickPlay.jsx` pass `freeform`; `MatchPlay` routes resign
+  through its dedicated button (filters it from the action row).
+- `QuickPlay.jsx` + `Lobby.jsx` **disable "vs Computer"** for freeform games and
+  show an "unenforced — honor system" note.
+
+Verified in-browser (Quick Play hotseat): an illegal-in-chess move applies, the
+Pass/Resign/Offer-draw actions show, and offer → Accept/Decline → "Draw" works.
+
+## Still optional / future
+
+- **Importer.** Wire the `gamecourier-to-platform` freeform path (§7 of the skill)
+  to emit a `FreeformGame` subclass from a Game Courier settings file alone.
+- **Setup edits / piece drops:** a generic "place piece X on cell" move (the
+  engine already supports `@cell` removal + `=X` retype) once the UI needs it.
+- **Turn model:** currently strict alternation; Game Courier allows a looser
+  "side to move may make several piece moves" — revisit if it feels wrong in play.

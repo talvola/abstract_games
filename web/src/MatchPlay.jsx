@@ -95,9 +95,10 @@ export default function MatchPlay({ id, me, go }) {
         <div className="board-col">
           <Board
             spec={m.render}
-            legalMoves={m.my_turn ? m.legal_moves : []}
+            legalMoves={m.my_turn ? (m.legal_moves || []).filter((x) => x !== 'resign') : []}
             onMove={play}
             disabled={!m.my_turn}
+            freeform={m.freeform}
           />
           {m.render.caption && <div className="caption">{m.render.caption}</div>}
         </div>

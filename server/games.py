@@ -239,6 +239,34 @@ def build_history(game, match) -> list[dict]:
 # ===========================================================================
 #  match driving
 # ===========================================================================
+import re
+
+_FREEFORM_MOVE_RE = re.compile(r"^(-?\d+,-?\d+)>(-?\d+,-?\d+)(=.+)?$")
+_FREEFORM_REMOVE_RE = re.compile(r"^@(-?\d+,-?\d+)$")
+
+
+def is_freeform(game) -> bool:
+    """Whether a game is unenforced (honor-system). See agp.FreeformGame."""
+    return getattr(game, "enforced", True) is False
+
+
+def freeform_move_ok(game, state, move: str) -> bool:
+    """Validate a move for an unenforced game *structurally* (the server is a
+    move-relay, not a referee): an action token, or a board move/removal whose
+    source cell currently holds a piece. Topology-agnostic — occupancy is read
+    from render() so it works for any board type."""
+    if move in game.legal_moves(state):           # pass / resign / draw actions
+        return True
+    occupied = {p["cell"] for p in game.render(state).get("pieces", [])}
+    m = _FREEFORM_MOVE_RE.match(move)
+    if m:
+        return m.group(1) in occupied
+    rm = _FREEFORM_REMOVE_RE.match(move)
+    if rm:
+        return rm.group(1) in occupied
+    return False
+
+
 def position_view(game, state) -> dict:
     terminal = game.is_terminal(state)
     return {
@@ -246,6 +274,7 @@ def position_view(game, state) -> dict:
         "legal_moves": game.legal_moves(state),
         "current_player": game.current_player(state),
         "num_players": game.num_players,
+        "freeform": is_freeform(game),
         "terminal": terminal,
         "returns": game.returns(state) if terminal else None,
     }

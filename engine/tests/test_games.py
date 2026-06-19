@@ -383,7 +383,7 @@ def test_freeform_mode():
 
     s = game.initial_state()
     assert not game.is_terminal(s)
-    assert game.legal_moves(s) == ["pass", "resign"]
+    assert game.legal_moves(s) == ["pass", "resign", "offer-draw"]
 
     # any piece can move anywhere, no legality, capturing what's there
     s2 = game.apply_move(s, "4,0>4,7")              # White king "captures" Black king
@@ -398,6 +398,16 @@ def test_freeform_mode():
     # resign ends the game; the resigner (White) loses
     over = game.apply_move(s, "resign")
     assert game.is_terminal(over) and game.returns(over) == [-1.0, 1.0]
+
+    # draw agreement: White offers, turn passes to Black who can accept
+    off = game.apply_move(s, "offer-draw")
+    assert off.to_move == 1 and off.draw_offer == 0
+    assert game.legal_moves(off) == ["accept-draw", "decline-draw", "pass", "resign"]
+    drawn = game.apply_move(off, "accept-draw")
+    assert game.is_terminal(drawn) and game.returns(drawn) == [0.0, 0.0]
+    # an ordinary move implicitly declines a pending offer
+    moved = game.apply_move(off, "4,7>4,6")
+    assert moved.draw_offer is None and not game.is_terminal(moved)
 
 
 def test_apply_move_is_pure():

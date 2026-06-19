@@ -150,7 +150,9 @@ function NewChallenge({ games, go, onCreated }) {
   const [busy, setBusy] = useState(false)
 
   const game = games.find((g) => g.uid === uid)
+  const freeform = !!game?.freeform
   useEffect(() => setOpts(defaultOptions(game?.options)), [uid]) // eslint-disable-line
+  useEffect(() => { if (freeform) setOpponent('human') }, [freeform])
 
   async function create() {
     setBusy(true)
@@ -176,10 +178,11 @@ function NewChallenge({ games, go, onCreated }) {
         <GameOptions options={game?.options} values={opts} onChange={(k, v) => setOpts((o) => ({ ...o, [k]: v }))} />
 
         <label>Opponent</label>
-        <select value={opponent} onChange={(e) => setOpponent(e.target.value)}>
+        <select value={opponent} onChange={(e) => setOpponent(e.target.value)} disabled={freeform}>
           <option value="human">Open challenge (another person)</option>
-          <option value="computer">Computer</option>
+          {!freeform && <option value="computer">Computer</option>}
         </select>
+        {freeform && <div className="muted small">Unenforced board — honor system, no computer opponent.</div>}
 
         <label>You play</label>
         <select value={seat} onChange={(e) => setSeat(e.target.value)}>

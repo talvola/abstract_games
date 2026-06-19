@@ -27,7 +27,10 @@ const sameCells = (a, b) => a.length === b.length && a.every((c, i) => c === b[i
 const CELL_RE = /^-?\d+,-?\d+$/
 const isCellMove = (m) => m.split('>').every((seg) => CELL_RE.test(seg.split('=')[0]))
 // Non-cell legal moves render as action buttons (e.g. pie-rule "swap", "pass").
-const ACTION_LABELS = { swap: 'Swap (pie rule)', pass: 'Pass', end: 'End turn' }
+const ACTION_LABELS = {
+  swap: 'Swap (pie rule)', pass: 'Pass', end: 'End turn', resign: 'Resign',
+  'offer-draw': 'Offer draw', 'accept-draw': 'Accept draw', 'decline-draw': 'Decline draw',
+}
 
 function squareCells(b) {
   // Draw row 0 at the BOTTOM so the first player (whose pieces start on the low
@@ -58,10 +61,10 @@ function hexPoly(cx, cy, s) {
 }
 const eqPrefix = (path, sel) => sel.every((c, i) => path[i] === c)
 
-export default function Board({ spec, legalMoves, onMove, disabled }) {
+export default function Board({ spec, legalMoves, onMove, disabled, freeform }) {
   const [sel, setSel] = useState([])
   const [promo, setPromo] = useState(null) // { cells, options: [{choice, move}] }
-  useEffect(() => { setSel([]); setPromo(null) }, [JSON.stringify(legalMoves), disabled])
+  useEffect(() => { setSel([]); setPromo(null) }, [JSON.stringify(legalMoves), disabled, freeform])
 
   if (!spec) return null
   const board = spec.board
@@ -78,6 +81,12 @@ export default function Board({ spec, legalMoves, onMove, disabled }) {
 
   function click(cellId) {
     if (disabled || promo) return
+    if (freeform) {                                  // honor-system: any piece -> any square
+      if (sel.length === 0) { if (pieces[cellId]) setSel([cellId]); return }
+      if (sel[0] === cellId) { setSel([]); return }  // click source again to cancel
+      onMove(`${sel[0]}>${cellId}`); setSel([])
+      return
+    }
     const cand = [...sel, cellId]
     const matches = moves.filter((m) => sameCells(m.cells, cand))
     if (matches.length === 1) { onMove(matches[0].raw); setSel([]); return }
@@ -154,9 +163,15 @@ export default function Board({ spec, legalMoves, onMove, disabled }) {
         {shapes.map((s) => {
           const piece = pieces[s.id]
           const selected = selSet.has(s.id)
-          const isTarget = !firstStep && nextCells.has(s.id) && !disabled && !selected
-          const isSource = sources.has(s.id) && !disabled && !selected && !isTarget
-          const clickable = selected || isTarget || isSource
+          const freeMode = freeform && !disabled
+          // Enforced games decorate legal targets/sources; freeform keeps every
+          // cell clickable but only highlights the selected source (no 64 dots).
+          const isTarget = !freeMode && !firstStep && nextCells.has(s.id) && !disabled && !selected
+          const isSource = freeMode
+            ? sel.length === 0 && !!piece
+            : sources.has(s.id) && !disabled && !selected && !isTarget
+          const freeTarget = freeMode && sel.length === 1 && !selected
+          const clickable = selected || isTarget || isSource || freeTarget
           const isGoal = hl[s.id] === 'goal'
           const baseFill = s.parity ? '#332e27' : '#2a2620'
           const fill = selected ? '#6b5520' : isTarget ? '#2f4030'
@@ -165,7 +180,7 @@ export default function Board({ spec, legalMoves, onMove, disabled }) {
             : isGoal ? '#c9a96e' : isSource && piece ? '#7a6a3a' : '#4a4238'
           const sw = (selected || isTarget || isGoal ? 0.14 : 0.07) * s.r
           return (
-            <g key={s.id} onClick={clickable ? () => click(s.id) : undefined} style={{ cursor: clickable ? 'pointer' : 'default' }}>
+            <g key={s.id} data-cell={s.id} onClick={clickable ? () => click(s.id) : undefined} style={{ cursor: clickable ? 'pointer' : 'default' }}>
               <polygon points={s.poly} fill={fill} stroke={stroke} strokeWidth={sw} />
               {isTarget && piece && <circle cx={s.cx} cy={s.cy} r={s.r * 0.9} fill="none" stroke="#5cba6b" strokeWidth={s.r * 0.1} />}
               {piece && (piece.label

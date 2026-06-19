@@ -234,10 +234,11 @@ freely on the honor system, with no legality checking. That's the opposite of ou
 validated engine — and it's a complementary mode, not a replacement. A freeform module type (board
 geometry + piece set + initial setup, **no `legal_moves`/`is_terminal` logic**) would let us host a
 long tail of variants in minutes, with the bot disabled and "anything goes" move entry, then graduate
-the popular ones to fully-enforced engine modules. **Engine foundation is built** — `agp.FreeformGame`
-+ a manifest `"mode": "freeform"` + a conformance branch + tests (see `engine/FREEFORM_MODE.md`); the
-remaining work is server (move-relay + draw-agreement + bot-disable) and web (free piece drag + action
-buttons). The freeform path of the import skill (below) targets it.
+the popular ones to fully-enforced engine modules. **Shipped** — `agp.FreeformGame` + a manifest
+`"mode": "freeform"`, a conformance branch, server move-relay + draw-agreement + bot-disable, and a web
+free-drag input mode, with a demo game (**Freeform Board (8×8)**, the "Sandbox" category) verified
+in-browser (see `engine/FREEFORM_MODE.md`). Remaining: wire the freeform path of the import skill
+(below) to emit a `FreeformGame` from a Game Courier settings file alone.
 
 ### Importing games from Game Courier / chessvariants.com
 Erik's ask: given a URL like `…/play/pbm/play.php?game=Univers+Chess&settings=default` *or* just

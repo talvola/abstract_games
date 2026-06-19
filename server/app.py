@@ -235,6 +235,8 @@ def list_games():
             "tags": m.get("tags", []),
             "bgg_url": m.get("bgg_url"),
             "category": m.get("category", "Other"),
+            "mode": m.get("mode", "enforced"),
+            "freeform": m.get("mode") == "freeform",
             "source": entry["source"],
             "uploader": entry.get("uploader"),
             "has_rules": (entry["path"] / "rules.md").exists(),
@@ -405,8 +407,10 @@ def cancel_seek(seek_id: str, db: Session = Depends(get_db), user: User = Depend
 # ===========================================================================
 @app.post("/api/matches")
 def new_match(body: NewMatchBody, db: Session = Depends(get_db), user: User = Depends(current_user)):
-    registry.get(body.game_uid)
+    _, game = registry.get(body.game_uid)
     if body.opponent == "bot":
+        if G.is_freeform(game):
+            raise HTTPException(400, "freeform (unenforced) games have no computer opponent")
         bot = seat_bot(body.bot_iterations)
         players = order_seats(seat_user(user), bot, body.seat)
         match = create_match(db, body.game_uid, body.options or {}, players)
@@ -467,7 +471,11 @@ def make_match_move(
 
     _, game = registry.get(match.game_uid)
     state = game.deserialize(match.state)
-    if body.move not in game.legal_moves(state):
+    # Enforced games check legal-move membership; freeform (honor-system) games
+    # accept any structurally-valid move — the server relays, it doesn't referee.
+    ok = (G.freeform_move_ok(game, state, body.move) if G.is_freeform(game)
+          else body.move in game.legal_moves(state))
+    if not ok:
         raise HTTPException(400, f"illegal move {body.move!r}")
 
     # Apply ONLY the human move and return immediately, so the client paints it
@@ -549,7 +557,9 @@ def stateless_move(uid: str, body: StatelessMoveBody):
     state = game.deserialize(body.state)
     if game.is_terminal(state):
         raise HTTPException(400, "game is over")
-    if body.move not in game.legal_moves(state):
+    ok = (G.freeform_move_ok(game, state, body.move) if G.is_freeform(game)
+          else body.move in game.legal_moves(state))
+    if not ok:
         raise HTTPException(400, f"illegal move {body.move!r}")
     label = game.describe_move(state, body.move)
     mover = game.current_player(state)

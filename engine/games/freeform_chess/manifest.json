@@ -1,0 +1,14 @@
+{
+  "uid": "freeform_chess",
+  "name": "Freeform Board (8×8)",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "AGP",
+  "mode": "freeform",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Sandbox",
+  "tags": ["square", "freeform", "sandbox", "chess"],
+  "description": "An UNENFORCED 8×8 board set up for chess, played on the honor system: either player may move, capture, or remove any piece freely — no rules are checked and no legal moves are highlighted. Use it to play any 8×8 variant by hand, set up positions, or analyze. There is no computer opponent; end a game by resigning or by agreeing to a draw."
+}
