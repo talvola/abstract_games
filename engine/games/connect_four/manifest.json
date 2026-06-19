@@ -1,0 +1,14 @@
+{
+  "uid": "connect_four",
+  "name": "Connect Four",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "AGP",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "N-in-a-row",
+  "tags": ["square", "alignment", "drop"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/2719/connect-four",
+  "description": "The classic vertical four-in-a-row on a 7x6 grid. Drop a disc into a column; it falls to the lowest empty cell. First to line up four of their own discs horizontally, vertically, or diagonally wins; a full board with no line is a draw."
+}

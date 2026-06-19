@@ -364,6 +364,30 @@ def test_tictactoe_mcts_never_loses_as_x():
         assert res["returns"][0] >= 0.0  # X wins or draws, never loses
 
 
+def test_connect_four():
+    manifest, game = _load("connect_four")
+    assert check(game, manifest, games=40).ok
+
+    # 7 columns -> 7 legal landing cells at the start, each a bottom-row cell
+    s = game.initial_state()
+    assert sorted(game.legal_moves(s)) == [f"{c},0" for c in range(7)]
+
+    # vertical four for Red (player 0): Red col0 x4, Yellow col1 x3
+    for mv in ["0,0", "1,0", "0,1", "1,1", "0,2", "1,2", "0,3"]:
+        s = game.apply_move(s, mv)
+    assert game.is_terminal(s) and game.returns(s) == [1.0, -1.0]
+
+    # horizontal four for Red across the bottom row
+    s = game.initial_state()
+    for mv in ["0,0", "0,1", "1,0", "1,1", "2,0", "2,1", "3,0"]:
+        s = game.apply_move(s, mv)
+    assert game.is_terminal(s) and game.returns(s) == [1.0, -1.0]
+
+    # a move drops to the lowest empty cell: after 0,0 the column-0 target is 0,1
+    s = game.apply_move(game.initial_state(), "0,0")
+    assert "0,1" in game.legal_moves(s) and "0,0" not in game.legal_moves(s)
+
+
 def test_freeform_mode():
     # A minimal unenforced game: an 8x8 board with two kings, no rules.
     from agp import FreeformGame
