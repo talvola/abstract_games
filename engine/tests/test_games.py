@@ -388,6 +388,33 @@ def test_connect_four():
     assert "0,1" in game.legal_moves(s) and "0,0" not in game.legal_moves(s)
 
 
+def test_reversi():
+    manifest, game = _load("reversi")
+    assert check(game, manifest, games=30).ok
+
+    s = game.initial_state()
+    # the four standard Othello openings for Black
+    assert sorted(game.legal_moves(s)) == ["2,3", "3,2", "4,5", "5,4"]
+
+    # Black plays d3 (3,2): the white disc at (3,3) flips to Black; score 4-1
+    s2 = game.apply_move(s, "3,2")
+    assert s2.board[(3, 3)] == 0 and s2.board[(3, 2)] == 0
+    assert game.current_player(s2) == 1
+    assert sum(p == 0 for p in s2.board.values()) == 4
+    assert sum(p == 1 for p in s2.board.values()) == 1
+
+    # the pass mechanic just hands over the turn without changing the board
+    passed = game.apply_move(s2, "pass")
+    assert passed.to_move == 0 and passed.board == s2.board
+
+    # a finished position scores by majority (here Black has more discs)
+    full = {f"{c},{r}": (0 if (c + r) % 2 == 0 or r < 4 else 1)
+            for c in range(8) for r in range(8)}
+    term = game.deserialize({"board": full, "to_move": 0})
+    assert game.is_terminal(term)                    # full board -> no placements
+    assert game.returns(term)[0] == 1.0              # Black majority wins
+
+
 def test_freeform_mode():
     # A minimal unenforced game: an 8x8 board with two kings, no rules.
     from agp import FreeformGame

@@ -1,0 +1,14 @@
+{
+  "uid": "reversi",
+  "name": "Reversi",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "AGP",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Capture / annihilation",
+  "tags": ["square", "flipping", "othello"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/2389/othello",
+  "description": "Reversi (Othello), the 8x8 flipping game. Place a disc so it brackets a straight line of opponent discs between the new disc and another of your own; every bracketed disc flips to your colour. Pass only when you cannot move. When neither player can move, the majority of discs wins; equal counts draw. Black moves first."
+}
