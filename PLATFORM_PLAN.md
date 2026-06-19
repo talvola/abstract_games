@@ -184,7 +184,109 @@ Deliver a small local toolkit so a Claude Code session can build a game end-to-e
 - **Engine API versioning from day 1** (`engine_api` in manifest) so old modules keep working as the
   contract evolves.
 
-## 8. Open questions to resolve before/at Phase 1
+## 8. Features to borrow from Game Courier (chessvariants.com)
+
+[Game Courier](https://www.chessvariants.com/play/pbm/) (Fergus Duniho's play-by-mail system) is
+the closest existing thing to what we're building: a correspondence platform hosting *hundreds* of
+abstract/chess-variant games, where new games are added as data rather than redeployed code. It's
+worth mining for features and one big design idea. (Note: the site 403s automated fetchers — use a
+real browser / the `pinchtab` skill to read its pages.)
+
+| Capability | Game Courier | Us (today) | Action |
+|---|---|---|---|
+| Async correspondence vs. humans | ✅ core | planned (Phase 2) | build as planned |
+| "Your turn" notifications | ✅ email + "Your Games" dashboard | — | Phase 2 |
+| Invitations | ✅ **open** challenges + **personal** invites by email/link | — | Phase 2 lobby/challenges |
+| Correspondence time controls | ✅ Grace (per-move) + Reserve bank (Spare/Min/Extra/Bonus/Max) | — | Phase 4 (model on theirs) |
+| Per-game ratings | ✅ | — | Phase 4 |
+| Move entry by **typed notation** | ✅ (notation + Preview) *and* click/touch | click-to-move only | add: our moves are already strings → expose a notation input |
+| Move log + **replay** of finished games | ✅ | partial (full history stored) | Phase 4 replay viewer |
+| Public game browsing / ranking | ✅ sortable, ranked by popularity | — | Phase 4 spectating + index |
+| In-game **comments / kibbitzing** | ✅ per-move comments + site-wide feed | — | new: per-move comment thread (great for correspondence) |
+| **Unenforced (honor-system) games** | ✅ — play any variant with *no* rule code | ✗ engine always enforces | **design idea, see below** |
+| Rule enforcement | GAME Code (Turing-complete server lang) | Python `Game` module | ours is stronger-typed; keep |
+| Authoring barrier | wizard generates GAME Code for simple variants | Claude Code writes the module against `SPEC.md` | our Claude-authoring loop is the analog; see import skill |
+| User-generated content | anyone authors presets in Edit mode | trusted-author uploads (Phase 3) | already covered |
+
+**Prioritized additions** (slot into existing phases):
+- **Phase 2:** open + personal invitations (personal = locked to a user id; open = appears in a
+  public list + "what's new" feed); "your turn" email + a "Your Games" dashboard showing whose turn
+  it is. **Resign by a reserved move token** and a draw-offer/agreement action (Game Courier types
+  literal `resign`; we already model non-cell actions like `"pass"`/`"swap"` as buttons, so
+  `"resign"`/`"offer-draw"`/`"accept-draw"` are the same mechanism).
+- **Phase 4:** correspondence time controls — copy Game Courier's **two-axis model**: *Grace Time*
+  (a per-move grace period that doesn't touch the bank) + *Reserve Time* (a whole-game bank with
+  Spare/Min/Extra/Bonus+BonusPeriod/Max knobs). Pure days-per-move = Grace alone; accumulating bank =
+  Spare+Extra. Also: per-game ratings, replay viewer, public game index ranked by activity — all
+  already on the roadmap; Game Courier is the reference implementation to copy behavior from.
+- **New, small, high-value:** **per-move comment threads / annotations** (kibbitzing). Correspondence
+  play is social; a comment box attached to each move/match is cheap and a big engagement lever.
+  Game Courier even has a *Record/annotate* mode with branching variation lines (`|`-prefixed) — a
+  nice later target for a replay/analysis viewer. And a **typed-notation move input** alongside
+  click-to-move — nearly free since our moves are already canonical strings (`"2,1>3,4"`, `"swap"`).
+  Note Game Courier's move syntax is a useful precedent: it knows *no* game's rules and relies on
+  **full algebraic notation** (`P e2-e4`, `;`-chained sub-moves, promotion `q-e8`, drop `b*5e`,
+  removal `e4-`) — structurally the same idea as our `>`-separated paths with `=CHOICE` suffixes.
+
+**Big design idea — an "unenforced" / freeform game mode.** Game Courier's reach (hundreds of games)
+comes from *not requiring* rule code: a preset can just define a board + pieces and let players move
+freely on the honor system, with no legality checking. That's the opposite of our strict, conformance-
+validated engine — and it's a complementary mode, not a replacement. A freeform module type (board
+geometry + piece set + initial setup, **no `legal_moves`/`is_terminal` logic**) would let us host a
+long tail of variants in minutes, with the bot disabled and "anything goes" move entry, then graduate
+the popular ones to fully-enforced engine modules. **Engine foundation is built** — `agp.FreeformGame`
++ a manifest `"mode": "freeform"` + a conformance branch + tests (see `engine/FREEFORM_MODE.md`); the
+remaining work is server (move-relay + draw-agreement + bot-disable) and web (free piece drag + action
+buttons). The freeform path of the import skill (below) targets it.
+
+### Importing games from Game Courier / chessvariants.com
+Erik's ask: given a URL like `…/play/pbm/play.php?game=Univers+Chess&settings=default` *or* just
+"import N Chess from Game Courier," locate the rules, board, and piece movements and emit an engine
+module. Feasible as a **`gamecourier-to-platform` skill**, sibling to `zillions-to-platform`. The
+mechanics line up better than expected:
+
+- **How a game is addressed.** A preset is `play.php?game=<Name>&settings=<basename>`. The `game`
+  name → a game id (lowercase, spaces→`_`) that locates logs/settings/rules; `settings` is the
+  basename of a **PHP settings file**. That file's raw source is retrievable programmatically:
+  **`/play/pbmsettings/showsource.php?game=<Name>&settings=<basename>`**. So "import 123456 Chess"
+  resolves to: hit `showsource.php` for its settings + fetch its rules page. (Both 403 bots → fetch
+  via a real browser / the `pinchtab` skill, which Erik is logged into.)
+- **What's mechanically parseable (the easy 60%).** The settings file is just `$default[...]`
+  assignments. Board **geometry and starting position are fully declarative**: `code` (an *extended
+  FEN* — digits = N empty squares, `/` = end-of-rank, `-` = non-cell/hole, `{NB}` = multi-char piece
+  label, lowercase/uppercase = Black/White), `cols`, `files`/`ranks` (coordinate labels), `board`
+  (checker pattern), `shape` (square / hex / circular / custom-grid / custom pixel-mapped), `sides`.
+  This maps almost 1:1 onto our board model + `setup_board()` and tells us immediately whether a game
+  is square/hex (we support both) or an exotic topology (defer). Piece **set/graphics** (`set` or an
+  inline JSON custom set) we ignore — we have our own renderer.
+- **What is NOT declarative (the hard 40%): movement + rules.** These live as imperative **GAME Code**
+  in seven fields (Pre-Game / Pre-Move{1,2} / Post-Move{1,2} / Post-Game{1,2}) plus shared include
+  files (`chess`, `chess2`, `fairychess`, `xiangqi`, `shogi`). Two sub-cases:
+  - *Slider/leaper pieces* are written as `def X = or`-chains of `checkleap from to Δf Δr` (leaper)
+    and `checkride from to Δf Δr` (rider). **Those `(Δfile,Δrank)` pairs ARE our `(slide_dirs,
+    leap_offsets)`** — a near-mechanical translation into a `ChessLike` `PIECES` table. Same for
+    games authored in **Betza/"funny" notation** via the fairychess include / the GAME-Code wizard
+    (Betza atoms → offsets for the rider/leaper subset).
+  - *Everything else needs a human/Claude in the loop:* pawns (divergent move≠capture, double-step,
+    en-passant, promotion — but our `StandardPawn`/`PROMOTION`/`CASTLING` strategies already cover the
+    common cases), and genuinely out-of-model pieces — **hoppers/Cannons, locust/long-leaper capture,
+    bent/lame leapers (Xiangqi horse), drops, swaps, multi-move turns**. These fall back to a generic
+    `Game` with hand-written `legal_moves`.
+- **Translation strategy** (mirrors the Zillions skill — Claude *reads* the source and writes the
+  module; not a literal transpiler): parse `code`+`cols`+`shape`+`files`/`ranks` → board + setup
+  mechanically; read movement from the **human rules page** (prose is clearer than reverse-engineering
+  GAME Code) cross-checked against the `def` lines for the slider/leaper offsets; emit a `ChessLike`
+  subclass when the game fits the chess family (most do — ~40 lines), else a generic `Game`. Produce
+  `manifest.json` (+ `bgg_url`/source-credit link), `game.py`, and `rules.md` written from the rules
+  page. Validate with `agp validate`; for chess variants add a **perft check** against known counts.
+- **The unenforced mode is the cheap on-ramp.** A freeform import (board + pieces + setup only, *skip*
+  movement logic) is automatable **from the settings file alone** — no GAME Code interpretation — so
+  we can stand up the long tail of variants in minutes and selectively graduate popular ones to
+  fully-enforced modules. This is the single highest-leverage reason to add the freeform mode.
+- **Etiquette:** chessvariants.com is a volunteer hobbyist site with clear content ownership. Import
+  for personal/playtest use, credit the author + link the source, and don't bulk-scrape.
+
+## 9. Open questions to resolve before/at Phase 1
 
 - Adopt `@abstractplay/renderer` (fast, MIT, but couples your spec to theirs) vs. roll your own
   RenderSpec + renderer (full control, more work)?

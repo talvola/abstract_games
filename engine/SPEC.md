@@ -54,6 +54,14 @@ the rest of the game needs in the state. **Small rule variations belong in an
 each as a dropdown. Make a **separate game package** only when the variant is a
 distinct game with its own identity/name/strategy.
 
+**`mode`** (optional, default `"enforced"`). Set `"mode": "freeform"` for an
+*unenforced / honor-system* game: a board + starting position with no movement or
+win rules (players move freely; the result is set by resign/agreement). Such a
+game subclasses **`agp.FreeformGame`** and implements only `setup_board()` (+
+board geometry) — see `agp/freeform.py` and `FREEFORM_MODE.md`. Conformance checks
+freeform games on a lighter path (no self-play); the generic MCTS bot does not
+apply to them.
+
 ## The Game interface (`agp.game.Game`)
 
 Implement these. See `games/tic_tac_toe/game.py` (minimal) and `games/oust/game.py`

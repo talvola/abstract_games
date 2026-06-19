@@ -364,6 +364,42 @@ def test_tictactoe_mcts_never_loses_as_x():
         assert res["returns"][0] >= 0.0  # X wins or draws, never loses
 
 
+def test_freeform_mode():
+    # A minimal unenforced game: an 8x8 board with two kings, no rules.
+    from agp import FreeformGame
+
+    class FreeformDemo(FreeformGame):
+        uid = "freeform_demo"
+        name = "Freeform Demo"
+        WIDTH = HEIGHT = 8
+
+        def setup_board(self):
+            return {(4, 0): (0, "K"), (4, 7): (1, "K")}
+
+    game = FreeformDemo()
+    manifest = {"uid": "freeform_demo", "version": "0", "engine_api": "1",
+                "players": {"min": 2, "max": 2}, "mode": "freeform"}
+    assert check(game, manifest).ok
+
+    s = game.initial_state()
+    assert not game.is_terminal(s)
+    assert game.legal_moves(s) == ["pass", "resign"]
+
+    # any piece can move anywhere, no legality, capturing what's there
+    s2 = game.apply_move(s, "4,0>4,7")              # White king "captures" Black king
+    assert (4, 7) in s2.board and s2.board[(4, 7)] == (0, "K")
+    assert (4, 0) not in s2.board and s2.to_move == 1
+    assert game.serialize(s) != game.serialize(s2)  # original untouched, new differs
+
+    # promotion-as-relabel
+    s3 = game.apply_move(s, "4,0>3,0=Q")
+    assert s3.board[(3, 0)] == (0, "Q")
+
+    # resign ends the game; the resigner (White) loses
+    over = game.apply_move(s, "resign")
+    assert game.is_terminal(over) and game.returns(over) == [-1.0, 1.0]
+
+
 def test_apply_move_is_pure():
     _, game = _load("oust")
     rng = random.Random(0)

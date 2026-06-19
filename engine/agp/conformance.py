@@ -44,6 +44,10 @@ def _equal_serialized(a, b) -> bool:
     return json.dumps(a, sort_keys=True) == json.dumps(b, sort_keys=True)
 
 
+def _is_freeform(game: Game, manifest: dict) -> bool:
+    return getattr(game, "enforced", True) is False or manifest.get("mode") == "freeform"
+
+
 def check(game: Game, manifest: dict, games: int = 40, seed: int = 0,
           max_moves: int = 3000) -> Report:
     r = Report()
@@ -60,6 +64,12 @@ def check(game: Game, manifest: dict, games: int = 40, seed: int = 0,
         r.add(False, f"initial_state raised: {e!r}")
         return r
     r.add(True, "initial_state() returns a state")
+
+    # Freeform (unenforced) games have no rule-driven terminal, so random
+    # self-play to a terminal does not apply — check them on a lighter path.
+    if _is_freeform(game, manifest):
+        _check_freeform(game, r, s0)
+        return r
 
     # --- random self-play ---
     for g in range(games):
@@ -79,6 +89,54 @@ def check(game: Game, manifest: dict, games: int = 40, seed: int = 0,
         r.add(False, f"render()/json failed: {e!r}")
 
     return r
+
+
+def _check_freeform(game: Game, r: Report, s0) -> None:
+    """Lighter checks for an unenforced game: it renders, serialize round-trips,
+    a free board move and an end-action apply purely, and ``resign`` produces a
+    well-formed terminal. No legal-move enumeration or termination requirement."""
+    def roundtrips(s) -> bool:
+        snap = game.serialize(s)
+        try:
+            json.dumps(snap)
+        except TypeError:
+            return False
+        return _equal_serialized(game.serialize(game.deserialize(snap)), snap)
+
+    r.add(roundtrips(s0), "serialize() round-trips on the initial state")
+
+    try:
+        rep = game.render(s0)
+        json.dumps(rep)
+        r.add(isinstance(rep, dict) and "board" in rep,
+              "render() returns a JSON-able dict with a 'board'")
+    except Exception as e:  # noqa: BLE001
+        r.add(False, f"render()/json failed: {e!r}")
+
+    r.add(not game.is_terminal(s0), "initial state is not terminal")
+    r.add(bool(game.legal_moves(s0)), "legal_moves() lists at least one action")
+
+    # A free board move (move the first occupied cell to some other cell) must be
+    # pure and round-trip.
+    pieces = game.render(s0).get("pieces", [])
+    if pieces:
+        frm = pieces[0]["cell"]
+        c, rr = frm.split(",")
+        to = f"{int(c)},{int(rr)}"  # self-target is fine for the purity check
+        before = game.serialize(s0)
+        s1 = game.apply_move(s0, f"{frm}>{to}")
+        r.add(_equal_serialized(game.serialize(s0), before),
+              "apply_move() did not mutate its input (free move)")
+        r.add(roundtrips(s1), "serialize() round-trips after a free move")
+
+    # resign ends the game with well-formed returns.
+    s_end = game.apply_move(s0, "resign")
+    if game.is_terminal(s_end):
+        ret = game.returns(s_end)
+        r.add(len(ret) == game.num_players and all(isinstance(x, (int, float)) for x in ret),
+              "returns() well-formed after resign")
+    else:
+        r.add(False, "resign did not produce a terminal state")
 
 
 def _play_one(game: Game, rng, r: Report, max_moves: int) -> bool:
