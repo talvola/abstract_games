@@ -1,0 +1,14 @@
+{
+  "uid": "amazons",
+  "name": "Amazons",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Walter Zamkauskas (1988) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Positional",
+  "tags": ["square", "territory", "movement"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/2125/amazons",
+  "description": "The Game of the Amazons (Walter Zamkauskas, 1988) on a 10x10 board. Each turn one of your four amazons moves like a chess queen and then shoots an arrow (also queen-style) that permanently blocks a square. Nothing is captured; the first player who cannot move loses. A move is a three-step path: amazon, its destination, then the arrow's target."
+}

@@ -388,6 +388,26 @@ def test_connect_four():
     assert "0,1" in game.legal_moves(s) and "0,0" not in game.legal_moves(s)
 
 
+def test_amazons():
+    manifest, game = _load("amazons")
+    assert check(game, manifest, games=20).ok
+
+    s = game.initial_state()
+    # 2176 is the known number of opening moves in 10x10 Amazons (move-gen anchor)
+    assert len(game.legal_moves(s)) == 2176
+    assert game.current_player(s) == 0
+
+    # a move is a 3-cell path: amazon moves, then an arrow blocks a square
+    s2 = game.apply_move(s, "0,3>0,4>0,5")
+    assert s2.queens.get((0, 4)) == 0 and (0, 3) not in s2.queens
+    assert (0, 5) in s2.arrows and game.current_player(s2) == 1
+
+    # a fully boxed-in side has no move and loses
+    boxed = game.deserialize({"queens": {"0,0": 0},
+                              "arrows": ["1,0", "0,1", "1,1"], "to_move": 0})
+    assert game.is_terminal(boxed) and game.returns(boxed) == [-1.0, 1.0]
+
+
 def test_brandub():
     manifest, game = _load("brandub")
     assert check(game, manifest, games=30).ok
