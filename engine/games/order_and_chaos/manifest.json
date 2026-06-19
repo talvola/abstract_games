@@ -1,0 +1,14 @@
+{
+  "uid": "order_and_chaos",
+  "name": "Order and Chaos",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Stephen Sniderman (1981) / AGP",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "N-in-a-row",
+  "tags": ["square", "alignment", "asymmetric"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/12361/order-and-chaos",
+  "description": "An asymmetric 6x6 tic-tac-toe variant. Each turn either player places an X or an O (both may use both symbols) on any empty cell. Order wins by forming a line of exactly five like symbols; Chaos wins by filling the board with no such line. A run of six does not count for Order. Order moves first."
+}

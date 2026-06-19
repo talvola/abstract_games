@@ -388,6 +388,37 @@ def test_connect_four():
     assert "0,1" in game.legal_moves(s) and "0,0" not in game.legal_moves(s)
 
 
+def test_order_and_chaos():
+    manifest, game = _load("order_and_chaos")
+    assert check(game, manifest, games=40).ok
+
+    s = game.initial_state()
+    assert len(game.legal_moves(s)) == 72        # 36 empty cells x {X, O}
+    assert game.current_player(s) == 0           # Order first
+
+    # five identical in a row -> Order wins (whoever placed the fifth)
+    s = game.initial_state()
+    for mv in ["0,0=X", "0,2=O", "1,0=X", "1,3=O", "2,0=X", "2,4=O",
+               "3,0=X", "3,5=O", "4,0=X"]:
+        s = game.apply_move(s, mv)
+    assert s.winner == 0 and game.returns(s) == [1.0, -1.0]
+
+    # SIX in a row does NOT win for Order
+    s = game.initial_state()
+    for mv in ["0,0=X", "0,2=O", "1,0=X", "1,2=O", "2,0=X", "2,2=O",
+               "3,0=X", "3,2=O", "5,0=X", "4,4=O"]:
+        s = game.apply_move(s, mv)
+    assert s.winner is None                       # gap at col 4, max run 4
+    s = game.apply_move(s, "4,0=X")               # closes the gap -> six in a row
+    assert s.winner is None                       # six does not count
+
+    # a full board with no five-line is a Chaos win
+    full = {f"{c},{r}": ("X" if (c + r) % 2 == 0 else "O")
+            for c in range(6) for r in range(6)}   # checker pattern: no 5 alike
+    term = game.deserialize({"board": full, "to_move": 0, "winner": None})
+    assert game.is_terminal(term) and game.returns(term) == [-1.0, 1.0]
+
+
 def test_amazons():
     manifest, game = _load("amazons")
     assert check(game, manifest, games=20).ok
