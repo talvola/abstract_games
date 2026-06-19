@@ -54,6 +54,82 @@ def _cell(s: str):
     return int(c), int(r)
 
 
+def parse_fen(code: str, cols: int) -> dict:
+    """Parse a Game Courier-style *extended FEN* into a board mapping
+    ``(col, row) -> (player, label)`` (player 0 = uppercase/White).
+
+    Read left-to-right, top-to-bottom from White's view: the first rank in the
+    string is the highest row, so it lands at ``row = height - 1``. Tokens:
+
+    * a base-10 **number** — that many consecutive empty squares;
+    * a **letter** ``[A-Za-z]`` — a piece (uppercase = player 0, lowercase = 1);
+    * ``{Label}`` — a multi-character piece label (case of the first char picks
+      the player);
+    * ``-`` — a **non-cell** (a hole / off-board padding), omitted from the board;
+    * ``*`` — fill the rest of the current rank with empties (and start a new rank);
+    * ``/`` — end the rank early, padding the remainder with non-cells.
+
+    Used by freeform imports (e.g. the gamecourier-to-platform skill) so a game's
+    opening position round-trips from its settings file with no hand-transcription.
+    """
+    ranks: list[list] = []
+    cur: list = []
+
+    def end_rank(pad):
+        while len(cur) < cols:
+            cur.append(pad)
+        ranks.append(list(cur))
+        cur.clear()
+
+    def push(value):                       # value: (player,label) | None | "-"
+        cur.append(value)
+        if len(cur) == cols:
+            ranks.append(list(cur))
+            cur.clear()
+
+    i, n = 0, len(code)
+    while i < n:
+        ch = code[i]
+        if ch.isspace():
+            i += 1
+        elif ch.isdigit():
+            j = i
+            while j < n and code[j].isdigit():
+                j += 1
+            for _ in range(int(code[i:j])):
+                push(None)
+            i = j
+        elif ch == "/":
+            if cur:                        # close the rank early; a "/" right after
+                end_rank("-")              # a naturally-full rank is just a separator
+            i += 1
+        elif ch == "*":
+            end_rank(None)                 # fill the rest of this rank with empties
+            i += 1
+        elif ch == "{":
+            j = code.index("}", i)
+            label = code[i + 1:j]
+            push((0 if label[:1].isupper() else 1, label))
+            i = j + 1
+        elif ch.isalpha():
+            push((0 if ch.isupper() else 1, ch))
+            i += 1
+        else:                              # unknown punctuation -> treat as a hole
+            push("-")
+            i += 1
+    if cur:
+        end_rank("-")
+
+    height = len(ranks)
+    board: dict = {}
+    for ri, rank in enumerate(ranks):
+        row = height - 1 - ri              # first rank in the string is the top row
+        for col, val in enumerate(rank):
+            if val is not None and val != "-":
+                board[(col, row)] = val
+    return board
+
+
 @dataclass
 class FState:
     board: dict = field(default_factory=dict)       # (c, r) -> (player, label)

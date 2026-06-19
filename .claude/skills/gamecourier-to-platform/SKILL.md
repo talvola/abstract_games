@@ -202,16 +202,36 @@ PYTHONPATH=. python3 -m agp.cli playtest games/<uid> --bot           # MCTS self
 - Restart the backend (the registry caches game code at startup) and screenshot the
   board with `pinchtab` to verify rendering. Add a conformance test to `engine/tests/`.
 
-## 7. The freeform / unenforced fallback
+## 7. The freeform / unenforced fast path (automated)
 
 Game Courier hosts hundreds of games precisely because a preset can be *unenforced*
-(board + pieces + honor-system moves, no rule code). If the platform has a
-**freeform mode** (board geometry + piece set + initial setup, no
-`legal_moves`/`is_terminal` enforcement — see PLATFORM_PLAN §8 / the freeform
-spike), a settings file alone is enough: parse `code`/`cols`/`shape`/`files`/`ranks`
-(§2–3), skip movement entirely, and ship. This is the cheap on-ramp for the long
-tail; graduate popular ones to fully-enforced `ChessLike`/`Game` modules later. If
-freeform mode does not yet exist, don't fake it — port to a strict module or pause.
+(board + pieces + honor-system moves, no rule code). The platform now has a
+**freeform mode** (`agp.FreeformGame` + manifest `"mode": "freeform"`; see
+`engine/FREEFORM_MODE.md`), so a settings file **alone** is enough — no GAME-Code
+interpretation. A converter script does the mechanical work:
+
+```
+python3 .claude/skills/gamecourier-to-platform/freeform_from_settings.py \
+    --settings <saved-settings.php>          # parses code/cols/game/rulesurl, or:
+python3 .claude/skills/gamecourier-to-platform/freeform_from_settings.py \
+    --code "rbnmqkanbr/pppppppppp/****/PPPPPPPPPP/RBNMQKANBR" --cols 10 \
+    --name "Univers Chess" --rules-url large.dir/contest/index.html
+```
+
+It parses the extended-FEN `code` (§3) with the engine's `agp.freeform.parse_fen`,
+emits `engine/games/<uid>/{manifest.json, game.py, rules.md}` (a tiny
+`FreeformGame` subclass that re-parses the FEN at setup), then tells you the
+`validate` command. The emitted `game.py` keeps the original FEN as `CODE`, so the
+opening position round-trips faithfully with no hand-transcription. Square boards
+only — hex/circular/custom shapes are rejected (those need a hand port; see "When
+to pause and ask").
+
+This is the cheap on-ramp for the long tail and the right choice when a game's
+movement *can't* be expressed as sliders/leapers (Cannons/hoppers, locust capture,
+bent leapers, drops) — ship it freeform now, graduate the popular ones to a
+fully-enforced `ChessLike`/`Game` module later. After running the converter,
+validate and restart the backend as in §6 (skip perft/playtest — freeform games
+have no enforced moves and no bot).
 
 ## When to pause and ask
 

@@ -237,8 +237,9 @@ long tail of variants in minutes, with the bot disabled and "anything goes" move
 the popular ones to fully-enforced engine modules. **Shipped** — `agp.FreeformGame` + a manifest
 `"mode": "freeform"`, a conformance branch, server move-relay + draw-agreement + bot-disable, and a web
 free-drag input mode, with a demo game (**Freeform Board (8×8)**, the "Sandbox" category) verified
-in-browser (see `engine/FREEFORM_MODE.md`). Remaining: wire the freeform path of the import skill
-(below) to emit a `FreeformGame` from a Game Courier settings file alone.
+in-browser (see `engine/FREEFORM_MODE.md`). The import skill's freeform path is also wired: a
+`parse_fen` helper + a `freeform_from_settings.py` converter turn a Game Courier settings file
+(declarative `code`/`cols` only — no GAME-Code) straight into a `FreeformGame` package.
 
 ### Importing games from Game Courier / chessvariants.com
 Erik's ask: given a URL like `…/play/pbm/play.php?game=Univers+Chess&settings=default` *or* just

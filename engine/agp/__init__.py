@@ -8,7 +8,7 @@ Public surface:
 """
 
 from .conformance import Report, check
-from .freeform import FreeformGame, FState
+from .freeform import FreeformGame, FState, parse_fen
 from .game import Game
 from .loader import PackageError, load
 from .mcts import MCTSBot, RandomBot, play_match
@@ -18,6 +18,7 @@ __all__ = [
     "Game",
     "FreeformGame",
     "FState",
+    "parse_fen",
     "load",
     "PackageError",
     "check",

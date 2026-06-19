@@ -410,6 +410,31 @@ def test_freeform_mode():
     assert moved.draw_offer is None and not game.is_terminal(moved)
 
 
+def test_parse_fen():
+    from agp import parse_fen
+
+    # the three documented encodings of the chess start are all equivalent
+    a = parse_fen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR", 8)
+    b = parse_fen("rnbqkbnrpppppppp32PPPPPPPPRNBQKBNR", 8)
+    c = parse_fen("rnbqkbnr/pppppppp/****/PPPPPPPP/RNBQKBNR", 8)
+    assert a == b == c
+    assert len(a) == 32
+    assert a[(0, 0)] == (0, "R") and a[(4, 0)] == (0, "K")   # White back rank, row 0
+    assert a[(3, 7)] == (1, "q") and a[(0, 6)] == (1, "p")   # Black, top rows
+
+    # multi-char {labels}; first-char case picks the player
+    m = parse_fen("{NB}1{nb}", 3)
+    assert m == {(0, 0): (0, "NB"), (2, 0): (1, "nb")}
+
+    # "-" is a non-cell (hole), not an empty square -> omitted from the board
+    h = parse_fen("R-r", 3)
+    assert h == {(0, 0): (0, "R"), (2, 0): (1, "r")}
+
+    # "/" before the natural end pads the rest of the rank with non-cells
+    s = parse_fen("R/p", 3)   # rank "R" then end -> row1: R at col0; rank "p" -> row0
+    assert s == {(0, 1): (0, "R"), (0, 0): (1, "p")}
+
+
 def test_apply_move_is_pure():
     _, game = _load("oust")
     rng = random.Random(0)

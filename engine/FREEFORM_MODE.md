@@ -89,10 +89,19 @@ in the serialized state, it survives correspondence polling with no schema chang
 Verified in-browser (Quick Play hotseat): an illegal-in-chess move applies, the
 Pass/Resign/Offer-draw actions show, and offer → Accept/Decline → "Draw" works.
 
+## What's built (importer)
+
+`agp.freeform.parse_fen(code, cols)` parses a Game Courier-style **extended FEN**
+into a board mapping (digits/`/`/letters plus the `*` fill, `-` hole, and `{Label}`
+extensions; unit-tested against the documented chess-start equivalences). The skill
+ships a converter, `.claude/skills/gamecourier-to-platform/freeform_from_settings.py`,
+that reads a settings file's declarative keys (`code`/`cols`/`game`/`rulesurl`) and
+emits a freeform `engine/games/<uid>` package (a tiny `FreeformGame` that re-parses
+the embedded FEN). Square boards only; hex/exotic are rejected. Verified end to end
+on Game Courier's Univers Chess settings example (10×8).
+
 ## Still optional / future
 
-- **Importer.** Wire the `gamecourier-to-platform` freeform path (§7 of the skill)
-  to emit a `FreeformGame` subclass from a Game Courier settings file alone.
 - **Setup edits / piece drops:** a generic "place piece X on cell" move (the
   engine already supports `@cell` removal + `=X` retype) once the UI needs it.
 - **Turn model:** currently strict alternation; Game Courier allows a looser
