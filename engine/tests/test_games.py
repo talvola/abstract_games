@@ -388,6 +388,39 @@ def test_connect_four():
     assert "0,1" in game.legal_moves(s) and "0,0" not in game.legal_moves(s)
 
 
+def test_pente():
+    manifest, game = _load("pente")
+    assert check(game, manifest, games=12).ok
+
+    def st(board, **kw):
+        d = {"size": 15, "board": board, "to_move": 0,
+             "captures": {"0": 0, "1": 0}, "winner": None, "ply": 0}
+        d.update(kw)
+        return game.deserialize(d)
+
+    # custodial pair capture: B - W W - B removes the pair
+    s = game.apply_move(st({"0,0": 0, "1,0": 1, "2,0": 1}), "3,0")
+    assert (1, 0) not in s.board and (2, 0) not in s.board and s.captures[0] == 1
+
+    # a SINGLE enemy is not captured (only exact pairs)
+    s = game.apply_move(st({"0,0": 0, "1,0": 1}), "2,0")
+    assert (1, 0) in s.board and s.captures[0] == 0
+
+    # placing your OWN pair between two enemies is safe (active capture only)
+    s = game.apply_move(st({"0,0": 1, "1,0": 0, "3,0": 1}), "2,0")
+    assert (1, 0) in s.board and (2, 0) in s.board and s.captures[1] == 0
+
+    # winning the fifth pair ends the game
+    s = game.apply_move(st({"0,0": 0, "1,0": 1, "2,0": 1}, captures={"0": 4, "1": 0}), "3,0")
+    assert s.winner == 0 and game.returns(s) == [1.0, -1.0]
+
+    # and five-in-a-row still wins
+    s = game.initial_state(options={"size": 15})
+    for mv in ["0,0", "0,2", "1,0", "1,2", "2,0", "2,2", "3,0", "3,2", "4,0"]:
+        s = game.apply_move(s, mv)
+    assert s.winner == 0
+
+
 def test_order_and_chaos():
     manifest, game = _load("order_and_chaos")
     assert check(game, manifest, games=40).ok

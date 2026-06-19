@@ -1,0 +1,17 @@
+{
+  "uid": "pente",
+  "name": "Pente",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Gary Gabrel (1977) / AGP",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "N-in-a-row",
+  "tags": ["square", "alignment", "capture", "stones"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/1295/pente",
+  "options": {
+    "size": { "choices": [13, 15, 19], "default": 19, "label": "Board size" }
+  },
+  "description": "Pente (Gary Gabrel, 1977): five-in-a-row with custodial pair captures. Place stones to make a line of five or more, OR capture five pairs of enemy stones. A stone placed to bracket exactly two enemy stones (you-enemy-enemy-you) removes that pair; placing your own pair between two enemies is safe. Black moves first; 13/15/19 boards."
+}
