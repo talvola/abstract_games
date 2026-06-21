@@ -30,7 +30,7 @@ implementer.
 |---|---|---|---|
 | King of the Hill | auto | chess perft 20/400/8902 (re-derived) + center-king win | **done(auto) → main** |
 | Three-Check | auto | chess perft 20/400/8902 (re-derived) + 3-check win | **done(auto) → main** |
-| Tablut (9×9 tafl) | review | conformance + capture/escape positions; no published number | **review → branch `factory/batch-1`** |
+| Tablut (9×9 tafl) | review | conformance + capture/escape positions; no published number | **done → main** (king-assist resolved from Cyningstan) |
 
 Both auto games were independently re-verified (the verifier recomputed perft to
 197281 at depth 4, matching standard chess) and re-checked by me before merge. The
@@ -38,17 +38,8 @@ factory's per-package `selftest.py` is run by the suite via `test_package_selfte
 
 ## Needs human (escalations)
 
-**Tablut** — implemented, conformant, rules faithful, but held for your call on a
-genuine ruleset choice (no published anchor to settle it). On branch
-`factory/batch-1`; `git checkout factory/batch-1` to try it. Decide:
-1. **Does the King help capture?** As built, the King is *not* a capturing anvil
-   (a defender can't sandwich an attacker against the King). Many historical
-   Tablut readings let the King assist. Pick one; it's a one-line change.
-2. **Pass-over-throne:** as built, any piece may *pass over* (not land on) the
-   empty throne; some rulesets forbid non-King pieces passing through. Documented.
-3. King escape = **any edge square** (Linnaeus edge-escape) — confirm vs. a
-   corner-escape variant if you prefer.
-Tell me your choices and I'll finalize + merge, or merge as-is.
+_(none — Tablut's king-assist question was resolved from the Cyningstan reference
+and merged.)_
 
 ## Blocked on a capability
 _(tracked in `GAME_BACKLOG.md` — drops, stacking, territory scoring, point-and-line, >2-seat)_
