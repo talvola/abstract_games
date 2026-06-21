@@ -4,6 +4,34 @@ On-disk state for the autonomous game-integration loop (the "factory"). The
 universe map and capability gaps live in `GAME_BACKLOG.md`; this file is the
 *queue* and the *human-escalation digest*.
 
+---
+
+## ⭐ CATCH-UP DIGEST (read this first) — autonomous run of 2026-06-21
+
+**Erik is away ~7h; the factory is running unattended.** This section is kept live
+after every batch. Status as of the last update below.
+
+- **Games on `main`:** 34 (session started at 24). Each new game = conformance +
+  an independent rule-review, perft-anchored where a published number exists. All
+  pushed to `origin/main`; the dev app is running so you can play any of them.
+- **Merged this session (10):** King of the Hill, Three-Check, Tablut, Racing
+  Kings, Makruk, Shatranj, Capablanca, International Draughts, Turkish Draughts,
+  Havannah. (Batches 1–3, all reviewed + merged under the option-1 gate.)
+- **In flight:** batch 4 — Horde Chess, Antichess, Courier Chess.
+- **⚠️ NEEDS YOUR DECISION:** _none right now._ Anything requiring a genuine
+  ruleset call or a visual/UX check lands in **"Needs human"** below — check there.
+- **Parked for you (not attempted unattended, needs UI + your eyes):** the
+  capability investments from `GAME_BACKLOG.md` — drops (→ Morris/Crazyhouse/Shogi),
+  stacking (→ Tak/DVONN), Go territory scoring, point-and-line boards, >2-seat UI.
+  These touch the renderer/server, so I'm leaving them for when you're back.
+- **How to review fast:** every game ships a one-page `rules.md` (rules as
+  implemented, with any documented simplifications) and a `selftest.py` (its
+  correctness anchor). `git log --oneline` shows the per-game merge rationale.
+
+_Last digest update: after batch 3 merge (34 games). Updated again each batch._
+
+---
+
 ## The gate (option 1, updated 2026-06-21)
 
 Erik delegated merge authority: the orchestrator may auto-merge after a **detailed
