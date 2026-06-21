@@ -1,0 +1,14 @@
+{
+  "uid": "atomic_chess",
+  "name": "Atomic Chess",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "AGP",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "atomic", "capture"],
+  "bgg_url": "https://lichess.org/variant/atomic",
+  "description": "Atomic Chess (the lichess variant): standard chess movement, but every capture detonates - the capturing piece, the captured piece, and all non-pawn pieces on the eight adjacent squares are destroyed (adjacent pawns survive). You win the moment the enemy king explodes, and you may never blow up your own king. Kings can stand adjacent (a king can never capture), so there is no check while the kings are connected. Castling, en passant and promotion are standard. White moves first."
+}

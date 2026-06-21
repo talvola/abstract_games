@@ -1,0 +1,17 @@
+{
+  "uid": "konane",
+  "name": "Kōnane",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "AGP port (Hawaiian checkers)",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Checkers & draughts",
+  "tags": ["square", "capture", "combinatorial"],
+  "bgg_url": "https://en.wikipedia.org/wiki/K%C5%8Dnane",
+  "options": {
+    "size": { "choices": [6, 8, 10], "default": 8, "label": "Board size" }
+  },
+  "description": "Kōnane (Hawaiian checkers): a combinatorial-game-theory classic. The board starts completely filled with alternating black and white stones. Black opens by removing one of its stones from a corner or center; White removes an adjacent stone. Then players capture by jumping orthogonally over an adjacent enemy stone into the empty space beyond, chaining straight-line jumps. The first player who cannot move loses."
+}

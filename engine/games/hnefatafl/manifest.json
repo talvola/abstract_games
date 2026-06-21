@@ -1,0 +1,14 @@
+{
+  "uid": "hnefatafl",
+  "name": "Hnefatafl (Copenhagen)",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "AGP (Copenhagen Hnefatafl ruleset)",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Capture / annihilation",
+  "tags": ["square", "asymmetric", "tafl", "hunt", "hnefatafl"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/19542/hnefatafl",
+  "description": "Hnefatafl on an 11x11 board with the modern Copenhagen ruleset. Asymmetric siege: a King on the central throne with 12 defenders in a diamond, against 24 attackers in four T-shaped groups of 6 at the edge midpoints (attackers move first). All pieces move like a rook. Soldiers are captured by custodial flanking; the empty throne and the four corners are hostile squares. The King is captured by surrounding him on all four sides (throne + 3 attackers when he stands beside the throne). The King wins by escaping to any corner; the attackers win by capturing the King."
+}
