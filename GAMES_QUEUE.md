@@ -11,20 +11,23 @@ universe map and capability gaps live in `GAME_BACKLOG.md`; this file is the
 **Erik is away ~7h; the factory is running unattended.** This section is kept live
 after every batch. Status as of the last update below.
 
-- **Games on `main`:** 43 (session started at 24). Each new game = conformance +
+- **Games on `main`:** 45 (session started at 24). Each new game = conformance +
   an independent rule-review, perft-anchored where a published number exists. All
   pushed to `origin/main`; the dev app is running so you can play any of them.
 - **Merged this session (19):** King of the Hill, Three-Check, Tablut, Racing
   Kings, Makruk, Shatranj, Capablanca, International Draughts, Turkish Draughts,
   Havannah, Horde Chess, Antichess, Courier Chess, Atomic Chess, Hnefatafl, Konane,
-  Janggi, Ard Ri, Frisian Draughts. (Batches 1–6, all reviewed + merged.)
+  Janggi, Ard Ri, Frisian Draughts, Atari Go, NoGo. (Batches 1–7, all reviewed + merged.)
 - **Quality signals (the gate is earning its keep — 3 real bugs caught + fixed
   before shipping):** (1) Courier Chess insufficient-material masking a K+2Manns
   mate; (2) Frisian Draughts weighted-capture using the wrong ordering (fixed to
   the official king=1.5 summed value); (3) Atomic's factory selftest imported
   python-chess (broke the suite) — rewrote pure-stdlib + hardened the factory.
-- **In flight:** batch 7 — Atari Go, NoGo, Tawlbwrdd (11×11 tafl). [Go-cousins
-  build liberty/group-capture logic — the base layer for eventual full Go.]
+- **In flight:** batch 8 — Gonnect, Brazilian Draughts, Wildebeest Chess.
+- **Curation note:** I declined to ship **Tawlbwrdd** (batch 7) — the factory
+  produced it AST-identical to the shipped Hnefatafl (same setup+rules, only the
+  name differs). If you want Tawlbwrdd as a distinct entry, say so and I'll build
+  its actual differing reconstruction rather than a clone. Quality over count.
 - **⚠️ NEEDS YOUR DECISION:** _none right now._ Anything requiring a genuine
   ruleset call or a visual/UX check lands in **"Needs human"** below — check there.
 - **Parked for you (not attempted unattended, needs UI + your eyes):** the
@@ -35,7 +38,7 @@ after every batch. Status as of the last update below.
   implemented, with any documented simplifications) and a `selftest.py` (its
   correctness anchor). `git log --oneline` shows the per-game merge rationale.
 
-_Last digest update: after batch 6 merge (43 games). Updated again each batch._
+_Last digest update: after batch 7 merge (45 games). Updated again each batch._
 
 ---
 
@@ -128,6 +131,13 @@ signals above.)
 | Janggi (Korean Chess) | review→auto | reviewer hand-derived 31-move opening + full cannon/elephant/palace re-derivation; perft baseline 31/949/29697 | **done → main** |
 | Ard Ri (7×7 tafl) | review→auto | independent rule re-derivation (Tablut-family) | **done → main** |
 | Frisian Draughts | review→**fix**→auto | review REJECTED a weighted-capture bug; fixed to king=1.5 summed value, re-verified | **done → main** |
+
+## Batch 7 — Go-family (2026-06-21)
+| Game | Lane | Anchor | Status |
+|---|---|---|---|
+| Atari Go (Capture Go) | review→auto | independent re-derivation; liberty/group-capture + positional superko; my capture/suicide probes | **done → main** |
+| NoGo (anti-Go) | review→auto | independent re-derivation; capture & suicide both illegal | **done → main** |
+| Tawlbwrdd (11×11 tafl) | — | review found it AST-identical to Hnefatafl | **DISCARDED (clone, not shipped)** |
 
 ## Needs human (escalations)
 
