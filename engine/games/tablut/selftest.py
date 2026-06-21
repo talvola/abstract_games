@@ -100,6 +100,15 @@ def test_capture_attacker():
         fail("a piece moving between two enemies must be safe (no suicide capture)")
     print("  moving between two enemies is safe: OK")
 
+    # The King helps capture: an attacker sandwiched between the King and a
+    # moving defender is removed (Cyningstan / common Tablut rule).
+    board3 = {(2, 2): "K", (2, 3): "A", (2, 8): "D", (8, 8): "A"}
+    s5 = TaflState(board=board3, to_move=DEFENDERS)
+    s6 = G.apply_move(s5, "2,8>2,4")
+    if (2, 3) in s6.board:
+        fail("the King must pair with a defender to capture an attacker")
+    print("  King pairs with a defender to capture: OK")
+
 
 # --------------------------------------------------- king surrounded -> capture
 def test_king_surrounded():

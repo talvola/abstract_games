@@ -30,6 +30,8 @@ another of your pieces) and a friendly piece — or a **hostile square** — tha
 soldier is removed. A soldier is **safe** if it moves *between* two enemies
 itself.
 
+- The **King helps capture**: he pairs up with a defender to flank an attacker
+  just like any other defender piece (per the Cyningstan / common Tablut rules).
 - The only **hostile square** for capture is the **throne while the King is not
   standing on it** (an empty throne flanks for either side).
 - The **King** is *not* taken by simple flanking: he is captured only when

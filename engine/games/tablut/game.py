@@ -12,9 +12,10 @@ Ruleset as implemented (documented because tafl rules vary):
   any piece may pass over it when empty. (Tablut has no special corner squares.)
 * Custodial capture — after your move, an enemy *soldier* is captured if it is
   sandwiched orthogonally between the piece you just moved (or another friendly
-  piece) and a friendly piece or a HOSTILE square. The only hostile square is the
-  throne while the King is not on it. Capture is active: a soldier that moves
-  *between* two enemies is safe.
+  piece) and a friendly piece or a HOSTILE square. The KING pairs up with a
+  defender to capture, just like any piece. The only hostile square is the throne
+  while the King is not on it. Capture is active: a soldier that moves *between*
+  two enemies is safe.
 * The King is captured only by being surrounded on all four orthogonal sides by
   attackers and/or the throne. A King on an edge (a side off the board) is safe
   — but he wins there anyway (see below).
@@ -122,11 +123,13 @@ class Tablut(Game):
         return [f"{a[0]},{a[1]}>{b[0]},{b[1]}" for a, b in self._moves(s)]
 
     def _hostile_to(self, board: dict, cell, player: int) -> bool:
-        """Does `cell` act as a friendly flank for `player`'s capture?"""
+        """Does `cell` act as a friendly flank for `player`'s capture? The King
+        DOES pair up with a defender to capture attackers (per the Cyningstan /
+        common Tablut rules), so it counts as a friendly flank like any piece."""
         if cell == THRONE and board.get(THRONE) != "K":
             return True            # empty throne is hostile to both sides
         occ = board.get(cell)
-        return occ is not None and _owner(occ) == player and occ != "K"
+        return occ is not None and _owner(occ) == player
 
     def apply_move(self, s: TaflState, move: str, rng=None) -> TaflState:
         frm, to = (_cell(x) for x in move.split(">"))
