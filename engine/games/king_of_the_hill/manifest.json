@@ -1,0 +1,14 @@
+{
+  "uid": "king_of_the_hill",
+  "name": "King of the Hill",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "AGP",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "variant"],
+  "bgg_url": "https://www.chess.com/terms/king-of-the-hill-chess",
+  "description": "Standard chess with one extra way to win: in addition to checkmate, you win instantly the moment your own king legally reaches one of the four central squares (d4, d5, e4, e5). All the usual chess rules apply -- castling, en passant, promotion, check/checkmate/stalemate, and the fifty-move, threefold-repetition and insufficient-material draws. White (player 1) moves first."
+}

@@ -4,11 +4,31 @@
 from __future__ import annotations
 
 import random
+import subprocess
+import sys
 from pathlib import Path
 
 from agp import MCTSBot, RandomBot, check, load, play_match
 
-GAMES = Path(__file__).resolve().parent.parent / "games"
+ENGINE = Path(__file__).resolve().parent.parent
+GAMES = ENGINE / "games"
+
+
+def test_package_selftests():
+    """Run every ``games/<uid>/selftest.py`` (the per-package anchor check the
+    game factory writes). Each is a standalone script that asserts its game's
+    correctness anchor and exits 0/non-zero. Keeping the check in the package —
+    rather than this shared file — lets parallel factory builds avoid contention
+    while still being covered by the suite."""
+    selftests = sorted(GAMES.glob("*/selftest.py"))
+    assert selftests, "no package selftests found"
+    for st in selftests:
+        proc = subprocess.run(
+            [sys.executable, str(st.relative_to(ENGINE))],
+            cwd=str(ENGINE), env={"PYTHONPATH": str(ENGINE), "PATH": __import__("os").environ.get("PATH", "")},
+            capture_output=True, text=True, timeout=120,
+        )
+        assert proc.returncode == 0, f"{st.parent.name}/selftest.py failed:\n{proc.stdout}\n{proc.stderr}"
 
 
 def _load(uid):
