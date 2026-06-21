@@ -11,17 +11,19 @@ universe map and capability gaps live in `GAME_BACKLOG.md`; this file is the
 **Erik is away ~7h; the factory is running unattended.** This section is kept live
 after every batch. Status as of the last update below.
 
-- **Games on `main`:** 37 (session started at 24). Each new game = conformance +
+- **Games on `main`:** 40 (session started at 24). Each new game = conformance +
   an independent rule-review, perft-anchored where a published number exists. All
   pushed to `origin/main`; the dev app is running so you can play any of them.
-- **Merged this session (13):** King of the Hill, Three-Check, Tablut, Racing
+- **Merged this session (16):** King of the Hill, Three-Check, Tablut, Racing
   Kings, Makruk, Shatranj, Capablanca, International Draughts, Turkish Draughts,
-  Havannah, Horde Chess, Antichess, Courier Chess. (Batches 1–4, all reviewed +
-  merged under the option-1 gate.)
-- **Quality signal:** the review caught a real bug in Courier Chess (the shared
-  insufficient-material heuristic masking a K+2Manns-vs-K checkmate as a draw) —
-  fixed before merge, not shipped. The gate is doing its job.
-- **In flight:** batch 5 — Atomic Chess, Hnefatafl (Copenhagen 11×11), Konane.
+  Havannah, Horde Chess, Antichess, Courier Chess, Atomic Chess, Hnefatafl, Konane.
+  (Batches 1–5, all reviewed + merged under the option-1 gate.)
+- **Quality signals (the gate working):** (1) the review caught a real Courier
+  Chess bug (insufficient-material masking a K+2Manns mate) — fixed before merge.
+  (2) Atomic's factory selftest had imported python-chess (broke the suite under
+  system python3) — rewrote it pure-stdlib and hardened the factory so future
+  selftests stay dependency-free.
+- **In flight:** batch 6 — Janggi (Korean chess), Ard Ri (7×7 tafl), Frisian Draughts.
 - **⚠️ NEEDS YOUR DECISION:** _none right now._ Anything requiring a genuine
   ruleset call or a visual/UX check lands in **"Needs human"** below — check there.
 - **Parked for you (not attempted unattended, needs UI + your eyes):** the
@@ -32,7 +34,7 @@ after every batch. Status as of the last update below.
   implemented, with any documented simplifications) and a `selftest.py` (its
   correctness anchor). `git log --oneline` shows the per-game merge rationale.
 
-_Last digest update: after batch 4 merge (37 games). Updated again each batch._
+_Last digest update: after batch 5 merge (40 games). Updated again each batch._
 
 ---
 
@@ -108,6 +110,16 @@ after fresh adversarial reviewers + the orchestrator's own read of the hard logi
 Horde (king-less White) and Antichess (non-royal king, forced capture, stalemate-
 as-win) both got python-chess differential verification. Courier merged after the
 review-caught insufficient-material fix.
+
+## Batch 5 — atomic + tafl + CGT (2026-06-21)
+| Game | Lane | Anchor | Status |
+|---|---|---|---|
+| Atomic Chess | auto | python-chess AtomicBoard differential (1500 games, kiwipete perft d4=3,492,097), 0 mismatches | **done(auto) → main** |
+| Hnefatafl (Copenhagen 11×11) | review→auto | independent review vs canonical Copenhagen sources + my probes | **done → main** |
+| Konane (Hawaiian) | review→auto | independent 3000-position move-gen cross-check + my probes | **done → main** |
+
+(Atomic's committed selftest was rewritten pure-stdlib post-merge — see Quality
+signals above.)
 
 ## Needs human (escalations)
 
