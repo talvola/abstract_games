@@ -1,0 +1,14 @@
+{
+  "uid": "fanorona",
+  "name": "Fanorona",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "AGP port (Fanorona, national game of Madagascar)",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Capture / annihilation",
+  "tags": ["square", "alquerque", "capture", "madagascar"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Fanorona",
+  "description": "Fanorona, the national board game of Madagascar, on a 5x9 alquerque grid. Move one step along a line; capture by approach (move toward an enemy line) or withdrawal (move away from one), removing the whole line of enemies. Captures are mandatory and can chain, changing direction each step. Capture all enemy pieces to win."
+}

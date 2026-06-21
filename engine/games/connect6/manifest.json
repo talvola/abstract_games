@@ -1,0 +1,17 @@
+{
+  "uid": "connect6",
+  "name": "Connect6",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "AGP",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "N-in-a-row",
+  "tags": ["square", "alignment", "stones"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/22847/connect6",
+  "options": {
+    "size": { "choices": [13, 19], "default": 19, "label": "Board size" }
+  },
+  "description": "Connect6 (Professor I-Chen Wu, 2005). A fair six-in-a-row on a Go-style grid: Black plays a single stone on the very first move, then each turn (both players) places TWO stones. The first to make an unbroken line of six or more of their own stones — horizontal, vertical, or diagonal — wins. The two-stones-per-turn rule balances the game. Choose a 13x13 or 19x19 board."
+}

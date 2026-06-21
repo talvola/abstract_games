@@ -1,0 +1,14 @@
+{
+  "uid": "dou_shou_qi",
+  "name": "Dou Shou Qi (Jungle)",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Traditional (Chinese) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Capture / annihilation",
+  "tags": ["square", "capture", "traditional", "asymmetric-terrain"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/15240/dou-shou-qi",
+  "description": "Dou Shou Qi (鬥獸棋), \"Jungle\" / \"Animal Chess\", on a 7x9 board. Each side has eight ranked animals (Elephant 8 down to Rat 1). A piece captures an enemy of equal or lower rank, except the Rat captures the Elephant. All pieces move one square orthogonally; only the Rat may enter the river, and the Lion and Tiger may leap across it (blocked by a Rat in the water). Enemy pieces on your traps become capturable by anything. Win by moving a piece into the enemy den (or leaving the opponent with no move)."
+}
