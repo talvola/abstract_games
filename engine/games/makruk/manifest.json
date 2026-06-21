@@ -1,0 +1,14 @@
+{
+  "uid": "makruk",
+  "name": "Makruk",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "AGP",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "thai"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/4129/makruk",
+  "description": "Makruk (Thai chess) on an 8x8 board. The King (Khun) moves like a chess king (no castling); the Met (queen) is a ferz that moves one square diagonally; the Khon (a silver-general) moves one square diagonally or one square straight forward; Ruea (rook) and Ma (knight) move as in chess. Bia (pawns) start on the third rank, step one square forward (no double step), capture diagonally forward, and promote to a Met on the sixth rank. Win by checkmate; stalemate is a draw. White (player 0) moves first."
+}
