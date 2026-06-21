@@ -1,0 +1,14 @@
+{
+  "uid": "janggi",
+  "name": "Janggi",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "AGP (traditional Korean Chess)",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "asian", "hopper"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/2461/janggi",
+  "description": "Janggi (Korean Chess) on a 9x10 board, the Korean sibling of Xiangqi. Generals and guards move orthogonally or along the palace diagonals and stay in the palace; horses and elephants leap (1+1 and 1+2) and can be blocked along their path; cannons jump exactly one screen but may neither jump over, capture, nor use another cannon as a screen; soldiers step forward or sideways and may follow the palace diagonals inside the enemy palace; elephants and soldiers cross freely (no river). Checkmate or stalemate the enemy general to win. Cho moves first."
+}

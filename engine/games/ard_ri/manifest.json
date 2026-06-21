@@ -1,0 +1,14 @@
+{
+  "uid": "ard_ri",
+  "name": "Ard Ri",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "AGP (traditional Scottish tafl)",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Capture / annihilation",
+  "tags": ["square", "asymmetric", "tafl", "hunt"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Tafl_games#Ard_Ri",
+  "description": "Ard Ri, the 7x7 Scottish tafl in the hnefatafl family. Asymmetric siege: a King on the central throne with 8 defenders clustered around him, against 16 attackers in four groups at the edge midpoints (attackers move first). All pieces move like a rook. Men are captured by custodial flanking and the King may assist; the King is captured by being surrounded on all four sides. The King wins by escaping to any edge square; the attackers win by capturing the King."
+}
