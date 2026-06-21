@@ -1,0 +1,24 @@
+{
+  "uid": "havannah",
+  "name": "Havannah",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Christian Freeling (1979) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "pie": true,
+  "category": "Connection",
+  "tags": ["hex", "connection", "placement"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/2759/havannah",
+  "options": {
+    "size": { "choices": [6, 8, 10], "default": 8, "label": "Board side length" },
+    "pie": {
+      "choices": [true, false],
+      "default": true,
+      "label": "Pie (swap) rule",
+      "labels": { "true": "On", "false": "Off" }
+    }
+  },
+  "description": "Christian Freeling's connection game on a hexagonal board of hexagons. Place stones to complete a ring, a bridge between two corners, or a fork joining three edges. Draws are practically impossible."
+}
