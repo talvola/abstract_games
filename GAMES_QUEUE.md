@@ -55,6 +55,17 @@ each returning MERGE with no required fixes, plus the orchestrator's own code re
 and runtime probes of the risk areas (Makruk 6th-rank promotion, Shatranj Alfil
 leap / bare-king, Capablanca castling).
 
+## Batch 3 — draughts + connection (2026-06-21)
+| Game | Lane | Anchor | Status |
+|---|---|---|---|
+| International Draughts (10×10) | auto | published WDF perft 9/81/658/4265(/27117/167140), re-derived by verifier + orchestrator | **done(auto) → main** |
+| Turkish Draughts (Dama) | review→auto | independent review; apply_move cross-checked over 40k positions + 489k jump-chains, 0 double-jumps | **done → main** |
+| Havannah (hexhex) | review→auto | independent review of ring/bridge/fork (outside-flood-fill ring); exhaustive shape tests | **done → main** |
+
+International was perft-locked (gold-standard anchor). Turkish + Havannah merged
+after fresh adversarial reviewers + the orchestrator's own read of the hard logic
+(Turkish immediate-removal-during-chain; Havannah ring detection). All MERGE.
+
 ## Needs human (escalations)
 
 _(none)_
