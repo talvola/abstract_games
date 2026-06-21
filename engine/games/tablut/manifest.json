@@ -1,0 +1,14 @@
+{
+  "uid": "tablut",
+  "name": "Tablut",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "AGP (traditional Sami/Scandinavian tafl)",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Capture / annihilation",
+  "tags": ["square", "asymmetric", "tafl", "hunt"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/2932/tablut",
+  "description": "Tablut, the 9x9 Sami tafl recorded by Linnaeus. Asymmetric siege: a King on the central throne with 8 Swedish defenders in a diamond, against 16 Muscovite attackers in four groups at the edge midpoints (attackers move first). All pieces move like a rook. Soldiers are captured by custodial flanking; the King must be surrounded on all four sides. The King wins by escaping to any edge square; the attackers win by capturing the King."
+}
