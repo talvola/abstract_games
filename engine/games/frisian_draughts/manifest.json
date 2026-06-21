@@ -1,0 +1,14 @@
+{
+  "uid": "frisian_draughts",
+  "name": "Frisian Draughts",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "AGP port (Frisian draughts / Frysk dammen)",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Checkers & draughts",
+  "tags": ["square", "draughts", "capture", "10x10", "frisian"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Frisian_draughts",
+  "description": "Frisian draughts (Frysk dammen) on a 10x10 board: men and flying kings capture along the diagonals AND the orthogonals (all 8 directions); mandatory weighted-maximum capture (most pieces, then most kings); end-of-move promotion. Leave the opponent with no legal move to win."
+}
