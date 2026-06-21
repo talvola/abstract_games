@@ -364,6 +364,45 @@ def test_tictactoe_mcts_never_loses_as_x():
         assert res["returns"][0] >= 0.0  # X wins or draws, never loses
 
 
+def test_xiangqi():
+    manifest, game = _load("xiangqi")
+    assert check(game, manifest, games=12).ok
+
+    # perft from the opening matches the published Xiangqi node counts — the
+    # high-confidence move-generation anchor (cannon hopper, lame horse, blocked
+    # elephant, palace confinement, flying-general, check filtering all exercised)
+    s0 = game.initial_state()
+
+    def perft(s, d):
+        return 1 if d == 0 else sum(perft(game.apply_move(s, m), d - 1)
+                                    for m in game.legal_moves(s))
+    assert perft(s0, 1) == 44
+    assert perft(s0, 2) == 1920
+
+    def st(board, to_move=0):
+        return game.deserialize({"board": board, "to_move": to_move,
+                                 "halfmove": 0, "ply": 0, "reps": {}})
+
+    # cannon captures only by jumping exactly one screen
+    s = st({"3,0": "G", "5,9": "g", "1,2": "C", "1,4": "h", "1,5": "s"})
+    lm = game.legal_moves(s)
+    assert "1,2>1,3" in lm and "1,2>1,5" in lm and "1,2>1,4" not in lm
+
+    # flying-general: a blocker on the shared file may not leave it
+    s = st({"4,0": "G", "4,9": "g", "4,4": "R"})
+    assert not any(m.startswith("4,4>") and not m.split(">")[1].startswith("4,")
+                   for m in game.legal_moves(s))
+
+    # checkmate (and stalemate) = loss for the side to move
+    mate = st({"4,9": "g", "3,7": "R", "4,7": "R", "5,7": "R", "4,0": "G"}, to_move=1)
+    assert game.is_terminal(mate) and game.returns(mate) == [1.0, -1.0]
+
+    # elephant cannot cross the river
+    s = st({"4,0": "G", "5,9": "g", "2,4": "E"})
+    assert all(int(m.split(">")[1].split(",")[1]) <= 4
+               for m in game.legal_moves(s) if m.startswith("2,4>"))
+
+
 def test_connect_four():
     manifest, game = _load("connect_four")
     assert check(game, manifest, games=40).ok

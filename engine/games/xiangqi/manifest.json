@@ -1,0 +1,14 @@
+{
+  "uid": "xiangqi",
+  "name": "Xiangqi",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "AGP (traditional Chinese Chess)",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "asian", "hopper"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/2393/xiangqi",
+  "description": "Xiangqi (Chinese Chess) on a 9x10 board. Generals confined to their palaces, elephants that cannot cross the river, lame horses, and cannons that must jump a screen to capture. Checkmate or stalemate the enemy general to win; the flying-general rule forbids the two generals from facing each other on an open file. Red moves first."
+}
