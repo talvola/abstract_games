@@ -1,0 +1,15 @@
+{
+  "uid": "nogo",
+  "name": "NoGo",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "John H. Conway / BombGo / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Capture / annihilation",
+  "tags": ["square", "go", "placement", "combinatorial", "misere"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/107995/nogo",
+  "options": { "size": { "choices": [7, 9, 11], "default": 9, "label": "Board size" } },
+  "description": "The anti-Go: place stones, but NO capture and NO suicide are ever allowed — every move must leave every group with a liberty. The player who runs out of legal placements loses. No draws."
+}

@@ -1,0 +1,15 @@
+{
+  "uid": "atari_go",
+  "name": "Atari Go",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Go-family teaching variant (Capture Go / first-capture Go) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Capture / annihilation",
+  "tags": ["square", "go", "capture", "placement", "teaching"],
+  "bgg_url": "https://senseis.xmp.net/?CaptureGo",
+  "options": { "size": { "choices": [7, 9, 13], "default": 9, "label": "Board size" } },
+  "description": "First-capture Go: a teaching variant of Go on an NxN grid. Place stones; remove enemy groups with no liberties. The first player to capture any enemy stone wins. Suicide is illegal and positional superko forbids repeating any prior board."
+}
