@@ -1,0 +1,14 @@
+{
+  "uid": "antichess",
+  "name": "Antichess",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "AGP",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "misere"],
+  "bgg_url": "https://lichess.org/variant/antichess",
+  "description": "Antichess (a.k.a. Losing Chess / Giveaway), the lichess variant. The goal is inverted: you win by losing all your pieces, or by having no legal move. The king is not royal (no check, no checkmate, it can be captured and a pawn may promote to a king) and capturing is compulsory — if any capture is available you must make one. No castling. White (player 0) moves first."
+}

@@ -1,0 +1,14 @@
+{
+  "uid": "horde_chess",
+  "name": "Horde Chess",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "AGP",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "variant", "asymmetric"],
+  "bgg_url": "https://lichess.org/variant/horde",
+  "description": "The lichess Horde variant. Black has the standard 16-piece chess army; White has no king and instead fields 36 pawns filling the bottom ranks. Black wins by capturing the entire horde; White wins by checkmating Black's king. White is never in check (no king) and its first-rank pawns may also advance two squares. Stalemate is a draw."
+}
