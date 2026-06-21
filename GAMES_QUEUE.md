@@ -11,14 +11,14 @@ universe map and capability gaps live in `GAME_BACKLOG.md`; this file is the
 **Erik is away ~7h; the factory is running unattended.** This section is kept live
 after every batch. Status as of the last update below.
 
-- **Games on `main`:** 48 (session started at 24). Each new game = conformance +
+- **Games on `main`:** 51 (session started at 24). Each new game = conformance +
   an independent rule-review, perft-anchored where a published number exists. All
   pushed to `origin/main`; the dev app is running so you can play any of them.
 - **Merged this session (19):** King of the Hill, Three-Check, Tablut, Racing
   Kings, Makruk, Shatranj, Capablanca, International Draughts, Turkish Draughts,
   Havannah, Horde Chess, Antichess, Courier Chess, Atomic Chess, Hnefatafl, Konane,
   Janggi, Ard Ri, Frisian Draughts, Atari Go, NoGo, Gonnect, Brazilian Draughts,
-  Wildebeest Chess. (Batches 1–8, all reviewed + merged.)
+  Wildebeest Chess, Oware, Tanbo, Dao. (Batches 1–9, all reviewed + merged.)
 - **Quality signals (the gate is earning its keep — 4 real bugs caught + fixed
   before shipping):** (1) Courier Chess insufficient-material masking a K+2Manns
   mate; (2) Frisian Draughts weighted-capture using the wrong ordering (fixed to
@@ -26,7 +26,7 @@ after every batch. Status as of the last update below.
   python-chess (broke the suite) — rewrote pure-stdlib + hardened the factory;
   (4) Wildebeest Chess castling put the rook on the wrong side + offered a bogus
   no-op castle — replaced with NoCastling (authentic 11-wide rule is unsourced).
-- **In flight:** batch 9 — Oware (Mancala), Tanbo (Go-family), Dao.
+- **In flight:** batch 10 — Fanorona, Dou Shou Qi (Jungle Chess), Connect6.
 - **Curation note:** I declined to ship **Tawlbwrdd** (batch 7) — the factory
   produced it AST-identical to the shipped Hnefatafl (same setup+rules, only the
   name differs). If you want Tawlbwrdd as a distinct entry, say so and I'll build
@@ -41,7 +41,7 @@ after every batch. Status as of the last update below.
   implemented, with any documented simplifications) and a `selftest.py` (its
   correctness anchor). `git log --oneline` shows the per-game merge rationale.
 
-_Last digest update: after batch 8 merge (48 games). Updated again each batch._
+_Last digest update: after batch 9 merge (51 games). Updated again each batch._
 
 ---
 
@@ -148,6 +148,13 @@ signals above.)
 | Gonnect | review→auto | Go capture (reuses atari_go core) + edge connection; reviewer read official rulebook | **done → main** |
 | Brazilian Draughts (8×8) | auto | perft 7/49/302/1469 = published 8×8 counts; international-rules engine at N=8 | **done(auto) → main** |
 | Wildebeest Chess (11×10) | review→**fix**→auto | review REJECTED a castling bug; replaced with NoCastling (unsourced rule), re-verified | **done → main** |
+
+## Batch 9 — Mancala + Go-family + classic (2026-06-21)
+| Game | Lane | Anchor | Status |
+|---|---|---|---|
+| Oware (Mancala/Awari) | review→auto | re-derived vs canonical Awari; 2000-game seed-conservation + unreachable-state proof | **done → main** |
+| Tanbo (Mark Steere) | review→auto | agent read Steere's official PDF; distinct 'bounded-root' capture + 2026 layout | **done → main** |
+| Dao (4×4) | review→auto | re-derived vs US patent + Wikipedia/BGG; maximal-slide + 4 win conditions | **done → main** |
 
 ## Needs human (escalations)
 
