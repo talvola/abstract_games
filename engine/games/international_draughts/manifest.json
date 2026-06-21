@@ -1,0 +1,14 @@
+{
+  "uid": "international_draughts",
+  "name": "International Draughts",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "AGP port (International / Polish draughts)",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Checkers & draughts",
+  "tags": ["square", "draughts", "capture", "10x10"],
+  "bgg_url": "https://en.wikipedia.org/wiki/International_draughts",
+  "description": "International (Polish) draughts on a 10x10 board: 20 men each, men capture forward and backward, flying kings, mandatory maximum capture (majority rule), and end-of-move promotion. Leave the opponent with no legal move to win."
+}
