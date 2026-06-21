@@ -1,0 +1,14 @@
+{
+  "uid": "oware",
+  "name": "Oware",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "AGP",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Mancala",
+  "tags": ["mancala", "sowing", "capture", "square", "abstract"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/4982/oware",
+  "description": "Oware (Awari / Awalé), the canonical two-rank Mancala. Sow seeds counterclockwise around 12 pits and capture in the opponent's row when the last seed makes a pit total 2 or 3. Most seeds wins."
+}

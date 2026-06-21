@@ -1,0 +1,15 @@
+{
+  "uid": "tanbo",
+  "name": "Tanbo",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Mark Steere (1993, re-released 2026) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Capture / annihilation",
+  "tags": ["square", "go", "roots", "capture", "annihilation", "steere"],
+  "bgg_url": "https://www.marksteeregames.com/Tanbo_rules.pdf",
+  "options": { "size": { "choices": [9, 11, 13], "default": 11, "label": "Board size" } },
+  "description": "Tanbo (Mark Steere, 1993): a Go-family root-pruning game. The board starts densely seeded with single black and white 'root' stones on the even sublattice. On your turn you grow one of your own roots by placing a stone orthogonally adjacent to exactly one of your own stones; any root (of either colour) that can no longer grow is pruned off the board. Annihilate all of your opponent's roots to win."
+}

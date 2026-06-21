@@ -1,0 +1,14 @@
+{
+  "uid": "dao",
+  "name": "Dao",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Jeff Pickering & Ben van Buskirk (~1999) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Capture / annihilation",
+  "tags": ["square", "movement", "abstract"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/948/dao",
+  "description": "Dao (Jeff Pickering & Ben van Buskirk, ~1999) on a 4x4 board. Each player has four pieces, starting on the two main diagonals. A piece slides like a queen but must travel as far as it can in the chosen direction. No captures. Win by arranging your four pieces into a 2x2 square, a full row or column of four, all four board corners, or by getting one of your pieces trapped in a board corner by three opponent pieces."
+}
