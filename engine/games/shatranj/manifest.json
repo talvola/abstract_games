@@ -1,0 +1,14 @@
+{
+  "uid": "shatranj",
+  "name": "Shatranj",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "AGP",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "historic"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/4347/shatranj",
+  "description": "Shatranj, medieval Persian/Arabic chess and the ancestor of the modern game, on an 8x8 board. Slow short-range pieces: the Firzan (queen) steps one square diagonally, the Alfil (bishop) leaps exactly two squares diagonally, pawns make no double step and promote only to a Firzan, and there is no castling. You win by checkmate, by stalemating the opponent (a stalemate is a WIN here, not a draw), or by baring the enemy king (reducing them to a lone king) unless they can bare yours in reply. White (player 0) moves first."
+}

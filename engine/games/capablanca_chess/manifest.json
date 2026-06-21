@@ -1,0 +1,14 @@
+{
+  "uid": "capablanca_chess",
+  "name": "Capablanca Chess",
+  "version": "1.0.0",
+  "author": "José Raúl Capablanca (c. 1920) / AGP port",
+  "engine_api": "1",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "variant"],
+  "bgg_url": "https://www.chessvariants.com/large.dir/capablanca.html",
+  "description": "Capablanca Chess (José Raúl Capablanca, c. 1920), on a 10x8 board. Adds two compound pieces: the Archbishop (a.k.a. Cardinal, bishop + knight) and the Chancellor (a.k.a. Marshall / Empress, rook + knight). The back rank is R N A B Q K B C N R, with pawns on the 2nd / 7th ranks. Pawns move and capture as in standard chess (double-step from start, en passant) and promote to Q/R/B/N/A/C on the last rank. The king castles by moving three squares toward a rook. Checkmate wins; stalemate and the usual fifty-move / repetition / insufficient-material situations draw."
+}
