@@ -45,27 +45,19 @@ factory's per-package `selftest.py` is run by the suite via `test_package_selfte
 | Game | Lane | Anchor | Status |
 |---|---|---|---|
 | Racing Kings | auto | shakmaty perft 21/421/11264 + 31,920 python-chess differential positions, 0 mismatches | **done(auto) → main** |
-| Makruk (Thai chess) | review | conformance + rule positions; no published number | review → branch `factory/batch-2` |
-| Shatranj (medieval) | review | conformance + rule positions; no published number | review → branch `factory/batch-2` |
-| Capablanca (10×8) | review | conformance + rule positions; no published number | review → branch `factory/batch-2` |
+| Makruk (Thai chess) | review→auto | independent adversarial review (option 1) | **done → main** |
+| Shatranj (medieval) | review→auto | independent adversarial review (option 1) | **done → main** |
+| Capablanca (10×8) | review→auto | independent adversarial review (option 1) | **done → main** |
+
+Under the option-1 gate, all three merged after a detailed independent review:
+three fresh adversarial code reviewers (separate from the factory's verifiers),
+each returning MERGE with no required fixes, plus the orchestrator's own code read
+and runtime probes of the risk areas (Makruk 6th-rank promotion, Shatranj Alfil
+leap / bare-king, Capablanca castling).
 
 ## Needs human (escalations)
 
-**Batch-2 review (low effort — no decisions, just a bless).** Makruk, Shatranj,
-and Capablanca are on branch `factory/batch-2`. All three were independently
-re-verified rules-faithful (the reviewer re-derived every piece move + win
-condition, found no faults) and are conformant — they're queued **only** because
-no published numeric anchor exists to machine-confirm them (unlike Racing Kings,
-where `python-chess` gave a 32k-position cross-check). `git checkout factory/batch-2`
-to try them. Documented simplifications: Makruk drops native counting rules
-(insufficient-material + ply-cap draws); Shatranj uses stalemate-as-win + bare-king.
-Say "merge batch-2" and I'll bring them to main, or flag any you want changed.
-
-> Throughput note: this is the expected long-tail shape — the auto lane is mostly
-> chess-family with a published perft (KotH, Three-Check, Racing Kings); most
-> traditional games land here as "verified-faithful, awaiting a bless". If you'd
-> rather raise the bar so a clean independent rule-review auto-merges without a
-> numeric anchor, say so and I'll adjust the gate.
+_(none)_
 
 ## Blocked on a capability
 _(tracked in `GAME_BACKLOG.md` — drops, stacking, territory scoring, point-and-line, >2-seat)_
