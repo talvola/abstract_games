@@ -1,0 +1,14 @@
+{
+  "uid": "racing_kings",
+  "name": "Racing Kings",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "AGP",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "race"],
+  "bgg_url": "https://lichess.org/variant/racingKings",
+  "description": "A pawnless chess variant by V. R. Parton (1961): both kings race to the eighth rank. Pieces (K Q R B N) move as in orthodox chess, but there are no pawns, no castling and no en passant. Check is entirely forbidden -- you may neither move into check nor give check. The first player to land their king on the eighth rank wins; if White reaches it and Black immediately matches on the reply, the game is a draw."
+}
