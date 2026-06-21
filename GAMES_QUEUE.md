@@ -4,17 +4,22 @@ On-disk state for the autonomous game-integration loop (the "factory"). The
 universe map and capability gaps live in `GAME_BACKLOG.md`; this file is the
 *queue* and the *human-escalation digest*.
 
-## The gate (decided with Erik, 2026-06-20)
+## The gate (option 1, updated 2026-06-21)
 
-- **AUTO-MERGE to `main`** — `agp validate` green **AND** an *independent published
-  anchor* matches (chess-family **perft**; a solved-game behavioural result). This
-  is mostly the chess-variant family.
-- **QUEUE for review** — `agp validate` green but correctness rests on an agent's
-  reading of the rules (no published anchor), **or** a new board shape/rendering,
-  **or** a documented-but-debatable ruleset. Held on a `factory/*` branch + listed
-  under *Needs human* below.
+Erik delegated merge authority: the orchestrator may auto-merge after a **detailed
+independent code review**, without separate approval.
+
+- **AUTO-MERGE to `main`** — `agp validate` green **AND** the rules are confirmed
+  faithful by an *independent* check: a published numeric anchor (chess-family
+  **perft** / solved result) **OR** a clean adversarial rule-review (a fresh agent
+  re-deriving every move + win condition with no faults) **plus the orchestrator's
+  own code review**. A published anchor is preferred but no longer required.
+- **QUEUE for review** — only when the review surfaces a genuine **open ruleset
+  decision** that's Erik's to make, a **new board shape/rendering** needing his
+  eyes, or an issue that can't be confidently auto-resolved. Held on a `factory/*`
+  branch + listed under *Needs human*.
 - **BLOCKED** — needs a missing platform primitive (stacking, hand/drops, Go
-  territory scoring, point-and-line edges, >2-seat UI). Deferred until built; see
+  territory scoring, point-and-line edges, >2-seat UI). Deferred; see
   `GAME_BACKLOG.md`.
 
 The loop: discover → implement (isolated, reference an existing package) →
