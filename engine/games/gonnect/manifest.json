@@ -1,0 +1,15 @@
+{
+  "uid": "gonnect",
+  "name": "Gonnect",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "João Pedro Neto (2000) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Connection",
+  "tags": ["square", "go", "connection", "capture", "placement"],
+  "bgg_url": "https://www.di.fc.ul.pt/~jpn/gv/gonnect.htm",
+  "options": { "size": { "choices": [7, 9, 13], "default": 9, "label": "Board size" } },
+  "description": "A connection game played with Go rules. Place stones on an NxN board (Black first); standard Go captures apply (remove enemy groups with no liberties), suicide is illegal and positional superko forbids repeating a position. You win by connecting your two opposite edges with an unbroken orthogonal chain of your stones — not by capturing or territory. No passing: a player with no legal move loses."
+}

@@ -1,0 +1,14 @@
+{
+  "uid": "brazilian_draughts",
+  "name": "Brazilian Draughts",
+  "version": "1.0.0",
+  "author": "AGP port (Brazilian draughts — International rules on 8x8)",
+  "engine_api": "1",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Checkers & draughts",
+  "tags": ["square", "draughts", "capture", "8x8"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Brazilian_draughts",
+  "description": "Brazilian draughts: International (Polish) draughts rules on an 8x8 board with 12 men per side. Men capture forward and backward, flying kings, mandatory maximum capture (majority rule), and end-of-move promotion. Leave the opponent with no legal move to win."
+}
