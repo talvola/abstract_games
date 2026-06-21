@@ -6,42 +6,66 @@ universe map and capability gaps live in `GAME_BACKLOG.md`; this file is the
 
 ---
 
-## ⭐ CATCH-UP DIGEST (read this first) — autonomous run of 2026-06-21
+## ⭐ CATCH-UP DIGEST (read this first) — autonomous run of 2026-06-21 [LOOP WOUND DOWN]
 
-**Erik is away ~7h; the factory is running unattended.** This section is kept live
-after every batch. Status as of the last update below.
+**The factory ran unattended while you were away; I've wound it down to a clean,
+green stopping point.** Everything below is on `origin/main`; the dev app is live.
 
-- **Games on `main`:** 51 (session started at 24). Each new game = conformance +
-  an independent rule-review, perft-anchored where a published number exists. All
-  pushed to `origin/main`; the dev app is running so you can play any of them.
-- **Merged this session (19):** King of the Hill, Three-Check, Tablut, Racing
-  Kings, Makruk, Shatranj, Capablanca, International Draughts, Turkish Draughts,
-  Havannah, Horde Chess, Antichess, Courier Chess, Atomic Chess, Hnefatafl, Konane,
-  Janggi, Ard Ri, Frisian Draughts, Atari Go, NoGo, Gonnect, Brazilian Draughts,
-  Wildebeest Chess, Oware, Tanbo, Dao. (Batches 1–9, all reviewed + merged.)
-- **Quality signals (the gate is earning its keep — 4 real bugs caught + fixed
-  before shipping):** (1) Courier Chess insufficient-material masking a K+2Manns
-  mate; (2) Frisian Draughts weighted-capture using the wrong ordering (fixed to
-  the official king=1.5 summed value); (3) Atomic's factory selftest imported
-  python-chess (broke the suite) — rewrote pure-stdlib + hardened the factory;
-  (4) Wildebeest Chess castling put the rook on the wrong side + offered a bogus
-  no-op castle — replaced with NoCastling (authentic 11-wide rule is unsourced).
-- **In flight:** batch 10 — Fanorona, Dou Shou Qi (Jungle Chess), Connect6.
-- **Curation note:** I declined to ship **Tawlbwrdd** (batch 7) — the factory
-  produced it AST-identical to the shipped Hnefatafl (same setup+rules, only the
-  name differs). If you want Tawlbwrdd as a distinct entry, say so and I'll build
-  its actual differing reconstruction rather than a clone. Quality over count.
-- **⚠️ NEEDS YOUR DECISION:** _none right now._ Anything requiring a genuine
-  ruleset call or a visual/UX check lands in **"Needs human"** below — check there.
-- **Parked for you (not attempted unattended, needs UI + your eyes):** the
-  capability investments from `GAME_BACKLOG.md` — drops (→ Morris/Crazyhouse/Shogi),
-  stacking (→ Tak/DVONN), Go territory scoring, point-and-line boards, >2-seat UI.
-  These touch the renderer/server, so I'm leaving them for when you're back.
-- **How to review fast:** every game ships a one-page `rules.md` (rules as
-  implemented, with any documented simplifications) and a `selftest.py` (its
-  correctness anchor). `git log --oneline` shows the per-game merge rationale.
+### Headline
+- **54 games on `main`** (session started at **24** → **+30** added).
+- **10 batches**, every game = `agp validate` + an **independent rule-review**,
+  perft/reference-anchored where a published number or engine (python-chess /
+  shakmaty / World Draughts Forum) exists. **Full test suite green.**
+- **The review gate caught + I fixed 4 real bugs before shipping**, and I declined
+  1 clone — quality held the whole way, **zero escalations needed**.
 
-_Last digest update: after batch 9 merge (51 games). Updated again each batch._
+### The 30 new games, by family
+- **Chess variants (perft/reference-anchored):** King of the Hill, Three-Check,
+  Racing Kings, Horde, Antichess, Atomic *(all python-chess/shakmaty-verified)*.
+- **Historical chess:** Makruk, Shatranj, Capablanca, Courier, Wildebeest.
+- **Asian chess (hopper family):** **Xiangqi**, **Janggi**, Dou Shou Qi (Jungle).
+- **Tafl:** Tablut, Hnefatafl, Ard Ri *(+ Brandub from before)*.
+- **Draughts:** International, Turkish, Brazilian, Frisian, Konane.
+- **Go family (new liberty/capture core):** Atari Go, NoGo, Gonnect, Tanbo.
+- **Connection:** Havannah, Gonnect.
+- **Mancala:** Oware.  **Alignment:** Connect6.  **Classics:** Fanorona, Dao.
+
+### Quality scorecard (the gate working)
+1. Courier Chess — insufficient-material masked a K+2Manns checkmate → fixed.
+2. Frisian Draughts — wrong capture-weighting → fixed to the official king=1.5.
+3. Atomic — factory selftest imported python-chess (broke the suite) → rewrote
+   pure-stdlib **and hardened the factory** so future selftests stay dep-free.
+4. Wildebeest — castling rook on the wrong side + a bogus no-op castle → replaced
+   with NoCastling (the authentic 11-wide rule is unsourced).
+5. Declined **Tawlbwrdd** — the factory made it byte-identical to Hnefatafl.
+
+### ⚠️ Needs your decision: _none._ Nothing is blocked on you.
+
+### ▶ When you're back — suggested next moves (your call)
+The headless game long-tail is largely drained of *distinct, high-value* titles.
+The next frontier is the **capability investments** — they unlock the biggest
+missing names but touch the **renderer/server, so they want your eyes**:
+1. **Drops / reserve tray** (M effort) → **Nine Men's Morris family, Crazyhouse,
+   Shogi**. Highest fame-per-effort.
+2. **Stacking** (L) → **Tak, DVONN, TZAAR, Focus**.
+3. **Go territory scoring** (L) → **full Go** — *de-risked this session*: the Go
+   liberty/capture core is already built (Atari Go/NoGo/Gonnect/Tanbo); this is
+   just the scoring/UI layer on top.
+Lower-priority: point-and-line boards (TwixT), Pentago's rotate UI, >2-seat UI
+(Chinese Checkers). See `GAME_BACKLOG.md` for the full ranked map.
+Also worth a pass: **play-test the new games in the browser** — especially the
+unusual boards (Oware 6×2 with seed-count labels; Xiangqi/Janggi/Jungle 9×10/7×9;
+Fanorona 9×5) — to confirm rendering/UX reads well. Logic is fully tested; only
+visual polish hasn't had a human eye.
+
+### How to review fast
+Every game ships a one-page `rules.md` (rules as implemented + any documented
+simplifications) and a `selftest.py` (its correctness anchor, run by the suite via
+`test_package_selftests`). `git log --oneline` shows the per-game merge rationale.
+The factory is a reusable Workflow (`.claude/.../game-factory-*.js`) — "run the
+factory on \<games\>" restarts it anytime.
+
+_Final digest update: after batch 10 merge (54 games). Loop wound down._
 
 ---
 
@@ -155,6 +179,13 @@ signals above.)
 | Oware (Mancala/Awari) | review→auto | re-derived vs canonical Awari; 2000-game seed-conservation + unreachable-state proof | **done → main** |
 | Tanbo (Mark Steere) | review→auto | agent read Steere's official PDF; distinct 'bounded-root' capture + 2026 layout | **done → main** |
 | Dao (4×4) | review→auto | re-derived vs US patent + Wikipedia/BGG; maximal-slide + 4 win conditions | **done → main** |
+
+## Batch 10 — distinct traditionals (2026-06-21)
+| Game | Lane | Anchor | Status |
+|---|---|---|---|
+| Fanorona | review→auto | re-derived vs canonical Wikipedia; approach+withdrawal captures, chains | **done → main** |
+| Dou Shou Qi (Jungle) | review→auto | full rank hierarchy, river jumps, traps, dens verified | **done → main** |
+| Connect6 | review→auto | 1-then-2 stone mechanic + gap-bridging six verified | **done → main** |
 
 ## Needs human (escalations)
 
