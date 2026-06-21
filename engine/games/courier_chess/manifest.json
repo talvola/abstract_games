@@ -1,0 +1,14 @@
+{
+  "uid": "courier_chess",
+  "name": "Courier Chess",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Medieval (c. 1200) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "variant", "historic", "medieval"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Courier_chess",
+  "description": "Courier Chess (Kurierspiel), a medieval German chess variant played c. 1200-1800 on a 12x8 board. It introduced the Courier, which moves exactly like the modern bishop (an unlimited diagonal slider) -- roughly three centuries before this move entered standard chess. Each side has a King, a Queen (the medieval Ferz: a one-step diagonal mover), two Rooks, two Knights, two Bishops/Alfils (the (2,2) elephant-leaper of Shatranj), two Couriers (modern bishops), a Mann or Sage (moves like a king but is not royal), a Schleich or Wazir (steps one square orthogonally), and twelve pawns on the third rank. Pawns step a single square (no double step, no en passant) and promote only to a Ferz on the last rank. There is no castling. Checkmate wins; stalemate is a draw."
+}
