@@ -91,6 +91,7 @@ ANCHOR = {
  "turkish_draughts": "40k-position + 489k jump-chain cross-check, 0 double-jumps",
  "wildebeest_chess": "review REJECTED+fixed castling ⇒ NoCastling",
  "xiangqi": "independent review + perft baseline; cannon hopper",
+ "y": "selftest (three-edge connection win, the can-never-draw property verified over random full boards, swap/pie); shares the connection family with Hex",
  "yodd": "parity win; never-draws; conformance",
 }
 # Browser / UX eyeball status (default: rendered by the generic renderer, never
@@ -112,6 +113,7 @@ BROWSER = {
  "rolit": "✅ verified (NEW >2-seat UI — 4 player chips/colours, full P1→P4 round)",
  "xiangqi": "✅ verified (UI review: legible, uncramped)",
  "janggi": "✅ verified (UI review: legible, palace pieces correct)",
+ "y": "✅ verified (NEW triangular-hex polygon board renders cleanly)",
 }
 DEFAULT_BROWSER = "— generic renderer (logic tested; not individually eyeballed)"
 

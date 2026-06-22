@@ -1,0 +1,22 @@
+{
+  "uid": "y",
+  "name": "Y",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Connection",
+  "tags": ["connection", "hex", "triangle", "pie-rule"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/13110/y",
+  "pie": true,
+  "options": {
+    "size": {
+      "choices": [8, 11, 14],
+      "default": 11,
+      "label": "Board side"
+    }
+  },
+  "description": "The Game of Y: a connection game on a triangular board of hexagons. Place stones to link all three sides of the triangle with one group. Like Hex, Y can never be a draw. A swap (pie) move balances the first move."
+}
