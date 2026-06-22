@@ -1,0 +1,14 @@
+{
+  "uid": "quoridor",
+  "name": "Quoridor",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Positional",
+  "tags": ["square", "race", "walls", "maze"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/624/quoridor",
+  "description": "Quoridor (Mirko Marchesi, 1997): race your pawn to the far side of a 9x9 board while dropping two-square walls to lengthen your opponent's path. Walls may never wall a pawn off from its goal entirely."
+}

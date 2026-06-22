@@ -76,6 +76,7 @@ ANCHOR = {
  "oust": "event-based win; never-draws check; conformance",
  "oware": "re-derived vs Awari; 2000-game seed-conservation proof",
  "pente": "custody-capture tests + conformance",
+ "quoridor": "independent adversarial rule review (wall blocking / no-overlap-cross / the pathfinding-seal gate built+verified / jumps — all MERGE) + selftest",
  "pentago": "rotation algebra (4×twist = identity) + win-judged-after-rotation "
             "selftest; place+rotate via the =CHOICE picker",
  "racing_kings": "shakmaty perft 21/421/11264 + 31,920 python-chess positions",
@@ -113,6 +114,7 @@ BROWSER = {
  "oware": "✅ verified (seed counts + own-row clicking correct)",
  "pentago": "✅ verified (quadrant divider lines + 8-option rotation picker)",
  "rolit": "✅ verified (NEW >2-seat UI — 4 player chips/colours, full P1→P4 round)",
+ "quoridor": "✅ verified (NEW wall primitive — ghost slots in grooves, place→solid wall, goal tints)",
  "chinese_checkers": "✅ verified (full 6-pointed star, all SIX seat colours, step+jump)",
  "xiangqi": "✅ verified (UI review: legible, uncramped)",
  "janggi": "✅ verified (UI review: legible, palace pieces correct)",

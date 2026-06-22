@@ -220,6 +220,9 @@ main { display: flex; flex-direction: column; align-items: center; padding-top: 
   box-shadow: 0 0 0 1px var(--accent); }
 .reserve-count { font-size: 0.6rem; color: var(--muted); margin-left: 2px; vertical-align: super; }
 
+.wall-ghost { stroke: #c9a96e; opacity: 0.08; cursor: pointer; }
+.wall-ghost:hover { opacity: 0.85; }
+
 .actions-bar { margin-top: 10px; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
 .action-btn { background: rgba(201,169,110,0.15); border: 1px solid var(--accent); color: var(--accent);
   padding: 8px 16px; border-radius: 6px; cursor: pointer; font-family: inherit; font-weight: bold; }

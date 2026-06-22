@@ -30,6 +30,10 @@ const isCellMove = (m) => m.split('>').every((seg) => CELL_RE.test(seg.split('='
 // reserve tray, so it is neither a cell path nor an action button.
 const DROP_RE = /^([A-Za-z])@(-?\d+,-?\d+)$/
 const isDropMove = (m) => DROP_RE.test(m)
+// A wall move places a wall in a groove: "Hc,r" / "Vc,r" (Quoridor). Handled by
+// clickable slots between the cells, not as a cell path or an action button.
+const WALL_RE = /^([HV])(\d+),(\d+)$/
+const isWallMove = (m) => WALL_RE.test(m)
 // Non-cell legal moves render as action buttons (e.g. pie-rule "swap", "pass").
 const ACTION_LABELS = {
   swap: 'Swap (pie rule)', pass: 'Pass', end: 'End turn', resign: 'Resign',
@@ -75,7 +79,8 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
   const board = spec.board
   const cellMoves = (legalMoves || []).filter(isCellMove)
   const dropMoves = (legalMoves || []).filter(isDropMove)
-  const actions = (legalMoves || []).filter((m) => !isCellMove(m) && !isDropMove(m))
+  const wallMoves = (legalMoves || []).filter(isWallMove)
+  const actions = (legalMoves || []).filter((m) => !isCellMove(m) && !isDropMove(m) && !isWallMove(m))
   const moves = cellMoves.map((m) => ({ raw: m, ...parseMove(m) }))
   const paths = moves.map((m) => m.cells)
 
@@ -160,6 +165,29 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
     return <line key={`bl${i}`} x1={x1} y1={y1} x2={x2} y2={y2}
       stroke={seg[2] || '#6b6052'} strokeWidth={cellR * 0.09} strokeLinecap="round" />
   })
+
+  // Walls (Quoridor): two-cell segments in the grooves between cells. Placed
+  // walls (spec.board.walls) draw solid; legal placements draw as faint clickable
+  // "ghost" slots that brighten on hover. Square boards only.
+  let wallEls = null
+  if (!isHex && !isPoly && (board.walls || wallMoves.length)) {
+    const H = board.height
+    const seg = (kind, c, r) => kind === 'H'
+      ? { x1: px(c) - R, y1: px(H - 1 - r) - R, x2: px(c + 1) + R, y2: px(H - 1 - r) - R }
+      : { x1: px(c) + R, y1: px(H - 1 - r) + R, x2: px(c) + R, y2: px(H - 2 - r) - R }
+    const placed = []
+    const w = board.walls || { h: [], v: [] }
+    ;(w.h || []).forEach(([c, r], i) => placed.push(<line key={`wh${i}`} {...seg('H', c, r)}
+      stroke="#c9a96e" strokeWidth={R * 0.3} strokeLinecap="round" />))
+    ;(w.v || []).forEach(([c, r], i) => placed.push(<line key={`wv${i}`} {...seg('V', c, r)}
+      stroke="#c9a96e" strokeWidth={R * 0.3} strokeLinecap="round" />))
+    const ghosts = (disabled ? [] : wallMoves).map((m) => {
+      const x = m.match(WALL_RE)
+      return <line key={`wg${m}`} className="wall-ghost" {...seg(x[1], +x[2], +x[3])}
+        strokeWidth={R * 0.3} strokeLinecap="round" onClick={() => onMove(m)} />
+    })
+    wallEls = <g>{ghosts}{placed}</g>
+  }
 
   const allx = [], ally = []
   shapes.forEach((s) => s.poly.split(' ').forEach((p) => {
@@ -288,6 +316,7 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
             </g>
           )
         })}
+        {wallEls}
       </svg>
       {tray(0, 'bottom')}
 
