@@ -1,0 +1,14 @@
+{
+  "uid": "einstein",
+  "name": "EinStein würfelt nicht",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": true,
+  "hidden_info": false,
+  "category": "Positional",
+  "tags": ["square", "dice", "race", "capture"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/18699/einstein-wurfelt-nicht",
+  "description": "EinStein würfelt nicht! (Ingo Althöfer, 2004): a 5x5 dice race. Roll to choose which numbered stone to move toward the far corner; land on stones to capture them. First to the opposite corner — or to capture all enemy stones — wins."
+}
