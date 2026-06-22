@@ -95,7 +95,7 @@ _Final digest update: after batch 10 merge (54 games). Loop wound down._
 
 ---
 
-## Autonomous expansion run (2026-06-21/22) — 54 → 70 games + 5 UI capabilities
+## Autonomous expansion run (2026-06-21/22) — 54 → 72 games + ALL 7 UI capabilities
 
 **Final tally:** 16 games added across the run, **all five named UI capabilities
 shipped, each with a flagship consumer**, plus a multi-action-turn demo and six
@@ -110,6 +110,8 @@ all MERGE.
 | territory scoring | Go #61 |
 | >2-seat (up to 6) | Rolit #63 (4p), Chinese Checkers #68 (6p) |
 | walls / point-and-line | Quoridor #69, TwixT #70 |
+| dice / randomness | EinStein würfelt nicht #71 |
+| cards | Onitama #72 |
 
 Other games: Nine Men's Morris #57, Bagh-Chal #58, Pentago #62 (place+rotate via
 the =CHOICE picker), Alquerque #64, Kalah #65, Y #66, Yote #67. Renderer gained:
@@ -117,9 +119,10 @@ reserve trays, stacking glyph, `board.lines` (under-cell grooves), `board.overla
 (over-cell bridges), `board.tints` (terrain/edges), `board.walls` (groove slots),
 6 seat colours, triangular-hex + 6-pointed-star polygon layouts, extent-margin.
 
-**Remaining frontier:** dice UI (EinStein würfelt nicht), card UI (Onitama) —
-both need engine CHANCE/UI maturation; more stacking consumers (DVONN/Focus/Tak);
-niche games (Mu Torere, Tapatan, Twelve Men's Morris, Surakarta).
+**The entire UI-capability roadmap is now complete (all 7 of GAME_BACKLOG.md's
+ranked gaps).** Remaining work is purely incremental games on existing primitives:
+DVONN/Focus/Tak (stacking), Surakarta (loop-capture), Mu Torere, Tapatan, Twelve
+Men's Morris.
 
 ---
 
