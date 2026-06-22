@@ -46,6 +46,8 @@ ANCHOR = {
  "freeform_chess": "freeform/unenforced mode (lighter conformance path)",
  "frisian_draughts": "review REJECTED+fixed weighted capture; king=1.5",
  "gomoku": "conformance + targeted tests",
+ "go": "independent adversarial rule review (Tromp-Taylor area scoring / ko-superko / "
+       "suicide / two-pass) + selftest; liberty core shared with Atari Go",
  "gonnect": "Go capture (atari_go core) + edge connection; rulebook review",
  "goose_chase": "ZRF port (zillions skill); conformance",
  "grand_chess": "shared chesslike core; conformance",
@@ -91,6 +93,7 @@ BROWSER = {
  "bagh_chal": "✅ verified (alquerque board + lines, placement, capture/5 caption)",
  "lasca": "✅ verified (NEW stacking renderer — towers as layered bands + height badge)",
  "crazyhouse": "✅ verified (drops + reserve trays, capture→drop lifecycle)",
+ "go": "✅ verified (NEW territory scoring — Pass button, capture, live komi score)",
  "shogi": "✅ verified (9×9 setup, reserve trays, promotion picker)",
  "mini_shogi": "✅ verified (5×5 setup, reserve trays — shares the Shogi UI path)",
  "nine_mens_morris": "✅ verified (board diagram + lines, placement, mill log)",

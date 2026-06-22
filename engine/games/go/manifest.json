@@ -1,0 +1,27 @@
+{
+  "uid": "go",
+  "name": "Go",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Connection",
+  "tags": ["go", "territory", "capture", "classic"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Go_(game)",
+  "options": {
+    "size": {
+      "choices": [9, 13, 19],
+      "default": 9,
+      "label": "Board size",
+      "labels": { "9": "9×9", "13": "13×13", "19": "19×19" }
+    },
+    "komi": {
+      "choices": [5.5, 6.5, 7.5],
+      "default": 7.5,
+      "label": "Komi (White compensation)"
+    }
+  },
+  "description": "Go (Weiqi/Baduk) with full territory scoring on 9x9, 13x13 or 19x19. Surround empty points and capture stones; the game ends after two passes and is scored by Tromp-Taylor area rules (stones + surrounded territory + komi)."
+}

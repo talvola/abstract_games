@@ -95,7 +95,7 @@ _Final digest update: after batch 10 merge (54 games). Loop wound down._
 
 ---
 
-## Autonomous expansion run (2026-06-21, cont.) — 55 → 59 games
+## Autonomous expansion run (2026-06-21, cont.) — 55 → 61 games + all 3 big capabilities
 
 Erik set the loop to "keep going for hours, spin off sub-agents, maintain a status
 artifact." On-disk state, all on `main`, suite green:
@@ -112,6 +112,14 @@ artifact." On-disk state, all on `main`, suite green:
   inference fuzzed over 20k boards).
 - **Mini Shogi (#59)** — 5×5 shogi on the verified ShogiLike core; published perft
   14/181/2512 (depth-1 hand-checked).
+- **Lasca (#60)** — Lasker's draughts-with-towers; **first STACKING game** →
+  added the stacking renderer (towers as layered owner bands + height badge);
+  review = MERGE (under-tucking + liberation + mandatory-not-maximum capture).
+- **Go (#61)** — full Go with **TERRITORY SCORING** (the 3rd big capability and
+  the flagship hole): liberty core + two-pass end + **Tromp-Taylor area scoring**
+  (algorithmic, so no dead-stone UI) + komi + 9/13/19 sizes; review = MERGE
+  (scoring hand-verified, ko/superko confirmed). **All three capabilities Erik
+  named — drops, stacking, territory scoring — are now shipped.**
 - **Renderer** — added `board.lines` (cosmetic connecting lines) + `board.tints`
   (terrain colours) + an extent-relative viewBox margin. Drove a **UI-review pass**
   (a sub-agent) on the unusual boards → fixed **Jungle's invisible river** (now
