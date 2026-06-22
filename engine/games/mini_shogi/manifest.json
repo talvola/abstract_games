@@ -1,0 +1,14 @@
+{
+  "uid": "mini_shogi",
+  "name": "Mini Shogi",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "drops", "shogi"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Minishogi",
+  "description": "Mini Shogi (5x5 shogi, Kusano 1970): the full drop game compressed to a 5x5 board with King, Gold, Silver, Bishop, Rook and a Pawn each. Promotion zone is just the far rank."
+}

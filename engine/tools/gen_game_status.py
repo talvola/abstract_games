@@ -23,6 +23,8 @@ ANCHOR = {
  "ard_ri": "independent tafl rule re-derivation; conformance",
  "atari_go": "independent re-derivation; liberty/group-capture + superko probes",
  "atomic_chess": "python-chess AtomicBoard differential (kiwipete perft d4)",
+ "bagh_chal": "independent adversarial rule review (alquerque topology / jumps / "
+              "win-conditions all MERGE; capture-inference fuzzed 20k boards) + selftest",
  "berolina": "shared chesslike core; perft; conformance",
  "borderline": "conformance + targeted tests (neutral shared-king rule)",
  "brandub": "documented tafl ruleset; conformance",
@@ -58,6 +60,8 @@ ANCHOR = {
  "lines_of_action": "connectivity win + conformance",
  "los_alamos_chess": "6×6 move-gen + mate/stalemate tests",
  "makruk": "independent review; 6th-rank promotion probes",
+ "mini_shogi": "published 5×5 minishogi perft 14/181/2512 (depth-1 hand-checked) "
+               "on the python-shogi-verified ShogiLike core",
  "nine_mens_morris": "independent adversarial rule review (topology/mills/flying/"
                      "removal/win — all MERGE) + topology-invariant selftest",
  "nogo": "independent re-derivation; capture+suicide both illegal",
@@ -82,8 +86,10 @@ ANCHOR = {
 # Browser / UX eyeball status (default: rendered by the generic renderer, never
 # individually eyeballed -- logic is conformance-tested either way).
 BROWSER = {
+ "bagh_chal": "✅ verified (alquerque board + lines, placement, capture/5 caption)",
  "crazyhouse": "✅ verified (drops + reserve trays, capture→drop lifecycle)",
  "shogi": "✅ verified (9×9 setup, reserve trays, promotion picker)",
+ "mini_shogi": "✅ verified (5×5 setup, reserve trays — shares the Shogi UI path)",
  "nine_mens_morris": "✅ verified (board diagram + lines, placement, mill log)",
  "dou_shou_qi": "✅ verified (river/traps/dens now colour-tinted)",
  "fanorona": "✅ verified (alquerque connecting lines drawn)",
