@@ -32,8 +32,15 @@ See PLATFORM_PLAN.md (roadmap) and engine/SPEC.md (game authoring contract).
 - `DATABASE_URL` (default `sqlite:///./agp.db`). Uploads run game code IN-PROCESS (RCE) → gated, closed by default: `AGP_ADMIN_EMAILS` allowlist or `AGP_ALLOW_OPEN_UPLOADS=true`. Real sandbox is deferred.
 - Game registry caches at startup; `POST /api/games/upload` hot-reloads it.
 
+## Adding games at scale (the "game factory")
+- The bundled library (~54 games) was largely built by an autonomous loop. `GAME_BACKLOG.md` is the capability map (the abstract-game universe bucketed by the platform primitive each needs); `GAMES_QUEUE.md` is the live status + the merge gate + escalation digest. Read both before a bulk game effort.
+- The factory is a reusable dynamic **Workflow** (script under the session's `workflows/scripts/game-factory-*.js`): per game, one agent implements the package and a *different* agent adversarially verifies it; the orchestrator owns a deterministic merge gate (auto-merge on a published anchor or a clean independent review; queue only genuine ruleset decisions / new board shapes). See the `game-factory-loop` memory.
+- **Anchor chess-family games with perft**; for variants, **python-chess / shakmaty** (install in `.venv`) are gold-standard differential oracles — use them for one-time verification only.
+
 ## Testing
 - Engine: `cd engine && PYTHONPATH=. python3 tests/test_games.py`.
+- **Per-game `selftest.py`**: a game package may ship `games/<uid>/selftest.py` — a standalone script asserting its correctness anchor (perft / rule positions). `tests/test_games.py::test_package_selftests` runs every one. **Selftests MUST be pure-stdlib** (import only `agp` + their own game; no `python-chess`/numpy) and fast — the suite runs them under system `python3` where pip-only deps are absent.
+- **Restart the backend to pick up a NEW game** even under `dev.sh --reload` (don't trust auto-reload for new packages); kill cleanly by port AND any stale `[u]vicorn server.app` reloader parent.
 - Backend via `TestClient`: call `server.db.init_db()` first (bare TestClient skips the startup lifespan → no tables). Use `httpx` in `.venv` (not `requests`).
 - Browser checks use pinchtab: click custom buttons by **ref** (text:/CSS clicks are unreliable); coordinate clicks are flaky (first click often misses) — verify with a screenshot/snap; screenshots occasionally capture a stale tab, re-run in a fresh session.
 
