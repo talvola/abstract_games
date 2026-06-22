@@ -1,0 +1,14 @@
+{
+  "uid": "alquerque",
+  "name": "Alquerque",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Checkers & draughts",
+  "tags": ["alquerque", "capture", "ancient", "draughts-ancestor"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Alquerque",
+  "description": "Alquerque, the ancient ancestor of draughts, on a 5x5 lined board. Step along the lines or jump an adjacent enemy to capture; captures are compulsory and chain. Capture all the enemy to win."
+}

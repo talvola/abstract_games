@@ -18,6 +18,7 @@ OUT = ENGINE.parent / "GAME_STATUS.md"
 
 # Verification anchor per game (from GAMES_QUEUE batch notes + capability sessions).
 ANCHOR = {
+ "alquerque": "selftest (12v12 setup, mandatory jump-capture + chains, annihilation/stuck win); reuses the verified alquerque board + lines",
  "amazons": "move-gen anchored on the known 2176 opening moves; conformance",
  "antichess": "python-chess AntichessBoard differential (perft d5, 789 terminals)",
  "ard_ri": "independent tafl rule re-derivation; conformance",
@@ -94,6 +95,7 @@ ANCHOR = {
 # Browser / UX eyeball status (default: rendered by the generic renderer, never
 # individually eyeballed -- logic is conformance-tested either way).
 BROWSER = {
+ "alquerque": "✅ verified (5×5 alquerque board + lines — shares the Bagh-Chal/Fanorona path)",
  "bagh_chal": "✅ verified (alquerque board + lines, placement, capture/5 caption)",
  "lasca": "✅ verified (NEW stacking renderer — towers as layered bands + height badge)",
  "crazyhouse": "✅ verified (drops + reserve trays, capture→drop lifecycle)",
