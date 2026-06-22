@@ -1,0 +1,14 @@
+{
+  "uid": "shogi",
+  "name": "Shogi",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "drops", "shogi"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Shogi",
+  "description": "Shogi (Japanese chess) on a 9x9 board. Captured pieces switch sides and are dropped back into play; pieces promote in the far three ranks. The classic drop game."
+}
