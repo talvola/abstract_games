@@ -1,0 +1,14 @@
+{
+  "uid": "mu_torere",
+  "name": "Mū Tōrere",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Positional",
+  "tags": ["traditional", "blocking", "maori"],
+  "bgg_url": "https://en.wikipedia.org/wiki/M%C5%AB_t%C5%8Drere",
+  "description": "Mū Tōrere, the Māori game played on an eight-pointed star. Each player has four men and slides one per turn to an empty adjacent point; a man may enter the empty centre (putahi) only when next to an enemy man. A player with no legal move loses."
+}

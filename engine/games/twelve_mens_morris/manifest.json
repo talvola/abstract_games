@@ -1,0 +1,22 @@
+{
+  "uid": "twelve_mens_morris",
+  "name": "Twelve Men's Morris",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Positional",
+  "tags": ["mill", "placement", "movement", "classic"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Morabaraba",
+  "options": {
+    "flying": {
+      "choices": ["yes", "no"],
+      "default": "yes",
+      "label": "Flying when down to 3 men",
+      "labels": { "yes": "Allowed (standard)", "no": "Not allowed" }
+    }
+  },
+  "description": "Twelve Men's Morris: Nine Men's Morris on the same 24-point board with four added corner diagonals. Place twelve men, then slide them along the lines; form a mill (three in a row, now including the diagonals) to capture an enemy man. Reduce the opponent to two men, or leave them with no legal move, to win. The extra lines make the board notoriously draw-prone."
+}

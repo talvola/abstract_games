@@ -287,6 +287,15 @@ signals above.)
 | Dou Shou Qi (Jungle) | review→auto | full rank hierarchy, river jumps, traps, dens verified | **done → main** |
 | Connect6 | review→auto | 1-then-2 stone mechanic + gap-bridging six verified | **done → main** |
 
+## Batch 11 — incremental traditionals on existing primitives (2026-06-22)
+_First batch of the post-roadmap "incremental games" phase — all reuse the
+Morris/polygons adjacency primitive; no new capability._
+| Game | Lane | Anchor | Status |
+|---|---|---|---|
+| Tapatan (Three Men's Morris) | review→auto | independent re-derivation of the 8-line 3×3 board (centre↔all 8, no corner–corner adjacency); no-capture mill-to-win; 5000-game termination proof | **done → main** |
+| Mū Tōrere | review→auto | re-derived vs canonical (Bell) ruleset; the centre-entry-only-when-adjacent-to-enemy rule + loss-on-no-move; novel 8-pointed-star polygon layout, browser-verified | **done → main** |
+| Twelve Men's Morris | review→**fix**→auto | reviewer flagged a genuine fork: full-board (12+12 fill all 24 pts, no mill) was scored a LOSS for the mover via the generic no-move rule. I resolved it to the **traditional DRAW** (faithful rule, not an open choice — it's the variant's signature drawishness), documented in rules.md + asserted in selftest, then auto-merged | **done → main** |
+
 ## Needs human (escalations)
 
 _(none)_
