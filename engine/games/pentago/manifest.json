@@ -1,0 +1,14 @@
+{
+  "uid": "pentago",
+  "name": "Pentago",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "N-in-a-row",
+  "tags": ["square", "alignment", "rotation", "modern"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/22057/pentago",
+  "description": "Pentago (Tomas Floden, 2005): place a marble, then rotate one of the four 3x3 quadrants 90 degrees. First to make five in a row wins — but the twist after every placement keeps the board in motion."
+}

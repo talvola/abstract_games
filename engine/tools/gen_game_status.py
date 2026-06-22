@@ -73,6 +73,8 @@ ANCHOR = {
  "oust": "event-based win; never-draws check; conformance",
  "oware": "re-derived vs Awari; 2000-game seed-conservation proof",
  "pente": "custody-capture tests + conformance",
+ "pentago": "rotation algebra (4×twist = identity) + win-judged-after-rotation "
+            "selftest; place+rotate via the =CHOICE picker",
  "racing_kings": "shakmaty perft 21/421/11264 + 31,920 python-chess positions",
  "reversi": "flip/pass/terminal tests + conformance",
  "shatranj": "independent review; Alfil leap / bare-king probes",
@@ -100,6 +102,7 @@ BROWSER = {
  "dou_shou_qi": "✅ verified (river/traps/dens now colour-tinted)",
  "fanorona": "✅ verified (alquerque connecting lines drawn)",
  "oware": "✅ verified (seed counts + own-row clicking correct)",
+ "pentago": "✅ verified (quadrant divider lines + 8-option rotation picker)",
  "xiangqi": "✅ verified (UI review: legible, uncramped)",
  "janggi": "✅ verified (UI review: legible, palace pieces correct)",
 }
