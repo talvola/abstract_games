@@ -1,0 +1,14 @@
+{
+  "uid": "yote",
+  "name": "Yote",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Capture / annihilation",
+  "tags": ["square", "capture", "west-africa", "drops"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Yot%C3%A9",
+  "description": "Yote, a West African war game on a 5x6 board. Drop, move, or jump-capture your men; crucially, every capture lets you remove a second enemy piece of your choice. Capture all the enemy to win."
+}

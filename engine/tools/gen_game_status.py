@@ -93,6 +93,7 @@ ANCHOR = {
  "xiangqi": "independent review + perft baseline; cannon hopper",
  "y": "selftest (three-edge connection win, the can-never-draw property verified over random full boards, swap/pie); shares the connection family with Hex",
  "yodd": "parity win; never-draws; conformance",
+ "yote": "selftest (drop/step/jump, the bonus-removal double-capture, optional capture, annihilation/stuck win) + independent adversarial rule review",
 }
 # Browser / UX eyeball status (default: rendered by the generic renderer, never
 # individually eyeballed -- logic is conformance-tested either way).
@@ -114,6 +115,7 @@ BROWSER = {
  "xiangqi": "✅ verified (UI review: legible, uncramped)",
  "janggi": "✅ verified (UI review: legible, palace pieces correct)",
  "y": "✅ verified (NEW triangular-hex polygon board renders cleanly)",
+ "yote": "✅ verified (5×6 board, drops with hand count, capture flow)",
 }
 DEFAULT_BROWSER = "— generic renderer (logic tested; not individually eyeballed)"
 
