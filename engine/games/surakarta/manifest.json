@@ -1,0 +1,14 @@
+{
+  "uid": "surakarta",
+  "name": "Surakarta",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "AGP port (Surakarta, traditional Indonesian capturing game)",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Capture / annihilation",
+  "tags": ["traditional", "loop-capture", "indonesian"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Surakarta_(game)",
+  "description": "Surakarta, a traditional Indonesian capturing game on a 6x6 grid of intersections whose lines extend into eight corner loops. A piece steps one space to any adjacent empty point; to capture it slides along the orthogonal lines, around at least one corner loop, and takes the first enemy piece it meets (no jumping). Capture all of the opponent's pieces to win."
+}

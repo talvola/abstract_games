@@ -1,0 +1,14 @@
+{
+  "uid": "dvonn",
+  "name": "DVONN",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Stacking",
+  "tags": ["stacking", "hex", "gipf", "burm"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/2346/dvonn",
+  "description": "DVONN (Kris Burm, 2001 -- the third GIPF project game): a two-phase stacking game on a 49-field elongated-hexagon board. Players first fill the board (3 neutral red DVONN pieces, then 23 White + 23 Black), then move stacks exactly their own height in a straight line to land on top of another stack. Any stack that loses its chain of contact to a red DVONN piece is removed. At the end you score every piece in the stacks you top; most pieces wins."
+}

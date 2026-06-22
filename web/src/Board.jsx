@@ -161,20 +161,30 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
       : (x, y) => [px(x), px(board.height - 1 - y)]
   const tints = board.tints || {}                  // {cellId: colour} terrain fills
   const cellR = shapes.length ? shapes[0].r : R
+  // A cosmetic segment is a list of [x,y] points in board-coord space, with an
+  // optional trailing colour string. 2 points → straight line; 3 points → the
+  // middle point is a quadratic-Bézier control (smooth arcs, e.g. Surakarta's
+  // corner loops); more → an open polyline. Pixel points are collected in
+  // `decorPx` so the viewBox can grow to include decorations that bulge past the
+  // cells (loop arcs, edge tracks). Returns an SVG element + records its extent.
+  const decorPx = []
+  function decorPath(seg, key, stroke, width) {
+    const color = typeof seg[seg.length - 1] === 'string' ? seg[seg.length - 1] : null
+    const pts = (color ? seg.slice(0, -1) : seg).map(([x, y]) => toPx(x, y))
+    pts.forEach((p) => decorPx.push(p))
+    const s = color || stroke
+    let d
+    if (pts.length === 2) d = `M ${pts[0][0]},${pts[0][1]} L ${pts[1][0]},${pts[1][1]}`
+    else if (pts.length === 3) d = `M ${pts[0][0]},${pts[0][1]} Q ${pts[1][0]},${pts[1][1]} ${pts[2][0]},${pts[2][1]}`
+    else d = `M ${pts.map((p) => `${p[0]},${p[1]}`).join(' L ')}`
+    return <path key={key} d={d} fill="none" stroke={s} strokeWidth={width} strokeLinecap="round" />
+  }
   // Cosmetic connecting lines (alquerque/Morris/board diagrams); drawn under cells.
-  const boardLines = (board.lines || []).map((seg, i) => {
-    const [x1, y1] = toPx(seg[0][0], seg[0][1])
-    const [x2, y2] = toPx(seg[1][0], seg[1][1])
-    return <line key={`bl${i}`} x1={x1} y1={y1} x2={x2} y2={y2}
-      stroke={seg[2] || '#6b6052'} strokeWidth={cellR * 0.09} strokeLinecap="round" />
-  })
-  // Overlay lines are drawn OVER the cells (e.g. TwixT bridges connecting pegs).
-  const overlayLines = (board.overlay || []).map((seg, i) => {
-    const [x1, y1] = toPx(seg[0][0], seg[0][1])
-    const [x2, y2] = toPx(seg[1][0], seg[1][1])
-    return <line key={`ov${i}`} x1={x1} y1={y1} x2={x2} y2={y2}
-      stroke={seg[2] || '#c9a96e'} strokeWidth={cellR * 0.16} strokeLinecap="round" />
-  })
+  const boardLines = (board.lines || []).map((seg, i) =>
+    decorPath(seg, `bl${i}`, '#6b6052', cellR * 0.09))
+  // Overlay lines/arcs drawn OVER the cells (TwixT bridges, Surakarta loops).
+  const overlayLines = (board.overlay || []).map((seg, i) =>
+    decorPath(seg, `ov${i}`, '#c9a96e', cellR * 0.16))
 
   // Walls (Quoridor): two-cell segments in the grooves between cells. Placed
   // walls (spec.board.walls) draw solid; legal placements draw as faint clickable
@@ -203,6 +213,8 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
   shapes.forEach((s) => s.poly.split(' ').forEach((p) => {
     const [x, y] = p.split(',').map(Number); allx.push(x); ally.push(y)
   }))
+  // Include cosmetic decorations (loop arcs, edge tracks) so they aren't clipped.
+  decorPx.forEach(([x, y]) => { allx.push(x); ally.push(y) })
   // Margin proportional to the board extent (not an absolute pixel pad) so it
   // works for both pixel-space boards and small-coordinate polygon boards (Morris).
   const spanX = Math.max(...allx) - Math.min(...allx)

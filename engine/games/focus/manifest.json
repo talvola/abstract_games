@@ -1,0 +1,14 @@
+{
+  "uid": "focus",
+  "name": "Focus",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Capture / annihilation",
+  "tags": ["stacking", "reserve", "sackson"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/789/focus",
+  "description": "Focus (a.k.a. Domination), Sid Sackson 1964: a stacking game on a 52-cell octagonal board. Control a stack by owning its top piece; move the top k pieces exactly k cells orthogonally, landing on top of any stack there. Stacks over 5 shed from the bottom -- your shed pieces go to a reserve you can drop back, enemy shed pieces are captured. The last player able to move wins."
+}
