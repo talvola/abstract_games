@@ -165,6 +165,13 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
     return <line key={`bl${i}`} x1={x1} y1={y1} x2={x2} y2={y2}
       stroke={seg[2] || '#6b6052'} strokeWidth={cellR * 0.09} strokeLinecap="round" />
   })
+  // Overlay lines are drawn OVER the cells (e.g. TwixT bridges connecting pegs).
+  const overlayLines = (board.overlay || []).map((seg, i) => {
+    const [x1, y1] = toPx(seg[0][0], seg[0][1])
+    const [x2, y2] = toPx(seg[1][0], seg[1][1])
+    return <line key={`ov${i}`} x1={x1} y1={y1} x2={x2} y2={y2}
+      stroke={seg[2] || '#c9a96e'} strokeWidth={cellR * 0.16} strokeLinecap="round" />
+  })
 
   // Walls (Quoridor): two-cell segments in the grooves between cells. Placed
   // walls (spec.board.walls) draw solid; legal placements draw as faint clickable
@@ -316,6 +323,7 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
             </g>
           )
         })}
+        {overlayLines}
         {wallEls}
       </svg>
       {tray(0, 'bottom')}

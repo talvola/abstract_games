@@ -1,0 +1,17 @@
+{
+  "uid": "twixt",
+  "name": "TwixT",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Connection",
+  "tags": ["connection", "pegs", "bridges", "classic"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/949/twixt",
+  "options": {
+    "size": { "choices": [12, 18, 24], "default": 12, "label": "Board size" }
+  },
+  "description": "TwixT (Alex Randolph, 1962): place pegs and let them auto-link by knight's-move bridges that may not cross. Red joins top to bottom, Black joins left to right. A classic connection game."
+}
