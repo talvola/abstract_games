@@ -1,0 +1,14 @@
+{
+  "uid": "lasca",
+  "name": "Lasca",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Checkers & draughts",
+  "tags": ["square", "draughts", "stacking", "capture"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Lasca",
+  "description": "Lasca (Emanuel Lasker, 1911): checkers with towers, on the 25 dark squares of a 7x7 board. Capturing tucks the enemy's top piece under your column instead of removing it; whoever owns a column's top piece controls it. The platform's first stacking game."
+}

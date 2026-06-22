@@ -57,6 +57,8 @@ ANCHOR = {
  "janggi": "hand-derived 31-move opening + full cannon/palace; perft baseline",
  "king_of_the_hill": "chess perft 20/400/8902 + center-king win",
  "konane": "3000-position move-gen cross-check",
+ "lasca": "independent adversarial rule review (tower-capture / liberation / "
+          "forced multi-jump / promotion) + selftest of the tower mechanics",
  "lines_of_action": "connectivity win + conformance",
  "los_alamos_chess": "6×6 move-gen + mate/stalemate tests",
  "makruk": "independent review; 6th-rank promotion probes",
@@ -87,6 +89,7 @@ ANCHOR = {
 # individually eyeballed -- logic is conformance-tested either way).
 BROWSER = {
  "bagh_chal": "✅ verified (alquerque board + lines, placement, capture/5 caption)",
+ "lasca": "✅ verified (NEW stacking renderer — towers as layered bands + height badge)",
  "crazyhouse": "✅ verified (drops + reserve trays, capture→drop lifecycle)",
  "shogi": "✅ verified (9×9 setup, reserve trays, promotion picker)",
  "mini_shogi": "✅ verified (5×5 setup, reserve trays — shares the Shogi UI path)",

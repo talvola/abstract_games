@@ -217,6 +217,37 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
     )
   }
 
+  // Stacking games (e.g. Lasca): a piece carries `stack` = owners bottom→top.
+  // Draw it as a side-view tower of owner-coloured bands, top band emphasised,
+  // with a height badge and any top-piece label (e.g. "O" for an officer).
+  function stackGlyph(s, piece) {
+    const owners = piece.stack
+    const n = owners.length
+    const bh = s.r * 0.42
+    let step = s.r * 0.52
+    const maxTotal = s.r * 1.7
+    if (n > 1 && bh + (n - 1) * step > maxTotal) step = (maxTotal - bh) / (n - 1)
+    const total = bh + (n - 1) * step
+    const w = s.r * 1.25
+    const bottomY = s.cy + total / 2 - bh / 2
+    const topY = bottomY - (n - 1) * step
+    return (
+      <g>
+        {owners.map((o, i) => {
+          const col = colors(o)
+          const top = i === n - 1
+          return <rect key={i} x={s.cx - w / 2} y={bottomY - i * step - bh / 2}
+            width={w} height={bh} rx={bh * 0.35} fill={col.fill}
+            stroke={top ? '#f0e4c0' : col.stroke} strokeWidth={top ? s.r * 0.09 : s.r * 0.05} />
+        })}
+        {piece.label && <text x={s.cx} y={topY} textAnchor="middle" dominantBaseline="central"
+          fontSize={bh * 0.95} fontWeight="bold" fill="#1a1712">{piece.label}</text>}
+        {n > 1 && <text x={s.cx + w / 2 + s.r * 0.22} y={topY} textAnchor="middle"
+          dominantBaseline="central" fontSize={s.r * 0.5} fontWeight="bold" fill="#d8c89a">{n}</text>}
+      </g>
+    )
+  }
+
   return (
     <div className="board-wrap">
       {tray(1, 'top')}
@@ -247,9 +278,11 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
             <g key={s.id} data-cell={s.id} onClick={clickable ? () => click(s.id) : undefined} style={{ cursor: clickable ? 'pointer' : 'default' }}>
               <polygon points={s.poly} fill={fill} stroke={stroke} strokeWidth={sw} />
               {isTarget && piece && <circle cx={s.cx} cy={s.cy} r={s.r * 0.9} fill="none" stroke="#5cba6b" strokeWidth={s.r * 0.1} />}
-              {piece && (piece.label
-                ? <text x={s.cx} y={s.cy} textAnchor="middle" dominantBaseline="central" fontSize={s.r * 1.0} fontWeight="bold" fill={colors(piece.owner).fill}>{piece.label}</text>
-                : <circle cx={s.cx} cy={s.cy} r={s.r * 0.6} fill={colors(piece.owner).fill} stroke={colors(piece.owner).stroke} strokeWidth={s.r * 0.07} />)}
+              {piece && (piece.stack
+                ? stackGlyph(s, piece)
+                : piece.label
+                  ? <text x={s.cx} y={s.cy} textAnchor="middle" dominantBaseline="central" fontSize={s.r * 1.0} fontWeight="bold" fill={colors(piece.owner).fill}>{piece.label}</text>
+                  : <circle cx={s.cx} cy={s.cy} r={s.r * 0.6} fill={colors(piece.owner).fill} stroke={colors(piece.owner).stroke} strokeWidth={s.r * 0.07} />)}
               {isTarget && !piece && <circle cx={s.cx} cy={s.cy} r={s.r * 0.3} fill="#5cba6b" opacity="0.85" />}
               {isSource && !piece && <circle cx={s.cx} cy={s.cy} r={s.r * 0.18} fill="#c9a96e" opacity="0.7" />}
             </g>
