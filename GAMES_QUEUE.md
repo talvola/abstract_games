@@ -97,9 +97,9 @@ _Final digest update: after batch 10 merge (54 games). Loop wound down._
 
 ## Autonomous expansion run (2026-06-21/22) — 54 → 72 games + ALL 7 UI capabilities
 
-**Final tally:** 16 games added across the run, **all five named UI capabilities
-shipped, each with a flagship consumer**, plus a multi-action-turn demo and six
-renderer primitives. All on `main`, suite green throughout, every game
+**Final tally:** 18 games added across the run, **all seven UI capabilities on the
+backlog shipped, each with a flagship consumer**, plus a multi-action-turn demo and
+the renderer primitives below. All on `main`, suite green throughout, every game
 browser-verified; 11 verification sub-agents ran (UI review + 10 rule reviews),
 all MERGE.
 
