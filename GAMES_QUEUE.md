@@ -95,7 +95,35 @@ _Final digest update: after batch 10 merge (54 games). Loop wound down._
 
 ---
 
-## Autonomous expansion run (2026-06-21/22, cont.) — 54 → 63 games + 4 UI capabilities
+## Autonomous expansion run (2026-06-21/22) — 54 → 70 games + 5 UI capabilities
+
+**Final tally:** 16 games added across the run, **all five named UI capabilities
+shipped, each with a flagship consumer**, plus a multi-action-turn demo and six
+renderer primitives. All on `main`, suite green throughout, every game
+browser-verified; 11 verification sub-agents ran (UI review + 10 rule reviews),
+all MERGE.
+
+| Capability | Flagship consumer(s) |
+|---|---|
+| drops / reserve | Crazyhouse #55, Shogi #56, Mini Shogi #59 |
+| stacking (towers) | Lasca #60 |
+| territory scoring | Go #61 |
+| >2-seat (up to 6) | Rolit #63 (4p), Chinese Checkers #68 (6p) |
+| walls / point-and-line | Quoridor #69, TwixT #70 |
+
+Other games: Nine Men's Morris #57, Bagh-Chal #58, Pentago #62 (place+rotate via
+the =CHOICE picker), Alquerque #64, Kalah #65, Y #66, Yote #67. Renderer gained:
+reserve trays, stacking glyph, `board.lines` (under-cell grooves), `board.overlay`
+(over-cell bridges), `board.tints` (terrain/edges), `board.walls` (groove slots),
+6 seat colours, triangular-hex + 6-pointed-star polygon layouts, extent-margin.
+
+**Remaining frontier:** dice UI (EinStein würfelt nicht), card UI (Onitama) —
+both need engine CHANCE/UI maturation; more stacking consumers (DVONN/Focus/Tak);
+niche games (Mu Torere, Tapatan, Twelve Men's Morris, Surakarta).
+
+---
+
+## (superseded) earlier note — 54 → 63 games + 4 UI capabilities
 
 Erik set the loop to "keep going for hours, spin off sub-agents, maintain a status
 artifact." On-disk state, all on `main`, suite green:
