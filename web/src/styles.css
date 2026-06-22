@@ -204,6 +204,22 @@ main { display: flex; flex-direction: column; align-items: center; padding-top: 
 .promo-options button:hover { border-color: var(--accent); }
 .promo-options .promo-cancel { color: var(--muted); }
 
+.reserve-tray { display: flex; gap: 6px; align-items: center; justify-content: center;
+  flex-wrap: wrap; min-height: 34px; width: 100%; max-width: 540px; }
+.reserve-tray.top { margin-bottom: 8px; }
+.reserve-tray.bottom { margin-top: 8px; }
+.reserve-label { font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--muted); margin-right: 2px; }
+.reserve-empty { color: var(--muted); opacity: 0.5; font-size: 0.8rem; }
+.reserve-chip { position: relative; background: var(--bg); border: 1px solid var(--line);
+  border-radius: 6px; min-width: 32px; height: 30px; padding: 0 7px; cursor: default;
+  font-family: inherit; font-weight: bold; font-size: 1.05rem; line-height: 1; }
+.reserve-chip.active { cursor: pointer; }
+.reserve-chip.active:hover { border-color: var(--accent); }
+.reserve-chip.selected { border-color: var(--accent); background: rgba(201,169,110,0.22);
+  box-shadow: 0 0 0 1px var(--accent); }
+.reserve-count { font-size: 0.6rem; color: var(--muted); margin-left: 2px; vertical-align: super; }
+
 .actions-bar { margin-top: 10px; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
 .action-btn { background: rgba(201,169,110,0.15); border: 1px solid var(--accent); color: var(--accent);
   padding: 8px 16px; border-radius: 6px; cursor: pointer; font-family: inherit; font-weight: bold; }

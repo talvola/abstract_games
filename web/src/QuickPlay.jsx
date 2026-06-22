@@ -118,7 +118,7 @@ function Play({ match, setMatch, onExit }) {
       <div className="status" style={{ borderColor: view.terminal ? '#c9a96e' : '#888' }}>{status}</div>
       <div className="play-area">
         <div className="board-col">
-          <Board spec={view.render} legalMoves={myTurn ? view.legal_moves : []} onMove={applyMove} disabled={!myTurn} freeform={view.freeform} />
+          <Board spec={view.render} legalMoves={myTurn ? view.legal_moves : []} onMove={applyMove} disabled={!myTurn} freeform={view.freeform} currentPlayer={view.current_player} />
           {view.render.caption && <div className="caption">{view.render.caption}</div>}
         </div>
         <MoveLog moves={log} />

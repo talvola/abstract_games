@@ -107,15 +107,19 @@ checkable. Not "platform gaps" — they're libraries like `chesslike.py`.
 
 These are the *genuine* renderer/engine-UI primitives we lack.
 
-### 1. Hand / reserve / pocket — drop pool · **effort M** · **highest leverage**
-Per-seat off-board reserve in state + a drop move syntax (`*P@c,r`) + a small
-reserve tray in the UI. Unlocks the **whole Morris family** (Nine/Twelve/Three
-Men's Morris, Morabaraba, Tapatan — Nine Men's Morris is a solved classic),
-**Crazyhouse** (the cleanest drop test, on the existing chess board), **Shogi**
-*(critic: deserves first-class status, not a footnote — drops + promotion zone)*,
-Tori Shogi, Bagh-Chal (Tigers & Goats), Mijnlieff. Mostly state + one move type +
-a tray; no new board renderer. *(Morris adjacency can be faked on square/polygons
-with custom adjacency; the mill-removes-a-stone is custom logic.)*
+### 1. Hand / reserve / pocket — drop pool · **effort M** · **✅ SHIPPED (2026-06-21)**
+**Built and verified via Crazyhouse.** Per-seat off-board reserve lives in
+`CState.hands` (+ a `promoted`-square set) behind a `DROPS` strategy on
+`agp.chesslike` (no-op for the other variants); drop syntax is `"L@c,r"`; the web
+`Board.jsx` renders two reserve trays and click-to-drop. **No server change**
+(enforced path = `move in legal_moves`). Anchored against python-chess
+`CrazyhouseBoard` (perft 20/400/8902/197281 from start, 62/4715/197413 from a
+drop-bearing midgame; 400-game synchronized move-set walk, 0 mismatches).
+**Still to do on this primitive:** the **Morris family** (Nine/Twelve/Three Men's
+Morris, Morabaraba, Tapatan — custom adjacency on square/polygons + mill-removal;
+*placement→movement phases*, not a ChessLike consumer), **Shogi** (reuse `DROPS`
+with its own `DropRules` for the promotion zone + nifu/uchifuzume + 9×9), Tori
+Shogi, Bagh-Chal (Tigers & Goats), Mijnlieff.
 
 ### 2. Stacking — ordered owned towers · **effort L**
 Ordered multi-piece cell state + stack/spread move syntax + a renderer showing

@@ -51,6 +51,9 @@ class CState:
     halfmove: int = 0
     ply: int = 0
     reps: dict = field(default_factory=dict)
+    # --- drop / reserve support (empty + unused unless DROPS is enabled) ---
+    hands: dict = field(default_factory=dict)           # player -> {letter: count}
+    promoted: frozenset = field(default_factory=frozenset)  # squares holding a promoted piece
 
 
 # --------------------------------------------------------------------------- #
@@ -259,6 +262,55 @@ class StandardCastling(Castling):
 
 
 # --------------------------------------------------------------------------- #
+# Drop / reserve strategies. A drop move is the string "L@c,r" (place a piece of
+# type L from the side-to-move's reserve onto an empty cell). When DROPS is the
+# default NoDrops every hook is a no-op, so a variant without a reserve behaves
+# and serialises exactly as before.
+# --------------------------------------------------------------------------- #
+class DropRules:
+    enabled = False
+
+    def initial_hands(self, core) -> dict:
+        """The reserve each player starts with: ``{player: {letter: count}}``."""
+        return {}
+
+    def can_drop_on(self, core, state, letter, to, player) -> bool:
+        """Per-type restriction on the (already-empty) target cell."""
+        return True
+
+    def captured_to_hand(self, core, letter, was_promoted):
+        """The piece type the capturer banks when capturing ``letter`` (which was
+        a promoted piece iff ``was_promoted``), or ``None`` to bank nothing."""
+        return None
+
+
+class NoDrops(DropRules):
+    enabled = False
+
+
+class CrazyhouseDrops(DropRules):
+    """Crazyhouse: a captured piece switches colour and goes to the capturer's
+    reserve (a promoted piece reverts to a pawn); from the reserve it can be
+    dropped on any empty square, except pawns may not drop on the first or last
+    rank. A drop may block a check or even deliver mate."""
+
+    enabled = True
+
+    def initial_hands(self, core) -> dict:
+        return {WHITE: {}, BLACK: {}}
+
+    def can_drop_on(self, core, state, letter, to, player) -> bool:
+        if letter == "P":
+            return 0 < to[1] < core.HEIGHT - 1   # no pawns on the back ranks
+        return True
+
+    def captured_to_hand(self, core, letter, was_promoted):
+        if letter == "K":
+            return None                          # never happens in legal play
+        return "P" if was_promoted else letter
+
+
+# --------------------------------------------------------------------------- #
 # The shared game
 # --------------------------------------------------------------------------- #
 class ChessLike(Game):
@@ -270,6 +322,7 @@ class ChessLike(Game):
     PAWN: PawnRules = None
     PROMOTION: PromotionRules = None
     CASTLING: Castling = NoCastling()
+    DROPS: DropRules = NoDrops()
 
     def __init__(self):
         self._slide_map: dict = {}
@@ -359,6 +412,32 @@ class ChessLike(Game):
         moves.extend(self.CASTLING.moves(self, state))
         return moves
 
+    def _drop_moves(self, state) -> list:
+        """Legal "L@c,r" drops for the side to move (empty target, per-type rule,
+        and -- only when in check -- the drop must leave the king safe)."""
+        if not self.DROPS.enabled:
+            return []
+        player = state.to_move
+        letters = [L for L, n in state.hands.get(player, {}).items() if n > 0]
+        if not letters:
+            return []
+        in_chk = self.in_check(state.board, player)
+        out = []
+        for r in range(self.HEIGHT):
+            for c in range(self.WIDTH):
+                if (c, r) in state.board:
+                    continue
+                for L in letters:
+                    if not self.DROPS.can_drop_on(self, state, L, (c, r), player):
+                        continue
+                    if in_chk:
+                        b = dict(state.board)
+                        b[(c, r)] = (player, L)
+                        if self.in_check(b, player):
+                            continue
+                    out.append(f"{L}@{c},{r}")
+        return out
+
     def legal_moves(self, state) -> list:
         if self._draw(state):
             return []
@@ -370,10 +449,13 @@ class ChessLike(Game):
                     out.append(base if ch is None else base + "=" + ch)
             else:
                 out.append(base)
+        out.extend(self._drop_moves(state))
         return out
 
     # ---- draws / terminal ---------------------------------------------------
     def _insufficient(self, board) -> bool:
+        if self.DROPS.enabled:
+            return False          # captured material can always re-enter via a drop
         if any(t in self.HEAVY for (_, t) in board.values()):
             return False
         minors = [(sq, pl) for sq, (pl, t) in board.items() if t in ("B", "N")]
@@ -389,11 +471,14 @@ class ChessLike(Game):
     def _draw(self, state) -> bool:
         return (state.halfmove >= 100 or state.ply >= self.PLY_CAP
                 or self._insufficient(state.board)
-                or state.reps.get(self._poskey(state.board, state.to_move,
-                                               state.castling, state.ep), 0) >= 3)
+                or state.reps.get(self._poskey_state(state), 0) >= 3)
 
     def is_terminal(self, state) -> bool:
-        return self._draw(state) or len(self._legal(state)) == 0
+        if self._draw(state):
+            return True
+        if self._legal(state):
+            return False
+        return not self._drop_moves(state)
 
     def returns(self, state) -> list:
         if self._draw(state) or not self.in_check(state.board, state.to_move):
@@ -402,6 +487,8 @@ class ChessLike(Game):
 
     # ---- apply --------------------------------------------------------------
     def apply_move(self, state, move, rng=None):
+        if "@" in move:
+            return self._apply_drop(state, move)
         promo = None
         if "=" in move:
             move, promo = move.split("=")
@@ -411,30 +498,74 @@ class ChessLike(Game):
         b = dict(state.board)
         b.pop(frm)
 
+        drops = self.DROPS.enabled
+        hands = {p: dict(h) for p, h in state.hands.items()} if drops else {}
+        promoted = set(state.promoted) if drops else None
+
         capture = to in state.board
+        captured = state.board.get(to)        # (player, letter) or None
+        captured_sq = to if capture else None
         ep_new = None
         rook = self.CASTLING.rook_move(frm, to, pl) if t == "K" else None
         if rook is not None:
             b[rook[1]] = b.pop(rook[0])
         elif t == "P":
             if state.ep is not None and to == state.ep[0] and to not in state.board:
-                b.pop(state.ep[1], None)
+                captured_sq = state.ep[1]
+                captured = state.board.get(captured_sq)
+                b.pop(captured_sq, None)
                 capture = True
             else:
                 ep_new = self.PAWN.ep_after(frm, to)
 
-        if t == "P" and promo:
+        promoting = t == "P" and bool(promo)
+        if promoting:
             t = promo
         b[to] = (pl, t)
 
+        if drops:
+            if capture and captured is not None:
+                gained = self.DROPS.captured_to_hand(self, captured[1],
+                                                     captured_sq in state.promoted)
+                if gained is not None:
+                    hands.setdefault(pl, {})
+                    hands[pl][gained] = hands[pl].get(gained, 0) + 1
+            moved_promoted = frm in state.promoted
+            promoted.discard(frm)
+            promoted.discard(to)
+            if captured_sq is not None:
+                promoted.discard(captured_sq)
+            if moved_promoted or promoting:
+                promoted.add(to)
+            promoted = frozenset(promoted)
+
         castling = self.CASTLING.update_rights(state.castling, frm, to, state.board)
         reset = capture or state.board[frm][1] == "P"
-        key = self._poskey(b, 1 - pl, castling, ep_new)
+        key = self._poskey(b, 1 - pl, castling, ep_new, hands if drops else None)
         reps = dict(state.reps)
         reps[key] = reps.get(key, 0) + 1
         return CState(board=b, to_move=1 - pl, castling=castling, ep=ep_new,
                       halfmove=0 if reset else state.halfmove + 1,
-                      ply=state.ply + 1, reps=reps)
+                      ply=state.ply + 1, reps=reps,
+                      hands=hands, promoted=promoted if drops else frozenset())
+
+    def _apply_drop(self, state, move):
+        letter, cs = move.split("@")
+        to = cell(cs)
+        pl = state.to_move
+        b = dict(state.board)
+        b[to] = (pl, letter)
+        hands = {p: dict(h) for p, h in state.hands.items()}
+        hand = hands.setdefault(pl, {})
+        hand[letter] = hand.get(letter, 0) - 1
+        if hand[letter] <= 0:
+            del hand[letter]
+        key = self._poskey(b, 1 - pl, state.castling, None, hands)
+        reps = dict(state.reps)
+        reps[key] = reps.get(key, 0) + 1
+        return CState(board=b, to_move=1 - pl, castling=state.castling, ep=None,
+                      halfmove=state.halfmove + 1, ply=state.ply + 1, reps=reps,
+                      hands=hands, promoted=state.promoted)
 
     # ---- (de)serialize ------------------------------------------------------
     @property
@@ -444,8 +575,10 @@ class ChessLike(Game):
     def initial_state(self, options=None, rng=None):
         board = self.setup_board()
         rights = self.CASTLING.initial_rights()
-        return CState(board=board, to_move=WHITE, castling=rights, ep=None,
-                      reps={self._poskey(board, WHITE, rights, None): 1})
+        hands = self.DROPS.initial_hands(self)
+        st = CState(board=board, to_move=WHITE, castling=rights, ep=None, hands=hands)
+        st.reps = {self._poskey_state(st): 1}
+        return st
 
     def current_player(self, state) -> int:
         return state.to_move
@@ -453,18 +586,28 @@ class ChessLike(Game):
     def setup_board(self) -> dict:
         raise NotImplementedError
 
-    def _poskey(self, board, to_move, castling, ep) -> str:
+    def _poskey_state(self, state) -> str:
+        return self._poskey(state.board, state.to_move, state.castling, state.ep,
+                            state.hands if self.DROPS.enabled else None)
+
+    def _poskey(self, board, to_move, castling, ep, hands=None) -> str:
         et = ep[0] if ep else None
         rows = []
         for r in range(self.HEIGHT):
             for c in range(self.WIDTH):
                 occ = board.get((c, r))
                 rows.append("." if occ is None else "wb"[occ[0]] + occ[1])
-        return "|".join(rows) + f"#{to_move}#{''.join(sorted(castling))}#{et}"
+        key = "|".join(rows) + f"#{to_move}#{''.join(sorted(castling))}#{et}"
+        if hands:
+            key += "#" + ";".join(
+                f"{p}=" + ",".join(f"{L}{n}" for L, n in sorted(h.items()) if n > 0)
+                for p, h in sorted(hands.items())
+            )
+        return key
 
     def serialize(self, state) -> dict:
         ep = state.ep
-        return {
+        d = {
             "board": {f"{c},{r}": [pl, t] for (c, r), (pl, t) in state.board.items()},
             "to_move": state.to_move,
             "castling": "".join(sorted(state.castling)),
@@ -473,12 +616,20 @@ class ChessLike(Game):
             "ply": state.ply,
             "reps": dict(state.reps),
         }
+        if self.DROPS.enabled:
+            d["hands"] = {str(p): {L: n for L, n in sorted(h.items()) if n > 0}
+                          for p, h in sorted(state.hands.items())}
+            d["promoted"] = [f"{c},{r}" for (c, r) in sorted(state.promoted)]
+        return d
 
     def deserialize(self, d: dict):
         ep = None
         if d.get("ep"):
             a, b, c, e = (int(x) for x in d["ep"].split(","))
             ep = ((a, b), (c, e))
+        hands = {int(p): {L: int(n) for L, n in h.items()}
+                 for p, h in d.get("hands", {}).items()}
+        promoted = frozenset(cell(s) for s in d.get("promoted", []))
         return CState(
             board={cell(k): tuple(v) for k, v in d["board"].items()},
             to_move=d["to_move"],
@@ -487,10 +638,16 @@ class ChessLike(Game):
             halfmove=d.get("halfmove", 0),
             ply=d.get("ply", 0),
             reps=dict(d.get("reps", {})),
+            hands=hands,
+            promoted=promoted,
         )
 
     # ---- presentation -------------------------------------------------------
     def describe_move(self, state, move) -> str:
+        if "@" in move:
+            letter, cs = move.split("@")
+            c = cell(cs)
+            return f"{letter}@{_FILES[c[0]]}{c[1] + 1}"
         raw, promo = (move.split("=") + [None])[:2]
         fs, ts = raw.split(">")
         frm, to = cell(fs), cell(ts)
@@ -515,9 +672,15 @@ class ChessLike(Game):
             caption = f"{names[state.to_move]} to move (check)"
         else:
             caption = f"{names[state.to_move]} to move"
-        return {
+        spec = {
             "board": {"type": "square", "width": self.WIDTH, "height": self.HEIGHT},
             "pieces": pieces,
             "highlights": [],
             "caption": caption,
         }
+        if self.DROPS.enabled:
+            spec["reserve"] = {
+                str(p): {L: n for L, n in sorted(h.items()) if n > 0}
+                for p, h in sorted(state.hands.items())
+            }
+        return spec

@@ -248,7 +248,7 @@ class WildebeestChess(ChessLike):
         return [-1.0, 1.0] if state.to_move == WHITE else [1.0, -1.0]
 
     # ------ en passant (de)serialisation: ep[0] is a frozenset of squares ----
-    def _poskey(self, board, to_move, castling, ep) -> str:
+    def _poskey(self, board, to_move, castling, ep, hands=None) -> str:
         ets = tuple(sorted(ep[0])) if ep else None
         rows = []
         for r in range(self.HEIGHT):

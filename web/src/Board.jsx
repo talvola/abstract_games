@@ -26,6 +26,10 @@ const sameCells = (a, b) => a.length === b.length && a.every((c, i) => c === b[i
 // A move is a cell path if every ">"-segment (minus any "=choice") is a cell id.
 const CELL_RE = /^-?\d+,-?\d+$/
 const isCellMove = (m) => m.split('>').every((seg) => CELL_RE.test(seg.split('=')[0]))
+// A drop move places a reserved piece: "L@c,r" (e.g. "N@4,3"). Handled via the
+// reserve tray, so it is neither a cell path nor an action button.
+const DROP_RE = /^([A-Za-z])@(-?\d+,-?\d+)$/
+const isDropMove = (m) => DROP_RE.test(m)
 // Non-cell legal moves render as action buttons (e.g. pie-rule "swap", "pass").
 const ACTION_LABELS = {
   swap: 'Swap (pie rule)', pass: 'Pass', end: 'End turn', resign: 'Resign',
@@ -61,17 +65,23 @@ function hexPoly(cx, cy, s) {
 }
 const eqPrefix = (path, sel) => sel.every((c, i) => path[i] === c)
 
-export default function Board({ spec, legalMoves, onMove, disabled, freeform }) {
+export default function Board({ spec, legalMoves, onMove, disabled, freeform, currentPlayer }) {
   const [sel, setSel] = useState([])
   const [promo, setPromo] = useState(null) // { cells, options: [{choice, move}] }
-  useEffect(() => { setSel([]); setPromo(null) }, [JSON.stringify(legalMoves), disabled, freeform])
+  const [drop, setDrop] = useState(null)   // selected reserve piece letter (for a drop)
+  useEffect(() => { setSel([]); setPromo(null); setDrop(null) }, [JSON.stringify(legalMoves), disabled, freeform])
 
   if (!spec) return null
   const board = spec.board
   const cellMoves = (legalMoves || []).filter(isCellMove)
-  const actions = (legalMoves || []).filter((m) => !isCellMove(m))
+  const dropMoves = (legalMoves || []).filter(isDropMove)
+  const actions = (legalMoves || []).filter((m) => !isCellMove(m) && !isDropMove(m))
   const moves = cellMoves.map((m) => ({ raw: m, ...parseMove(m) }))
   const paths = moves.map((m) => m.cells)
+
+  // Cells the currently-selected reserve piece may be dropped on.
+  const dropTargets = new Set()
+  if (drop) for (const m of dropMoves) { const x = m.match(DROP_RE); if (x[1] === drop) dropTargets.add(x[2]) }
 
   const nextCells = new Set()
   for (const p of paths) if (p.length > sel.length && eqPrefix(p, sel)) nextCells.add(p[sel.length])
@@ -86,6 +96,10 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform }) 
       if (sel[0] === cellId) { setSel([]); return }  // click source again to cancel
       onMove(`${sel[0]}>${cellId}`); setSel([])
       return
+    }
+    if (drop) {                                      // a reserve piece is armed
+      if (dropTargets.has(cellId)) { onMove(`${drop}@${cellId}`); setDrop(null); setSel([]); return }
+      setDrop(null)                                  // clicked off-target: cancel, fall through
     }
     const cand = [...sel, cellId]
     const matches = moves.filter((m) => sameCells(m.cells, cand))
@@ -156,8 +170,35 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform }) 
     ))
   }
 
+  // Off-board reserve trays (drop games, e.g. Crazyhouse). seat 1 above, seat 0
+  // below — matching the board's orientation (seat 0 sits at the bottom). Only
+  // the side to move may arm a drop.
+  const reserve = spec.reserve
+  function tray(seat, where) {
+    if (!reserve) return null
+    const hand = reserve[String(seat)] || {}
+    const entries = Object.entries(hand).filter(([, n]) => n > 0)
+    const active = !disabled && currentPlayer === seat
+    const c = colors(seat)
+    return (
+      <div className={`reserve-tray ${where}`}>
+        <span className="reserve-label">P{seat + 1}</span>
+        {entries.length === 0 && <span className="reserve-empty">empty</span>}
+        {entries.map(([letter, n]) => (
+          <button key={letter} disabled={!active}
+            className={`reserve-chip${active ? ' active' : ''}${drop === letter && active ? ' selected' : ''}`}
+            onClick={active ? () => { setDrop(drop === letter ? null : letter); setSel([]); setPromo(null) } : undefined}>
+            <span style={{ color: c.fill }}>{letter}</span>
+            {n > 1 && <span className="reserve-count">×{n}</span>}
+          </button>
+        ))}
+      </div>
+    )
+  }
+
   return (
     <div className="board-wrap">
+      {tray(1, 'top')}
       <svg viewBox={vb} style={{ width: '100%', maxWidth: 540, height: 'auto', touchAction: 'manipulation' }}>
         {edgeLines}
         {shapes.map((s) => {
@@ -166,7 +207,8 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform }) 
           const freeMode = freeform && !disabled
           // Enforced games decorate legal targets/sources; freeform keeps every
           // cell clickable but only highlights the selected source (no 64 dots).
-          const isTarget = !freeMode && !firstStep && nextCells.has(s.id) && !disabled && !selected
+          const isDropTarget = !!drop && dropTargets.has(s.id) && !disabled
+          const isTarget = (!freeMode && !firstStep && nextCells.has(s.id) && !disabled && !selected) || isDropTarget
           const isSource = freeMode
             ? sel.length === 0 && !!piece
             : sources.has(s.id) && !disabled && !selected && !isTarget
@@ -192,6 +234,7 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform }) 
           )
         })}
       </svg>
+      {tray(0, 'bottom')}
 
       {!disabled && actions.length > 0 && (
         <div className="actions-bar">

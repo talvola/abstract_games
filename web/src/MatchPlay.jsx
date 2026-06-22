@@ -99,6 +99,7 @@ export default function MatchPlay({ id, me, go }) {
             onMove={play}
             disabled={!m.my_turn}
             freeform={m.freeform}
+            currentPlayer={m.current_player}
           />
           {m.render.caption && <div className="caption">{m.render.caption}</div>}
         </div>

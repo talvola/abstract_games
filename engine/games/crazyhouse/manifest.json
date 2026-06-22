@@ -1,0 +1,14 @@
+{
+  "uid": "crazyhouse",
+  "name": "Crazyhouse",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "drops"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Crazyhouse",
+  "description": "Chess where captured pieces switch sides and can be dropped back onto the board. The first platform game with an off-board reserve."
+}

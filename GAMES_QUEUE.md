@@ -69,6 +69,32 @@ _Final digest update: after batch 10 merge (54 games). Loop wound down._
 
 ---
 
+## Capability work — drops / reserve tray (2026-06-21, with Erik in the loop)
+
+**Shipped the #1-ranked UI investment: an off-board reserve + drop moves**, with
+**Crazyhouse** (game #55) as the first consumer. Design approved by Erik up front
+(guarded hooks in `ChessLike`; two trays top/bottom).
+
+- **Engine:** a `DROPS` strategy on `agp.chesslike` (`NoDrops` default →
+  `CrazyhouseDrops`) adds `CState.hands` + a `promoted`-square set, all no-op and
+  absent from serialize/poskey unless enabled → the other ~20 chess variants are
+  byte-identical (suite green). Drop move = `"L@c,r"`; captures bank to the
+  reserve (promoted piece → pawn); `_insufficient` off when drops enabled.
+- **Web:** `Board.jsx` renders two seat-colored reserve trays (seat 1 top / seat 0
+  bottom) + click-chip-then-empty-cell to drop; drop targets highlight and the
+  pawn back-rank rule is enforced visually. **No server change** (enforced path is
+  `move in legal_moves`).
+- **Anchor:** differential vs python-chess `CrazyhouseBoard` — perft
+  20/400/8902/197281 (start) + 62/4715/197413 (drop-bearing midgame), and a
+  400-game synchronized move-set walk (46,427 plies, **0 mismatches**). Committed
+  selftest is pure-stdlib with frozen perft + capture/demotion/back-rank checks.
+  Verified in-browser (Quick Play hotseat): capture→reserve→drop full lifecycle.
+- **Next on this primitive:** Shogi (own `DropRules`: promotion zone + nifu) and
+  the Morris family (custom adjacency + mill-removal, not a ChessLike consumer).
+  See `GAME_BACKLOG.md` §1.
+
+---
+
 ## The gate (option 1, updated 2026-06-21)
 
 Erik delegated merge authority: the orchestrator may auto-merge after a **detailed
