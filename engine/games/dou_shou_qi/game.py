@@ -301,13 +301,16 @@ class DouShouQi(Game):
             {"cell": f"{c},{r}", "owner": pl, "label": RANK_LETTER[rank]}
             for (c, r), (pl, rank) in s.board.items()
         ]
-        highlights = []
+        # Terrain colours: river (blue), traps (rust), dens (green + a goal ring).
+        tints = {}
         for (c, r) in WATER:
-            highlights.append({"cell": f"{c},{r}", "kind": "zone"})
-        for pl in (0, 1):
-            highlights.append({"cell": f"{DEN[pl][0]},{DEN[pl][1]}", "kind": "goal"})
+            tints[f"{c},{r}"] = "#173a4d"
         for (c, r) in ALL_TRAPS:
-            highlights.append({"cell": f"{c},{r}", "kind": "zone"})
+            tints[f"{c},{r}"] = "#3d2519"
+        highlights = []
+        for pl in (0, 1):
+            tints[f"{DEN[pl][0]},{DEN[pl][1]}"] = "#234d2a"
+            highlights.append({"cell": f"{DEN[pl][0]},{DEN[pl][1]}", "kind": "goal"})
 
         if s.winner is not None:
             caption = f"{NAMES[s.winner]} wins"
@@ -319,7 +322,7 @@ class DouShouQi(Game):
             caption = f"{NAMES[s.to_move]} to move"
 
         return {
-            "board": {"type": "square", "width": WIDTH, "height": HEIGHT},
+            "board": {"type": "square", "width": WIDTH, "height": HEIGHT, "tints": tints},
             "pieces": pieces,
             "highlights": highlights,
             "caption": caption,

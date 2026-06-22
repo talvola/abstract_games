@@ -144,12 +144,33 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
     })
   }
 
+  // Map a point in the board's own coordinate space to pixels, the same way cell
+  // centres are mapped — so optional cosmetic lines line up with the cells.
+  const toPx = isPoly
+    ? (x, y) => [x, y]
+    : isHex
+      ? (x, y) => [px(SQRT3 * (x + y / 2)), px(1.5 * y)]
+      : (x, y) => [px(x), px(board.height - 1 - y)]
+  const tints = board.tints || {}                  // {cellId: colour} terrain fills
+  const cellR = shapes.length ? shapes[0].r : R
+  // Cosmetic connecting lines (alquerque/Morris/board diagrams); drawn under cells.
+  const boardLines = (board.lines || []).map((seg, i) => {
+    const [x1, y1] = toPx(seg[0][0], seg[0][1])
+    const [x2, y2] = toPx(seg[1][0], seg[1][1])
+    return <line key={`bl${i}`} x1={x1} y1={y1} x2={x2} y2={y2}
+      stroke={seg[2] || '#6b6052'} strokeWidth={cellR * 0.09} strokeLinecap="round" />
+  })
+
   const allx = [], ally = []
   shapes.forEach((s) => s.poly.split(' ').forEach((p) => {
     const [x, y] = p.split(',').map(Number); allx.push(x); ally.push(y)
   }))
-  const mrg = (Math.max(...allx) - Math.min(...allx)) * 0.05 + 12
-  const vb = `${Math.min(...allx) - mrg} ${Math.min(...ally) - mrg} ${Math.max(...allx) - Math.min(...allx) + 2 * mrg} ${Math.max(...ally) - Math.min(...ally) + 2 * mrg}`
+  // Margin proportional to the board extent (not an absolute pixel pad) so it
+  // works for both pixel-space boards and small-coordinate polygon boards (Morris).
+  const spanX = Math.max(...allx) - Math.min(...allx)
+  const spanY = Math.max(...ally) - Math.min(...ally)
+  const mrg = Math.max(spanX, spanY) * 0.04 + cellR * 0.5
+  const vb = `${Math.min(...allx) - mrg} ${Math.min(...ally) - mrg} ${spanX + 2 * mrg} ${spanY + 2 * mrg}`
 
   // Coloured edge frame for rhombus connection boards (which sides each seat connects).
   let edgeLines = null
@@ -201,6 +222,7 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
       {tray(1, 'top')}
       <svg viewBox={vb} style={{ width: '100%', maxWidth: 540, height: 'auto', touchAction: 'manipulation' }}>
         {edgeLines}
+        {boardLines}
         {shapes.map((s) => {
           const piece = pieces[s.id]
           const selected = selSet.has(s.id)
@@ -215,7 +237,7 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
           const freeTarget = freeMode && sel.length === 1 && !selected
           const clickable = selected || isTarget || isSource || freeTarget
           const isGoal = hl[s.id] === 'goal'
-          const baseFill = s.parity ? '#332e27' : '#2a2620'
+          const baseFill = tints[s.id] || (s.parity ? '#332e27' : '#2a2620')
           const fill = selected ? '#6b5520' : isTarget ? '#2f4030'
             : hl[s.id] === 'last-move' ? '#3a3228' : baseFill
           const stroke = selected ? '#e7c87a' : isTarget ? '#5cba6b'

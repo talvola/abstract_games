@@ -89,6 +89,27 @@ def _neighbours(c, r):
     return [(dc, dr) for (dc, dr) in dirs if _on(c + dc, r + dr)]
 
 
+def _board_lines():
+    """Cosmetic alquerque diagram: every orthogonal edge plus the diagonals that
+    exist at strong intersections (drawn once each)."""
+    segs = []
+    for r in range(H):
+        for c in range(W):
+            if c + 1 < W:
+                segs.append([[c, r], [c + 1, r]])
+            if r + 1 < H:
+                segs.append([[c, r], [c, r + 1]])
+            if _strong(c, r):
+                if c + 1 < W and r + 1 < H:
+                    segs.append([[c, r], [c + 1, r + 1]])
+                if c + 1 < W and r - 1 >= 0:
+                    segs.append([[c, r], [c + 1, r - 1]])
+    return segs
+
+
+LINES = _board_lines()
+
+
 def _start_board() -> dict:
     """Standard Fanorona opening array. (c, r) -> player (0 = White, 1 = Black).
 
@@ -379,7 +400,7 @@ class Fanorona(Game):
         else:
             caption = f"{names[s.to_move]} to move"
         return {
-            "board": {"type": "square", "width": W, "height": H},
+            "board": {"type": "square", "width": W, "height": H, "lines": LINES},
             "pieces": pieces,
             "highlights": [],
             "caption": caption,

@@ -1,0 +1,22 @@
+{
+  "uid": "nine_mens_morris",
+  "name": "Nine Men's Morris",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Positional",
+  "tags": ["mill", "placement", "movement", "classic"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Nine_men%27s_morris",
+  "options": {
+    "flying": {
+      "choices": ["yes", "no"],
+      "default": "yes",
+      "label": "Flying when down to 3 men",
+      "labels": { "yes": "Allowed (standard)", "no": "Not allowed" }
+    }
+  },
+  "description": "Nine Men's Morris on the classic 24-point board. Place nine men, then slide them along the lines; form a mill (three in a row) to capture an enemy man. Reduce the opponent to two men to win."
+}
