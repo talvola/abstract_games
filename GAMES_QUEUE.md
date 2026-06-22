@@ -95,7 +95,7 @@ _Final digest update: after batch 10 merge (54 games). Loop wound down._
 
 ---
 
-## Autonomous expansion run (2026-06-21, cont.) — 55 → 61 games + all 3 big capabilities
+## Autonomous expansion run (2026-06-21/22, cont.) — 54 → 63 games + 4 UI capabilities
 
 Erik set the loop to "keep going for hours, spin off sub-agents, maintain a status
 artifact." On-disk state, all on `main`, suite green:
@@ -120,6 +120,14 @@ artifact." On-disk state, all on `main`, suite green:
   (algorithmic, so no dead-stone UI) + komi + 9/13/19 sizes; review = MERGE
   (scoring hand-verified, ko/superko confirmed). **All three capabilities Erik
   named — drops, stacking, territory scoring — are now shipped.**
+- **Pentago (#62)** — place-then-rotate-a-quadrant; rides the existing `=CHOICE`
+  picker (the **multi-action-turn** primitive) + `board.lines` quadrant dividers.
+- **Rolit (#63)** — four-player Reversi; the platform's **first >2-player game**,
+  which drove the **>2-seat UI** capability: `colors.js` now has 6 seat colours,
+  and `QuickPlay.jsx` seats N players (chips + turn cycling) with bot mode playing
+  all non-human seats. The MCTS already backed up per-player payoffs, so no engine
+  change. Verified in-browser (full P1→P4 round, flips, per-seat scoring); existing
+  2-player games unaffected (Amazons' neutral arrow is now green, reads fine).
 - **Renderer** — added `board.lines` (cosmetic connecting lines) + `board.tints`
   (terrain colours) + an extent-relative viewBox margin. Drove a **UI-review pass**
   (a sub-agent) on the unusual boards → fixed **Jungle's invisible river** (now

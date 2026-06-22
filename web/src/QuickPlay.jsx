@@ -38,7 +38,7 @@ function Menu({ games, go, onStart }) {
       <div className="row">
         <label>Opponent</label>
         <div className="seg">
-          <button className={mode === 'hotseat' ? 'on' : ''} onClick={() => setMode('hotseat')}>Two players (hotseat)</button>
+          <button className={mode === 'hotseat' ? 'on' : ''} onClick={() => setMode('hotseat')}>Pass-and-play (hotseat)</button>
           <button className={mode === 'bot' ? 'on' : ''} onClick={() => setMode('bot')} disabled={freeform}>vs Computer</button>
         </div>
       </div>
@@ -77,9 +77,10 @@ function Play({ match, setMatch, onExit }) {
     }
   }
 
-  // Bot driver (loops through multi-move turns like Oust capture chains).
+  // Bot driver: in bot mode the human is seat 0 and every other seat is a bot,
+  // so the bot plays whenever it isn't seat 0's turn (chains through 2..N too).
   useEffect(() => {
-    if (match.mode !== 'bot' || view.terminal || view.current_player !== match.botSeat) return
+    if (match.mode !== 'bot' || view.terminal || view.current_player === 0) return
     let cancelled = false
     ;(async () => {
       const b = await api.bot(uid, match.state, 300)
@@ -93,7 +94,7 @@ function Play({ match, setMatch, onExit }) {
   }, [match.state, view.current_player, view.terminal]) // eslint-disable-line
 
   const cp = view.current_player
-  const thinking = match.mode === 'bot' && !view.terminal && cp === match.botSeat
+  const thinking = match.mode === 'bot' && !view.terminal && cp !== 0
   const myTurn = !view.terminal && !thinking
 
   let status
@@ -108,7 +109,7 @@ function Play({ match, setMatch, onExit }) {
   return (
     <div className="play">
       <div className="vs">
-        {[0, 1].map((i) => (
+        {Array.from({ length: view.num_players || 2 }, (_, i) => i).map((i) => (
           <span key={i} className={`seat-chip ${i === cp && !view.terminal ? 'active-seat' : ''}`}>
             <span className="seat-dot" style={{ background: SEAT_FILL[i] }} />
             {seat(match, i)}
@@ -133,6 +134,6 @@ function Play({ match, setMatch, onExit }) {
 }
 
 function seat(match, idx) {
-  if (match.mode === 'bot') return idx === match.botSeat ? 'Computer' : 'You'
+  if (match.mode === 'bot') return idx === 0 ? 'You' : 'Computer'
   return `Player ${idx + 1}`
 }

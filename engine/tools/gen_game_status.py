@@ -76,6 +76,8 @@ ANCHOR = {
  "pentago": "rotation algebra (4×twist = identity) + win-judged-after-rotation "
             "selftest; place+rotate via the =CHOICE picker",
  "racing_kings": "shakmaty perft 21/421/11264 + 31,920 python-chess positions",
+ "rolit": "selftest (Reversi flip incl. mixed-colour lines, 4-seat cycling, "
+          "board-fill termination, sole-leader/tie scoring); first >2-player game",
  "reversi": "flip/pass/terminal tests + conformance",
  "shatranj": "independent review; Alfil leap / bare-king probes",
  "shogi": "python-shogi differential: perft 30/900/25470/719731 (depth 4, = published) "
@@ -103,6 +105,7 @@ BROWSER = {
  "fanorona": "✅ verified (alquerque connecting lines drawn)",
  "oware": "✅ verified (seed counts + own-row clicking correct)",
  "pentago": "✅ verified (quadrant divider lines + 8-option rotation picker)",
+ "rolit": "✅ verified (NEW >2-seat UI — 4 player chips/colours, full P1→P4 round)",
  "xiangqi": "✅ verified (UI review: legible, uncramped)",
  "janggi": "✅ verified (UI review: legible, palace pieces correct)",
 }

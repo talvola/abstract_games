@@ -1,0 +1,14 @@
+{
+  "uid": "rolit",
+  "name": "Rolit",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 4, "max": 4 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Capture / annihilation",
+  "tags": ["square", "flipping", "reversi", "4-player", "multiplayer"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/8092/rolit",
+  "description": "Rolit: four-player Reversi on an 8x8 board. Drop a ball next to one already on the board; bracketed lines of other colours flip to yours. When the board fills, the colour with the most balls wins."
+}
