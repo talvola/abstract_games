@@ -1,0 +1,14 @@
+{
+  "uid": "kalah",
+  "name": "Kalah",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Mancala",
+  "tags": ["mancala", "sowing", "kalah"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Kalah",
+  "description": "Kalah (6,4): the popular commercial Mancala. Sow seeds counter-clockwise into your own store; land in your store for an extra turn, or in your own empty pit to capture the opposite pit. The bigger store wins."
+}
