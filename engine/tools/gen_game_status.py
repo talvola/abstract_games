@@ -73,6 +73,7 @@ ANCHOR = {
  "nine_mens_morris": "independent adversarial rule review (topology/mills/flying/"
                      "removal/win — all MERGE) + topology-invariant selftest",
  "nogo": "independent re-derivation; capture+suicide both illegal",
+ "onitama": "selftest (card-driven two-step turn, card rotation used->middle->hand, per-player offset mirroring, capture, both win conditions); deal is the only randomness",
  "order_and_chaos": "conformance (exercises the =CHOICE picker)",
  "oust": "event-based win; never-draws check; conformance",
  "oware": "re-derived vs Awari; 2000-game seed-conservation proof",
@@ -114,6 +115,7 @@ BROWSER = {
  "einstein": "✅ verified (NEW dice — roll shown in caption, matching stone highlighted, re-rolls each turn)",
  "fanorona": "✅ verified (alquerque connecting lines drawn)",
  "kalah": "✅ verified (mancala pits + counts, extra-turn after store landing)",
+ "onitama": "✅ verified (NEW card UI — 5-card strip with movement-pattern grids, pick→move flow)",
  "oware": "✅ verified (seed counts + own-row clicking correct)",
  "pentago": "✅ verified (quadrant divider lines + 8-option rotation picker)",
  "rolit": "✅ verified (NEW >2-seat UI — 4 player chips/colours, full P1→P4 round)",

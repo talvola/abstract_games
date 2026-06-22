@@ -1,0 +1,14 @@
+{
+  "uid": "onitama",
+  "name": "Onitama",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": true,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "cards", "abstract", "modern"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/160477/onitama",
+  "description": "Onitama (Shimpei Sato, 2014): a 5x5 chess-like duel where movement is dictated by cards. Pick one of your two cards to move a pawn or your master, then pass that card on. Capture the enemy master or reach its temple to win."
+}

@@ -34,9 +34,12 @@ const isDropMove = (m) => DROP_RE.test(m)
 // clickable slots between the cells, not as a cell path or an action button.
 const WALL_RE = /^([HV])(\d+),(\d+)$/
 const isWallMove = (m) => WALL_RE.test(m)
+// A card move selects/passes a movement card (Onitama): "use:Tiger" / "pass:Tiger".
+// Driven by the card strip, not an action button.
+const isCardMove = (m) => m.startsWith('use:') || m.startsWith('pass:')
 // Non-cell legal moves render as action buttons (e.g. pie-rule "swap", "pass").
 const ACTION_LABELS = {
-  swap: 'Swap (pie rule)', pass: 'Pass', end: 'End turn', resign: 'Resign',
+  swap: 'Swap (pie rule)', pass: 'Pass', end: 'End turn', resign: 'Resign', cancel: 'Deselect card',
   'offer-draw': 'Offer draw', 'accept-draw': 'Accept draw', 'decline-draw': 'Decline draw',
 }
 
@@ -80,7 +83,7 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
   const cellMoves = (legalMoves || []).filter(isCellMove)
   const dropMoves = (legalMoves || []).filter(isDropMove)
   const wallMoves = (legalMoves || []).filter(isWallMove)
-  const actions = (legalMoves || []).filter((m) => !isCellMove(m) && !isDropMove(m) && !isWallMove(m))
+  const actions = (legalMoves || []).filter((m) => !isCellMove(m) && !isDropMove(m) && !isWallMove(m) && !isCardMove(m))
   const moves = cellMoves.map((m) => ({ raw: m, ...parseMove(m) }))
   const paths = moves.map((m) => m.cells)
 
@@ -252,6 +255,40 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
     )
   }
 
+  // Card games (Onitama): a strip of movement cards, each a 5×5 mini-grid of its
+  // offsets (oriented toward its holder). Your selectable cards are clickable.
+  function cardStrip() {
+    const cards = board.cards
+    if (!cards) return null
+    const moveFor = (name) => (legalMoves || []).find((m) => m === `use:${name}` || m === `pass:${name}`)
+    return (
+      <div className="card-strip">
+        {cards.map((card, i) => {
+          const mv = moveFor(card.name)
+          const clickable = card.selectable && mv && !disabled
+          const col = card.owner == null ? '#9a8a6a' : colors(card.owner).fill
+          const offs = card.owner === 1 ? card.offsets.map(([a, b]) => [-a, -b]) : card.offsets
+          return (
+            <div key={i} className={`onicard${card.selected ? ' selected' : ''}${clickable ? ' clickable' : ''}`}
+              style={{ borderColor: card.selected ? '#e7c87a' : col }}
+              onClick={clickable ? () => onMove(mv) : undefined}>
+              <div className="onicard-name" style={{ color: col }}>{card.name}</div>
+              <svg viewBox="-0.1 -0.1 5.2 5.2" width="44" height="44">
+                {Array.from({ length: 5 }).map((_, r) => Array.from({ length: 5 }).map((_, c) => {
+                  const center = c === 2 && r === 2
+                  const move = offs.some(([a, b]) => c === 2 + a && r === 2 - b)
+                  return <rect key={`${c}-${r}`} x={c} y={r} width="0.88" height="0.88" rx="0.12"
+                    fill={center ? '#c9a96e' : move ? col : '#2a2620'} stroke="#4a4238" strokeWidth="0.05" />
+                }))}
+              </svg>
+              <div className="onicard-tag">{card.owner == null ? 'middle' : `P${card.owner + 1}`}</div>
+            </div>
+          )
+        })}
+      </div>
+    )
+  }
+
   // Stacking games (e.g. Lasca): a piece carries `stack` = owners bottom→top.
   // Draw it as a side-view tower of owner-coloured bands, top band emphasised,
   // with a height badge and any top-piece label (e.g. "O" for an officer).
@@ -327,6 +364,7 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
         {wallEls}
       </svg>
       {tray(0, 'bottom')}
+      {cardStrip()}
 
       {!disabled && actions.length > 0 && (
         <div className="actions-bar">
