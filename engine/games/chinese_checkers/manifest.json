@@ -1,0 +1,14 @@
+{
+  "uid": "chinese_checkers",
+  "name": "Chinese Checkers",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 6, "max": 6 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Positional",
+  "tags": ["star", "race", "hop", "6-player", "multiplayer"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/3719/chinese-checkers",
+  "description": "Chinese Checkers (Sternhalma): the six-player classic on a 121-point star. Hop your ten marbles across the board in chains of jumps and be the first to fill the opposite point. Nothing is captured."
+}
