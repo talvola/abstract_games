@@ -399,6 +399,14 @@ _Completes the realistically-addable GIPF project (DVONN, TZAAR, YINSH, ZÈRTZ a
 | Trike | review→auto | Erickson 2020, side-11 triangular hex board, ONE shared neutral pawn; move the pawn in a straight line over empty cells + drop your stone on the landing; ends when the pawn is trapped; winner = majority of stones on the pawn's cell + its neighbours (pie/swap supported). Verified vs the Kanare/Erickson rulebook. Reuses triangular polygons. Browser-verified | **done → main** |
 | Tumbleweed | review→**fix**→auto | Zapawa modern hex influence game (side-8 hexhex); place a stack of height = your line-of-sight count, strictly greater than the target. **Review caught a scoring bug** — it counted only OCCUPIED hexes, but Tumbleweed scores 'owned + controlled' (every empty cell goes to the player with strictly-greater LOS) — wrong winner in ~every game; fix-agent rewrote `_control_counts` to the owned+controlled territory score + a winner-flip regression test. Browser-verified (territory score updates live: 27-27 → 42-23 after a placement). | **done → main** |
 
+## Batch 26 — modern hex abstracts (2026-06-23) · 111 games
+_All three on a side-5 hex-of-hexes, reusing the hex renderer + line/Go-liberty/group machinery; all auto._
+| Game | Lane | Anchor | Status |
+|---|---|---|---|
+| Yavalath | review→auto | Cameron Browne / LUDI 2007 — the hex analogue of Squava: place stones, 4-in-a-row WINS, exactly-3 LOSES, four-takes-precedence; full board = draw. Optional pie/swap. Browser-verified | **done → main** |
+| Pentalath | review→auto | Browne (Ndengrod): 5-in-a-row on a hexhex WITH Go-style group capture (zero-liberty enemy groups removed, no suicide, edge gives no liberty — verified vs cambolbro.com); reuses the Go liberty core. Browser-verified | **done → main** |
+| Catchup | review→auto | Nick Bentley: place 1 (first move) then 2, or 3 when catching up (opponent's last turn grew/tied the largest group AND is ≥ yours); fill the board, score = largest connected group (tie-break next-largest…). Browser-verified | **done → main** |
+
 ## Needs human (escalations)
 
 _(none)_

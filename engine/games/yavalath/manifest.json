@@ -1,0 +1,23 @@
+{
+  "uid": "yavalath",
+  "name": "Yavalath",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Cameron Browne / LUDI (2007) — AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "pie": true,
+  "category": "N-in-a-row",
+  "tags": ["yavalath", "hex", "misere", "browne", "computer-designed"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/33767/yavalath",
+  "options": {
+    "pie": {
+      "choices": [true, false],
+      "default": true,
+      "label": "Pie (swap) rule",
+      "labels": { "true": "On", "false": "Off" }
+    }
+  },
+  "description": "Cameron Browne's famous computer-designed (LUDI, 2007) misère/positive n-in-a-row on a hexagon of hexagons (side 5, 61 cells) — the hex analogue of Squava. Making four-in-a-row of your colour wins; making exactly three (not part of a four) loses; four takes precedence. A full board is a draw."
+}

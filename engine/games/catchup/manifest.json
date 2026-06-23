@@ -1,0 +1,14 @@
+{
+  "uid": "catchup",
+  "name": "Catchup",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Nick Bentley (2010) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Positional",
+  "tags": ["catchup", "hex", "group", "bentley", "area"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/68199/catchup",
+  "description": "Nick Bentley's group-building game on a hexagon of 61 hexes with a self-balancing 'catch-up' mechanism: place 1 stone on the very first move, then 2 per turn, or up to 3 when your opponent just increased their score to at least yours. The board fills up; the player whose largest connected group is biggest wins, with ties broken by successively smaller groups (no draws)."
+}

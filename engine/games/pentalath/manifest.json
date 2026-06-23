@@ -1,0 +1,22 @@
+{
+  "uid": "pentalath",
+  "name": "Pentalath",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Cameron Browne (2009) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "N-in-a-row",
+  "tags": ["pentalath", "ndengrod", "hex", "capture", "browne"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/51401/pentalath",
+  "options": {
+    "swap": {
+      "choices": [true, false],
+      "default": true,
+      "label": "Pie rule (swap)",
+      "labels": { "true": "On", "false": "Off" }
+    }
+  },
+  "description": "Five-in-a-row with Go-style capture, on a hexagonal board of 61 hexes (5 per side). Place a stone of your colour on an empty cell; then remove any enemy group left with no freedom (no adjacent empty cell) — the board edge grants no freedom. Suicide is illegal, but a placement may create its own freedom by capturing. Win by making a line of five or more of your stones along one of the three hex axes; captures can break up lines, which is the point. Designed by Cameron Browne's evolutionary game-design program (originally Ndengrod)."
+}
