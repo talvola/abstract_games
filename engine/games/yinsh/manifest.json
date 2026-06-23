@@ -1,0 +1,14 @@
+{
+  "uid": "yinsh",
+  "name": "YINSH",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Positional",
+  "tags": ["gipf", "burm", "rings", "connection", "flip"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/7854/yinsh",
+  "description": "YINSH (Kris Burm, GIPF project #5) on the 85-point hexagonal lattice. Place 5 rings, then each turn drop a marker inside one of your rings and slide that ring in a straight line, jumping the first run of markers it meets and flipping every marker jumped. Make a row of five of your colour to remove the row and one of your own rings. First to remove three rings wins."
+}

@@ -354,6 +354,13 @@ _All three auto, certain geometry, no renderer change._
 | Gygès | review→auto | Leroy's ownerless 6×6 height-race; pieces (height 1/2/3, no owner) move exactly their height in steps, bounce/replace on landing, win by reaching your goal cell; re-derived vs the official Leroy PDF. Reuses Lasca height glyph. Browser-verified | **done → main** |
 | Conspirateurs | review→**fix**→auto | French Halma-style step-and-jump race, 17×17. **My spec was WRONG** (I said queen-move/no-adjacent) — the build agent verified 4 sources and built the REAL game (step + jump, no capture, shelter all your men in the perimeter sanctuaries). Review then caught MEN=21 (should be 20 in play; 21 cones = 1 spare) — fixed to 20. Sanctuary map is a documented 40-cell reconstruction (exact published coords unrecoverable). Browser-verified (0/20 + sanctuary tints) | **done → main** |
 
+## Batch 20 — render-primitive investments (rings/markers → YINSH) (2026-06-22)
+_Erik asked to build the 3 deferred render primitives in order: **rings/markers → YINSH** (this), then nesting → Gobblet, then shrinking board → ZÈRTZ._
+| Game | Lane | Anchor | Status |
+|---|---|---|---|
+| **(primitive) ring/marker glyphs** | — | generic `piece.shape` = `ring` (hollow, +optional `inner` marker + `label`) / `marker` (small disc) in the RenderSpec; documented in SPEC.md; all 97 prior games render byte-identical | **done → main** |
+| YINSH | review→auto | GIPF #5; 85-point hex lattice (cols 4-7-8-9-10-9-10-9-8-7-4, 3 line families) — geometry verified vs the sharkdp/yinsh reference + gipf.com; 5 rings/side, place-marker-then-slide-ring with jump-and-flip, ring-blocking, row-of-5 removes 5 markers + 1 ring, win = remove 3 rings. First consumer of the ring/marker primitive. Browser-verified (85-pt board + hollow ring glyph render). NOTE: MCTS bot is slow on the 85-pt board (generic large-board perf, not a bug) | **done → main** |
+
 ## Needs human (escalations)
 
 _(none)_
