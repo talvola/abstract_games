@@ -1,0 +1,14 @@
+{
+  "uid": "achi",
+  "name": "Achi",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "N-in-a-row",
+  "tags": ["achi", "ghana", "alignment", "traditional", "three-in-a-row"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Achi_(game)",
+  "description": "Achi, a traditional Ghanaian alignment game on a 3x3 grid of 9 points. Each player has FOUR pieces (one more than Three Men's Morris / Tapatan). Place all eight pieces, leaving exactly one empty point, then slide a piece along a line into the single empty adjacent point. First to align three of their own pieces in a row, column, or diagonal wins."
+}

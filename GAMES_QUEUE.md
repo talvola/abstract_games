@@ -437,6 +437,14 @@ _All auto._
 | Bridg-It | review→auto | Gale / Shannon switching game; two interleaved 5×6/6×5 dot lattices, draw a unit edge between your dots, no crossing the opponent's edge, connect your two sides (BFS); no draws (verified 2000+ games). Edges rendered via `board.overlay`, dots via `piece.fill`. Browser-verified (edge segments draw correctly) | **done → main** |
 | Quarto | review→auto | Gigamic attribute game; 16 pieces × 4 binary attributes (code e.g. SDQF), the signature place-the-piece-your-opponent-gave-you-then-give-one turn (first move give-only); win = a line of 4 sharing any attribute. Win-detection exhaustively checked vs brute-force oracle (0/1820 mismatch). Neutral pieces shown by code label + in-hand piece in reserve tray. Browser-verified | **done → main** |
 
+## Batch 31 — unusual-board traditionals (2026-06-23) · 126 games
+_All auto._
+| Game | Lane | Anchor | Status |
+|---|---|---|---|
+| Kaooa | review→auto | Indian "vultures & crows" hunt on a 10-point PENTAGRAM ({5/2} star — adjacency derived geometrically); 1 vulture vs 7 crows, crows place then slide, vulture steps/jumps (draughts-style, active during placement), vulture wins at 4 captures / crows win by trapping. Browser-verified (star board + crow placement) | **done → main** |
+| Achi | review→auto | Ghanaian 3×3 alignment with 8 lines; FOUR pieces each (vs Tapatan's 3), place all 8 then slide to the single empty point, three-in-a-row wins. Reuses morris place+line. Browser-verified | **done → main** |
+| Pah Tum | review→auto | ancient grid run-scoring; 7×7 (9×9 option) with a fixed symmetric set of BLOCKED cells, place until full, score escalating runs of ≥3 (3→3,4→10,5→25,6→56,7→88), most points wins. Blocked cells via `board.tints`, running score in caption. Browser-verified | **done → main** |
+
 ## Needs human (escalations)
 
 _(none)_
