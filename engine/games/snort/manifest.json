@@ -1,0 +1,17 @@
+{
+  "uid": "snort",
+  "name": "Snort",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Simon Norton / AGP",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Positional",
+  "tags": ["snort", "combinatorial", "cgt", "col-dual"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Snort_(game)",
+  "options": {
+    "size": { "choices": [3, 4, 5, 6, 7], "default": 5, "label": "Board size" }
+  },
+  "description": "Snort (Simon Norton) — a combinatorial game on a square grid, the exact dual of Col. On your turn you colour one empty cell with YOUR colour, but never on a cell orthogonally adjacent to a cell holding the OPPONENT's colour (adjacency to your own colour is allowed; diagonals are unrestricted). Normal play: the player with no legal move loses (last to move wins). It is sometimes described as 'misère Col', though it is the dual rather than the misère version."
+}

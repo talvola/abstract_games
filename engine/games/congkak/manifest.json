@@ -1,0 +1,14 @@
+{
+  "uid": "congkak",
+  "name": "Congkak",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Mancala",
+  "tags": ["congkak", "sungka", "mancala", "sowing", "malay"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Congkak",
+  "description": "Congkak (a.k.a. Sungka / Congklak): the Malay/Indonesian/Filipino mancala. Two rows of seven holes, seven seeds each. Sow counter-clockwise into your own store but skipping the opponent's; if the last seed lands on a non-empty hole you scoop it up and keep going (relay). Land in your store for another turn, or in your own empty hole to capture the hole opposite. The bigger store wins."
+}

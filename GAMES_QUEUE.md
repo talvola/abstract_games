@@ -421,6 +421,14 @@ _All three on a side-5 hex-of-hexes, reusing the hex renderer + line/Go-liberty/
 | Col | review→auto | Vout's map-colouring game; 5×5 (size option), place your colour not orthogonally adjacent to your OWN colour, last-to-move wins. Reviewer cross-checked legal-move gen over 3000 self-play games. Browser-verified | **done → main** |
 | Hare and Hounds | review→**fix**→auto | Soldier's Game on the 11-point board (3×3 + L/R apexes, central-X diagonals); 3 hounds (no-retreat) vs 1 hare; hounds trap-win, hare escape/stall win. **Review caught the stalling rule was DEAD CODE** (the counter reset on every hare move, so it could never reach the threshold in alternating play); fix-agent made it count consecutive non-advancing HOUND moves not reset by the hare + a real alternating-play regression. Browser-verified (no-retreat hound move) | **done → main** |
 
+## Batch 29 — CGT pair + a mancala (2026-06-23) · 120 games
+_All auto._
+| Game | Lane | Anchor | Status |
+|---|---|---|---|
+| Snort | review→auto | Norton's CGT game, the exact dual of Col (place not-adjacent-to-OPPONENT's-colour, last-to-move wins); differentially checked vs the col package. Browser-verified | **done → main** |
+| Cram | review→auto | impartial domino game (both orientations, either player), last-to-place wins; build agent corrected my wrong parity-anchor (only both-even→2nd-player holds; 3×3 is a 2nd-player win) and baked full-search small-board outcomes (both build + reviewer minimaxed). Browser-verified | **done → main** |
+| Congkak | review→auto | Malay mancala (2×7 + 2 stores, 98 seeds); sow incl. own store/skip opponent's, relay-on-occupied continuation, extra-turn-on-store, own-empty-hole capture; distinct from Kalah/Oware/Toguz (relay + end condition). Browser-verified (sow + store + extra turn) | **done → main** |
+
 ## Needs human (escalations)
 
 _(none)_
