@@ -367,9 +367,24 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
               {isTarget && piece && <circle cx={s.cx} cy={s.cy} r={s.r * 0.9} fill="none" stroke="#5cba6b" strokeWidth={s.r * 0.1} />}
               {piece && (piece.stack
                 ? stackGlyph(s, piece)
-                : piece.label
-                  ? <text x={s.cx} y={s.cy} textAnchor="middle" dominantBaseline="central" fontSize={s.r * 1.0} fontWeight="bold" fill={colors(piece.owner).fill}>{piece.label}</text>
-                  : <circle cx={s.cx} cy={s.cy} r={s.r * 0.6} fill={colors(piece.owner).fill} stroke={colors(piece.owner).stroke} strokeWidth={s.r * 0.07} />)}
+                : piece.shape === 'ring'
+                  // Hollow ring (YINSH/GIPF). `piece.inner` (a seat index) draws a
+                  // marker sitting inside the ring; `piece.label` centres text.
+                  ? <g>
+                      <circle cx={s.cx} cy={s.cy} r={s.r * 0.8} fill="none"
+                        stroke={colors(piece.owner).fill} strokeWidth={s.r * 0.2} />
+                      {piece.inner != null && <circle cx={s.cx} cy={s.cy} r={s.r * 0.4}
+                        fill={colors(piece.inner).fill} stroke={colors(piece.inner).stroke} strokeWidth={s.r * 0.06} />}
+                      {piece.label && <text x={s.cx} y={s.cy} textAnchor="middle" dominantBaseline="central"
+                        fontSize={s.r * 0.7} fontWeight="bold" fill={colors(piece.owner).fill}>{piece.label}</text>}
+                    </g>
+                  : piece.shape === 'marker'
+                    // Small filled disc (YINSH marker, flippable two-sided stone).
+                    ? <circle cx={s.cx} cy={s.cy} r={s.r * 0.46}
+                        fill={colors(piece.owner).fill} stroke={colors(piece.owner).stroke} strokeWidth={s.r * 0.07} />
+                    : piece.label
+                      ? <text x={s.cx} y={s.cy} textAnchor="middle" dominantBaseline="central" fontSize={s.r * 1.0} fontWeight="bold" fill={colors(piece.owner).fill}>{piece.label}</text>
+                      : <circle cx={s.cx} cy={s.cy} r={s.r * 0.6} fill={colors(piece.owner).fill} stroke={colors(piece.owner).stroke} strokeWidth={s.r * 0.07} />)}
               {isTarget && !piece && <circle cx={s.cx} cy={s.cy} r={s.r * 0.3} fill="#5cba6b" opacity="0.85" />}
               {isSource && !piece && <circle cx={s.cx} cy={s.cy} r={s.r * 0.18} fill="#c9a96e" opacity="0.7" />}
             </g>

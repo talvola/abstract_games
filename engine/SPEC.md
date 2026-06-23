@@ -122,6 +122,24 @@ A JSON-able dict the generic renderer draws. Phase-0 shape:
 Cell ids are your move-notation cell strings: `"col,row"` for square, `"q,r"`
 (axial) for hex. The CLI's ASCII previewer understands `square` and `hex`.
 
+**Optional per-piece fields** (the generic renderer honours these; all default off):
+- `"label": "X"` — centre text glyph.
+- `"stack": [owner, …]` — an ordered tower of owners (bottom→top); drawn as
+  layered bands with a height badge (draughts towers — Lasca/Bashni/Focus/Lasca).
+- `"shape": "ring"` — a hollow ring in the owner's colour (YINSH/GIPF rings).
+  Add `"inner": <seat>` to draw a marker *inside* the ring, and/or `"label"`.
+- `"shape": "marker"` — a small filled disc (a YINSH marker / flippable stone;
+  flip = just emit the other `owner`).
+- (default, none of the above) — a normal filled disc.
+
+Board-level optional fields: `board.lines` (cosmetic connecting lines/arcs — 2pt
+line, 3pt quadratic-Bézier arc, or N-pt polyline, each `[[x,y],…,"#colour"?]`),
+`board.overlay` (same format, drawn *over* cells — TwixT bridges, Surakarta
+loops), `board.tints` (`{cellId: "#colour"}` terrain fills), `board.walls`,
+`reserve` (off-board drop trays), `board.cards`. For a points-and-lines board
+(Morris/alquerque/YINSH) use `"type": "polygons"` with explicit cell vertices +
+`board.lines`.
+
 ### Move notation & click-to-move
 
 A move is a **`>`-separated path of cell ids** (cell ids use `,`, so they never
