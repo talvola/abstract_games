@@ -1,0 +1,26 @@
+{
+  "uid": "dara",
+  "name": "Dara",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Capture / annihilation",
+  "tags": ["dara", "african", "three-in-a-row", "traditional"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Dara_(game)",
+  "options": {
+    "size": {
+      "choices": ["6x5", "6x6", "7x6"],
+      "default": "6x5",
+      "label": "Board size (cols x rows)",
+      "labels": {
+        "6x5": "6x5 (standard, 30 cells)",
+        "6x6": "6x6",
+        "7x6": "7x6"
+      }
+    }
+  },
+  "description": "Dara (Dakon/Doki), a West African game of the 'running-three' family. Drop 12 pieces each (three-in-a-rows during the drop do not capture), then slide pieces one step orthogonally; form a row of exactly three of your own pieces to remove one enemy piece. Reduce your opponent so they can no longer make a three (or leave them with no move) to win."
+}

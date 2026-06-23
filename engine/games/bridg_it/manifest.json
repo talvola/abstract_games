@@ -1,0 +1,15 @@
+{
+  "uid": "bridg_it",
+  "name": "Bridg-It",
+  "version": "1.0.0",
+  "author": "David Gale (1958) / AGP port",
+  "engine_api": "1",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Connection",
+  "tags": ["bridg-it", "gale", "shannon-switching", "connection"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Bridg-It",
+  "options": { "size": { "choices": [4, 5, 6], "default": 5, "label": "Board size (Red columns)" } },
+  "description": "David Gale's 'Game of Gale' — a Shannon switching game on a grid. Two interleaved square lattices of dots: Red owns one grid and connects TOP to BOTTOM, Blue owns the offset grid and connects LEFT to RIGHT. On your turn draw a unit edge between two orthogonally-adjacent dots of your own colour. The two colours' potential edges interleave so each crosses exactly one opponent edge; you may not draw an edge whose crossing opponent edge is already placed. You win by linking your two sides with a connected path of your edges. Bridg-It cannot draw."
+}

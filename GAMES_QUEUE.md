@@ -429,6 +429,14 @@ _All auto._
 | Cram | review→auto | impartial domino game (both orientations, either player), last-to-place wins; build agent corrected my wrong parity-anchor (only both-even→2nd-player holds; 3×3 is a 2nd-player win) and baked full-search small-board outcomes (both build + reviewer minimaxed). Browser-verified | **done → main** |
 | Congkak | review→auto | Malay mancala (2×7 + 2 stores, 98 seeds); sow incl. own store/skip opponent's, relay-on-occupied continuation, extra-turn-on-store, own-empty-hole capture; distinct from Kalah/Oware/Toguz (relay + end condition). Browser-verified (sow + store + extra turn) | **done → main** |
 
+## Batch 30 — African capture + connection + attribute-matching (2026-06-23) · 123 games
+_All auto._
+| Game | Lane | Anchor | Status |
+|---|---|---|---|
+| Dara | review→auto | West African (Derrah) 2-phase: place 12 each (no scoring threes), then orthogonal slide; form EXACTLY-3 (4+ forbidden) to remove an enemy; anti-shuffle (no immediate re-form); win = opponent below 3. 6×5 default + 6×6/7×6 options (board-size source-ambiguity flagged). Reuses morris place+line+capture. Browser-verified | **done → main** |
+| Bridg-It | review→auto | Gale / Shannon switching game; two interleaved 5×6/6×5 dot lattices, draw a unit edge between your dots, no crossing the opponent's edge, connect your two sides (BFS); no draws (verified 2000+ games). Edges rendered via `board.overlay`, dots via `piece.fill`. Browser-verified (edge segments draw correctly) | **done → main** |
+| Quarto | review→auto | Gigamic attribute game; 16 pieces × 4 binary attributes (code e.g. SDQF), the signature place-the-piece-your-opponent-gave-you-then-give-one turn (first move give-only); win = a line of 4 sharing any attribute. Win-detection exhaustively checked vs brute-force oracle (0/1820 mismatch). Neutral pieces shown by code label + in-hand piece in reserve tray. Browser-verified | **done → main** |
+
 ## Needs human (escalations)
 
 _(none)_

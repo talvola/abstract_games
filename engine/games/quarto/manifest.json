@@ -1,0 +1,22 @@
+{
+  "uid": "quarto",
+  "name": "Quarto",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Blaise Müller (1991), Gigamic / AGP",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "N-in-a-row",
+  "tags": ["quarto", "attributes", "gigamic", "muller"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/681/quarto",
+  "options": {
+    "square_win": {
+      "choices": [false, true],
+      "default": false,
+      "label": "2x2 square win (advanced)",
+      "labels": { "false": "Lines only", "true": "Lines + 2x2 squares" }
+    }
+  },
+  "description": "Quarto (Blaise Müller, Gigamic). 16 unique pieces, each a combination of four binary attributes (tall/short, light/dark, round/square, hollow/solid). Pieces are shared: on your turn you PLACE the piece your opponent handed you, then CHOOSE one of the remaining pieces for them. The first move is just choosing a piece for the second player. You win if, after your placement, any full row, column, or main diagonal of four pieces all share at least one attribute. A full board with no such line is a draw. An advanced option also wins on any full 2x2 square."
+}
