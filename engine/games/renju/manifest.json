@@ -1,0 +1,14 @@
+{
+  "uid": "renju",
+  "name": "Renju",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "AGP",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "N-in-a-row",
+  "tags": ["renju", "gomoku", "forbidden-moves", "professional"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Renju",
+  "description": "Renju — professional Gomoku on a 15x15 board with Black-handicap (forbidden-move) rules. Black moves first and must make EXACTLY five in a row to win; a Black overline (six or more) does not win, and Black is forbidden from making a double-three, double-four, or overline (Black loses immediately, unless the same move also makes an exact five). White wins with five OR MORE in a row and has no restrictions. Base forbidden-move ruleset only (no opening rules)."
+}

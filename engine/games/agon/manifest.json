@@ -1,0 +1,14 @@
+{
+  "uid": "agon",
+  "name": "Agon (Queen's Guard)",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Traditional (1842) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Positional",
+  "tags": ["hex", "escort", "traditional", "victorian"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/5168/queens-guard",
+  "description": "A 19th-century race game on a hexagonal board of hexagons. Escort your Queen to the central throne and ring her with all six Guards — moving only inward or sideways, never away from the centre. A piece sandwiched between two enemies is captured and must be re-entered on the outer ring. Wall the throne with guards but leave your queen out and you forfeit."
+}

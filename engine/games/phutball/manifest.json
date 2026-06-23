@@ -1,0 +1,26 @@
+{
+  "uid": "phutball",
+  "name": "Phutball",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "AGP",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Positional",
+  "tags": ["conway", "jump", "football", "abstract"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Phutball",
+  "options": {
+    "size": {
+      "choices": ["15x19", "15x21", "19x15"],
+      "default": "15x19",
+      "label": "Board size (W x H)",
+      "labels": {
+        "15x19": "15 x 19 (tall)",
+        "15x21": "15 x 21 (tall, long)",
+        "19x15": "19 x 15 (wide, classic)"
+      }
+    }
+  },
+  "description": "Phutball (Philosopher's Football), John H. Conway's game from Winning Ways. On a grid of points, players share neutral 'men' and one ball. Each turn you either place one man, or jump the ball in a chain over lines of men (removing them), aiming to land the ball on or over your goal line at your end of the board."
+}

@@ -340,6 +340,13 @@ _All three auto, certain geometry, no renderer change._
 | Jeson Mor | review→auto | Mongolian 9×9 all-knights; (1,2) leaper, capture-by-landing, win by occupy-then-VACATE the centre (4,4) (tinted); implemented directly (not ChessLike — no king/check). Browser-verified (knights + center tint + move) | **done → main** |
 | Dameo | review→auto | Freeling 8×8 all-squares draughts; the build agent cross-checked mindsports.nl and correctly implemented the faithful LINEAR move = a connected file shifts exactly ONE square (I'd mis-specified "any distance"), forward man-steps, mandatory+maximal+chained orthogonal capture w/ end-of-move removal, flying kings; canonical triangular 18-man wedge setup. Browser-verified (wedge + linear move) | **done → main** |
 
+## Batch 18 — Conway jump-game + pro-Gomoku + hex escort (2026-06-22)
+| Game | Lane | Anchor | Status |
+|---|---|---|---|
+| Phutball (Philosopher's Football) | review→auto | Conway's jump-to-goal: neutral shared men + one ball, place-a-man-OR-ball-jump-chain, jumps remove the leapt men, win by the ball reaching/crossing your goal line. Build agent modeled the unbounded chain as repeated single hops + a "stop" action (Oust-style multi-action turn) to avoid combinatorial blowup — rule-equivalent. 15×19 board, goal tints, ball glyph 'O'. Browser-verified | **done → main** |
+| Renju | review→**fix**→auto | pro-Gomoku 15×15 with Black handicap (exact-five only for Black incl. no-overline, double-three/double-four/overline forbidden losses, White unrestricted). **Review REJECTED a game-breaking bug** — a STRAIGHT FOUR was miscounted as an open three, so Black's key 'four-three' winning tesuji was wrongly ruled a forbidden double-three loss; a fix-agent corrected `is_open_three_in_dir` (exclude run≥4 + require the dev point to extend THIS three) + added a four-three regression test. Deeply-nested RIF open-three recursion remains a documented approximation. Browser-verified | **done → main** |
+| Agon (Queen's Guard) | review→auto | Victorian hex escort on a hex-of-hexes (side 6, 91 cells); inward/sideways-only movement, custodial send-to-outer-ring capture, win = Queen on the throne ringed by all 6 own guards; re-derived vs Wikipedia. New board shape — browser-verified (throne tint + Q glyphs + inward move) | **done → main** |
+
 ## Needs human (escalations)
 
 _(none)_
