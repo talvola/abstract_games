@@ -324,6 +324,14 @@ _Certain geometry, well-documented rules; each reuses a shipped primitive (stack
 | TZAAR | review→**fix**→auto | GIPF #4 stacking on a 61-cell hexhex (centre empty), 6/9/15 Tzaar/Tzarra/Tott, two-action turn, type-survival loss. **Review REJECTED a game-defining bug** that traced to MY spec — I wrongly said "no long slide"; official gipf.com rules have pieces SLIDE in a straight line over vacant cells to the first occupied cell (both capture & stacking, no jumping). A focused fix-agent rewrote move-gen to sliding (`_slide_targets`/`_slide_path_clear`) + added long-range/blocked/long-stack selftests; I re-verified + fixed the manifest desc. Browser-verified (hexhex render + slide capture) | **done → main** |
 | Halma | review→**fix**(fork)→auto | the jump-race ancestor of Chinese Checkers (8×8/16×16 option). Review QUEUED the classic 'spoiling' fork (a squatter could deny the win → draw). I resolved it to the **standard 'enemy pieces don't block your win'** rule (target camp full + ≥1 of yours) + added the canonical 'can't leave the opposing camp once entered' + dropped a non-canonical anti-stall band-aid; documented as a deliberate choice. Browser-verified (8×8 camps + step) | **done → main** |
 
+## Batch 16 — clean square-grid abstracts (2026-06-22)
+_All three auto, certain geometry, no renderer change._
+| Game | Lane | Anchor | Status |
+|---|---|---|---|
+| Ataxx | review→auto | 7×7 expansion/infection; grow(clone, dist-1) vs jump(relocate, dist-2), 8-way infect-on-land, most-pieces win; reviewer confirmed the end-and-count vs award-empties fork never diverges in 300 games. Browser-verified | **done → main** |
+| Teeko | review→auto | Scarne 5×5; drop-4-then-slide, win = line-of-4 OR 2×2 square (44 win shapes, all re-derived). Browser-verified | **done → main** |
+| Squava | review→auto | 5×5 misère hybrid (placement only): four-in-a-row WINS, three-in-a-row LOSES, four-takes-precedence, full-board draw. Browser-verified | **done → main** |
+
 ## Needs human (escalations)
 
 _(none)_

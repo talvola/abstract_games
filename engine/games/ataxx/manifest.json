@@ -1,0 +1,14 @@
+{
+  "uid": "ataxx",
+  "name": "Ataxx",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "AGP",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Capture / annihilation",
+  "tags": ["expansion", "infection", "reversi-family", "square"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/8245/ataxx",
+  "description": "Ataxx, the 7x7 expansion / infection game. Each player starts with two pieces on opposite corners. Move one of your pieces onto an empty cell: clone into an adjacent cell (grow, keeping the original) or jump to a cell two away (relocating). Every opponent piece next to where you land is infected and flips to your colour. A player with no move passes; when neither side can move (or the board is full) the player with more pieces wins, equal counts draw."
+}

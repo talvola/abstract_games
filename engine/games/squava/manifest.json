@@ -1,0 +1,14 @@
+{
+  "uid": "squava",
+  "name": "Squava",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "AGP",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "N-in-a-row",
+  "tags": ["placement", "misere", "n-in-a-row", "abstract"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/112745/squava",
+  "description": "Squava, a 5x5 misère/positive hybrid n-in-a-row. Players alternately place a stone on an empty cell (no movement). Making FOUR or more in a row (horizontal, vertical, or diagonal) WINS immediately; but making exactly THREE in a row — when it is not part of a four — LOSES immediately. Four takes precedence over three. A full board with no decisive line is a draw."
+}

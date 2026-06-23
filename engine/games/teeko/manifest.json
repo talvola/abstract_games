@@ -1,0 +1,14 @@
+{
+  "uid": "teeko",
+  "name": "Teeko",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Positional",
+  "tags": ["placement", "movement", "line", "square", "classic"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/3960/teeko",
+  "description": "Teeko (John Scarne, 1937) on a 5x5 board. Each player drops four markers, then slides them one king-step to an adjacent empty cell. Get your four markers into a straight line of four or a 2x2 square to win. No captures. Base ruleset (no advanced/jumping rules)."
+}
