@@ -130,6 +130,11 @@ Cell ids are your move-notation cell strings: `"col,row"` for square, `"q,r"`
   Add `"inner": <seat>` to draw a marker *inside* the ring, and/or `"label"`.
 - `"shape": "marker"` — a small filled disc (a YINSH marker / flippable stone;
   flip = just emit the other `owner`).
+- `"size": <1..~5>` — a "nesting" piece (Gobblet): the disc scales with size so a
+  bigger piece visibly covers (gobbles) a smaller one. Emit ONLY the TOP piece of
+  a nested cell (what's underneath is hidden, as in the physical game). Pair with
+  the `reserve` tray for the off-board nested stacks (use the size digit as the
+  reserve "letter"; drop move `"<size>@c,r"`).
 - (default, none of the above) — a normal filled disc.
 
 Board-level optional fields: `board.lines` (cosmetic connecting lines/arcs — 2pt

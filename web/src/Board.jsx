@@ -382,9 +382,21 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
                     // Small filled disc (YINSH marker, flippable two-sided stone).
                     ? <circle cx={s.cx} cy={s.cy} r={s.r * 0.46}
                         fill={colors(piece.owner).fill} stroke={colors(piece.owner).stroke} strokeWidth={s.r * 0.07} />
-                    : piece.label
-                      ? <text x={s.cx} y={s.cy} textAnchor="middle" dominantBaseline="central" fontSize={s.r * 1.0} fontWeight="bold" fill={colors(piece.owner).fill}>{piece.label}</text>
-                      : <circle cx={s.cx} cy={s.cy} r={s.r * 0.6} fill={colors(piece.owner).fill} stroke={colors(piece.owner).stroke} strokeWidth={s.r * 0.07} />)}
+                    : piece.size != null
+                      // Nested "gobble" piece (Gobblet): a disc scaled by its size,
+                      // so a larger piece visibly covers (gobbles) smaller ones — only
+                      // the top piece of a cell's nest is shown. A rim ring reads as a cup.
+                      ? <g>
+                          <circle cx={s.cx} cy={s.cy} r={Math.min(0.88, 0.34 + 0.135 * piece.size) * s.r}
+                            fill={colors(piece.owner).fill} stroke={colors(piece.owner).stroke} strokeWidth={s.r * 0.07} />
+                          <circle cx={s.cx} cy={s.cy} r={Math.min(0.88, 0.34 + 0.135 * piece.size) * s.r * 0.6}
+                            fill="none" stroke={colors(piece.owner).stroke} strokeWidth={s.r * 0.05} opacity="0.5" />
+                          {piece.label && <text x={s.cx} y={s.cy} textAnchor="middle" dominantBaseline="central"
+                            fontSize={s.r * 0.6} fontWeight="bold" fill={colors(piece.owner).stroke}>{piece.label}</text>}
+                        </g>
+                      : piece.label
+                        ? <text x={s.cx} y={s.cy} textAnchor="middle" dominantBaseline="central" fontSize={s.r * 1.0} fontWeight="bold" fill={colors(piece.owner).fill}>{piece.label}</text>
+                        : <circle cx={s.cx} cy={s.cy} r={s.r * 0.6} fill={colors(piece.owner).fill} stroke={colors(piece.owner).stroke} strokeWidth={s.r * 0.07} />)}
               {isTarget && !piece && <circle cx={s.cx} cy={s.cy} r={s.r * 0.3} fill="#5cba6b" opacity="0.85" />}
               {isSource && !piece && <circle cx={s.cx} cy={s.cy} r={s.r * 0.18} fill="#c9a96e" opacity="0.7" />}
             </g>
