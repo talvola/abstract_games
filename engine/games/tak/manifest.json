@@ -1,0 +1,22 @@
+{
+  "uid": "tak",
+  "name": "Tak",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Stacking",
+  "tags": ["stacking", "road", "connection", "modern"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/197405/tak",
+  "options": {
+    "size": {
+      "choices": [3, 4, 5, 6, 8],
+      "default": 5,
+      "label": "Board size",
+      "labels": { "3": "3×3", "4": "4×4", "5": "5×5", "6": "6×6", "8": "8×8" }
+    }
+  },
+  "description": "Tak (James Ernest & Patrick Rothfuss, 2016): a beautiful road-building stacking game. Place flats, standing stones (walls) and capstones, or move stacks you control to build an unbroken road of your colour between opposite edges. Reuses the platform's stacking tower renderer."
+}

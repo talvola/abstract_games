@@ -80,6 +80,9 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
 
   if (!spec) return null
   const board = spec.board
+  // A game may override the "=choice" suffix labels/title (e.g. Tak's F/S/C =
+  // Flat/Wall/Capstone, which otherwise collide with chess promotion letters).
+  const choiceNames = { ...CHOICE_NAMES, ...(spec.choiceNames || {}) }
   const cellMoves = (legalMoves || []).filter(isCellMove)
   const dropMoves = (legalMoves || []).filter(isDropMove)
   const wallMoves = (legalMoves || []).filter(isWallMove)
@@ -390,11 +393,12 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
 
       {promo && (
         <div className="promo-picker">
-          <div className="promo-title">{promo.options.some((o) => PROMO_LETTERS.has(o.choice)) ? 'Promote to' : 'Choose'}</div>
+          <div className="promo-title">{spec.choiceTitle
+            || (promo.options.some((o) => !spec.choiceNames && PROMO_LETTERS.has(o.choice)) ? 'Promote to' : 'Choose')}</div>
           <div className="promo-options">
             {promo.options.map((o) => (
               <button key={o.choice ?? 'none'} onClick={() => { onMove(o.move); setPromo(null); setSel([]) }}>
-                {o.choice == null ? 'No promotion' : (CHOICE_NAMES[o.choice] || o.choice)}
+                {o.choice == null ? 'No promotion' : (choiceNames[o.choice] || o.choice)}
               </button>
             ))}
             <button className="promo-cancel" onClick={() => { setPromo(null); setSel([]) }}>Cancel</button>
