@@ -452,6 +452,13 @@ _All auto._
 | Camelot | review→**fix**→auto | Parker Bros medieval on the 160-square cross board + 2 castles; 4 knights+10 men/side, PLAIN/CANTER/JUMP + Knight's Charge, win by 2-men-into-enemy-castle or annihilation. Build agent fixed my brief (jumping is COMPULSORY per WCF, not optional). **Review caught jump-continuation not enforced** (premature-stop jumps offered as legal) → fixed to emit only continuation-maximal chains (branching preserved) + regression. Browser-verified (cross board + castles render, `C6-C5`) | **done → main** |
 | Shisima | review→auto | Kenyan octagon (8 rim + centre, rim ring + 4 diameters); 3 pieces each, slide to adjacent empty point, three-in-a-row THROUGH THE CENTRE wins. Reuses tapatan slide+line on the octagon graph. Browser-verified (octagon board, `point 2->point 3`) | **done → main** |
 
+## Batch 33 — Korean/Asian traditionals (2026-06-23) · 132 games
+| Game | Lane | Anchor | Status |
+|---|---|---|---|
+| Four Field Kono | review→**fix**→auto | Korean 4×4 (full board start); capture by jumping over your OWN piece onto an enemy beyond. **Review caught my spec was over-restrictive** (capture-only degenerated to ~6 moves) → fix-agent added the standard non-capturing orthogonal slide-to-empty; now avg 126.9 moves, win = no jump AND no slide. Browser-verified (`a1xa3`) | **done → main** |
+| Five Field Kono | review→auto | Korean 5×5 race; 7 pieces each (back row + 2 outer second-row), move one step DIAGONALLY to empty, first to occupy the enemy's home set wins. Browser-verified (`0,0→1,1`) | **done → main** |
+| Pong Hau K'i | review→auto | Chinese/Korean 5-point blocking game; canonical 5-node/7-edge graph (centre↔4 corners, bottom edge, NO top edge), 2 pieces each, slide to the single empty point, no-move loss; perfect-play DRAW value confirmed. Board via points+`board.lines`. Browser-verified (`tl->c`) | **done → main** |
+
 ## Needs human (escalations)
 
 _(none)_

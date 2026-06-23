@@ -1,0 +1,14 @@
+{
+  "uid": "five_field_kono",
+  "name": "Five Field Kono",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Traditional (Korea) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Race",
+  "tags": ["kono", "korea", "race", "diagonal", "traditional"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/25471/five-field-kono",
+  "description": "Five Field Kono (오뱭고누), a traditional Korean racing game on a 5x5 grid of points. Each side has 7 pieces (the whole back row plus the two outer points of the second row). A piece moves one step diagonally to an adjacent empty point - there are no captures. The first player to move ALL of their pieces onto the opponent's starting points wins. A no-progress ply cap yields a draw. (Korean: 오밭고누 / 오밭고노)"
+}

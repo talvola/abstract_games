@@ -1,0 +1,14 @@
+{
+  "uid": "four_field_kono",
+  "name": "Four Field Kono",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Traditional (Korea) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Capture / annihilation",
+  "tags": ["kono", "korea", "jump", "capture", "traditional"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/29207/kono",
+  "description": "Four Field Kono (네밭고누), a traditional Korean capture game on a full 4x4 board. The signature move: jump one of your own pieces over an orthogonally-adjacent friendly piece to land on (and capture) an opponent piece directly beyond. Because the board starts completely full, the first move must be a capturing jump. You may not jump onto an empty cell, over an enemy, or over a gap. A player wins when the opponent can no longer make any capturing jump (reduced to one piece, or all remaining pieces immobilized)."
+}
