@@ -1,0 +1,14 @@
+{
+  "uid": "zertz",
+  "name": "ZERTZ",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Capture / annihilation",
+  "tags": ["gipf", "burm", "shrinking-board", "capture", "hex"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/528/zertz",
+  "description": "Kris Burm's GIPF-project #2: a 37-ring hexagonal board that SHRINKS as rings are removed. Place neutral marbles from a shared pool or jump to capture them into your reserve; first to a winning set of captured marbles wins. The platform's shrinking-board render primitive."
+}

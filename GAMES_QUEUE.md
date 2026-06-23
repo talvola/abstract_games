@@ -367,6 +367,14 @@ _Erik asked to build the 3 deferred render primitives in order: **rings/markers 
 | **(primitive) piece.size nesting** | — | generic `piece.size` (disc scaled by size; emit only the top cup) + DROP_RE widened to accept a digit reserve key (`4@c,r`) so the reserve-chip drop flow works for sizes; documented in SPEC.md; backward-compatible (Crazyhouse letters still match) | **done → main** |
 | Gobblet | review→auto | Denoual/Blue Orange; 4×4, 3 off-board nested stacks of cups (sizes 1-4), strictly-larger gobble, off-board-gobble-only-on-a-3-line restriction, uncovering reveals the cup beneath, win = 4 same-colour tops in a line (incl. uncover-loss); + a 3×3 'Gobblet Gobblers' `size` option. Verified vs the Blue Orange rulebook. First consumer of the nesting primitive. Browser-verified (sized cups render + reserve-tray drop + nested stacks update) | **done → main** |
 
+## Batch 22 — render-primitive 3 (shrinking board → ZÈRTZ) · 100 GAMES (2026-06-22)
+| Game | Lane | Anchor | Status |
+|---|---|---|---|
+| **(primitive) shrinking board + marble fill** | — | `board.extent` pins the viewBox so a board can shed cells without rescaling; `piece.fill`/`piece.stroke` give a piece an explicit (non-seat) colour. Documented in SPEC.md; backward-compatible | **done → main** |
+| ZÈRTZ | review→**fix**→auto | GIPF #2; 37-ring hexagon that SHRINKS (rendered as `polygons` so removed rings vanish + `board.extent` keeps it stable — the hex renderer ignores a cell list), shared 6W/8G/10B neutral marble pool (`piece.fill`), place-marble-then-remove-free-ring, mandatory chained jump-capture into your reserve, isolation capture, win = 3-of-each / 4W / 5G / 6B. **Review caught a real bug** — isolation only fired on ring-removal, not when a placement fills an isolated group's last vacancy with no free ring removable; fix-agent added the placement-path isolation (with a `prev` guard so pre-existing islands aren't re-swept) + regression test. **Also a render-only UX fix:** exposed the shared pool as the mover's armable reserve tray (placement was unplayable — the pool had no clickable source), captured marbles → caption. Browser-verified (board shrinks with gaps, 3-colour marbles, pool placement + ring removal) | **done → main** |
+
+_All three deferred render primitives (rings/markers, nesting, shrinking-board) now shipped — 100 games._
+
 ## Needs human (escalations)
 
 _(none)_
