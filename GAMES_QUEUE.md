@@ -347,6 +347,13 @@ _All three auto, certain geometry, no renderer change._
 | Renju | review→**fix**→auto | pro-Gomoku 15×15 with Black handicap (exact-five only for Black incl. no-overline, double-three/double-four/overline forbidden losses, White unrestricted). **Review REJECTED a game-breaking bug** — a STRAIGHT FOUR was miscounted as an open three, so Black's key 'four-three' winning tesuji was wrongly ruled a forbidden double-three loss; a fix-agent corrected `is_open_three_in_dir` (exclude run≥4 + require the dev point to extend THIS three) + added a four-three regression test. Deeply-nested RIF open-three recursion remains a documented approximation. Browser-verified | **done → main** |
 | Agon (Queen's Guard) | review→auto | Victorian hex escort on a hex-of-hexes (side 6, 91 cells); inward/sideways-only movement, custodial send-to-outer-ring capture, win = Queen on the throne ringed by all 6 own guards; re-derived vs Wikipedia. New board shape — browser-verified (throne tint + Q glyphs + inward move) | **done → main** |
 
+## Batch 19 — mancala + two race games (2026-06-22)
+| Game | Lane | Anchor | Status |
+|---|---|---|---|
+| Toguz Kumalak | review→**fix**→auto | Kazakh 2×9 sowing mancala; leave-one-behind, even-count capture, the full tuzdik (sacred-hole) rule + its 3 restrictions, >81 win. **Review caught an end-game bug** — remaining board balls weren't swept to each side's kazan at game end (could flip the winner); fix-agent added the own-side sweep + regression test. Browser-verified (capture fired: 10–10). Reuses the Kalah/Oware pit render | **done → main** |
+| Gygès | review→auto | Leroy's ownerless 6×6 height-race; pieces (height 1/2/3, no owner) move exactly their height in steps, bounce/replace on landing, win by reaching your goal cell; re-derived vs the official Leroy PDF. Reuses Lasca height glyph. Browser-verified | **done → main** |
+| Conspirateurs | review→**fix**→auto | French Halma-style step-and-jump race, 17×17. **My spec was WRONG** (I said queen-move/no-adjacent) — the build agent verified 4 sources and built the REAL game (step + jump, no capture, shelter all your men in the perimeter sanctuaries). Review then caught MEN=21 (should be 20 in play; 21 cones = 1 spare) — fixed to 20. Sanctuary map is a documented 40-cell reconstruction (exact published coords unrecoverable). Browser-verified (0/20 + sanctuary tints) | **done → main** |
+
 ## Needs human (escalations)
 
 _(none)_

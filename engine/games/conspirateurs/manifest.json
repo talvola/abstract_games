@@ -1,0 +1,14 @@
+{
+  "uid": "conspirateurs",
+  "name": "Conspirateurs",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Traditional (France, pre-1800) / nestorgames 2018 edition / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Positional",
+  "tags": ["race", "traditional", "french", "no-capture", "square"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/60707/conspirateurs",
+  "description": "A traditional French race game (pre-1800, here following the nestorgames 2-player edition). On a 17x17 board, each player drops 21 'conspirateurs' onto the central 9x5 'secret meeting place', then -- Halma-style, with NO capturing -- steps and multi-jumps them out to the perimeter SANCTUARIES. The first to get all of their men into shelters wins. A man already in a sanctuary may not move."
+}

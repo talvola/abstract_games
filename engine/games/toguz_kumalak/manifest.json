@@ -1,0 +1,14 @@
+{
+  "uid": "toguz_kumalak",
+  "name": "Toguz Kumalak",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "AGP",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Mancala",
+  "tags": ["mancala", "sowing", "kazakh", "toguz"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/30319/toguz-kumalak",
+  "description": "Toguz Kumalak (Kazakh 'nine pebbles'), the Central Asian sowing mancala. Two rows of nine pits (otau) and two kazans (stores), 162 balls total, 9 per pit. Sow counterclockwise leaving one behind; capture an opponent pit made even; claim a 'tuzdik' sacred hole by making an opponent pit total three. First to more than 81 balls wins."
+}
