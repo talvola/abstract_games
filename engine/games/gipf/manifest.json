@@ -1,0 +1,14 @@
+{
+  "uid": "gipf",
+  "name": "GIPF",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Positional",
+  "tags": ["gipf", "burm", "shove", "line-capture", "hex"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/527/gipf",
+  "description": "GIPF (Kris Burm, 1997) -- the namesake of the GIPF Project. On a hexagonal board of 37 spots ringed by 24 entry dots, each turn you introduce a piece from your reserve onto an entry dot and shove it one step inward, sliding the line of pieces ahead of it. A line of four or more of your colour is removed: your pieces return to your reserve, the opponent's in that line are captured. Run out of reserve pieces and you lose. Basic game (single pieces)."
+}

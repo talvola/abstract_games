@@ -1,0 +1,14 @@
+{
+  "uid": "punct",
+  "name": "PÜNCT",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Kris Burm (2005) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Connection",
+  "tags": ["gipf", "burm", "connection", "stacking", "punct", "hex"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/15172/punct",
+  "description": "PÜNCT (Kris Burm, 2005; GIPF project #6): a connection game with stacking on a 211-field hexagon. Each player has 18 pieces, each covering three adjacent fields in a straight, angular or triangular shape. Add pieces flat or slide a piece's PÜNCT in a straight line to jump on top of others; the colour on top counts. Win by linking any pair of opposite sides."
+}

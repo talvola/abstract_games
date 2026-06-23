@@ -385,6 +385,13 @@ _Built under a sustained Anthropic API 529-overload — handled by hand (see not
 
 _Note: a multi-hour Anthropic API 529 overload killed build/verify subagents repeatedly. I backed off + resumed (cached builds), wrote Quixo by hand, and did the independent rule-review for Kamisado/Battle Sheep myself (a valid second reviewer) — all 3 also browser-verified._
 
+## Batch 24 — the GIPF namesakes (2026-06-23) · 105 games
+_Completes the realistically-addable GIPF project (DVONN, TZAAR, YINSH, ZÈRTZ already in). TAMSK is real-time sand-timers → not implementable in a turn-based engine (skipped). "Potentials" (the cross-game meta-layer) deliberately NOT done — it couples games and breaks the independent-module design; each GIPF game ships standalone._
+| Game | Lane | Anchor | Status |
+|---|---|---|---|
+| GIPF | review→auto | the namesake (basic game): radius-3 hex of 37 spots + 24 entry dots, introduce-from-reserve-and-shove inward, 4-in-a-line removal (own pieces → reserve, opponent's captured out), lose on empty reserve. Geometry + rules verified vs gipf.com/Rio Grande. Reserve tray + hex board.lines. Browser-verified (board + shove). GIPF-pieces/doubles variant documented out-of-scope | **done → main** |
+| PÜNCT | review→auto | GIPF #6 connection+stacking: 211-field side-9 hexagon, 18 triomino pieces (straight/angular/triangular) placed flat or stacked (bridging/support rules), connect a pair of opposite edges (Hex-style BFS over top colour). Rules verified vs gipf.com/UltraBoardGames. Rendered PER-FIELD (a 3-field piece = 3 same-colour discs + height label) — no multi-cell-piece primitive. Browser-verified (211-hex board + triomino placement). **Documented base-game limitations:** placement is offered as an action-button LIST (the P/A/B move notation isn't cell-clickable) — a future click-to-place-triomino + shape-outline UI would improve it; rotate-in-place omitted (PÜNCT must slide ≥1); shapes tracked as a count not a 6/6/6 split; standard PÜNCT-marker/central-control out of scope | **done → main** |
+
 ## Needs human (escalations)
 
 _(none)_
