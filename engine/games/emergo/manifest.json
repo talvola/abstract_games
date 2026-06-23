@@ -1,0 +1,14 @@
+{
+  "uid": "emergo",
+  "name": "Emergo",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Checkers & draughts",
+  "tags": ["emergo", "freeling", "stacking", "draughts"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/14438/emergo",
+  "description": "Emergo (Christian Freeling & Ed van Zon, 1986): a stacking draughts game on the 41 dark squares of a 9x9 board. Both players start with all twelve men OFF the board and ENTER them. There are no kings: every piece moves and captures one step in any diagonal direction. Jumping an enemy column takes its TOP man as a prisoner tucked UNDER the moving column; the rest of the jumped column stays put. Captures are compulsory and must take the maximum. Win by capturing all of the opponent's men (or leaving them with no legal move)."
+}

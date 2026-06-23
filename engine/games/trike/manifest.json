@@ -1,0 +1,17 @@
+{
+  "uid": "trike",
+  "name": "Trike",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Alek Erickson (2020) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Positional",
+  "options": {
+    "size": { "choices": [7, 9, 11, 13], "default": 11, "label": "Board side (hexes per side)" }
+  },
+  "tags": ["trike", "triangular", "combinatorial", "modern", "erickson"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/307379/trike",
+  "description": "Trike (Alek Erickson, 2020): an elegant draw-free combinatorial game on a triangle of hexes. Players take turns sliding a single shared neutral pawn in a straight line over empty cells, dropping a stone of their own colour on the landing cell. When the pawn is trapped, whoever owns more stones on the pawn's cell and its neighbours wins. Balanced by a pie (swap) rule."
+}

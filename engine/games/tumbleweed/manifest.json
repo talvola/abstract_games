@@ -1,0 +1,17 @@
+{
+  "uid": "tumbleweed",
+  "name": "Tumbleweed",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Mike Zapawa (2020) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Positional",
+  "tags": ["tumbleweed", "hex", "influence", "area", "modern"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/318702/tumbleweed",
+  "options": {
+    "size": { "choices": [6, 8], "default": 8, "label": "Board side length" }
+  },
+  "description": "Mike Zapawa's modern hex influence/area game. Each turn place a stack of your colour on any hex; its height equals the number of your stacks that have line-of-sight to it, and it must be strictly taller than whatever is already there (so you settle, grow, or capture). Most hexes controlled at the end wins."
+}
