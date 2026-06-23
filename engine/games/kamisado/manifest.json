@@ -1,0 +1,14 @@
+{
+  "uid": "kamisado",
+  "name": "Kamisado",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Peter Burley (2008), GameWright/Huch! / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["kamisado", "colour-chain", "movement"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/38545/kamisado",
+  "description": "Kamisado (Peter Burley, 2008). An 8x8 board where every cell is one of 8 colours in a fixed symmetric Latin-square pattern. Each player has 8 towers, one of each colour, on their home row. Towers move straight or diagonally FORWARD over empty cells. The colour of the cell a tower lands on dictates which colour tower the opponent must move next (the colour chain); the first move is free. If the required tower is blocked the turn passes back and the obligation bounces to the colour the blocked tower stands on. Win by moving a tower onto the opponent's home row. This package implements the base single-round game (not the match / Sumo scoring variants)."
+}

@@ -375,6 +375,16 @@ _Erik asked to build the 3 deferred render primitives in order: **rings/markers 
 
 _All three deferred render primitives (rings/markers, nesting, shrinking-board) now shipped — 100 games._
 
+## Batch 23 — distinct drop-ins on existing primitives (2026-06-23) · 103 games
+_Built under a sustained Anthropic API 529-overload — handled by hand (see note)._
+| Game | Lane | Anchor | Status |
+|---|---|---|---|
+| Quixo | hand-built→auto | Gigamic 5×5 take-a-border-cube-stamp-and-slide; win = five of your symbol, opponent-completion hands them the win. I WROTE this package by hand (the build agent kept 529-ing); slide/win baked in selftest. Browser-verified (slide picker via `=CHOICE`, slide renders). Fixed U/D picker labels for the renderer's y-flip | **done → main** |
+| Kamisado | agent-build→**self-verified**→auto | Burley 8×8 colour-chain race; Latin-square colour board (`board.tints`) + 8 colour towers (`piece.fill`), forward-only slide, colour dictates the opponent's next tower, official deadlock rule, reach-far-row win. Verify agent died on 529 → I did the independent adversarial review myself. Browser-verified (colour board + colour-chain). **Renderer fix:** a piece with both `fill`+`label` (a tower on its own-colour cell) was invisible (label-only in the fill colour) → now drawn as a disc + contrasting-outline label | **done → main** |
+| Battle Sheep | agent-build→**self-verified**→auto | Blue Orange split-and-slide on a fixed 32-hex board; split a stack (leave ≥1), slide as far as possible, most-hexes win (tie-break largest herd). Verify agent died on 529 → self-reviewed. Reuses `piece.stack`. Browser-verified (hex stacks + split via count picker) | **done → main** |
+
+_Note: a multi-hour Anthropic API 529 overload killed build/verify subagents repeatedly. I backed off + resumed (cached builds), wrote Quixo by hand, and did the independent rule-review for Kamisado/Battle Sheep myself (a valid second reviewer) — all 3 also browser-verified._
+
 ## Needs human (escalations)
 
 _(none)_

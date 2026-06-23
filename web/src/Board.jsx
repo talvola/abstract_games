@@ -400,13 +400,23 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
                           {piece.label && <text x={s.cx} y={s.cy} textAnchor="middle" dominantBaseline="central"
                             fontSize={s.r * 0.6} fontWeight="bold" fill={colors(piece.owner).stroke}>{piece.label}</text>}
                         </g>
-                      : piece.label
-                        ? <text x={s.cx} y={s.cy} textAnchor="middle" dominantBaseline="central" fontSize={s.r * 1.0} fontWeight="bold" fill={piece.fill || colors(piece.owner).fill}>{piece.label}</text>
-                        // `piece.fill`/`piece.stroke` override the seat colour — e.g. ZÈRTZ's
-                        // neutral white/grey/black marbles, which aren't tied to a player.
-                        : <circle cx={s.cx} cy={s.cy} r={s.r * 0.6}
-                            fill={piece.fill || colors(piece.owner).fill}
-                            stroke={piece.stroke || colors(piece.owner).stroke} strokeWidth={s.r * 0.07} />)}
+                      : (piece.fill && piece.label)
+                        // A coloured disc WITH a label (e.g. Kamisado towers, whose
+                        // fill matches their home cell's tint) — draw the disc so it
+                        // reads as a piece, label in the contrasting stroke colour.
+                        ? <g>
+                            <circle cx={s.cx} cy={s.cy} r={s.r * 0.6}
+                              fill={piece.fill} stroke={piece.stroke || '#111'} strokeWidth={s.r * 0.12} />
+                            <text x={s.cx} y={s.cy} textAnchor="middle" dominantBaseline="central"
+                              fontSize={s.r * 0.62} fontWeight="bold" fill={piece.stroke || '#111'}>{piece.label}</text>
+                          </g>
+                        : piece.label
+                          ? <text x={s.cx} y={s.cy} textAnchor="middle" dominantBaseline="central" fontSize={s.r * 1.0} fontWeight="bold" fill={colors(piece.owner).fill}>{piece.label}</text>
+                          // `piece.fill`/`piece.stroke` override the seat colour — e.g. ZÈRTZ's
+                          // neutral white/grey/black marbles, which aren't tied to a player.
+                          : <circle cx={s.cx} cy={s.cy} r={s.r * 0.6}
+                              fill={piece.fill || colors(piece.owner).fill}
+                              stroke={piece.stroke || colors(piece.owner).stroke} strokeWidth={s.r * 0.07} />)}
               {isTarget && !piece && <circle cx={s.cx} cy={s.cy} r={s.r * 0.3} fill="#5cba6b" opacity="0.85" />}
               {isSource && !piece && <circle cx={s.cx} cy={s.cy} r={s.r * 0.18} fill="#c9a96e" opacity="0.7" />}
             </g>

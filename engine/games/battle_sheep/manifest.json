@@ -1,0 +1,14 @@
+{
+  "uid": "battle_sheep",
+  "name": "Battle Sheep",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Stacking",
+  "tags": ["battle-sheep", "stacking", "hex", "area"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Battle_Sheep",
+  "description": "Battle Sheep (Blue Orange, designer Francesco Rotta -- 'Splitter'): on a hex pasture each player starts with a single tower of 16 sheep. On your turn you SPLIT a stack -- leave at least one sheep behind, take the rest off the top -- and slide that group in one of the six straight hex directions as FAR as it can go, stopping just before a board edge or another stack. No captures. When nobody can move, the player occupying the MOST hexes wins; the tie-break is the largest single connected herd. The platform reuses its stacking glyph (an owner-coloured tower with a height badge). Uses a fixed 32-hex board (8 four-hex tiles)."
+}

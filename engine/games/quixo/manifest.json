@@ -1,0 +1,14 @@
+{
+  "uid": "quixo",
+  "name": "Quixo",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "N-in-a-row",
+  "tags": ["quixo", "sliding", "gigamic", "line"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/3190/quixo",
+  "description": "Quixo (Gigamic) on a 5x5 grid of cubes. On your turn take a cube from the border that is blank or already shows your symbol, stamp it with your symbol, and push it back into its row or column from one edge, sliding the line one step. First to make a line of five of your symbol (row, column, or diagonal) wins; if your slide instead completes a line of the opponent's symbol, the opponent wins."
+}
