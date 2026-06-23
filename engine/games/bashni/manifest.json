@@ -1,0 +1,14 @@
+{
+  "uid": "bashni",
+  "name": "Bashni",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Checkers & draughts",
+  "tags": ["stacking", "draughts", "russian", "towers"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Bashni",
+  "description": "Bashni (Башни, 'towers'): Russian column draughts and the stacking ancestor of Lasca. On the 32 dark squares of an 8x8 board, 12 men a side. Capturing tucks the enemy's top piece under the BOTTOM of your moving column as a prisoner (the rest of the jumped column stays); whoever owns a column's top piece controls it. Men capture forward and backward, captures are mandatory and chain, and a man promotes to a Russian flying king on the far rank."
+}

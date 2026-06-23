@@ -1,0 +1,25 @@
+{
+  "uid": "tsoro_yematatu",
+  "name": "Tsoro Yematatu",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Positional",
+  "tags": ["traditional", "three-in-a-row", "shona", "zimbabwe"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Tsoro_Yematatu",
+  "options": {
+    "placement_win": {
+      "choices": ["no", "yes"],
+      "default": "no",
+      "label": "Winning during placement",
+      "labels": {
+        "no": "Disallowed (standard): three-in-a-row must be formed in the movement phase",
+        "yes": "Allowed: a line completed while placing wins immediately"
+      }
+    }
+  },
+  "description": "Tsoro Yematatu, a traditional Shona (Zimbabwean) three-in-a-row game on a seven-point triangular board. Each player drops three men, then slides or jumps them along the board's lines (jumps don't capture). Make three of your men in a straight line to win."
+}

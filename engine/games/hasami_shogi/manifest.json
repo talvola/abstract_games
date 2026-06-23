@@ -1,0 +1,14 @@
+{
+  "uid": "hasami_shogi",
+  "name": "Hasami Shogi",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "AGP (traditional, Dai Hasami Shogi)",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Capture / annihilation",
+  "tags": ["shogi-family", "custodial", "sandwich"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/10999/hasami-shogi",
+  "description": "Hasami Shogi ('sandwiching chess'), Dai Hasami Shogi variant on a 9x9 board. Each side has 9 identical men filling its back row; every man moves like a rook. Capture is custodial (Tafl-style): your move that brackets one or more contiguous enemy men in a straight line between the moved man and a friendly man (or a held corner) removes them — capture happens only on your move. Win by reducing the opponent to a single man, or by forming an unbroken line of 5 of your own men (orthogonal or diagonal) entirely off your home row."
+}
