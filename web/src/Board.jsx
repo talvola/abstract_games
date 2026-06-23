@@ -224,7 +224,12 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
   const spanX = Math.max(...allx) - Math.min(...allx)
   const spanY = Math.max(...ally) - Math.min(...ally)
   const mrg = Math.max(spanX, spanY) * 0.04 + cellR * 0.5
-  const vb = `${Math.min(...allx) - mrg} ${Math.min(...ally) - mrg} ${spanX + 2 * mrg} ${spanY + 2 * mrg}`
+  // `board.extent: [minX, minY, w, h]` fixes the viewBox to the FULL original
+  // board so it doesn't rescale/recentre as cells vanish (ZÈRTZ's shrinking
+  // board — removed rings just leave a gap). Default: fit the current cells.
+  const vb = board.extent
+    ? board.extent.join(' ')
+    : `${Math.min(...allx) - mrg} ${Math.min(...ally) - mrg} ${spanX + 2 * mrg} ${spanY + 2 * mrg}`
 
   // Coloured edge frame for rhombus connection boards (which sides each seat connects).
   let edgeLines = null
@@ -396,8 +401,12 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
                             fontSize={s.r * 0.6} fontWeight="bold" fill={colors(piece.owner).stroke}>{piece.label}</text>}
                         </g>
                       : piece.label
-                        ? <text x={s.cx} y={s.cy} textAnchor="middle" dominantBaseline="central" fontSize={s.r * 1.0} fontWeight="bold" fill={colors(piece.owner).fill}>{piece.label}</text>
-                        : <circle cx={s.cx} cy={s.cy} r={s.r * 0.6} fill={colors(piece.owner).fill} stroke={colors(piece.owner).stroke} strokeWidth={s.r * 0.07} />)}
+                        ? <text x={s.cx} y={s.cy} textAnchor="middle" dominantBaseline="central" fontSize={s.r * 1.0} fontWeight="bold" fill={piece.fill || colors(piece.owner).fill}>{piece.label}</text>
+                        // `piece.fill`/`piece.stroke` override the seat colour — e.g. ZÈRTZ's
+                        // neutral white/grey/black marbles, which aren't tied to a player.
+                        : <circle cx={s.cx} cy={s.cy} r={s.r * 0.6}
+                            fill={piece.fill || colors(piece.owner).fill}
+                            stroke={piece.stroke || colors(piece.owner).stroke} strokeWidth={s.r * 0.07} />)}
               {isTarget && !piece && <circle cx={s.cx} cy={s.cy} r={s.r * 0.3} fill="#5cba6b" opacity="0.85" />}
               {isSource && !piece && <circle cx={s.cx} cy={s.cy} r={s.r * 0.18} fill="#c9a96e" opacity="0.7" />}
             </g>

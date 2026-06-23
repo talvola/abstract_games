@@ -135,7 +135,15 @@ Cell ids are your move-notation cell strings: `"col,row"` for square, `"q,r"`
   a nested cell (what's underneath is hidden, as in the physical game). Pair with
   the `reserve` tray for the off-board nested stacks (use the size digit as the
   reserve "letter"; drop move `"<size>@c,r"`).
+- `"fill": "#rrggbb"` (and optional `"stroke"`) — override the seat colour for
+  this piece (e.g. ZÈRTZ's neutral white/grey/black marbles, which aren't owned
+  by a player).
 - (default, none of the above) — a normal filled disc.
+
+`board.extent: [minX, minY, w, h]` pins the SVG viewBox to a fixed window
+instead of fitting the current cells — use it for a **shrinking board** (ZÈRTZ:
+emit only the rings that still exist as `cells`; removed rings then leave a gap
+rather than the whole board rescaling between moves).
 
 Board-level optional fields: `board.lines` (cosmetic connecting lines/arcs — 2pt
 line, 3pt quadratic-Bézier arc, or N-pt polyline, each `[[x,y],…,"#colour"?]`),
