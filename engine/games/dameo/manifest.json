@@ -1,0 +1,14 @@
+{
+  "uid": "dameo",
+  "name": "Dameo",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "AGP port (Dameo, Christian Freeling 2000)",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Checkers & draughts",
+  "tags": ["square", "draughts", "freeling", "linear-movement", "modern"],
+  "bgg_url": "https://mindsports.nl/index.php/arena/dameo/65-rules",
+  "description": "Dameo (Christian Freeling, 2000): a modern 8x8 draughts variant played on ALL squares. Each side starts with 18 men in a trapezoidal formation. Men step one square forward (straight or diagonal); the signature LINEAR MOVE shifts a connected line of your own men one square forward along its axis. Men capture orthogonally (forward/back/sideways), captures are mandatory, maximal and chained with end-of-turn removal. A man reaching the far rank becomes a flying king (queen-move, rook-capture). Leave the opponent with no legal move to win."
+}

@@ -1,0 +1,14 @@
+{
+  "uid": "mak_yek",
+  "name": "Mak-yek",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "AGP (traditional Thai/Cambodian, also Apit-sodok)",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Capture / annihilation",
+  "tags": ["custodial", "thai", "traditional"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/40574/apit-sodok",
+  "description": "Mak-yek (Thai/Cambodian, also Apit-sodok) on an 8x8 board. Each player has 16 identical men, laid out on the first and third rank from each player's side. Every man moves like a rook (any number of empty squares orthogonally, no jumping). Two capture modes, both active on the mover's turn: CUSTODIAL — moving a man so one or more contiguous enemy men are flanked between it and a friendly man removes them; INTERVENTION — moving a man into the single empty square between two enemy men captures both. Moving into a sandwich is safe (capture is the mover's). Win by capturing all enemy pieces."
+}

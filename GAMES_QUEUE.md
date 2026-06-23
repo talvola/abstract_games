@@ -332,6 +332,14 @@ _All three auto, certain geometry, no renderer change._
 | Teeko | review→auto | Scarne 5×5; drop-4-then-slide, win = line-of-4 OR 2×2 square (44 win shapes, all re-derived). Browser-verified | **done → main** |
 | Squava | review→auto | 5×5 misère hybrid (placement only): four-in-a-row WINS, three-in-a-row LOSES, four-takes-precedence, full-board draw. Browser-verified | **done → main** |
 
+## Batch 17 — custodial + knight-race + linear draughts (2026-06-22)
+_All three auto, certain geometry, no renderer change._
+| Game | Lane | Anchor | Status |
+|---|---|---|---|
+| Mak-yek | review→auto | Thai/Cambodian (Apit-sodok) 8×8; rook move + BOTH active capture modes — custodial flanking AND intervention (land between two enemies takes both); annihilation win; first/third-rank setup. Browser-verified | **done → main** |
+| Jeson Mor | review→auto | Mongolian 9×9 all-knights; (1,2) leaper, capture-by-landing, win by occupy-then-VACATE the centre (4,4) (tinted); implemented directly (not ChessLike — no king/check). Browser-verified (knights + center tint + move) | **done → main** |
+| Dameo | review→auto | Freeling 8×8 all-squares draughts; the build agent cross-checked mindsports.nl and correctly implemented the faithful LINEAR move = a connected file shifts exactly ONE square (I'd mis-specified "any distance"), forward man-steps, mandatory+maximal+chained orthogonal capture w/ end-of-move removal, flying kings; canonical triangular 18-man wedge setup. Browser-verified (wedge + linear move) | **done → main** |
+
 ## Needs human (escalations)
 
 _(none)_

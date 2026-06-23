@@ -1,0 +1,14 @@
+{
+  "uid": "jeson_mor",
+  "name": "Jeson Mor",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Traditional (Mongolia) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["knights", "mongolian", "traditional", "chess-variant"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Jeson_Mor",
+  "description": "Mongolian 'Running Horses': a 9x9 chess-family race where every piece is a knight. Occupy the central square and then leave it to win."
+}
