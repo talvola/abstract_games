@@ -414,6 +414,13 @@ _All three on a side-5 hex-of-hexes, reusing the hex renderer + line/Go-liberty/
 | Slither | review→**doc-fix**→auto | Clark 2010 connection, 8×8 (size option). **Build agent caught that my brief INVERTED the rules** and built the REAL published game (no-bare-diagonal restriction + ORTHOGONAL connection win + optional king-step slide then place). Review QUEUED on an undocumented termination deviation (real Slither passes on no-move + can't draw; we use no-move=loss + ply-cap-draw to guarantee termination) — I documented it in rules.md as a flagged platform termination choice → auto. Browser-verified | **done → main** |
 | Cephalopod | review→**fix**→auto | Steere dice-capture majority, 5×5; place a die, must-capture an adjacent set summing ≤6 (die shows the sum) else a "1", board fills, dice majority wins. **Review caught a termination bug** — the ply cap (4·cells) fired BEFORE the board filled (a capture frees cells, so filling needs ~165 plies on 5×5), scoring a partial board in ~100% of games; fix-agent set is_terminal=board-full + a safe high backstop + a full-game regression. Browser-verified (dice pips render, games now fill: avg 136 moves) | **done → main** |
 
+## Batch 28 — CGT classics + a hunt (2026-06-23) · 117 games
+| Game | Lane | Anchor | Status |
+|---|---|---|---|
+| Domineering | review→auto | Berlekamp-Conway-Guy domino game; 8×8 (size option), Vertical vs Horizontal dominoes, last-to-place wins. Anchored by small-board CGT outcomes (full-search-verified: 1×1/2×1 mover loses, 2×2/3×3/4×4 first-player wins; both reviewer + build independently minimaxed). Browser-verified (V/H dominoes render distinctly) | **done → main** |
+| Col | review→auto | Vout's map-colouring game; 5×5 (size option), place your colour not orthogonally adjacent to your OWN colour, last-to-move wins. Reviewer cross-checked legal-move gen over 3000 self-play games. Browser-verified | **done → main** |
+| Hare and Hounds | review→**fix**→auto | Soldier's Game on the 11-point board (3×3 + L/R apexes, central-X diagonals); 3 hounds (no-retreat) vs 1 hare; hounds trap-win, hare escape/stall win. **Review caught the stalling rule was DEAD CODE** (the counter reset on every hare move, so it could never reach the threshold in alternating play); fix-agent made it count consecutive non-advancing HOUND moves not reset by the hare + a real alternating-play regression. Browser-verified (no-retreat hound move) | **done → main** |
+
 ## Needs human (escalations)
 
 _(none)_

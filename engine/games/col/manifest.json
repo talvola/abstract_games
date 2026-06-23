@@ -1,0 +1,17 @@
+{
+  "uid": "col",
+  "name": "Col",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Colin Vout / AGP",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Positional",
+  "tags": ["col", "combinatorial", "map-colouring", "cgt"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Col_(game)",
+  "options": {
+    "size": { "choices": [3, 4, 5, 6, 7], "default": 5, "label": "Board size" }
+  },
+  "description": "Col (Colin Vout) — a map-colouring combinatorial game on a square grid. On your turn you colour one empty cell with YOUR colour, but never on a cell orthogonally adjacent to a cell already holding your own colour (adjacency to the opponent's colour is allowed; diagonals are unrestricted). Normal play: the player with no legal move loses (last to move wins). Its dual, Snort, instead forbids adjacency to the OPPONENT's colour."
+}

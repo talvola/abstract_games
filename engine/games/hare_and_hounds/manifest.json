@@ -1,0 +1,14 @@
+{
+  "uid": "hare_and_hounds",
+  "name": "Hare and Hounds",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "traditional / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Hunt",
+  "tags": ["hare-and-hounds", "soldiers-game", "asymmetric", "hunt", "traditional"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Hare_games",
+  "description": "Asymmetric hunt (a.k.a. the Soldier's Game / Le Jeu Militaire) on the classic 11-point board. Three Hounds (seat 0) try to corner the lone Hare (seat 1). The Hounds may move forward or sideways but never back toward their own end; the Hare moves any direction. The Hare wins by slipping past to the Hounds' end, or if the Hounds stall."
+}
