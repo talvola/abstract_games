@@ -26,9 +26,10 @@ const sameCells = (a, b) => a.length === b.length && a.every((c, i) => c === b[i
 // A move is a cell path if every ">"-segment (minus any "=choice") is a cell id.
 const CELL_RE = /^-?\d+,-?\d+$/
 const isCellMove = (m) => m.split('>').every((seg) => CELL_RE.test(seg.split('=')[0]))
-// A drop move places a reserved piece: "L@c,r" (e.g. "N@4,3"). Handled via the
-// reserve tray, so it is neither a cell path nor an action button.
-const DROP_RE = /^([A-Za-z])@(-?\d+,-?\d+)$/
+// A drop move places a reserved piece: "K@c,r" — the reserve key K is a single
+// letter (Crazyhouse piece, e.g. "N@4,3") OR digit (a Gobblet cup size, "4@0,0").
+// Handled via the reserve tray, so it is neither a cell path nor an action button.
+const DROP_RE = /^([A-Za-z0-9])@(-?\d+,-?\d+)$/
 const isDropMove = (m) => DROP_RE.test(m)
 // A wall move places a wall in a groove: "Hc,r" / "Vc,r" (Quoridor). Handled by
 // clickable slots between the cells, not as a cell path or an action button.

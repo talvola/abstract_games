@@ -1,0 +1,22 @@
+{
+  "uid": "gobblet",
+  "name": "Gobblet",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Positional",
+  "tags": ["gobblet", "nesting", "n-in-a-row", "denoual"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/13/gobblet",
+  "options": {
+    "size": {
+      "choices": [4, 3],
+      "default": 4,
+      "label": "Variant",
+      "labels": { "4": "Gobblet (4x4, 3 stacks of 4)", "3": "Gobblet Gobblers (3x3, 2 stacks of 3)" }
+    }
+  },
+  "description": "Tic-tac-toe with nesting cups: get four of your colour showing on top in a line. A bigger cup gobbles (covers) a strictly-smaller one, and moving a cup uncovers whatever was beneath it. Cups come from three off-board nested stacks. The 2nd platform render-primitive: piece.size nesting."
+}
