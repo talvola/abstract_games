@@ -1,0 +1,14 @@
+{
+  "uid": "camelot",
+  "name": "Camelot",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "George S. Parker / Parker Brothers (classic) — AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Capture / annihilation",
+  "tags": ["camelot", "parker", "medieval", "canter", "jump"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Camelot_(board_game)",
+  "description": "Camelot (George S. Parker, Parker Brothers) on the distinctive 160-square cross/plus board. Each side has 4 Knights and 10 Men. Pieces move one step (plain), leap friendly pieces without capture (canter, chainable), or leap and capture enemies (jump, chainable); a Knight may combine canters then jumps in one Knight's Charge. Jumping is compulsory (World Camelot Federation rules). Win by moving two pieces into the opponent's two-square castle, or by capturing all enemy pieces."
+}

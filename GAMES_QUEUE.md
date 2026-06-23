@@ -445,6 +445,13 @@ _All auto._
 | Achi | review→auto | Ghanaian 3×3 alignment with 8 lines; FOUR pieces each (vs Tapatan's 3), place all 8 then slide to the single empty point, three-in-a-row wins. Reuses morris place+line. Browser-verified | **done → main** |
 | Pah Tum | review→auto | ancient grid run-scoring; 7×7 (9×9 option) with a fixed symmetric set of BLOCKED cells, place until full, score escalating runs of ≥3 (3→3,4→10,5→25,6→56,7→88), most points wins. Blocked cells via `board.tints`, running score in caption. Browser-verified | **done → main** |
 
+## Batch 32 — CGT + medieval + Kenyan alignment (2026-06-23) · 129 games
+| Game | Lane | Anchor | Status |
+|---|---|---|---|
+| Clobber | review→auto | Albert/Grossman/Nowakowski CGT game; checkerboard-filled grid (5×6 default), move onto an orthogonally-adjacent ENEMY (clobber it), last-to-move wins. Small-board outcomes independently minimaxed (1×2/1×3/2×2/3×3 P1-win, 2×3 P2-win). Browser-verified (`0,0x0,1`) | **done → main** |
+| Camelot | review→**fix**→auto | Parker Bros medieval on the 160-square cross board + 2 castles; 4 knights+10 men/side, PLAIN/CANTER/JUMP + Knight's Charge, win by 2-men-into-enemy-castle or annihilation. Build agent fixed my brief (jumping is COMPULSORY per WCF, not optional). **Review caught jump-continuation not enforced** (premature-stop jumps offered as legal) → fixed to emit only continuation-maximal chains (branching preserved) + regression. Browser-verified (cross board + castles render, `C6-C5`) | **done → main** |
+| Shisima | review→auto | Kenyan octagon (8 rim + centre, rim ring + 4 diameters); 3 pieces each, slide to adjacent empty point, three-in-a-row THROUGH THE CENTRE wins. Reuses tapatan slide+line on the octagon graph. Browser-verified (octagon board, `point 2->point 3`) | **done → main** |
+
 ## Needs human (escalations)
 
 _(none)_

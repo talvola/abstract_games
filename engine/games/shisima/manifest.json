@@ -1,0 +1,14 @@
+{
+  "uid": "shisima",
+  "name": "Shisima",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "N-in-a-row",
+  "tags": ["shisima", "kenya", "three-in-a-row", "traditional"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Shisima",
+  "description": "Shisima, a traditional Kenyan three-in-a-row sliding game. The board is an octagon of 8 rim points plus a central 'body of water'. Each player has three pieces; on a turn you slide one piece along a line to an adjacent empty point (no captures). Line up your three pieces along a diameter through the centre to win."
+}

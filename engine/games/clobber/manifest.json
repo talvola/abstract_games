@@ -1,0 +1,27 @@
+{
+  "uid": "clobber",
+  "name": "Clobber",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Albert, Grossman, Nowakowski & Wolfe (2001) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Capture / annihilation",
+  "tags": ["clobber", "combinatorial", "cgt", "square"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Clobber",
+  "options": {
+    "size": {
+      "choices": ["5x6", "6x5", "4x5", "8x8"],
+      "default": "5x6",
+      "label": "Board size",
+      "labels": {
+        "5x6": "5×6 (default)",
+        "6x5": "6×5",
+        "4x5": "4×5",
+        "8x8": "8×8"
+      }
+    }
+  },
+  "description": "Clobber (Albert, Grossman, Nowakowski & Wolfe, 2001) — a combinatorial game. The board starts COMPLETELY FILLED in a checkerboard of the two players' stones. On a turn you pick one of your stones and move it onto an orthogonally adjacent OPPONENT stone, clobbering (removing) it. There are no other moves and no draws. Normal play: the player who cannot move loses (last to move wins). Every move removes exactly one stone, so play always terminates."
+}
