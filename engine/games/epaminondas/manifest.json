@@ -1,0 +1,14 @@
+{
+  "uid": "epaminondas",
+  "name": "Epaminondas",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Robert Abbott (1975) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Positional",
+  "tags": ["phalanx", "war", "abbott"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/2926/epaminondas",
+  "description": "A war game of phalanxes. A phalanx is a straight line of friendly pieces; it slides 1 up to its own length along its axis. A strictly longer phalanx captures a shorter enemy phalanx head-on. Win by 'crossing' onto the opponent's back row with more pieces than they hold on yours, a lead they cannot equalize on their reply."
+}

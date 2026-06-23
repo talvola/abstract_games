@@ -1,0 +1,22 @@
+{
+  "uid": "halma",
+  "name": "Halma",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "George Howard Monks (1883) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Positional",
+  "tags": ["race", "jump", "classic", "halma"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/2125/halma",
+  "options": {
+    "size": {
+      "choices": [8, 16],
+      "default": 8,
+      "label": "Board size",
+      "labels": { "8": "8x8 (10 pieces, snappy)", "16": "16x16 (19 pieces, classic)" }
+    }
+  },
+  "description": "Halma (1883) -- the jump-race game that inspired Chinese Checkers. Each player's pieces fill a triangular camp in one corner; player 0 and player 1 sit in diagonally opposite corners. On your turn you either STEP one piece to an adjacent empty square, or JUMP over a single adjacent piece (friend or foe -- nothing is captured) to the empty square beyond, chaining further jumps as far as you like and stopping where you choose. You win when the OPPONENT's starting camp is entirely occupied AND at least one occupant is your own piece, so an enemy 'squatter' cannot spoil your win; once a piece reaches the target camp it may not leave it. A no-progress ply cap forces a draw, guaranteeing termination."
+}

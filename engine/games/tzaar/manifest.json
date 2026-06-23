@@ -1,0 +1,14 @@
+{
+  "uid": "tzaar",
+  "name": "TZAAR",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Stacking",
+  "tags": ["stacking", "gipf", "burm", "capture"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/32533/tzaar",
+  "description": "TZAAR (Kris Burm, GIPF project #4): a stacking capture game on a hexagonal board of hexagons (side 5, 60 playable cells, centre empty). Each player has three piece types of differing importance — Tzaar > Tzarra > Tott. Pieces slide in a straight line over empty cells to the first occupied cell (never jumping). A turn is TWO actions: a mandatory capture (slide onto an enemy stack of height ≤ yours, replacing it), then either a second capture or a stacking move that slides onto a friendly stack to combine them. You lose if you run out of any one of the three types, or cannot capture."
+}
