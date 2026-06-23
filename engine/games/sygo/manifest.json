@@ -1,0 +1,22 @@
+{
+  "uid": "sygo",
+  "name": "Sygo",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "AGP",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Capture / annihilation",
+  "tags": ["sygo", "freeling", "othello", "go", "flip", "square"],
+  "bgg_url": "https://www.mindsports.nl/index.php/arena/sygo/616-sygo-rules",
+  "options": {
+    "size": {
+      "choices": [9, 13, 19],
+      "default": 19,
+      "label": "Board size",
+      "labels": { "9": "9x9", "13": "13x13", "19": "19x19 (standard)" }
+    }
+  },
+  "description": "Sygo (Christian Freeling) — a Go/Othello hybrid on a Go board, starting empty. Place a stone on any vacant point; it uses Go's liberty capture, but a captured enemy group is REVERSED to your colour (othelloanian capture) instead of being removed. Suicide is illegal unless the move reverses an enemy group and leaves your group alive. The game ends on two consecutive passes; the larger territory (stones plus surrounded vacant points) wins, equal is a draw. White moves first."
+}

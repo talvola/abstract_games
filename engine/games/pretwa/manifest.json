@@ -1,0 +1,14 @@
+{
+  "uid": "pretwa",
+  "name": "Pretwa",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Capture / annihilation",
+  "tags": ["pretwa", "india", "concentric", "circular", "traditional"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Pretwa",
+  "description": "Pretwa, a traditional Indian (Bihari) draughts-family game on three concentric circles crossed by three diameters (six spokes from a centre point). Step a man along a ring arc or a spoke to an adjacent empty point, or jump an adjacent enemy (compulsory, chaining) to the point beyond. Reduce the opponent below three men, annihilate them, or leave them with no move to win."
+}

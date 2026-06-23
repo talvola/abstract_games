@@ -151,7 +151,12 @@ line, 3pt quadratic-Bézier arc, or N-pt polyline, each `[[x,y],…,"#colour"?]`
 loops), `board.tints` (`{cellId: "#colour"}` terrain fills), `board.walls`,
 `reserve` (off-board drop trays), `board.cards`. For a points-and-lines board
 (Morris/alquerque/YINSH) use `"type": "polygons"` with explicit cell vertices +
-`board.lines`.
+`board.lines`. **`polygons` cells format (exact — the renderer crashes otherwise):**
+`board.cells` MUST be a **list** of `{"id": "<cellId>", "points": [[x,y], …]}`
+objects — NOT a dict keyed by id, and the vertex key is `points` (not `polygon`).
+`board.lines`/`board.overlay` are lists of point-lists (each an N-point polyline)
+in the same coordinate space as the cell vertices. (Renderer-format bugs are NOT
+caught by `validate`/selftest — only by opening the game in the browser.)
 
 ### Move notation & click-to-move
 

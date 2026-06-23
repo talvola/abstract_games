@@ -1,0 +1,14 @@
+{
+  "uid": "awithlaknannai",
+  "name": "Awithlaknannai Mosona",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Capture / annihilation",
+  "tags": ["awithlaknannai", "zuni", "alquerque", "fighting-serpents", "traditional"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Awithlaknannai_Mosona",
+  "description": "A Zuni 'fighting serpents' game in the Alquerque family, played on an elongated serpent lattice of 25 points (a strip of triangles). Step along a line, or jump an adjacent enemy draughts-style; captures are compulsory and chain. Capture all the enemy to win."
+}

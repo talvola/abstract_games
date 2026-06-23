@@ -459,6 +459,14 @@ _All auto._
 | Five Field Kono | review→auto | Korean 5×5 race; 7 pieces each (back row + 2 outer second-row), move one step DIAGONALLY to empty, first to occupy the enemy's home set wins. Browser-verified (`0,0→1,1`) | **done → main** |
 | Pong Hau K'i | review→auto | Chinese/Korean 5-point blocking game; canonical 5-node/7-edge graph (centre↔4 corners, bottom edge, NO top edge), 2 pieces each, slide to the single empty point, no-move loss; perfect-play DRAW value confirmed. Board via points+`board.lines`. Browser-verified (`tl->c`) | **done → main** |
 
+## Batch 34 — fighting-serpents + Othello-Go + circular (2026-06-23) · 135 games
+_Two render-format bugs caught only in-browser (validate/selftest can't see the JS renderer) → SPEC.md now documents the exact `polygons` cells format._
+| Game | Lane | Anchor | Status |
+|---|---|---|---|
+| Awithlaknannai Mosona | review→auto→**render-fix** | Zuni "fighting serpents" — 25-point elongated serpent lattice, 12v12, slide or mandatory chained jump-capture (Alquerque-style), capture-all win. Auto on logic; **browser-verify caught the render crash** (cells used key `polygon` not `points`) + a cosmetic describe_move mislabel — both fixed. Browser-verified (serpent board, `7,2-8,1` step / `9,0x7,2` capture) | **done → main** |
+| Sygo | review→auto | Freeling's Othello/Go hybrid — build agent corrected my premise (it's GO with "othelloanian capture": a group losing its last liberty FLIPS to the captor's colour, not removed); empty board, no-suicide, territory majority. Single-stone-per-turn simplification (vs the grow-all turn) flagged. Browser-verified (`W:E15`) | **done → main** |
+| Pretwa | review→**fix**→auto→**render-fix** | Indian concentric-circle board (3 rings × 6 spokes + centre = 19 pts), 9v9, step/chained-jump-capture. **Review caught win/draw logic** (win at opp≤3 not ≤2; no-move resolves by piece-majority not auto-loss) → fixed. **Browser-verify caught the render crash** (cells emitted as a dict not a list) → fixed. Browser-verified (concentric board, `1,0-0,0`) | **done → main** |
+
 ## Needs human (escalations)
 
 _(none)_
