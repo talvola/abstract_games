@@ -1,0 +1,15 @@
+{
+  "uid": "slither",
+  "name": "Slither",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Corey Clark (2010) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Connection",
+  "tags": ["slither", "connection", "clark", "modern", "square"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/75957/slither",
+  "options": { "size": { "choices": [6, 8, 10, 12], "default": 8, "label": "Board size" } },
+  "description": "A modern connection game. Each turn you may OPTIONALLY slide one of your stones one step (a chess king's move) to an adjacent empty intersection, then MUST place a new stone. At the end of your turn you may have no 'bare' diagonal contacts — every pair of your diagonally-adjacent stones must share a common orthogonal like-coloured neighbour; the slide exists to let you reshape around this. Black connects top↔bottom, White connects left↔right by an unbroken ORTHOGONAL chain of their stones."
+}

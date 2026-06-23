@@ -1,0 +1,21 @@
+{
+  "uid": "cephalopod",
+  "name": "Cephalopod",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Mark Steere (impl. AGP)",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Capture / annihilation",
+  "tags": ["cephalopod", "dice", "steere", "majority"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/22790/cephalopod",
+  "options": {
+    "size": {
+      "choices": [3, 5, 7],
+      "default": 5,
+      "label": "Board size"
+    }
+  },
+  "description": "Cephalopod (Mark Steere, 2006), a dice-stacking-by-capture majority game on a 5x5 grid. Each turn you add one die of your colour to a vacant square. If two, three, or four of the dice orthogonally adjacent to your placement have a pip sum of six or less, you MUST capture: choose such a subset (any qualifying subset of two or more adjacent dice summing to <=6), remove those dice, and your new die shows that pip sum. Otherwise the new die simply shows a one. There is no actual randomness: every die value is determined by play. When the board is completely full, the player owning the majority of the dice wins; on an odd-celled board no tie is possible."
+}

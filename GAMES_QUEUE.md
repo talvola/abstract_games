@@ -407,6 +407,13 @@ _All three on a side-5 hex-of-hexes, reusing the hex renderer + line/Go-liberty/
 | Pentalath | review→auto | Browne (Ndengrod): 5-in-a-row on a hexhex WITH Go-style group capture (zero-liberty enemy groups removed, no suicide, edge gives no liberty — verified vs cambolbro.com); reuses the Go liberty core. Browser-verified | **done → main** |
 | Catchup | review→auto | Nick Bentley: place 1 (first move) then 2, or 3 when catching up (opponent's last turn grew/tied the largest group AND is ≥ yours); fill the board, score = largest connected group (tie-break next-largest…). Browser-verified | **done → main** |
 
+## Batch 27 — custodial + connection + dice (2026-06-23) · 114 games
+| Game | Lane | Anchor | Status |
+|---|---|---|---|
+| Seega | review→auto | Egyptian custodial-capture; 5×5 (5/7/9 option), 2-stones-per-turn placement w/ empty centre, then orthogonal single-step movement, active custodial capture, safe centre, reduce-opponent-below-2 / blockade win. Three source-ambiguities (first mover, single-move, blockade=loss) flagged in rules.md. Browser-verified (placement + marked centre) | **done → main** |
+| Slither | review→**doc-fix**→auto | Clark 2010 connection, 8×8 (size option). **Build agent caught that my brief INVERTED the rules** and built the REAL published game (no-bare-diagonal restriction + ORTHOGONAL connection win + optional king-step slide then place). Review QUEUED on an undocumented termination deviation (real Slither passes on no-move + can't draw; we use no-move=loss + ply-cap-draw to guarantee termination) — I documented it in rules.md as a flagged platform termination choice → auto. Browser-verified | **done → main** |
+| Cephalopod | review→**fix**→auto | Steere dice-capture majority, 5×5; place a die, must-capture an adjacent set summing ≤6 (die shows the sum) else a "1", board fills, dice majority wins. **Review caught a termination bug** — the ply cap (4·cells) fired BEFORE the board filled (a capture frees cells, so filling needs ~165 plies on 5×5), scoring a partial board in ~100% of games; fix-agent set is_terminal=board-full + a safe high backstop + a full-game regression. Browser-verified (dice pips render, games now fill: avg 136 moves) | **done → main** |
+
 ## Needs human (escalations)
 
 _(none)_

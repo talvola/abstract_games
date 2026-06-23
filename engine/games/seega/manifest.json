@@ -1,0 +1,21 @@
+{
+  "uid": "seega",
+  "name": "Seega",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "AGP (traditional Egyptian/Nubian)",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Capture / annihilation",
+  "tags": ["seega", "custodial", "egyptian", "traditional", "square"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/11347/seega",
+  "options": {
+    "size": {
+      "choices": [5, 7, 9],
+      "default": 5,
+      "label": "Board size"
+    }
+  },
+  "description": "Seega, a traditional Egyptian/Nubian custodial-capture game. Phase 1: players alternately place two stones per turn on any empty cells except the centre, until the board is full but the centre. Phase 2: players step one stone orthogonally into an adjacent empty cell, capturing enemy stones flanked between two friendly stones (the centre is a safe square). Win by reducing the opponent below two stones or blockading them."
+}
