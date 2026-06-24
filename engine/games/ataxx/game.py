@@ -156,6 +156,19 @@ class Ataxx(Game):
         # infection: flip every adjacent opponent piece
         for fc in _flip_neighbours(board, dst, s.to_move):
             board[fc] = s.to_move
+        # Elimination: if this move WIPED OUT the opponent (they had pieces
+        # before and none after), the survivor auto-fills the board (the
+        # arcade-Ataxx / Hexxagon "fills the board automatically" rule). On the
+        # holeless 7x7 the survivor could fill it by play anyway, so this only
+        # makes the win instant; it matters for hole boards where an unreachable
+        # empty region would otherwise stay empty. (Guarded on "had pieces
+        # before" so it never fires from a synthetic one-colour position.)
+        opp = 1 - s.to_move
+        opp_before = any(p == opp for p in s.board.values())
+        if opp_before and not any(p == opp for p in board.values()):
+            for cc in range(N):
+                for rr in range(N):
+                    board.setdefault((cc, rr), s.to_move)
         return AtaxxState(board=board, to_move=1 - s.to_move, ply=s.ply + 1)
 
     def _counts(self, s: AtaxxState):
