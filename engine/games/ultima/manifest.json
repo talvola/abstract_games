@@ -1,0 +1,14 @@
+{
+  "uid": "ultima",
+  "name": "Ultima (Baroque Chess)",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Robert Abbott (1962); AGP implementation",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "chess-variant", "capture"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Baroque_chess",
+  "description": "Ultima (Baroque Chess), by Robert Abbott (1962). The chess back rank is replaced by exotic Ultima pieces; almost every piece MOVES like a chess queen but CAPTURES by a unique method: the Withdrawer captures by fleeing, the Coordinator by triangulating with its King, the Long Leaper by jumping, the Pincer Pawn by custodial flanking, the Immobilizer by freezing adjacent enemies (it never captures), and the Chameleon by mimicking each victim's own capture method. Win by capturing the enemy King. White (player 0) moves first."
+}
