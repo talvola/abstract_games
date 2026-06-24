@@ -1,0 +1,14 @@
+{
+  "uid": "martian_chess",
+  "name": "Martian Chess",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Andrew Looney (Looney Labs / Icehouse) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "movement", "capture", "scoring", "abstract", "icehouse", "looney-pyramids"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/19803/martian-chess",
+  "description": "Martian Chess (Andrew Looney, an Icehouse/Looney-Pyramids game) on a 4x8 board split into two 4x4 zones by a canal. Color means nothing: you move whatever pieces are currently in YOUR zone. Pawns step one square diagonally, Drones slide 1-2 orthogonally, Queens slide any distance orthogonally or diagonally. Capturing a piece scores its value (Pawn 1, Drone 2, Queen 3) and crossing the canal hands your piece to the opponent. The game ends the instant one zone is empty; highest score wins."
+}
