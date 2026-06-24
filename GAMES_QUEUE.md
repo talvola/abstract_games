@@ -494,6 +494,13 @@ _Erik's overnight queue item #2._
 |---|---|---|---|
 | Hexxagon (3-player) | build→independent-probe-verify→browser | Separate package `hexxagon3` (num_players fixed=3). Same side-5 hexhex − 3 holes; 6 corners owned P0,P1,P2,P0,P1,P2 (each player 2 opposite corners, 2-2-2 start). Grow/jump/holes identical; infection flips ANY adjacent opponent (either other colour); turn cycles 0→1→2 skipping eliminated/stuck; last survivor auto-fills+wins; returns = 3-vector matched to Rolit (sole leader +1, others −1, lead-tie=0). Reuses hexxagon geometry + Rolit multi-seat returns/cycling. Probe-verified (corner alternation, 3-way infection, skip-eliminated, last-survivor [1,−1,−1]). **Browser-verified** (3 distinct seat colours Red/Blue/Green, alternating corners, grow → turn advances Red→Blue, 3-2-2). Pure-stdlib selftest | **done → main** |
 
+## Batch 35 — GAME_BACKLOG mining, famous Tier-0 (2026-06-24) · 141 games
+_Erik's overnight queue item #4: work through GAME_BACKLOG.md with the same gate. Targeting famous/distinct unbuilt Tier-0 games._
+| Game | Lane | Anchor | Status |
+|---|---|---|---|
+| Abalone | build→independent-verify(**MERGE**)→browser | The 1987 marble-pusher. Side-5 hexhex (61 cells), 14 marbles/side STANDARD start (5+6+3 wedge, point-symmetric — not Belgian Daisy). In-line 1/2/3 group slides + SUMITO push (2v1/3v1/3v2, empty/off-board behind → edge ejection) + 2/3 broadside; win = eject 6. ANCHOR: **opening = 44 moves** (published branching factor). Independent verify MERGE (sumito + edge-eject + illegal-pushes-absent + group-integrity + broadside + win-at-6 all probed). Browser-verified (standard position on the hexhex, single-marble move). KNOWN UX: 2/3-marble GROUP moves have a clunky multi-cell click path (documented, like PÜNCT/Tsoro). Reuses Havannah hex render; no new primitive | **done → main** |
+| Chess960 (Fischer Random) | build→probe-verify→browser | Randomized back rank (Scharnagl id→rank, stored in C9State.homes, has_randomness) with bishops-opposite / king-between-rooks / mirrored; new Chess960Castling (by king/rook FINAL squares, KING-CAPTURES-OWN-ROOK input). ANCHOR: std chess = #518 → perft 20/400/8902/197281 (move-gen unchanged); build agent's differential test = same reachable positions as `chess` over 60×45 incl. castling. Probe-verified 200-seed constraints + castling on non-standard ranks. Browser-verified (randomized board renders + plays; castling headless-verified). On agp.chesslike | **done → main** |
+
 ## Needs human (escalations)
 
 _(none)_
