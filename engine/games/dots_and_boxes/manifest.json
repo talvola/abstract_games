@@ -1,0 +1,28 @@
+{
+  "uid": "dots_and_boxes",
+  "name": "Dots and Boxes",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Territory",
+  "tags": ["square", "paper-and-pencil", "edges", "territory", "classic"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Dots_and_Boxes",
+  "options": {
+    "size": {
+      "choices": ["3x3", "4x4", "5x5", "6x6", "5x4"],
+      "default": "5x5",
+      "label": "Board size (boxes)",
+      "labels": {
+        "3x3": "3x3 boxes (beginner)",
+        "4x4": "4x4 boxes",
+        "5x5": "5x5 boxes (standard)",
+        "6x6": "6x6 boxes (large)",
+        "5x4": "5x4 boxes"
+      }
+    }
+  },
+  "description": "Dots and Boxes (Edouard Lucas, 1889, \"La Pipopipette\"): players take turns drawing a single line between two adjacent dots. Complete the fourth side of a box to claim it AND take another turn. Most boxes wins; equal boxes is a draw."
+}
