@@ -1,0 +1,14 @@
+{
+  "uid": "three_musketeers",
+  "name": "Three Musketeers",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Haar Hoolim / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Hunt",
+  "tags": ["square", "asymmetric", "hunt", "abstract"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/21861/three-musketeers",
+  "description": "Asymmetric hunt on a 5x5 board. The three Musketeers (seat 0) must capture an adjacent enemy on every turn; the 22 Cardinal's men (seat 1) shuffle into empty squares. The enemy wins by herding all three Musketeers into one row or column; the Musketeers win if, on their turn, no capture is available. Musketeers move first."
+}
