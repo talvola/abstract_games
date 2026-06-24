@@ -1,0 +1,14 @@
+{
+  "uid": "backgammon",
+  "name": "Backgammon",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": true,
+  "hidden_info": false,
+  "category": "Race",
+  "tags": ["race", "dice", "roll-and-move", "classic", "tables"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/2397/backgammon",
+  "description": "Backgammon: the classic race-and-block dice game. Roll two dice and move your 15 checkers around the 24-point board into your home quadrant, then bear them off; first to bear off all 15 wins. Land on a lone enemy checker (a blot) to send it to the bar, where it must re-enter before its owner can play anything else. Doubles let you move four times; you must use both dice if you legally can. (Single-game version: no doubling cube.)"
+}
