@@ -1,0 +1,14 @@
+{
+  "uid": "almost_chess",
+  "name": "Almost Chess",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "AGP",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "chess-variant", "fairy"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Almost_Chess",
+  "description": "Almost Chess (Ralph Betza, 1977): standard 8x8 chess, except each player's queen is replaced by a Chancellor (a.k.a. Marshall/Empress) that moves as a Rook OR a Knight (no diagonals). The Chancellor starts on the queen's square. Castling, en passant, pawn double-step, check/checkmate/stalemate and all standard draws apply; pawns promote to a Chancellor / Rook / Bishop / Knight. White (player 0) moves first."
+}
