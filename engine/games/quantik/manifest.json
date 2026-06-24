@@ -1,0 +1,14 @@
+{
+  "uid": "quantik",
+  "name": "Quantik",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Nouri Khalifa (2019), Gigamic / AGP",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Positional",
+  "tags": ["quantik", "gigamic", "abstract", "logic", "placement", "khalifa"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/286295/quantik",
+  "description": "Quantik (Nouri Khalifa, Gigamic 2019). A 4x4 board split into four 2x2 zones. Each player has 8 pieces: two each of four shapes. On your turn you place one of your pieces on an empty cell, but you may NOT place a shape in a row, column, or zone where your OPPONENT already has that same shape (your own same shape is fine). The player who places the fourth DIFFERENT shape completing any row, column, or zone wins immediately, regardless of the pieces' colours. A player with no legal placement loses."
+}
