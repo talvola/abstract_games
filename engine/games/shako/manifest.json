@@ -1,0 +1,14 @@
+{
+  "uid": "shako",
+  "name": "Shako",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Jean-Louis Cazaux (1990) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "variant", "cannon", "10x10"],
+  "bgg_url": "https://www.chessvariants.com/rules/shako",
+  "description": "Shako (Jean-Louis Cazaux, 1990), a 10x10 chess variant. The full FIDE army plus two extra piece types per side: the Cannon (the Xiangqi cannon — moves like a rook along empty lines, but captures only by jumping over exactly one screen of either colour onto the enemy beyond) and the Elephant (the medieval Ferz+Alfil — moves one or two squares diagonally, leaping the intermediate square). Cannons sit in the rank-1 corners, elephants in the rank-2 corners; the rest of the back rank is E R N B Q K B N R E with the queen on e and king on f. Pawns start on the third rank with a double-step and en passant, and promote on the far rank to Queen, Rook, Bishop, Knight, Cannon or Elephant. Castling follows orthodox rules with the f-file king. Checkmate wins; stalemate, the fifty-move rule, threefold repetition and a hard ply cap draw."
+}
