@@ -1,0 +1,14 @@
+{
+  "uid": "dunsany_chess",
+  "name": "Dunsany's Chess",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "AGP",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "variant", "asymmetric"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Dunsany%27s_chess",
+  "description": "Lord Dunsany's asymmetric variant (1942). Black has the standard 16-piece chess army; White has no king and instead fields 32 pawns filling ranks 1-4. Black moves first. Black wins by capturing all 32 white pawns; White wins by checkmating Black's king. Only Black's pawns get the initial two-square move; White's pawns never double-step. White has no king, so it is never in check."
+}
