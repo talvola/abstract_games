@@ -1,0 +1,14 @@
+{
+  "uid": "cylinder_chess",
+  "name": "Cylinder Chess",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "AGP",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "cylinder", "wrap"],
+  "bgg_url": "https://www.chessvariants.com/boardrules.dir/cylinder.html",
+  "description": "Standard chess on a board that wraps horizontally: the a-file and h-file are joined into a vertical cylinder, so rooks, bishops, queens and knights can slide or leap off one edge and reappear on the other (ranks do not wrap). All other rules are standard: castling, en passant, pawn double-step and promotion to Q/R/B/N, check, checkmate, stalemate, and the fifty-move / threefold-repetition / insufficient-material draws. White (player 1) moves first."
+}
