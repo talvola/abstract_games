@@ -1,0 +1,14 @@
+{
+  "uid": "sittuyin",
+  "name": "Sittuyin",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "AGP",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "burmese", "myanmar", "setup-phase", "drops"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Sittuyin",
+  "description": "Sittuyin (Burmese chess) on an 8x8 board. Only the pawns (Ne) start on the board, in a staggered split formation; the players then alternately DEPLOY their other eight pieces (King, General, 2 Chariots, 2 Elephants, 2 Horses) onto their own half (chariots on the back rank). The General (Sit-ke) is a ferz (one step diagonally); the Elephant (Sin) moves one step diagonally or one step straight forward; the Horse is a knight and the Chariot a rook. The signature 'sit-tu' promotion lets a pawn on one of the two long diagonals (in the enemy half) promote to a General -- but only if that player's General has already been captured. Win by checkmate; stalemate is a draw. White (player 0) deploys and moves first."
+}
