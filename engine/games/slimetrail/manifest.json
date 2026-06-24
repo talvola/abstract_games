@@ -1,0 +1,26 @@
+{
+  "uid": "slimetrail",
+  "name": "Slimetrail",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Bill Taylor (1992) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Race",
+  "tags": ["square", "race", "pursuit", "connection", "abstract"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/31467/slimetrail",
+  "options": {
+    "size": {
+      "choices": ["7", "8", "9"],
+      "default": "8",
+      "label": "Board size (N x N)",
+      "labels": {
+        "7": "7 x 7",
+        "8": "8 x 8",
+        "9": "9 x 9"
+      }
+    }
+  },
+  "description": "Slimetrail (Bill Taylor, 1992). A single shared neutral marker (the snail) sits on an N x N board with two goal cells in opposite corners. Players alternate sliding the marker one king-step to an adjacent empty cell; the cell it leaves turns to 'slime' and can never be entered again. Whoever moves the marker onto a goal makes the owner of THAT goal win (player 0 = bottom-left, player 1 = top-right). A player who cannot move loses."
+}
