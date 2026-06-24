@@ -1,0 +1,14 @@
+{
+  "uid": "spartan_chess",
+  "name": "Spartan Chess",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Steven Streetman (2010); platform port AGP",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "variant", "asymmetric", "royal"],
+  "bgg_url": "https://www.chessvariants.com/rules/spartan-chess",
+  "description": "Spartan Chess (Steven Streetman, 2010): an asymmetric-army variant. The Persians (White) field an orthodox FIDE army with one King; the Spartans (Black) field two Kings and four unique pieces -- the General (rook + one diagonal step), Warlord (bishop + knight), Captain (one or two squares orthogonally, jumping), Lieutenant (one or two squares diagonally jumping, plus a non-capturing sideways step) and the Hoplite, a pawn that steps diagonally forward and captures straight ahead. While the Spartan has two Kings they are immune from ordinary check: only a simultaneous attack on BOTH Kings (duple-check) is binding. The Persian may capture a Spartan King as an ordinary capture; a Hoplite reaching the last rank may regain a second King if only one remains. Persians castle and may capture en passant; Spartans do neither. White moves first."
+}
