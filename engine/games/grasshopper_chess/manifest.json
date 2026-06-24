@@ -1,0 +1,14 @@
+{
+  "uid": "grasshopper_chess",
+  "name": "Grasshopper Chess",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "AGP",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "fairy", "grasshopper", "hopper"],
+  "bgg_url": "https://www.chessvariants.com/diffmove.dir/grasshopper.html",
+  "description": "Standard 8x8 chess plus a full extra rank of grasshoppers in front of each side's pawns (White on rank 3, Black on rank 6). The grasshopper moves along the eight queen lines but only by hopping over exactly one piece (the hurdle, of either colour) to land on the square immediately beyond it -- empty to move, enemy to capture, friendly or off-board to be blocked; with no hurdle on a line it has no move there. Grasshoppers give check the same way. Everything else is orthodox chess: pawns, castling, en passant, promotion, check / checkmate / stalemate and the usual draws. White (player 0) moves first."
+}
