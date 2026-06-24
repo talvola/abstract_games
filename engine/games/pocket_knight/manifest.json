@@ -1,0 +1,14 @@
+{
+  "uid": "pocket_knight",
+  "name": "Pocket Knight Chess",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "drops"],
+  "bgg_url": "https://www.chessvariants.com/diffsetup.dir/pocket.html",
+  "description": "Standard chess where each player holds one extra 'pocket' knight that may be dropped, once, onto any empty square instead of a normal move."
+}
