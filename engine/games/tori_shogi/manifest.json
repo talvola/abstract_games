@@ -1,0 +1,14 @@
+{
+  "uid": "tori_shogi",
+  "name": "Tori Shogi",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "drops", "shogi", "birds"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Tori_shogi",
+  "description": "Tori Shogi (Bird Shogi, 1828): a 7x7 Shogi variant where every piece is a bird. Captured birds switch sides and drop back into play; Swallows and Falcons promote in the far two ranks. Features the asymmetric Left and Right Quails and a Pheasant that jumps two squares forward."
+}
