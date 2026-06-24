@@ -1,0 +1,22 @@
+{
+  "uid": "storisende",
+  "name": "Storisende",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Christian Freeling (game); ported by the Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Territory",
+  "tags": ["hex", "territory", "stacking", "group", "freeling"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/255427/storisende",
+  "options": {
+    "base": {
+      "choices": [4, 5, 6],
+      "default": 4,
+      "label": "Board size (hexhex base)",
+      "labels": { "4": "Base 4 (37 cells)", "5": "Base 5 (61 cells)", "6": "Base 6 (91 cells)" }
+    }
+  },
+  "description": "Christian Freeling's group/territory game on a hexagonal board. Move stackable men in straight lines; vacated virgin cells crystallise into green territory or a dark Wall, self-dividing the board. Control the most territory to win."
+}
