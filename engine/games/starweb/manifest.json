@@ -1,0 +1,17 @@
+{
+  "uid": "starweb",
+  "name": "Starweb",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Christian Freeling (2017) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Connection",
+  "tags": ["starweb", "freeling", "hex", "connection", "scoring", "territory", "modern"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/232943/starweb",
+  "options": {
+    "pie": { "choices": [true, false], "default": true, "label": "Pie / swap rule" }
+  },
+  "description": "Christian Freeling's drawless connection-scoring game on a 217-cell 'web' board (a hexagon-of-hexes of side 7 with a triangular bump on each side) that has 18 special STAR cells. Players alternately place a stone or pass; the game ends on two successive passes. Each of your connected groups scores the triangular value 1+2+...+n of the n stars it contains (1, 3, 6, 10, ...). Most points wins; an equal score goes to the second player."
+}
