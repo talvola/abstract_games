@@ -1,0 +1,14 @@
+{
+  "uid": "gess",
+  "name": "Gess",
+  "version": "1.0.0",
+  "author": "The Archimedeans, Cambridge (1994) — AGP port",
+  "engine_api": "1",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["gess", "go", "chess", "hybrid", "footprint", "ring", "square"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Gess",
+  "description": "Gess (The Archimedeans, Cambridge, 1994) — a Go+chess hybrid played with Go stones on an 18x18 area inside a 20x20 grid. There are no fixed pieces: each turn you pick any 3x3 'footprint' of your own stones (no enemy inside, at least one stone around the center). Occupied outer cells of the footprint enable movement in their compass direction (corner=diagonal, edge=orthogonal); an occupied center gives unlimited range, an empty center caps it at 3. The footprint slides as a rigid block until it hits a stone, capturing everything in its destination square (self-capture included); stones shoved onto the border vanish. A 'ring' is a 3x3 of your stones around an empty center; lose all your rings at the end of your turn and you lose."
+}
