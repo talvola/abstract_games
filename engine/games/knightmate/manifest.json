@@ -1,0 +1,14 @@
+{
+  "uid": "knightmate",
+  "name": "Knightmate",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "AGP",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "chess variant", "royal knight"],
+  "bgg_url": "https://www.chessvariants.com/diffobjective.dir/knightmate.html",
+  "description": "Knightmate (a.k.a. Mate, by Bruce Zimov, 1972): chess in which the royal piece is a Knight and the knights are replaced by non-royal king-moving Commoners. The Royal Knight starts on the king's square (e1/e8) and you win by checkmating it; Commoners start on the knights' squares and can be captured freely. Castling, en passant, double-step and the usual draws all apply; pawns promote to Q/R/B or a Commoner, but not to a knight. White (player 0) moves first."
+}
