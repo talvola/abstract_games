@@ -1,0 +1,15 @@
+{
+  "uid": "conhex",
+  "name": "ConHex",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Michail Antonow (2002) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "pie": true,
+  "category": "Connection",
+  "tags": ["connection", "placement", "drawless", "pie", "antonow"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/10989/conhex",
+  "description": "Michail Antonow's two-layer connection game on a board of 41 cells and 69 placement points. Each turn a player pegs an empty point; when you own at least half of a cell's bordering points you claim that cell permanently. Win by linking your two opposite sides with a chain of cells you own (Red top–bottom, Yellow left–right). The four corner cells belong to both their sides; draws are impossible. Yellow may swap on its first turn (pie rule)."
+}
