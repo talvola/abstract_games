@@ -1,0 +1,14 @@
+{
+  "uid": "irensei",
+  "name": "Irensei",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "N-in-a-row",
+  "tags": ["square", "alignment", "stones", "go", "capture", "19x19"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/48871/irensei",
+  "description": "Irensei (囲連星) is a Go/Gomoku hybrid on a 19×19 Go board. Players alternately place stones; the goal is an unbroken line of seven, but every stone of that line must lie inside the central 15×15 area (the outer two lines on each side never count). Black must make exactly seven and loses on an overline of eight or more; White wins with seven or more. Go captures, suicide and ko rules also apply."
+}
