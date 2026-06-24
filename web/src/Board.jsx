@@ -84,10 +84,20 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
   // A game may override the "=choice" suffix labels/title (e.g. Tak's F/S/C =
   // Flat/Wall/Capstone, which otherwise collide with chess promotion letters).
   const choiceNames = { ...CHOICE_NAMES, ...(spec.choiceNames || {}) }
-  const cellMoves = (legalMoves || []).filter(isCellMove)
+  // The set of real board cell ids. A move is a clickable cell path if every
+  // ">"-segment is one of these ids — works for numeric "c,r"/"q,r" boards AND
+  // for irregular `polygons` boards with LABELLED ids ("c", "f,0,1,1" for Poly-Y,
+  // "0".."6" for Tsoro), so those are click-to-place instead of action buttons.
+  // Numeric-id games are unaffected (their ids are cells), and non-cell moves
+  // (swap/pass/grow/drops/walls/cards — never cell ids) still route correctly.
+  const cellIds = new Set(
+    (board.type === 'polygons' ? (board.cells || []).map((c) => c.id)
+      : (board.type === 'hex' ? hexCells(board) : squareCells(board)).map((c) => c.id)))
+  const isCellPath = (m) => m.split('>').every((seg) => cellIds.has(seg.split('=')[0]))
+  const cellMoves = (legalMoves || []).filter(isCellPath)
   const dropMoves = (legalMoves || []).filter(isDropMove)
   const wallMoves = (legalMoves || []).filter(isWallMove)
-  const actions = (legalMoves || []).filter((m) => !isCellMove(m) && !isDropMove(m) && !isWallMove(m) && !isCardMove(m))
+  const actions = (legalMoves || []).filter((m) => !isCellPath(m) && !isDropMove(m) && !isWallMove(m) && !isCardMove(m))
   const moves = cellMoves.map((m) => ({ raw: m, ...parseMove(m) }))
   const paths = moves.map((m) => m.cells)
 

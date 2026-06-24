@@ -1,0 +1,28 @@
+{
+  "uid": "poly_y",
+  "name": "Poly-Y",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Craige Schensted & Charles Titus (c. 1970) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "pie": true,
+  "category": "Connection",
+  "tags": ["connection", "hex", "pentagon", "schensted", "drawless", "placement", "scoring", "pie-rule"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/179816/poly-y",
+  "options": {
+    "size": {
+      "choices": [3, 4, 5],
+      "default": 4,
+      "label": "Board side (cells per spoke)"
+    },
+    "pie": {
+      "choices": [true, false],
+      "default": true,
+      "label": "Pie (swap) rule",
+      "labels": { "true": "On", "false": "Off" }
+    }
+  },
+  "description": "Craige Schensted & Charles Titus's polygonal generalisation of the connection game Y, on a pentagon of hexagonal cells (5 sides, 5 corners). Players alternately place a stone; the board fills. Each corner is awarded to the player whose group connects the two sides adjacent to that corner to a third side (a 'Y' at the corner). Owning a majority of the 5 corners wins; the odd corner count makes the game drawless. A swap (pie) move balances the first move."
+}

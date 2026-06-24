@@ -115,7 +115,7 @@
 | **Gonnect** (`gonnect`) | 9×9 | ✓ | ✓ | Go capture (atari_go core) + edge connection; rulebook review | — generic renderer (logic tested; not individually eyeballed) |
 | **Havannah** (`havannah`) | hex hexagon 8 | ✓ | ✓ | ring/bridge/fork exhaustive shape tests | — generic renderer (logic tested; not individually eyeballed) |
 | **Hex** (`hex`) | hex rhombus 11 | · | ✓ | connectivity BFS; can't-draw ⇒ terminates | — generic renderer (logic tested; not individually eyeballed) |
-| **Poly-Y** (`poly_y`) | polygons (101) | · | ✓ | conformance | — generic renderer (logic tested; not individually eyeballed) |
+| **Poly-Y** (`poly_y`) | polygons (101) | ✓ | ✓ | conformance | — generic renderer (logic tested; not individually eyeballed) |
 | **PÜNCT** (`punct`) | polygons (211) | ✓ | ✓ | conformance | — generic renderer (logic tested; not individually eyeballed) |
 | **Slither** (`slither`) | 8×8 | ✓ | ✓ | conformance | — generic renderer (logic tested; not individually eyeballed) |
 | **Star** (`star`) | polygons (145) | ✓ | ✓ | conformance | — generic renderer (logic tested; not individually eyeballed) |
