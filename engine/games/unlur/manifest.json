@@ -1,0 +1,18 @@
+{
+  "uid": "unlur",
+  "name": "Unlur",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Jorge Gómez Arrausi (2001) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "pie": false,
+  "category": "Connection",
+  "tags": ["hex", "connection", "placement", "asymmetric"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/3826/unlur",
+  "options": {
+    "size": { "choices": [6, 7, 8], "default": 6, "label": "Board side length" }
+  },
+  "description": "Jorge Gómez Arrausi's asymmetric connection game on a hexagonal board of hexagons. A 'contract' opening fixes who plays Black and who plays White: both players place BLACK stones (off the border) until one passes — the passer becomes Black, the other becomes White. Black then wins by connecting three non-adjacent sides (a Y); White wins by connecting two opposite sides (a line). Complete your opponent's goal instead of your own and you LOSE. Draws are impossible."
+}
