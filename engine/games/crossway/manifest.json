@@ -1,0 +1,16 @@
+{
+  "uid": "crossway",
+  "name": "Crossway",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Mark Steere (2007) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "pie": true,
+  "category": "Connection",
+  "tags": ["square", "connection", "placement", "no-draw"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/30517/crossway",
+  "options": { "size": { "choices": [9, 11, 13, 19], "default": 13, "label": "Board size" } },
+  "description": "Connection game on an NxN square board (19x19 with a Go set, traditionally). Place stones to link your two opposite edges via orthogonal-or-diagonal chains; the crossing rule forbids completing a 2x2 where opposite-colour diagonals would cross. Draws are impossible."
+}

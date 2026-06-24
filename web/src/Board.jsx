@@ -232,7 +232,7 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
     ? board.extent.join(' ')
     : `${Math.min(...allx) - mrg} ${Math.min(...ally) - mrg} ${spanX + 2 * mrg} ${spanY + 2 * mrg}`
 
-  // Coloured edge frame for rhombus connection boards (which sides each seat connects).
+  // Coloured edge frame for connection boards (which sides each seat connects).
   let edgeLines = null
   if (isHex && board.edges && board.shape === 'rhombus') {
     const W = board.width - 1, H = board.height - 1, off = R * 0.95
@@ -248,6 +248,23 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
     ].map((s, i) => (
       <line key={`edge${i}`} x1={s.x1} y1={s.y1} x2={s.x2} y2={s.y2}
         stroke={s.c} strokeWidth={R * 0.5} strokeLinecap="round" opacity="0.9" />
+    ))
+  } else if (board.edges && !isHex && !isPoly) {
+    // Square connection boards (Crossway, Gonnect): draw a coloured border on
+    // each goal side. `off=R` keeps the frame within the viewBox margin for all
+    // offered sizes. top/bottom map to the top/bottom screen edges (min/max y).
+    const xs = shapes.map((s) => s.cx), ys = shapes.map((s) => s.cy)
+    const minX = Math.min(...xs), maxX = Math.max(...xs)
+    const minY = Math.min(...ys), maxY = Math.max(...ys)
+    const off = R, e = board.edges
+    edgeLines = [
+      [minX - R, minY - off, maxX + R, minY - off, e.top],
+      [minX - R, maxY + off, maxX + R, maxY + off, e.bottom],
+      [minX - off, minY - R, minX - off, maxY + R, e.left],
+      [maxX + off, minY - R, maxX + off, maxY + R, e.right],
+    ].filter((s) => s[4] != null).map((s, i) => (
+      <line key={`edge${i}`} x1={s[0]} y1={s[1]} x2={s[2]} y2={s[3]}
+        stroke={SEAT_FILL[s[4]]} strokeWidth={R * 0.5} strokeLinecap="round" opacity="0.9" />
     ))
   }
 
