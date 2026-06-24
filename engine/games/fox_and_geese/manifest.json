@@ -1,0 +1,14 @@
+{
+  "uid": "fox_and_geese",
+  "name": "Fox and Geese",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "traditional / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Hunt",
+  "tags": ["cross", "alquerque", "asymmetric", "hunt", "jump-capture"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Fox_games",
+  "description": "Classic asymmetric hunt game on the cross-shaped board of 33 points. 15 Geese (move forward/sideways, never back, no captures) try to trap the lone Fox; the Fox steps freely and jumps geese like draughts (multi-jumps chain). Geese move first. Geese win by trapping the fox; the fox wins by reducing the geese to two."
+}
