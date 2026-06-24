@@ -1,0 +1,26 @@
+{
+  "uid": "symple",
+  "name": "Symple",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Christian Freeling & Benedikt Rosenau (2010) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Connection",
+  "tags": ["square", "group", "area", "freeling", "go-board", "placement"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/106341/symple",
+  "options": {
+    "size": {
+      "choices": [13, 19],
+      "default": 19,
+      "label": "Board size"
+    },
+    "penalty": {
+      "choices": [4, 6, 8, 10, 12],
+      "default": 8,
+      "label": "Group penalty P"
+    }
+  },
+  "description": "Christian Freeling & Benedikt Rosenau's group/area game on a Go board. Each turn you either PLACE one stone starting a new group (not adjacent to your own stones) or GROW every one of your groups by one stone at once. Score = your stones minus P times your number of groups (P even, default 8); most points wins. A balancing rule lets the second player grow-and-place in one turn before any growth has happened. Drawless by design."
+}
