@@ -1,0 +1,14 @@
+{
+  "uid": "maharajah",
+  "name": "Maharajah and the Sepoys",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "AGP",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "asymmetric", "fairy"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Maharajah_and_the_Sepoys",
+  "description": "A classic asymmetric chess variant. Seat 0 (the Maharajah, White) has a SINGLE super-piece on e1 that moves as a queen OR a knight (an Amazon) and is royal. Seat 1 (the Sepoys, Black) has a full standard chess army but its pawns cannot promote. The Sepoys move first. White wins by checkmating the Sepoy king; Black wins by checkmating/capturing the lone Maharajah."
+}
