@@ -1,0 +1,22 @@
+{
+  "uid": "chess960",
+  "name": "Chess960",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Bobby Fischer (1996) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": true,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["chess", "square", "random-setup"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Fischer_random_chess",
+  "options": {
+    "position": {
+      "choices": ["random", "518"],
+      "default": "random",
+      "label": "Starting position",
+      "labels": { "random": "Random (1 of 960)", "518": "#518 (standard chess)" }
+    }
+  },
+  "description": "Fischer Random Chess: ordinary chess on an 8x8 board, but the back rank is one of the 960 randomized starting positions (bishops on opposite colours, king between the rooks, Black mirroring White). All normal chess rules apply; castling is defined by the king's and rook's final squares. White (player 0) moves first."
+}
