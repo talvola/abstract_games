@@ -1,0 +1,22 @@
+{
+  "uid": "daldos",
+  "name": "Daldøs",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": true,
+  "hidden_info": false,
+  "category": "Race",
+  "tags": ["race", "dice", "running-fight", "traditional", "scandinavian", "roll-and-move"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/42777/daldos",
+  "options": {
+    "size": {
+      "choices": ["norwegian", "danish"],
+      "default": "norwegian",
+      "label": "Board size",
+      "labels": { "norwegian": "Norwegian 12+13+12 (12 pieces)", "danish": "Danish 16+17+16 (16 pieces)" }
+    }
+  },
+  "description": "Daldøs (Daldøsa): a traditional Scandinavian boat-shaped 'running-fight' dice game. Roll two four-sided long dice (1 = the 'dal', 2, 3, 4) and race your pieces around three rows of holes — your home row, the shared middle row, then the enemy's row — never returning home. A piece is dead in its hole until 'dalled' (activated by a roll of 1); only a dalled, moving piece may capture. Land exactly on an enemy piece to remove it for good. Remove ALL the opponent's pieces to win."
+}
