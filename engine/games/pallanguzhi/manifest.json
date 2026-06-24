@@ -1,0 +1,14 @@
+{
+  "uid": "pallanguzhi",
+  "name": "Pallanguzhi",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "AGP",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Mancala",
+  "tags": ["mancala", "sowing", "tamil", "indian", "lap-sowing"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Pallanguzhi",
+  "description": "Pallanguzhi (Pallankuzhi), the traditional South Indian / Tamil two-row mancala. Two rows of seven pits, 84 seeds (6 per pit). Sow counterclockwise with lap/relay sowing; capture a pit the instant it reaches four seeds ('kashi'/cow), and when your last seed lands before an empty pit your turn ends and you take the seeds in the pit beyond it. Most seeds wins. Standard single-round 'cow' variant; see rules for the documented choices."
+}
