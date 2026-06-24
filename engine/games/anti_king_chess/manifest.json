@@ -1,0 +1,14 @@
+{
+  "uid": "anti_king_chess",
+  "name": "Anti-King Chess",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Peter Aronson (2002); platform port AGP",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "variant", "royal"],
+  "bgg_url": "https://www.chessvariants.com/diffobjective.dir/anti-king-chess.html",
+  "description": "Anti-King Chess II (Peter Aronson, 2002): standard chess plus a second, inverted royal piece -- the Anti-King -- for each side (White on d6, Black on d3). An Anti-King is 'in check' only when it IS attacked: you must never end your turn with your own Anti-King un-attacked. The Anti-King moves like a king, may capture only friendly pieces, and can never be captured; kings do not attack anti-kings. Win by checkmating the enemy King OR anti-checkmating the enemy Anti-King. Standard pawns, castling, en passant and promotion to Q/R/B/N. White (player 0) moves first."
+}
