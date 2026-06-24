@@ -1,0 +1,14 @@
+{
+  "uid": "extinction_chess",
+  "name": "Extinction Chess",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "AGP",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "variant"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Extinction_chess",
+  "description": "Extinction Chess (a.k.a. Survival of the Species, R. Wayne Schmittberger, 1985): standard chess board, setup and movement, but you WIN the instant any ONE type of the opponent's pieces becomes extinct -- capture their last knight, their last bishop, all their pawns, or even their king, and you win. The king is NOT royal: there is no check, checkmate or stalemate, and moving 'into check' is perfectly legal. Pawns promote to Q/R/B/N or even K. Castling is legal even in or through check. White (player 1) moves first."
+}
