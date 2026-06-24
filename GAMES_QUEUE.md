@@ -511,6 +511,13 @@ _Erik's overnight queue item #4: work through GAME_BACKLOG.md with the same gate
 | Unlur | build→probe→browser | Jorge Gómez Arrausi 2001 asymmetric hex connection. Hexhex (6 default). BLACK wins by a chain touching 3 NON-ADJACENT sides (Y), WHITE by 2 OPPOSITE sides (line); SELF-LOSS = making the opponent's shape → DRAWLESS. The "contract" opening: both play black/pass; passer becomes Black, other White & moves first. Pie OFF. Render Havannah-style + board.tints alternating the 6 sides. Probe-verified (30 tints, contract→White, drawless). Browser-verified (alternating side tints + "Contract phase" caption render) | **done → main** |
 | Storisende | build→probe→**QA-fix**→browser | Freeling 2018 territory/stacking (hexhex base 4). Stacks move/split by height (jump), merge/capture-by-replacement; vacating a virgin cell CRYSTALLISES it green (territory) or dark Wall; control a territory iff only you have men in it; most controlled cells wins. Render matches tumbleweed (stacks) + kamisado (tints). **DEEP-QA CAUGHT A REAL BUG:** literal "3-fold repetition = draw" made EVERY random/bot game a draw (a 16-0 board scored "Draw" — stacks shuffle, leader denied the pass-win) → fixed to resolve repetition/cap BY SCORE (tie still draws), flagged deviation; active play 0/40→40/40 decisive. Browser-verified (setup renders) | **done → main** |
 
+## Batch 36 — Chess Variant Pages pool (2026-06-24) · 153 games
+_Famous-distinct backlog drained; now mining CVP chess variants (reliable, perft-anchorable) + distinct abstracts._
+| Game | Lane | Anchor | Status |
+|---|---|---|---|
+| Maharajah and the Sepoys | build→probe→browser | Asymmetric: seat 0 = a lone AMAZON "M" (Queen+Knight, royal) on e1 vs seat 1 = a full Sepoy army with NO pawn promotion; sepoys move first. Both sides royal (overrode ChessLike `_royal_sq`: "M" for White, "K" for Black). Win = checkmate the enemy royal. ANCHOR opening 20. Probe-verified (Amazon = 8 knight jumps + queen rays, 1v16, two royals). Browser-verified (lone M vs full army renders). On agp.chesslike | **done → main** |
+| Extinction Chess | build→probe→browser | Schmittberger "Survival of the Species". Standard chess BUT king not royal (no check/mate; moving into check legal); WIN by capturing ALL of any one enemy piece-type {K,Q,R,B,N,P}. On ChessLike: overrode `_legal` to drop king-safety, NoCheckCastling, promote-to-Q/R/B/N/K, extinction win as event. ANCHOR perft 20/400/8902/**197742** (d4 diverges from chess's 197281 → proves royalty filter off). Probe-verified (perft, last-knight-capture wins, into-check legal). Browser-verified (chess setup renders) | **done → main** |
+
 ## Needs human (escalations)
 
 _(none)_
