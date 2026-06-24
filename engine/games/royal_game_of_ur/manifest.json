@@ -1,0 +1,14 @@
+{
+  "uid": "royal_game_of_ur",
+  "name": "The Royal Game of Ur",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": true,
+  "hidden_info": false,
+  "category": "Race",
+  "tags": ["race", "dice", "mancala-like", "ancient", "roll-and-move"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/3204/royal-game-ur",
+  "description": "The Royal Game of Ur (the Game of Twenty Squares): the ~4500-year-old Mesopotamian race game in Irving Finkel's reconstructed rules. Roll four tetrahedral dice (0-4) and race seven pieces up your private arm, along the shared central lane, and off the far end. Land on a rosette for safety and an extra turn; catch an enemy on the shared lane to send it home. First to bear all seven off wins."
+}
