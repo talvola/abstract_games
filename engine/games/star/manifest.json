@@ -1,0 +1,28 @@
+{
+  "uid": "star",
+  "name": "Star",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Craige Schensted (Ea Ea) & Ea Ea (1983) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "pie": true,
+  "category": "Connection",
+  "tags": ["hex", "connection", "scoring", "territory", "placement", "schensted", "drawless"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/194969/star",
+  "options": {
+    "size": {
+      "choices": ["4x5", "5x6", "6x7"],
+      "default": "5x6",
+      "label": "Board size (alternating side lengths)"
+    },
+    "pie": {
+      "choices": [true, false],
+      "default": true,
+      "label": "Pie (swap) rule",
+      "labels": { "true": "On", "false": "Off" }
+    }
+  },
+  "description": "Craige Schensted's drawless connection-scoring game on a hexagon-of-hexes whose six sides alternate length (so the odd perimeter forbids ties). Around the board sit non-playable 'partial hexagon' border cells used only for scoring: a corner playing cell touches 3, an edge cell touches 2. Players alternately place a stone or pass; the game ends on two successive passes. A connected group touching at least 3 border cells is a 'star' worth (border cells touched − 2); most points wins."
+}
