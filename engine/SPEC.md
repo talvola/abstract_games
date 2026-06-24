@@ -148,7 +148,12 @@ rather than the whole board rescaling between moves).
 Board-level optional fields: `board.lines` (cosmetic connecting lines/arcs — 2pt
 line, 3pt quadratic-Bézier arc, or N-pt polyline, each `[[x,y],…,"#colour"?]`),
 `board.overlay` (same format, drawn *over* cells — TwixT bridges, Surakarta
-loops), `board.tints` (`{cellId: "#colour"}` terrain fills), `board.walls`,
+loops), `board.tints` (`{cellId: "#colour"}` terrain fills),
+`board.levels` (`{cellId: <int 1..4>}` per-cell **build height** — drawn as
+stacked "wedding-cake" tiers for levels 1-3 with a blue **dome** cap at level 4
+and a small height badge, *under* any worker piece on that cell; the
+two-things-per-cell primitive for **Santorini** [building level + worker]; omit
+ground/level-0 cells), `board.walls`,
 `reserve` (off-board drop trays), `board.cards`. For a points-and-lines board
 (Morris/alquerque/YINSH) use `"type": "polygons"` with explicit cell vertices +
 `board.lines`. **`polygons` cells format (exact — the renderer crashes otherwise):**

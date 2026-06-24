@@ -164,6 +164,7 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
       ? (x, y) => [px(SQRT3 * (x + y / 2)), px(1.5 * y)]
       : (x, y) => [px(x), px(board.height - 1 - y)]
   const tints = board.tints || {}                  // {cellId: colour} terrain fills
+  const levels = board.levels || {}                // {cellId: int 1..4} per-cell build height (Santorini)
   const cellR = shapes.length ? shapes[0].r : R
   // A cosmetic segment is a list of [x,y] points in board-coord space, with an
   // optional trailing colour string. 2 points → straight line; 3 points → the
@@ -341,6 +342,28 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
     )
   }
 
+  // Per-cell build height (Santorini): `board.levels[cellId]` = 1..4. Drawn as a
+  // stack of concentric "wedding-cake" tiers (levels 1-3) under the worker piece,
+  // a blue dome cap at level 4 (impassable, never holds a worker), plus a small
+  // height badge so the exact level is unambiguous. Generic: any game can supply
+  // board.levels to show a per-cell height. Drawn between the cell fill and the
+  // piece so the worker stands on top of the building.
+  function levelGlyph(s, level) {
+    const tiers = Math.min(level, 3)
+    const shades = ['#e9e3d4', '#d7cfba', '#c2b89e']
+    const out = []
+    for (let k = 0; k < tiers; k++) {
+      const half = s.r * (0.84 - 0.21 * k)
+      out.push(<rect key={`t${k}`} x={s.cx - half} y={s.cy - half} width={half * 2} height={half * 2}
+        rx={s.r * 0.1} fill={shades[k]} stroke="#9a917c" strokeWidth={s.r * 0.05} />)
+    }
+    if (level >= 4) out.push(<circle key="dome" cx={s.cx} cy={s.cy} r={s.r * 0.34}
+      fill="#3a7bd5" stroke="#1f4f8f" strokeWidth={s.r * 0.07} />)
+    out.push(<text key="lvl" x={s.cx + s.r * 0.66} y={s.cy + s.r * 0.66} textAnchor="middle"
+      dominantBaseline="central" fontSize={s.r * 0.42} fontWeight="bold" fill="#7a6f57">{level}</text>)
+    return <g key="lvls">{out}</g>
+  }
+
   return (
     <div className="board-wrap">
       {tray(1, 'top')}
@@ -370,6 +393,7 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
           return (
             <g key={s.id} data-cell={s.id} onClick={clickable ? () => click(s.id) : undefined} style={{ cursor: clickable ? 'pointer' : 'default' }}>
               <polygon points={s.poly} fill={fill} stroke={stroke} strokeWidth={sw} />
+              {levels[s.id] ? levelGlyph(s, levels[s.id]) : null}
               {isTarget && piece && <circle cx={s.cx} cy={s.cy} r={s.r * 0.9} fill="none" stroke="#5cba6b" strokeWidth={s.r * 0.1} />}
               {piece && (piece.stack
                 ? stackGlyph(s, piece)

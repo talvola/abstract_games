@@ -1,0 +1,14 @@
+{
+  "uid": "santorini",
+  "name": "Santorini",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Gordon Hamilton / Roxley Games — AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Build & climb",
+  "tags": ["santorini", "roxley", "build", "climb", "square", "abstract"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/194655/santorini",
+  "description": "Santorini (Gordon Hamilton, Roxley Games) — the base game with NO god powers. Two players each control 2 Workers on a 5x5 grid. Each turn you move one Worker to an adjacent space (at most one level up, any number down, never onto a dome or another Worker) and then build on a space adjacent to its new position, raising that space's building level by one (a build on a level-3 building places a dome). Win by moving one of your Workers up onto a level-3 building; you also win if your opponent has no legal move."
+}
