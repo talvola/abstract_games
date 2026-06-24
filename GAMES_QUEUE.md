@@ -488,6 +488,12 @@ _Erik's overnight queue item #1. Needed a new generic render primitive first (pe
 | **(primitive) board.levels height** | — | generic `board.levels = {cellId: 1..4}` in Board.jsx — per-cell build height drawn as stacked wedding-cake tiers (1-3) + a blue dome cap at 4 + a height badge, *under* the worker piece (two-things-per-cell). Documented in SPEC.md; opt-in, all 137 prior games byte-identical | **done → main** |
 | Santorini | build→independent-verify(**MERGE**)→browser | Roxley base game (no god powers). 5×5, 2 workers/side, placement [0,0,1,1], turn = MOVE (≤1 up / any down, not onto worker/dome) THEN BUILD (+1 level, L3→dome) with the same worker; win = MOVE up onto a level-3 building (2-cell climb, no build) or opponent stuck. Move = `wfrom>wto>build` 3-cell path (winning climbs are 2-cell). First consumer of `board.levels`. Independent verify MERGE (placement, ≤1-up, mandatory-build, climb-only-by-moving, stuck-loss, 300 random games terminate). **Browser-verified** end-to-end: placement, the 3-click move→build flow, and all four height visuals (tier-1 badge → 3 nested tiers → dome). New "Build & climb" category. Pure-stdlib selftest | **done → main** |
 
+## Hexxagon 3-player (2026-06-23) · 139 games
+_Erik's overnight queue item #2._
+| Game | Lane | Anchor | Status |
+|---|---|---|---|
+| Hexxagon (3-player) | build→independent-probe-verify→browser | Separate package `hexxagon3` (num_players fixed=3). Same side-5 hexhex − 3 holes; 6 corners owned P0,P1,P2,P0,P1,P2 (each player 2 opposite corners, 2-2-2 start). Grow/jump/holes identical; infection flips ANY adjacent opponent (either other colour); turn cycles 0→1→2 skipping eliminated/stuck; last survivor auto-fills+wins; returns = 3-vector matched to Rolit (sole leader +1, others −1, lead-tie=0). Reuses hexxagon geometry + Rolit multi-seat returns/cycling. Probe-verified (corner alternation, 3-way infection, skip-eliminated, last-survivor [1,−1,−1]). **Browser-verified** (3 distinct seat colours Red/Blue/Green, alternating corners, grow → turn advances Red→Blue, 3-2-2). Pure-stdlib selftest | **done → main** |
+
 ## Needs human (escalations)
 
 _(none)_
