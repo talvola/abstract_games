@@ -1,0 +1,14 @@
+{
+  "uid": "knight_relay",
+  "name": "Knight Relay Chess",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Mannis Charosh (implemented for AGP)",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "relay", "knight"],
+  "bgg_url": "https://www.chessvariants.com/other.dir/knightrelay.html",
+  "description": "Chess where any piece (except a king or knight) defended by a friendly knight gains the power to also move and capture like a knight. Knights themselves cannot capture and cannot be captured -- they only relay their leaping power and act as immovable blockers. A knight cannot give check by itself, but a guarded piece can relay a knight-check. No en passant; pawns promote only by an ordinary pawn move. By Mannis Charosh (c. 1972). White (player 0) moves first."
+}
