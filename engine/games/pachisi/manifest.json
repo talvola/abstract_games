@@ -1,0 +1,14 @@
+{
+  "uid": "pachisi",
+  "name": "Pachisi",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games Platform",
+  "players": { "min": 4, "max": 4 },
+  "has_randomness": true,
+  "hidden_info": false,
+  "category": "Race",
+  "tags": ["race", "dice", "cross-and-circle", "traditional", "india", "four-player"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Pachisi",
+  "description": "Pachisi (पचीसी), the classic Indian cross-and-circle race game and ancestor of Ludo/Parcheesi. Four players each race four pieces out of the central Charkoni, anticlockwise around the cruciform board and back up their own arm. Movement is by six cowrie shells (mouths-up = move; special values 10 and 25, plus 6, grant a grace/extra turn). Castle squares are safe; landing on an opponent on a non-safe square sends it home."
+}
