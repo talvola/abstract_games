@@ -1,0 +1,22 @@
+{
+  "uid": "meridians",
+  "name": "Meridians",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Kanare Kato (2021) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Capture / annihilation",
+  "tags": ["hex", "triangular", "placement", "territory", "capture"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/333775/meridians",
+  "options": {
+    "size": {
+      "choices": [6, 7, 8],
+      "default": 7,
+      "label": "Board size (long-side length)",
+      "labels": { "6": "Beginner (5/6)", "7": "Standard (6/7)", "8": "Expert (7/8)" }
+    }
+  },
+  "description": "Kanare Kato's award-winning line-of-sight annihilation game on a centerless triangular-grid hexagon. Place stones in sight of your own, capture enemy groups by cutting their lines of sight to each other, and wipe the opponent off the board."
+}
