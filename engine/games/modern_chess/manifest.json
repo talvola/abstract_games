@@ -1,0 +1,14 @@
+{
+  "uid": "modern_chess",
+  "name": "Modern Chess",
+  "version": "1.0.0",
+  "author": "Gabriel Vicente Maura (1968) / AGP port",
+  "engine_api": "1",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "variant"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Modern_chess",
+  "description": "Modern Chess (Ajedrez Moderno, Gabriel Vicente Maura, Puerto Rico, 1968), on a 9x9 board. Each side has the full standard army plus one extra Prime Minister (a compound bishop+knight piece, like Capablanca's Archbishop) and a ninth pawn. The back rank is R N B M K Q B N R, with the King on the centre file (e), the Queen to its right and the Prime Minister to its left, and nine pawns on the 2nd / 8th ranks. Pawns move and capture as in standard chess (double-step, en passant) and promote to Q/R/B/N/M on the last rank. The king castles by sliding two squares toward either rook. Checkmate wins; stalemate and the usual fifty-move / repetition / insufficient-material situations draw."
+}
