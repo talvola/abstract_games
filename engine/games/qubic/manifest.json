@@ -1,0 +1,14 @@
+{
+  "uid": "qubic",
+  "name": "Qubic",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Parker Brothers (1953) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "N-in-a-row",
+  "tags": ["3d", "alignment", "cube", "four-in-a-row", "placement", "classic"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/1958/qubic",
+  "description": "Qubic — three-dimensional tic-tac-toe on a 4x4x4 cube (Parker Brothers, 1953). Two players alternately place a mark on any empty cell; the first to make a straight line of four (any of the cube's 76 winning lines — along an axis, across a face diagonal, or through a space diagonal) wins. A full board with no line is a draw. The four layers (z = 0..3) are shown as four side-by-side 4x4 grids; click any empty cell to place. Famously solved as a first-player win (Patashnik, 1980)."
+}
