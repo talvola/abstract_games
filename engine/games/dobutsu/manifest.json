@@ -1,0 +1,14 @@
+{
+  "uid": "dobutsu",
+  "name": "Dobutsu Shogi",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "shogi", "drops", "small", "kids", "solved"],
+  "bgg_url": "https://en.wikipedia.org/wiki/D%C5%8Dbutsu_sh%C5%8Dgi",
+  "description": "Dobutsu Shogi (Animal Shogi, Madoka Kitao 2008): a 3x4 introductory Shogi for children, played with four cute animals each. Lion (king), Giraffe, Elephant and a Chick that promotes to a Hen. Captured animals switch sides and drop back in. Win by catching the enemy Lion or by walking your own Lion safely onto the enemy home row (a 'Try'). A fully solved game."
+}
