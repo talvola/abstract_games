@@ -1,0 +1,14 @@
+{
+  "uid": "legan_chess",
+  "name": "Legan Chess",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "L. Legan (1913) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "variant", "diagonal"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Legan_chess",
+  "description": "A corner-to-corner chess variant (L. Legan, 1913). The whole game is rotated diagonally: White attacks toward the a8 corner and Black toward the h1 corner, each army arrayed along the two edges by its own corner behind a diagonal pawn wall. The signature Legan pawn MOVES one step diagonally toward the enemy corner and CAPTURES one step orthogonally in that direction (a White pawn on f3 moves to e4 and captures on e3 or f4). Pawns promote on reaching the two far edges by the enemy corner. There is no castling and no en passant; all other pieces, check, mate and the draw rules are standard chess."
+}
