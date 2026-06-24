@@ -3,9 +3,12 @@
 No published perft for Gess, so the anchor is a set of baked rule assertions:
 board/border geometry, the 43+43 symmetric opening with one ring each, the
 footprint -> direction mapping (corner=diagonal, edge=orthogonal), center-stone
-range (occupied=unlimited, empty=max-3), slide-stop-at-first-collision,
-multi-cell capture, self-capture, border-kill removal, ring detection, the
-multi-ring win/loss rules, and a serialize round-trip.
+range (occupied=unlimited, empty=max-3), slide-stop-at-first-collision
+(including the "masking" case where a leading carried stone bumps a blocker that
+sits where it would land -- a regression guard for a real slide-through bug),
+the authoritative-opening chess-piece move-sets, multi-cell capture,
+self-capture, border-kill removal, ring detection, the multi-ring win/loss
+rules, and a serialize round-trip.
 
 Run with:  PYTHONPATH=. python3 games/gess/selftest.py
 Prints "SELFTEST OK" and exits 0 on success; raises on failure.
@@ -104,6 +107,83 @@ def main() -> None:
     assert (5, 4) in dsts and (5, 3) in dsts, "early clear stops missing"
     assert (5, 2) in dsts, "collision-stop step must be a legal destination"
     assert (5, 1) not in dsts, "cannot advance past the first collision"
+
+    # ---- (5b) REGRESSION: a leading carried stone bumping into a blocker must
+    # STOP, even when the blocker sits exactly where the carried stone would land
+    # (the "masking" case). This needs an OCCUPIED-center (unlimited-range) piece
+    # so the empty-center range cap can't hide a slide-through. Center (10,10)
+    # occupied + SW corner (9,9) enables SW (unlimited); enemy blocker at (7,7).
+    # Sliding SW: at center (8,8) the footprint (7,7..9,9) covers the enemy -> it
+    # must stop at (8,8); it must NOT slide on to (7,7) or (6,6).
+    st = CState(board={(10, 10): BLACK, (9, 9): BLACK, (7, 7): WHITE}, to_move=BLACK)
+    dsts = set(g._gen_from_center(st, 10, 10))
+    assert (9, 9) in dsts and (8, 8) in dsts, "early/collision SW stops missing"
+    assert (7, 7) not in dsts and (6, 6) not in dsts, \
+        "must NOT slide THROUGH a blocker that a carried stone would land on"
+    ns = g.apply_move(st, "10,10>8,8")
+    assert ns.board.get((7, 7)) == BLACK, \
+        "enemy captured, then the carried SW stone lands on (7,7) -> owned by mover"
+    assert ns.board.get((8, 8)) == BLACK, "carried center lands at the destination"
+    # The mover's OWN non-carried stone masks-and-blocks identically.
+    st = CState(board={(10, 10): BLACK, (9, 9): BLACK, (7, 7): BLACK}, to_move=BLACK)
+    dsts = set(g._gen_from_center(st, 10, 10))
+    assert (8, 8) in dsts and (7, 7) not in dsts, \
+        "own non-carried stone must block (and self-capture), not be slid through"
+
+    # ---- (5c) AUTHORITATIVE OPENING: the chess-piece footprints move as the
+    # Archimedeans designed (direction-enablement on REAL game pieces, not just
+    # synthetic ones). The start position is the canonical source of truth; these
+    # direction sets are rule-derived (counts are engine-derived regression locks).
+    st0 = g.initial_state()
+    open_moves = g.legal_moves(st0)
+    assert len(open_moves) == 416, \
+        f"opening legal-move count regressed (expected 416, got {len(open_moves)})"
+
+    def dirset(state, cx, cy):
+        names = {(0, 1): "N", (0, -1): "S", (1, 0): "E", (-1, 0): "W",
+                 (1, 1): "NE", (-1, 1): "NW", (1, -1): "SE", (-1, -1): "SW"}
+        out = {}
+        for (dx, dy) in g._gen_from_center(state, cx, cy):
+            sx = (dx > cx) - (dx < cx); sy = (dy > cy) - (dy < cy)
+            out.setdefault(names[(sx, sy)], 0)
+            out[names[(sx, sy)]] += 1
+        return out
+
+    ortho = {"N", "S", "E", "W"}
+    diag = {"NE", "NW", "SE", "SW"}
+    alleight = ortho | diag
+    # "Rooks" c3=(2,2)/r3=(17,2): orthogonal only (edge stones, occupied center)
+    for c in (2, 17):
+        d = dirset(st0, c, 2)
+        assert set(d) == ortho, f"rook at ({c},2) should be orthogonal-only, got {set(d)}"
+    # "Bishops" f3=(5,2)/o3=(14,2): diagonal only (corner stones)
+    for c in (5, 14):
+        d = dirset(st0, c, 2)
+        assert set(d) == diag, f"bishop at ({c},2) should be diagonal-only, got {set(d)}"
+    # "Queens" i3=(8,2)/j3=(9,2): all 8 directions (occupied center, full surround)
+    for c in (8, 9):
+        d = dirset(st0, c, 2)
+        assert set(d) == alleight, f"queen at ({c},2) should be all-8, got {set(d)}"
+    # "King"/ring l3=(11,2): all 8 directions, EMPTY center => max distance 3
+    dk = dirset(st0, 11, 2)
+    assert set(dk) == alleight, f"ring/king l3 should be all-8, got {set(dk)}"
+    kmax = max(max(abs(dx - 11), abs(dy - 2))
+               for (dx, dy) in g._gen_from_center(st0, 11, 2))
+    assert kmax == 3, f"empty-center ring must cap at distance 3, got {kmax}"
+    # "Pawn": the lone front stone c7=(2,6) cannot be a center (no neighbour in its
+    # 3x3); it is pushed forward by the empty-center footprint behind it at (2,5),
+    # which enables ONLY N (toward the enemy) and advances 1..3.
+    assert g._footprint_owner(st0.board, 2, 6, BLACK) is None, \
+        "a lone front stone cannot be a legal footprint center"
+    dp = dirset(st0, 2, 5)
+    assert set(dp) == {"N"} and dp["N"] == 3, \
+        f"pawn-pusher (2,5) should be N-only, 3 moves, got {dp}"
+
+    # ---- (5d) occupied-center diagonal slides UNLIMITED on an open board ------
+    # (the packed opening blocks bishops early; prove the range rule directly.)
+    st = CState(board={(5, 5): BLACK, (6, 6): BLACK}, to_move=BLACK)  # center + NE
+    dsts = set(g._gen_from_center(st, 5, 5))
+    assert (18, 18) in dsts, "occupied-center diagonal must slide unobstructed to the edge"
 
     # ---- (6) multi-cell capture: all non-carried stones in dest 3x3 removed
     # Footprint center (5,5), single carried edge stone at (5,4) (offset N).

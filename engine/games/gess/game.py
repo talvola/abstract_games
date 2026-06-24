@@ -208,17 +208,21 @@ class Gess(Game):
                 ncx, ncy = cx + dc * k, cy + dr * k
                 if not _is_inner(ncx, ncy):
                     break  # center must stay inner
-                # footprint at this step = 3x3 centered at (ncx,ncy); the carried
-                # stones (which travel with it) also don't block it.
-                step_carried = set((ccx + dc * k, ccy + dr * k)
-                                   for (ccx, ccy) in carried_cells)
-                # does the footprint contain any non-carried, non-lifted stone?
+                # Does the footprint at this step (the 3x3 around (ncx,ncy))
+                # overlap any stone that is NOT part of this piece? The piece's
+                # carried stones are lifted off the board for the move, so only
+                # their SOURCE cells (`lifted`) are exempt — every other on-board
+                # stone in the footprint is a real blocker, INCLUDING one that
+                # happens to sit where a carried stone would land (a leading
+                # carried stone bumping into an enemy/own stone must STOP there,
+                # not slide through it). Exempting the carried stones' *projected*
+                # cells would mask exactly that collision, so we do not.
                 blocked = False
                 for fdc in (-1, 0, 1):
                     for fdr in (-1, 0, 1):
                         cell = (ncx + fdc, ncy + fdr)
-                        if cell in step_carried or cell in lifted:
-                            continue
+                        if cell in lifted:
+                            continue  # one of this piece's lifted source cells
                         if cell in board:
                             blocked = True
                             break
