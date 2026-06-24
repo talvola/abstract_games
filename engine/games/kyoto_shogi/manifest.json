@@ -1,0 +1,14 @@
+{
+  "uid": "kyoto_shogi",
+  "name": "Kyoto Shogi",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "drops", "shogi", "flip"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Kyoto_shogi",
+  "description": "Kyoto Shogi (Tamiya, 1976): a tiny 5x5 Shogi whose signature is the flip. Every piece is a two-faced token (Tokin/Lance, Silver/Bishop, Gold/Knight, Pawn/Rook) that flips to its other face after every move, so each piece alternates roles turn by turn. The King never flips. Captured tokens may be dropped showing either face; there is no promotion zone. Win by checkmate."
+}
