@@ -1,0 +1,14 @@
+{
+  "uid": "abalone",
+  "name": "Abalone",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Michel Lalet & Laurent Levi (1987) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Capture / annihilation",
+  "tags": ["hex", "push", "sumito", "capture"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/526/abalone",
+  "description": "The classic 1987 marble-pushing game on a side-5 hexagon of hexes. Slide in-line groups of 1-3 marbles; out-number an opposing line to push (sumito) it, shoving enemy marbles off the edge. Eject 6 of your opponent's marbles to win."
+}
