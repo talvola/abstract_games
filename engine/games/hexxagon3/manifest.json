@@ -1,0 +1,22 @@
+{
+  "uid": "hexxagon3",
+  "name": "Hexxagon (3-player)",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "AGP",
+  "players": { "min": 3, "max": 3 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Capture / annihilation",
+  "tags": ["expansion", "infection", "reversi-family", "hex", "ataxx-family", "multiplayer"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Ataxx",
+  "options": {
+    "holes": {
+      "choices": ["standard", "none"],
+      "default": "standard",
+      "label": "Center holes",
+      "labels": { "standard": "3 blocked holes", "none": "No holes" }
+    }
+  },
+  "description": "The three-player variant of Hexxagon (hex Ataxx). A hexagon-of-hexes (side 5, 61 cells) with 3 blocked holes near the center, leaving 58 playable hexes. Three players each start with 2 pieces on alternating corners (P0, P1, P2 around the ring, so each owns two opposite corners). Move one of your pieces onto an empty hex: clone into an adjacent hex (grow, keeping the original) or jump to a hex two away (relocating). Every piece of EITHER opponent next to where you land is infected and flips to your colour. A player with no move passes; eliminated players are skipped. Wiping out both opponents auto-fills the board for the survivor, who wins; otherwise the player with the most pieces wins when the board fills or no one can move."
+}
