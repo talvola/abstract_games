@@ -1,0 +1,14 @@
+{
+  "uid": "andernach_chess",
+  "name": "Andernach Chess",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "AGP",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "andernach", "capture", "color-change"],
+  "bgg_url": "https://www.chessvariants.com/other.dir/andernach.html",
+  "description": "Andernach Chess: standard chess with one twist - a piece that makes a capture changes to the opponent's colour and stays on the capture square (so White capturing with a knight produces a Black knight). Kings are the sole exception: a king that captures keeps its colour, and a king is never created by a colour change. Non-capturing moves are normal. En passant counts as a capture and flips the pawn; a pawn that captures onto the last rank promotes and then changes colour. Castling, check, checkmate, stalemate and the usual draws are standard. White moves first."
+}
