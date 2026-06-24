@@ -1,0 +1,14 @@
+{
+  "uid": "entropy",
+  "name": "Entropy",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": true,
+  "hidden_info": false,
+  "category": "Positional",
+  "tags": ["square", "pattern", "order-chaos", "randomness", "scoring"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/1541/entropy",
+  "description": "Entropy (Eric Solomon, 1977): the Order-vs-Chaos classic on a 7x7 board with 49 coloured chips. Chaos draws a random chip and places it to disrupt; Order then slides a chip to build palindromic colour patterns that score. Order wants patterns, Chaos wants noise."
+}
