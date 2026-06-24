@@ -1,0 +1,14 @@
+{
+  "uid": "sim",
+  "name": "Sim",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Territory",
+  "tags": ["graph", "paper-and-pencil", "edges", "misere", "ramsey", "classic"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Sim_(pencil_game)",
+  "description": "Sim (Gustavus Simmons, 1969): the Ramsey graph game on K6 (6 dots, all 15 edges). Players take turns coloring one uncolored edge in their own colour. A misere/avoidance game: the first player FORCED to complete a triangle of their own colour LOSES. By Ramsey's theorem (R(3,3)=6) the game can never end in a draw."
+}
