@@ -1,5 +1,13 @@
 # Deploying a hosted instance
 
+> **Live:** https://abstract-games.onrender.com — a Render web service
+> (`srv-d8un5a7lk1mc7385c73g`, free plan) created via the Render API, **auto-deploys
+> on every push to `main`**. Persistence is a **Neon** Postgres (`DATABASE_URL` set in
+> the Render env, not in git; the `neon-*.txt` credential files are gitignored).
+> Accounts + async matches now survive redeploys. To rotate/replace the DB, update the
+> `DATABASE_URL` env var on the service.
+
+
 This hosts the platform as **one Render web service** that serves both the API and
 the built React/Vite frontend from a single origin (so no CORS and same-site session
 cookies). It mirrors the `generic_poker` Render setup (`render.yaml` + `build.sh`).
