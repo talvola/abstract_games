@@ -1,0 +1,14 @@
+{
+  "uid": "hive",
+  "name": "Hive",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "John Yianni / Gen42 Games (2001) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Capture / annihilation",
+  "tags": ["hex", "tile", "boardless", "stacking", "drops"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/2655/hive",
+  "description": "John Yianni's boardless tile game: the insect tiles ARE the board. Place and move your bugs -- Queen, Spiders, Beetles, Grasshoppers, Soldier Ants -- to completely surround the opponent's Queen Bee while keeping the hive connected (the one-hive rule)."
+}
