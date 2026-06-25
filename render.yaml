@@ -1,0 +1,32 @@
+# Render Blueprint — one web service serving the FastAPI API + the built SPA.
+# Setup steps are in DEPLOY.md. After pushing this file, create a Render
+# "Blueprint" from the repo (or a Web Service that reads this file).
+services:
+  - type: web
+    name: abstract-games
+    runtime: python
+    plan: free                 # free tier spins down after ~15 min idle (cold start ~1 min)
+    buildCommand: ./build.sh
+    startCommand: uvicorn server.app:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.6
+      - key: NODE_VERSION
+        value: "20"
+      # Stable secret for signing session cookies (a fresh random one each deploy
+      # would log everyone out; the in-code default is insecure).
+      - key: AGP_SECRET_KEY
+        generateValue: true
+      # Session cookie must be Secure over Render's HTTPS.
+      - key: AGP_COOKIE_SECURE
+        value: "true"
+      # DB persistence: UNSET ⇒ ephemeral SQLite (accounts + async matches reset on
+      # each redeploy/spin-down — fine for casual testing; hotseat & vs-bot are
+      # stateless and always work). To persist, add a Render Postgres and set this
+      # (see DEPLOY.md "Persistent database").
+      - key: DATABASE_URL
+        sync: false
+      # SECURITY — do NOT add AGP_ALLOW_OPEN_UPLOADS or AGP_ADMIN_EMAILS here.
+      # The game-upload endpoint runs uploaded code IN-PROCESS (RCE). With both
+      # unset it is fully closed, which is correct for a public/shared instance.

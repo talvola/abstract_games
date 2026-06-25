@@ -22,6 +22,7 @@ from pathlib import Path
 from fastapi import BackgroundTasks, Depends, FastAPI, File, HTTPException, Response, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
@@ -589,3 +590,16 @@ def stateless_bot(uid: str, body: BotBody):
 @app.get("/api/health")
 def health():
     return {"ok": True, "games": list(registry.entries)}
+
+
+# ===========================================================================
+#  Serve the built frontend (single-service production deploy).
+#  In local dev the Vite server (:5173) handles the UI and proxies /api here, so
+#  this is a no-op unless `web/dist` has been built (see build.sh / render.yaml).
+#  Mounted LAST so every /api/* route above takes precedence; html=True serves
+#  index.html at "/". The frontend calls origin-relative /api, so one origin =
+#  no CORS and same-site session cookies.
+# ===========================================================================
+_WEB_DIST = Path(__file__).resolve().parent.parent / "web" / "dist"
+if _WEB_DIST.is_dir():
+    app.mount("/", StaticFiles(directory=str(_WEB_DIST), html=True), name="spa")
