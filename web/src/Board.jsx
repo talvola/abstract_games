@@ -175,6 +175,18 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
       : (x, y) => [px(x), px(board.height - 1 - y)]
   const tints = board.tints || {}                  // {cellId: colour} terrain fills
   const levels = board.levels || {}                // {cellId: int 1..4} per-cell build height (Santorini)
+  const tiles = board.tiles || {}                  // {cellId: [[a,b]×4]} Tsuro path-tiles (notch pairs 0..7)
+  const tokens = board.tokens || []                // [{cell, notch, owner}] markers on tile edge-notches
+  const shapeById = {}
+  for (const s of shapes) shapeById[s.id] = s
+  // The 8 edge-notches of a square tile cell (Tsuro), at the third-points of each
+  // side, numbered clockwise from the top-left: 0,1 top; 2,3 right; 4,5 bottom;
+  // 6,7 left. Returns the pixel [x,y] of notch i on cell shape s.
+  function notchPos(s, i) {
+    const r = s.r, cx = s.cx, cy = s.cy, t = r / 3
+    return [[cx - t, cy - r], [cx + t, cy - r], [cx + r, cy - t], [cx + r, cy + t],
+      [cx + t, cy + r], [cx - t, cy + r], [cx - r, cy + t], [cx - r, cy - t]][i]
+  }
   const cellR = shapes.length ? shapes[0].r : R
   // A cosmetic segment is a list of [x,y] points in board-coord space, with an
   // optional trailing colour string. 2 points → straight line; 3 points → the
@@ -316,6 +328,29 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
           const mv = moveFor(card.name)
           const clickable = card.selectable && mv && !disabled
           const col = card.owner == null ? '#9a8a6a' : colors(card.owner).fill
+          // Tsuro hand tile: a card with `paths` (4 notch-pairs) is drawn as a
+          // mini path-tile (the 4 arcs joining the 8 edge-notches) rather than the
+          // Onitama move-grid. Lets a player preview their 3 hand tiles.
+          if (card.paths) {
+            const np = (n) => { const r = 0.5, c = 0.5, t = r / 3
+              return [[c - t, c - r], [c + t, c - r], [c + r, c - t], [c + r, c + t],
+                [c + t, c + r], [c - t, c + r], [c - r, c + t], [c - r, c - t]][n] }
+            return (
+              <div key={i} className="onicard" style={{ borderColor: col }}>
+                <div className="onicard-name" style={{ color: col }}>{card.name}</div>
+                <svg viewBox="-0.06 -0.06 1.12 1.12" width="44" height="44">
+                  <rect x="0" y="0" width="1" height="1" fill="#2a2620" stroke="#4a4238" strokeWidth="0.03" />
+                  {(card.paths || []).map((pr, j) => {
+                    const a = np(pr[0]), b = np(pr[1])
+                    const ctrl = [(a[0] + b[0] + 1) / 4, (a[1] + b[1] + 1) / 4]
+                    return <path key={j} d={`M ${a[0]},${a[1]} Q ${ctrl[0]},${ctrl[1]} ${b[0]},${b[1]}`}
+                      fill="none" stroke="#d8b878" strokeWidth="0.07" strokeLinecap="round" />
+                  })}
+                </svg>
+                <div className="onicard-tag">{card.owner == null ? '' : `P${card.owner + 1}`}</div>
+              </div>
+            )
+          }
           const offs = card.owner === 1 ? card.offsets.map(([a, b]) => [-a, -b]) : card.offsets
           return (
             <div key={i} className={`onicard${card.selected ? ' selected' : ''}${clickable ? ' clickable' : ''}`}
@@ -391,6 +426,19 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
     return <g key="lvls">{out}</g>
   }
 
+  // Tsuro path-tile (the 9th render primitive): board.tiles[cellId] = a list of 4
+  // [a,b] notch-pairs; each draws a smooth path-arc connecting notch a to notch b
+  // inside the cell (a quadratic Bézier with the control point pulled toward the
+  // centre so the line curves). Drawn over the cell fill, under the tokens.
+  function tileGlyph(s, paths) {
+    return <g key="tile">{(paths || []).map((pair, i) => {
+      const pa = notchPos(s, pair[0]), pb = notchPos(s, pair[1])
+      const ctrl = [(pa[0] + pb[0] + 2 * s.cx) / 4, (pa[1] + pb[1] + 2 * s.cy) / 4]
+      return <path key={i} d={`M ${pa[0]},${pa[1]} Q ${ctrl[0]},${ctrl[1]} ${pb[0]},${pb[1]}`}
+        fill="none" stroke="#d8b878" strokeWidth={s.r * 0.13} strokeLinecap="round" />
+    })}</g>
+  }
+
   return (
     <div className="board-wrap">
       {tray(1, 'top')}
@@ -420,6 +468,7 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
           return (
             <g key={s.id} data-cell={s.id} onClick={clickable ? () => click(s.id) : undefined} style={{ cursor: clickable ? 'pointer' : 'default' }}>
               <polygon points={s.poly} fill={fill} stroke={stroke} strokeWidth={sw} />
+              {tiles[s.id] ? tileGlyph(s, tiles[s.id]) : null}
               {levels[s.id] ? levelGlyph(s, levels[s.id]) : null}
               {isTarget && piece && <circle cx={s.cx} cy={s.cy} r={s.r * 0.9} fill="none" stroke="#5cba6b" strokeWidth={s.r * 0.1} />}
               {piece && (piece.stack
@@ -475,6 +524,13 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
         })}
         {overlayLines}
         {wallEls}
+        {tokens.map((tk, i) => {
+          const s = shapeById[tk.cell]
+          if (!s) return null
+          const [x, y] = notchPos(s, tk.notch)
+          return <circle key={`tok${i}`} cx={x} cy={y} r={s.r * 0.24}
+            fill={colors(tk.owner).fill} stroke={colors(tk.owner).stroke} strokeWidth={s.r * 0.07} />
+        })}
       </svg>
       {tray(0, 'bottom')}
       {cardStrip()}

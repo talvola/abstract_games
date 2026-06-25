@@ -154,7 +154,17 @@ stacked "wedding-cake" tiers for levels 1-3 with a blue **dome** cap at level 4
 and a small height badge, *under* any worker piece on that cell; the
 two-things-per-cell primitive for **Santorini** [building level + worker]; omit
 ground/level-0 cells), `board.walls`,
-`reserve` (off-board drop trays), `board.cards`. For a points-and-lines board
+`reserve` (off-board drop trays), `board.cards`,
+`board.tiles` + `board.tokens` (the **path-tile** primitive for **Tsuro**: a
+square board where each placed tile shows painted paths joining its 8 edge-notches,
+and player markers sit on those notches). `board.tiles` = `{cellId: [[a,b]×4]}` —
+four notch-pairs per placed tile, each drawn as a smooth path-arc joining notch
+`a` to notch `b`. `board.tokens` = `[{cell, notch, owner}]` — a marker disc on a
+cell's edge-notch in the owner's seat colour. **Notch numbering** (clockwise from
+the top-left of the rendered cell): `0,1`=top side, `2,3`=right, `4,5`=bottom,
+`6,7`=left, each at the side's third-points. For path-following across cells,
+bordering notches align as: top↔bottom `0↔5 / 1↔4`, right↔left `2↔7 / 3↔6` (a
+token exiting one cell's notch enters the neighbour at the matching notch). For a points-and-lines board
 (Morris/alquerque/YINSH) use `"type": "polygons"` with explicit cell vertices +
 `board.lines`. **`polygons` cells format (exact — the renderer crashes otherwise):**
 `board.cells` MUST be a **list** of `{"id": "<cellId>", "points": [[x,y], …]}`
