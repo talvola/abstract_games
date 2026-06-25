@@ -1,0 +1,14 @@
+{
+  "uid": "cannon_shogi",
+  "name": "Cannon Shogi",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "drops", "shogi", "cannon", "variant"],
+  "bgg_url": "https://www.chessvariants.com/shogivariants.dir/cannonshogi.html",
+  "description": "Cannon Shogi (Peter Michaelsen, 1998): standard 9x9 Shogi plus four cannon pieces borrowed from Xiangqi and Janggi (two orthogonal, two diagonal; two slide-and-jump-to-capture, two jump-to-move) and Janggi soldiers in place of pawns. Drops and zone promotion as in Shogi."
+}
