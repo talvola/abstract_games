@@ -644,6 +644,9 @@ _Erik away overnight: "add quantity, distinct-enough is fine (not just famous), 
 |---|---|---|
 | Arimaa #198 | Omar Syed 2002 anti-AI abstract; 8×8 + 4 traps + push/pull/freeze + free-deploy setup (reserve+drop); win = rabbit-home/all-rabbits/immobilize. Opening 96. Standard square render. | **done → main** (browser-verified) |
 | Shobu #199 | Vega/Sajdak 2019; 4 boards 4×4 (polygons 2×2), passive+aggressive paired move (opp-colour, push≤1 off-board), win = clear a board. Opening 36. | **done → main** (browser-verified 4-board layout) |
+| Judkins Shogi #200 | 6×6 ShogiLike, 7 pieces/side (K R B N G S P) + drops, ZONE=2; agent overrode my brief vs Wikipedia (back rank K G S N B R, corner kings). perft 20/336/6183. Standard ShogiLike render (proven). | **done → main** (anchored; render-shape proven) |
+| Senet #201 | Egyptian dice-race (Kendall reconstruction); 3×10 boustrophedon, 5 pawns, throw-sticks 1–5 w/ bonus, swap/block, special houses, exact bear-off. Square+tints render. | **done → main** (low-risk square render) |
+| Gardner's Minichess #202 | Classic 5×5 minichess (Gardner 1969), ChessLike; R N B Q K + 5 pawns, no castle/double-step. **Canonical perft 7/53/506/4775.** | **done → main** (perft-anchored; standard render) |
 
 ## Needs human (escalations)
 
