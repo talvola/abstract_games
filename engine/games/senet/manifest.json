@@ -1,0 +1,14 @@
+{
+  "uid": "senet",
+  "name": "Senet",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": true,
+  "hidden_info": false,
+  "category": "Race",
+  "tags": ["race", "dice", "ancient", "egyptian", "roll-and-move"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Senet",
+  "description": "Senet: the ancient Egyptian race game (~3100 BCE), in Timothy Kendall's reconstruction. Throw four two-sided sticks (1–5; all-black = 5) and race five pawns along a 30-house S-shaped track and off the far end. Land on a lone enemy pawn to swap it back; pairs are safe and three-in-a-row blocks the way. Survive the House of Water (sent back to Rebirth), stop at the House of Happiness, and bear off the final houses on exact throws. First to bear all five off wins."
+}
