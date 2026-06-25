@@ -1,0 +1,14 @@
+{
+  "uid": "goro_goro_shogi",
+  "name": "Goro Goro Shogi",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "drops", "shogi"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Shogi#Variants",
+  "description": "Goro Goro Shogi (5x6 shogi, a.k.a. Goro Goro Dobutsu Shogi): the full drop game on a 5x6 board with King, two Golds, two Silvers and three Pawns each -- no rook, bishop, knight or lance. Promotion zone is the far two ranks; only Silver and Pawn promote (to Gold)."
+}
