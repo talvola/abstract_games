@@ -11,3 +11,6 @@ dev.env
 Langref.chm
 *.chm
 research/
+
+# secrets (never commit)
+neon-*.txt
