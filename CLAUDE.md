@@ -34,6 +34,9 @@ See PLATFORM_PLAN.md (roadmap) and engine/SPEC.md (game authoring contract).
 - `DATABASE_URL` (default `sqlite:///./agp.db`). Uploads run game code IN-PROCESS (RCE) → gated, closed by default: `AGP_ADMIN_EMAILS` allowlist or `AGP_ALLOW_OPEN_UPLOADS=true`. Real sandbox is deferred.
 - Game registry caches at startup; `POST /api/games/upload` hot-reloads it.
 
+## Known issues — see `KNOWN_ISSUES.md`
+- **🔴 The MCTS bot is unusably slow for heavy games (esp. Chess) — UI looks "hung".** Root cause measured: full random rollouts to terminal (~400 plies, ~1.5 s each) × 300 iterations, computed synchronously in `/advance` → minutes-to-hours/move (far worse on free-tier CPU) → HTTP timeout. Fixes (small, in `engine/agp/mcts.py`): add a wall-clock `max_time` to `select`; slash `max_rollout` (~40–60) + heuristic eval at the cutoff. Details + repro in `KNOWN_ISSUES.md`.
+
 ## Production / hosting (live — see `DEPLOY.md` for the full guide)
 - **Live:** https://abstract-games.onrender.com — a Render web service (`srv-d8un5a7lk1mc7385c73g`, free plan; owner `tea-d6b0cji4d50c73ccmfl0`). **Auto-deploys on every push to `main`.** Render chosen over Vercel (stateful FastAPI app; Vercel is for the Next.js `gamefinder`).
 - **Single service, one origin:** the FastAPI app serves both `/api/*` AND the built SPA — `server/app.py` mounts `web/dist` (built by `./build.sh` = `pip install` + `npm run build`); start = `uvicorn server.app:app`. Frontend calls origin-relative `/api` ⇒ no CORS. `render.yaml` is the blueprint.
