@@ -640,6 +640,7 @@ _Erik picked "option 2 — render-primitive games." I own the shared Board.jsx r
 
 ## Batch 51 — overnight QUANTITY run (2026-06-24 PM→AM): distinct games, mine deep wells
 _Erik away overnight: "add quantity, distinct-enough is fine (not just famous), mine Zillions/chessvariants/traditionals." Full gate, batched browser smoke-checks, fast-path perft-anchored chess/shogi (low render risk). ~3 builds in parallel._
+**PAUSED 1:50am (session limit) after 8 games (#198–205), suite green. NEXT-WAVE QUEUE (dedup-verified free, ready to launch on resume):** hexapawn (retry — launch failed at limit), whale_shogi, wa_shogi, marseillais_chess, progressive_chess, monster_chess, lasker_morris, omweso, cheskers, picaria, latrunculi, nard, jul_gonu, yonin_shogi, micro_shogi. AVOID clone-adjacent hunt/race variants (rimau/len_choa/komikan/adugo = bagh_chal clones; the library is so comprehensive nearly every famous distinct abstract already exists — picks are now Zillions/CVP/traditional deep cuts, dedup EVERY one).
 | Game | Anchor | Status |
 |---|---|---|
 | Arimaa #198 | Omar Syed 2002 anti-AI abstract; 8×8 + 4 traps + push/pull/freeze + free-deploy setup (reserve+drop); win = rabbit-home/all-rabbits/immobilize. Opening 96. Standard square render. | **done → main** (browser-verified) |
