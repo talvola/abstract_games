@@ -1,0 +1,14 @@
+{
+  "uid": "arimaa",
+  "name": "Arimaa",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "AGP",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "arimaa", "push-pull", "trap", "setup-phase", "anti-computer"],
+  "bgg_url": "https://arimaa.com/arimaa/learn/",
+  "description": "Arimaa (Omar Syed, 2002), the famous anti-computer abstract on an 8x8 board with four trap squares (c3, f3, c6, f6). Each side has an Elephant, Camel, 2 Horses, 2 Dogs, 2 Cats and 8 Rabbits in the strength order E>M>H>D>C>R. Players first DEPLOY all 16 pieces freely on their own two home rows, then take turns of up to FOUR one-square steps. A stronger piece may PUSH or PULL an adjacent weaker enemy (2 steps each); a piece next to a stronger enemy with no friendly neighbour is FROZEN; a piece on a trap with no friendly neighbour is captured. Win by getting a Rabbit to the far rank, capturing all enemy Rabbits, or immobilizing the opponent. Gold moves first."
+}
