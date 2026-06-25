@@ -153,7 +153,11 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
       let parity = 0
       const m2 = c.id.match(/^(-?\d+),(-?\d+)$/)
       if (m2) parity = (((2 * +m2[2] - +m2[1]) % 3) + 3) % 3 ? 1 : 0
-      return { id: c.id, cx, cy, poly: pts.map((p) => p.join(',')).join(' '), r: rad * 0.6, parity }
+      // hw/hh = bounding half-extents (the cell's edge distance from centre), used
+      // by the tile/track edge-glyphs so notch/edge-midpoints sit on the cell border.
+      const hw = Math.max(...pts.map((p) => Math.abs(p[0] - cx)))
+      const hh = Math.max(...pts.map((p) => Math.abs(p[1] - cy)))
+      return { id: c.id, cx, cy, poly: pts.map((p) => p.join(',')).join(' '), r: rad * 0.6, hw, hh, parity }
     })
   } else {
     const cells = isHex ? hexCells(board) : squareCells(board)
@@ -162,7 +166,7 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
       const cx = px(c.x), cy = px(c.y)
       const poly = isHex ? hexPoly(cx, cy, R)
         : `${cx - R},${cy - R} ${cx + R},${cy - R} ${cx + R},${cy + R} ${cx - R},${cy + R}`
-      return { id: c.id, cx, cy, poly, r: R, parity: (c.x + c.y) % 2 }
+      return { id: c.id, cx, cy, poly, r: R, hw: R, hh: R, parity: (c.x + c.y) % 2 }
     })
   }
 
@@ -176,6 +180,7 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
   const tints = board.tints || {}                  // {cellId: colour} terrain fills
   const levels = board.levels || {}                // {cellId: int 1..4} per-cell build height (Santorini)
   const tiles = board.tiles || {}                  // {cellId: [[a,b]×4]} Tsuro path-tiles (notch pairs 0..7)
+  const tracks = board.tracks || {}                // {cellId: [[a,b,colour]]} Trax colour-track tiles (edge-mids 0..3)
   const tokens = board.tokens || []                // [{cell, notch, owner}] markers on tile edge-notches
   const shapeById = {}
   for (const s of shapes) shapeById[s.id] = s
@@ -183,9 +188,9 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
   // side, numbered clockwise from the top-left: 0,1 top; 2,3 right; 4,5 bottom;
   // 6,7 left. Returns the pixel [x,y] of notch i on cell shape s.
   function notchPos(s, i) {
-    const r = s.r, cx = s.cx, cy = s.cy, t = r / 3
-    return [[cx - t, cy - r], [cx + t, cy - r], [cx + r, cy - t], [cx + r, cy + t],
-      [cx + t, cy + r], [cx - t, cy + r], [cx - r, cy + t], [cx - r, cy - t]][i]
+    const cx = s.cx, cy = s.cy, hw = s.hw || s.r, hh = s.hh || s.r, tx = hw / 3, ty = hh / 3
+    return [[cx - tx, cy - hh], [cx + tx, cy - hh], [cx + hw, cy - ty], [cx + hw, cy + ty],
+      [cx + tx, cy + hh], [cx - tx, cy + hh], [cx - hw, cy + ty], [cx - hw, cy - ty]][i]
   }
   const cellR = shapes.length ? shapes[0].r : R
   // A cosmetic segment is a list of [x,y] points in board-coord space, with an
@@ -439,6 +444,20 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
     })}</g>
   }
 
+  // Trax colour-track tile: board.tracks[cellId] = a list of [a, b, colour] segments
+  // joining two of the cell's 4 EDGE-MIDPOINTS (0 top, 1 right, 2 bottom, 3 left)
+  // in `colour`. Opposite mids → a straight track; adjacent → a corner curve
+  // (quadratic Bézier through the cell centre). Drawn over the cell fill.
+  function trackGlyph(s, segs) {
+    const hw = s.hw || s.r, hh = s.hh || s.r
+    const mid = (i) => [[s.cx, s.cy - hh], [s.cx + hw, s.cy], [s.cx, s.cy + hh], [s.cx - hw, s.cy]][i]
+    return <g key="trax">{(segs || []).map((seg, i) => {
+      const pa = mid(seg[0]), pb = mid(seg[1])
+      return <path key={i} d={`M ${pa[0]},${pa[1]} Q ${s.cx},${s.cy} ${pb[0]},${pb[1]}`}
+        fill="none" stroke={seg[2] || '#d8b878'} strokeWidth={s.r * 0.16} strokeLinecap="round" />
+    })}</g>
+  }
+
   return (
     <div className="board-wrap">
       {tray(1, 'top')}
@@ -469,6 +488,7 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
             <g key={s.id} data-cell={s.id} onClick={clickable ? () => click(s.id) : undefined} style={{ cursor: clickable ? 'pointer' : 'default' }}>
               <polygon points={s.poly} fill={fill} stroke={stroke} strokeWidth={sw} />
               {tiles[s.id] ? tileGlyph(s, tiles[s.id]) : null}
+              {tracks[s.id] ? trackGlyph(s, tracks[s.id]) : null}
               {levels[s.id] ? levelGlyph(s, levels[s.id]) : null}
               {isTarget && piece && <circle cx={s.cx} cy={s.cy} r={s.r * 0.9} fill="none" stroke="#5cba6b" strokeWidth={s.r * 0.1} />}
               {piece && (piece.stack

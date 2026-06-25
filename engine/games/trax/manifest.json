@@ -1,0 +1,14 @@
+{
+  "uid": "trax",
+  "name": "Trax",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Connection",
+  "tags": ["square", "tiles", "track", "loops", "lines", "abstract", "modern"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/748/trax",
+  "description": "Trax (David Smith, 1980): place two-coloured track tiles on an unbounded square grid so that touching edges match in colour. Same-colour edges meeting at an empty cell FORCE more tiles automatically. Win by completing a closed LOOP or an 8-long LINE in your colour (White or Red)."
+}

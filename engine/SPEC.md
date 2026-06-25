@@ -164,7 +164,12 @@ cell's edge-notch in the owner's seat colour. **Notch numbering** (clockwise fro
 the top-left of the rendered cell): `0,1`=top side, `2,3`=right, `4,5`=bottom,
 `6,7`=left, each at the side's third-points. For path-following across cells,
 bordering notches align as: top↔bottom `0↔5 / 1↔4`, right↔left `2↔7 / 3↔6` (a
-token exiting one cell's notch enters the neighbour at the matching notch). For a points-and-lines board
+token exiting one cell's notch enters the neighbour at the matching notch).
+`board.tracks` = `{cellId: [[a, b, "#colour"], …]}` — the **colour-track tile**
+primitive for **Trax**: each segment joins two of the cell's 4 EDGE-MIDPOINTS
+(`0`=top, `1`=right, `2`=bottom, `3`=left) in `colour` (a straight track for
+opposite mids, a corner curve for adjacent ones). Use a growing board (emit only
+the occupied + legal cells as `cells`, plus `board.extent` if you want stability). For a points-and-lines board
 (Morris/alquerque/YINSH) use `"type": "polygons"` with explicit cell vertices +
 `board.lines`. **`polygons` cells format (exact — the renderer crashes otherwise):**
 `board.cells` MUST be a **list** of `{"id": "<cellId>", "points": [[x,y], …]}`
