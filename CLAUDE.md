@@ -34,6 +34,14 @@ See PLATFORM_PLAN.md (roadmap) and engine/SPEC.md (game authoring contract).
 - `DATABASE_URL` (default `sqlite:///./agp.db`). Uploads run game code IN-PROCESS (RCE) → gated, closed by default: `AGP_ADMIN_EMAILS` allowlist or `AGP_ALLOW_OPEN_UPLOADS=true`. Real sandbox is deferred.
 - Game registry caches at startup; `POST /api/games/upload` hot-reloads it.
 
+## Production / hosting (live — see `DEPLOY.md` for the full guide)
+- **Live:** https://abstract-games.onrender.com — a Render web service (`srv-d8un5a7lk1mc7385c73g`, free plan; owner `tea-d6b0cji4d50c73ccmfl0`). **Auto-deploys on every push to `main`.** Render chosen over Vercel (stateful FastAPI app; Vercel is for the Next.js `gamefinder`).
+- **Single service, one origin:** the FastAPI app serves both `/api/*` AND the built SPA — `server/app.py` mounts `web/dist` (built by `./build.sh` = `pip install` + `npm run build`); start = `uvicorn server.app:app`. Frontend calls origin-relative `/api` ⇒ no CORS. `render.yaml` is the blueprint.
+- **DB = Neon Postgres** (driver `psycopg2-binary`). `DATABASE_URL` is set in the **Render env, NOT git**; the `neon-*.txt` credential files (connection string + Neon API key) are **gitignored — never commit them**. Accounts + async matches persist; hotseat/vs-bot are stateless.
+- **Manage via API:** `RENDER_API_KEY` is in the shell env → `https://api.render.com/v1/services/srv-d8un5a7lk1mc7385c73g` (trigger a deploy `POST …/deploys`, status `GET …/deploys/<id>`, env var `PUT …/env-vars/<KEY>`).
+- **SECURITY:** on the hosted instance the in-process upload endpoint (RCE) MUST stay closed — do NOT set `AGP_ALLOW_OPEN_UPLOADS`/`AGP_ADMIN_EMAILS` on the service. Add games via git + redeploy.
+- **Free-tier caveats:** spins down after ~15 min idle (cold start ~1 min, incl. loading the 205-game registry); Neon auto-suspends an idle DB (auto-resumes on connect).
+
 ## Adding games at scale (the "game factory")
 - The bundled library (~135 games) was largely built by an autonomous loop. `GAME_BACKLOG.md` is the capability map (the abstract-game universe bucketed by the platform primitive each needs); `GAMES_QUEUE.md` is the live status + the merge gate + escalation digest. Read both before a bulk game effort.
 - The factory is a reusable dynamic **Workflow** (script under the session's `workflows/scripts/game-factory-*.js`): per game, one agent implements the package and a *different* agent adversarially verifies it; the orchestrator owns a deterministic merge gate (auto-merge on a published anchor or a clean independent review; queue only genuine ruleset decisions / new board shapes). See the `game-factory-loop` memory.
