@@ -1,0 +1,14 @@
+{
+  "uid": "pylos",
+  "name": "Pylos",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Capture / annihilation",
+  "tags": ["square", "stacking", "pyramid", "abstract", "modern"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/1419/pylos",
+  "description": "Pylos (David G. Royffe, Gigamic): build a four-level pyramid on a 4x4 base from a shared pool of 30 spheres. Place from your reserve or raise one of your own free spheres up a level; complete a 2x2 square of your colour and take back 1 or 2 of your free spheres. First to land a sphere on the apex wins."
+}
