@@ -1,0 +1,14 @@
+{
+  "uid": "janus_chess",
+  "name": "Janus Chess",
+  "version": "1.0.0",
+  "author": "Werner Schöndorf (1978) / AGP port",
+  "engine_api": "1",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "variant", "large"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Janus_Chess",
+  "description": "Janus Chess (Janus-Schach, Werner Schöndorf, 1978), on a 10x8 board. Each side has two Januses (J) -- a bishop + knight compound -- flanking the knights on the b- and i-files. The back rank is R J N B K Q B N J R, with the King on the e-file and the Queen on the f-file (reversed from orthodox chess). Pawns start on the 2nd / 7th ranks and move/capture as in standard chess (double-step, en passant), promoting to Q/R/B/N/J on the last rank. Castling is asymmetric: the king moves toward a rook, ending on the b- or i-file with the rook on the adjacent c- or h-file. Checkmate wins; stalemate and the usual fifty-move / repetition / insufficient-material situations draw."
+}
