@@ -647,6 +647,9 @@ _Erik away overnight: "add quantity, distinct-enough is fine (not just famous), 
 | Judkins Shogi #200 | 6×6 ShogiLike, 7 pieces/side (K R B N G S P) + drops, ZONE=2; agent overrode my brief vs Wikipedia (back rank K G S N B R, corner kings). perft 20/336/6183. Standard ShogiLike render (proven). | **done → main** (anchored; render-shape proven) |
 | Senet #201 | Egyptian dice-race (Kendall reconstruction); 3×10 boustrophedon, 5 pawns, throw-sticks 1–5 w/ bonus, swap/block, special houses, exact bear-off. Square+tints render. | **done → main** (low-risk square render) |
 | Gardner's Minichess #202 | Classic 5×5 minichess (Gardner 1969), ChessLike; R N B Q K + 5 pawns, no castle/double-step. **Canonical perft 7/53/506/4775.** | **done → main** (perft-anchored; standard render) |
+| Goro Goro Shogi #203 | 5×6 ShogiLike, 8 pieces/side (K G×2 S×2 P×3), drops, furthest-zone promotion. Opening 7. | **done → main** (standard ShogiLike render) |
+| Six Men's Morris #204 | Smaller morris (mirrors nine_mens_morris): 16 points (2 concentric squares + 4 spokes), 8 mills, NO flying. | **done → main** (browser-verified morris board) |
+| Alice Chess #205 | Parton 1953 two-board "looking glass" — move on your board, transfer to the mirror (must be vacant); check on current board. Polygons 2-board (Shobu pattern). Opening 20. | **done → main** (browser-verified 2-board layout) |
 
 ## Needs human (escalations)
 
