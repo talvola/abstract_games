@@ -1,0 +1,14 @@
+{
+  "uid": "yari_shogi",
+  "name": "Yari Shogi",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "drops", "shogi", "spear"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Yari_shogi",
+  "description": "Yari Shogi (Spear Shogi, Christian Freeling 1981): a 7x9 Shogi variant whose pieces are forward-ranging 'spears' (slide any distance straight forward like a lance, each with a small extra step). Captured spears switch sides and drop back into play; pieces promote in the far three ranks to forms that also range straight backward."
+}
