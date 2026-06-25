@@ -1,0 +1,14 @@
+{
+  "uid": "alice_chess",
+  "name": "Alice Chess",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "V. R. Parton (1953) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["chess-variant", "two-board", "fairy-chess", "looking-glass", "classic"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Alice_chess",
+  "description": "Alice Chess (V. R. Parton, 1953) — \"through the looking-glass\" chess on TWO boards. All pieces start on board A; board B starts empty. A piece moves by its normal chess move on the board it occupies, then transfers to the corresponding square on the OTHER board — and the move is legal only if that mirror square is vacant. Captures happen on the moving board; check is judged on the board the king stands on. Checkmate wins."
+}
