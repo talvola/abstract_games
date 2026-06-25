@@ -1,0 +1,14 @@
+{
+  "uid": "gardner_minichess",
+  "name": "Gardner's Minichess",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Martin Gardner (1969) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["chess", "square", "capture", "minichess"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Minichess",
+  "description": "The classic 5x5 minichess (Martin Gardner, 1969). All chess pieces, but no castling and no double pawn step."
+}
