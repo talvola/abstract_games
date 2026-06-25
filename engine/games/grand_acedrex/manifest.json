@@ -1,0 +1,14 @@
+{
+  "uid": "grand_acedrex",
+  "name": "Grant Acedrex",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Alfonso X, Libro de los Juegos (1283) / reconstruction by J.-L. Cazaux & S. Musser / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "variant", "historic", "medieval", "large-board", "fairy"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Grant_Acedrex",
+  "description": "Grant Acedrex (\"Great Chess\"), the large medieval chess variant described in Alfonso X of Castile's Libro de los Juegos (1283), on a 12x12 board with exotic animal pieces. Each side has a King, two Rooks (orthogonal sliders), two Crocodiles (diagonal sliders / modern bishops), two Aancas (a griffon: one diagonal step then an orthogonal slide outward), two Unicorns (a knight-leap then a diagonal slide outward), two Lions ((3,0)+(3,1) leapers) and two Giraffes ((3,2) zebra leapers), plus twelve pawns. On its first move the King may leap two squares (orthogonally or diagonally), jumping over the intermediate square. Pawns step a single square (no double step, no en passant) and promote to the piece that started on the file they reach (the King's-file pawn becomes an Aanca). No castling. The historical dice are omitted -- this is the standard no-dice reconstruction. Checkmate wins; stalemate is a draw."
+}
