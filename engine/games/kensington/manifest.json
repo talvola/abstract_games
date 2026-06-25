@@ -1,0 +1,14 @@
+{
+  "uid": "kensington",
+  "name": "Kensington",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Positional",
+  "tags": ["placement", "movement", "tessellation", "hexagon", "mill", "classic"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Kensington_(game)",
+  "description": "Kensington (Taylor & Forbes, 1979) on the 7-hexagon rhombitrihexagonal board. Place 15 counters on the 72 vertices, then slide them along the lines. Complete a triangle to relocate one enemy counter, a square to relocate two. Win by occupying all six vertices of any white hexagon or one of your own colour."
+}
