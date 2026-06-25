@@ -1,0 +1,14 @@
+{
+  "uid": "octi",
+  "name": "Octi",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Don Green (1999) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Capture / annihilation",
+  "tags": ["square", "movement", "capture", "race", "mensa"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/450/octi",
+  "description": "Octi (Don Green, 1999; MENSA Select) — the basic 2-player game on a 6x7 board. Each side has 4 pods and 12 prongs. A pod gains a movement direction only when you add a prong (arrow) to it. Each turn: add a prong, move a pod one square in a pronged direction, or jump (over a pod into the empty square beyond, chaining, optionally capturing jumped enemy pods). Win by landing a pod on any enemy base square, or by capturing all enemy pods."
+}

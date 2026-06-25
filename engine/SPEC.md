@@ -138,6 +138,12 @@ Cell ids are your move-notation cell strings: `"col,row"` for square, `"q,r"`
 - `"fill": "#rrggbb"` (and optional `"stroke"`) — override the seat colour for
   this piece (e.g. ZÈRTZ's neutral white/grey/black marbles, which aren't owned
   by a player).
+- `"prongs": [0, 2, 5, …]` — **directional prongs** (Octi): a list of directions
+  `0..7` (`0`=N/up, clockwise: NE, E, SE, S, SW, W, NW), each drawn as a short
+  arrow radiating from the piece so you can read which way the pod can move/jump.
+  (Directions are SCREEN-oriented: `0` points up. On a square board the renderer
+  draws row 0 at the bottom, so up = the +row direction — the engine should emit
+  prongs in this screen convention and map `0`→+row when moving.)
 - (default, none of the above) — a normal filled disc.
 
 `board.extent: [minX, minY, w, h]` pins the SVG viewBox to a fixed window

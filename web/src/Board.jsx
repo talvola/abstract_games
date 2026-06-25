@@ -458,6 +458,23 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
     })}</g>
   }
 
+  // Directional prongs (Octi): piece.prongs = a list of directions 0..7 (0=N up,
+  // clockwise) — each drawn as a short arrow radiating from the pod, so you can
+  // read which way it can move/jump. Drawn over the piece disc.
+  const PRONG_DIR = [[0, -1], [0.71, -0.71], [1, 0], [0.71, 0.71], [0, 1], [-0.71, 0.71], [-1, 0], [-0.71, -0.71]]
+  function prongGlyph(s, piece) {
+    const col = colors(piece.owner).stroke
+    return <g key="prongs">{(piece.prongs || []).map((d, i) => {
+      const [ux, uy] = PRONG_DIR[d % 8]
+      const x1 = s.cx + ux * s.r * 0.5, y1 = s.cy + uy * s.r * 0.5
+      const x2 = s.cx + ux * s.r * 1.05, y2 = s.cy + uy * s.r * 1.05
+      return <g key={i}>
+        <line x1={x1} y1={y1} x2={x2} y2={y2} stroke={col} strokeWidth={s.r * 0.16} strokeLinecap="round" />
+        <circle cx={x2} cy={y2} r={s.r * 0.12} fill={col} />
+      </g>
+    })}</g>
+  }
+
   return (
     <div className="board-wrap">
       {tray(1, 'top')}
@@ -537,6 +554,7 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
                           : <circle cx={s.cx} cy={s.cy} r={s.r * 0.6}
                               fill={piece.fill || colors(piece.owner).fill}
                               stroke={piece.stroke || colors(piece.owner).stroke} strokeWidth={s.r * 0.07} />)}
+              {piece && piece.prongs ? prongGlyph(s, piece) : null}
               {isTarget && !piece && <circle cx={s.cx} cy={s.cy} r={s.r * 0.3} fill="#5cba6b" opacity="0.85" />}
               {isSource && !piece && <circle cx={s.cx} cy={s.cy} r={s.r * 0.18} fill="#c9a96e" opacity="0.7" />}
             </g>
