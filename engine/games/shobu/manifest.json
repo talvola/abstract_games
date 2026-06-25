@@ -1,0 +1,14 @@
+{
+  "uid": "shobu",
+  "name": "Shobu",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Manny Vega & Jamie Sajdak (2019, Smirk & Dagger) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Capture & Eliminate",
+  "tags": ["abstract", "modern", "push", "elimination", "multi-board", "two-player"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/318600/shobu",
+  "description": "Shobu (Manny Vega & Jamie Sajdak, 2019) — an acclaimed modern abstract played across four 4x4 boards (two dark, two light) in a 2x2 layout. Each turn a player makes a PASSIVE move on one of their two home boards (1 or 2 squares, 8 directions, no pushing) then a matching AGGRESSIVE move — the SAME direction and distance on a board of the OPPOSITE colour, which may shove a single opponent stone (and push it off the board to remove it). Win the instant your opponent has no stones left on any one of the four boards."
+}
