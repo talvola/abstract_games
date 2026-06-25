@@ -1,0 +1,14 @@
+{
+  "uid": "six_mens_morris",
+  "name": "Six Men's Morris",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Positional",
+  "tags": ["mill", "placement", "movement", "classic"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Morris_(board_game)#Six_men's_morris",
+  "description": "Six Men's Morris on a 16-point board of two concentric squares. Place six men, then slide them to adjacent points; form a mill (three in a row along a square's side) to capture an enemy man. There is no flying. Reduce the opponent to two men to win."
+}
