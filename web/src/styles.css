@@ -205,6 +205,19 @@ button.secondary { background: transparent; color: var(--muted); border: 1px sol
   border-radius: 6px; padding: 8px 14px; cursor: pointer; font-family: inherit; }
 button.secondary:hover { color: var(--text); border-color: var(--accent); }
 
+/* match chat */
+.side-col { display: flex; flex-direction: column; gap: 12px; }
+.chat { border: 1px solid var(--line); border-radius: 8px; padding: 10px; display: flex; flex-direction: column; }
+.chat-title { font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+.chat-log { max-height: 200px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; font-size: 0.88rem; }
+.chat-msg { line-height: 1.35; }
+.chat-msg.mine .chat-name { color: var(--accent); }
+.chat-name { font-weight: bold; color: var(--muted); }
+.chat-body { color: var(--text); word-break: break-word; }
+.chat-input { display: flex; gap: 6px; margin-top: 8px; }
+.chat-input input { flex: 1; padding: 6px 8px; background: var(--panel, #2a2620); color: var(--text);
+  border: 1px solid var(--line); border-radius: 6px; font-family: inherit; }
+
 .add-game a { color: var(--accent); }
 .upload-row { display: flex; gap: 10px; align-items: center; margin-top: 8px; flex-wrap: wrap; }
 .upload-row input[type=file] { color: var(--muted); font-size: 0.8rem; }

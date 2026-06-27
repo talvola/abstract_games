@@ -3,6 +3,7 @@ import { api } from './api'
 import Board from './Board'
 import MoveLog from './MoveLog'
 import RulesModal from './RulesModal'
+import Chat from './Chat'
 import { SEAT_FILL } from './colors'
 import { timeLeft, deadlineUrgent } from './timeleft'
 
@@ -120,7 +121,10 @@ export default function MatchPlay({ id, me, go }) {
           />
           {m.render.caption && <div className="caption">{m.render.caption}</div>}
         </div>
-        <MoveLog moves={(m.history || []).map((h) => ({ seat: h.seat, label: h.label, player: h.player }))} />
+        <div className="side-col">
+          <MoveLog moves={(m.history || []).map((h) => ({ seat: h.seat, label: h.label, player: h.player }))} />
+          <Chat matchId={id} meId={me?.id} canPost={m.my_seat != null} />
+        </div>
       </div>
 
       <div className="controls">

@@ -110,6 +110,20 @@ class MatchRatingChange(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, default=_now)
 
 
+class Message(Base):
+    """A chat message in a match thread. Players talk; correspondence is social.
+    New table → auto-created by create_all (safe for the live schema)."""
+
+    __tablename__ = "messages"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    match_id: Mapped[str] = mapped_column(ForeignKey("matches.id"), index=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    name: Mapped[str] = mapped_column(String(64))
+    body: Mapped[str] = mapped_column(Text)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=_now)
+
+
 class Seek(Base):
     """An open challenge waiting for an opponent to accept."""
 

@@ -244,6 +244,10 @@ class MoveBody(BaseModel):
     move: str
 
 
+class MessageBody(BaseModel):
+    body: str
+
+
 # ---- stateless (anonymous) bodies ----
 class NewBody(BaseModel):
     options: dict | None = None
@@ -640,6 +644,39 @@ def delete_match(match_id: str, db: Session = Depends(get_db), user: User = Depe
     if match.status == "active" and not others_bots:
         raise HTTPException(400, "resign this game before removing it")
     db.delete(match)
+    db.commit()
+    return {"ok": True}
+
+
+@app.get("/api/matches/{match_id}/messages")
+def list_messages(match_id: str, db: Session = Depends(get_db)):
+    """Chat thread for a match (public — spectators can read)."""
+    from .models import Message
+
+    msgs = (db.query(Message).filter_by(match_id=match_id)
+              .order_by(Message.created_at.asc()).all())
+    return {"messages": [
+        {"user_id": m.user_id, "name": m.name, "body": m.body,
+         "ts": m.created_at.isoformat()} for m in msgs
+    ]}
+
+
+@app.post("/api/matches/{match_id}/messages")
+def post_message(match_id: str, body: MessageBody, db: Session = Depends(get_db),
+                 user: User = Depends(current_user)):
+    """Post to a match thread. Only the match's players may chat."""
+    from .models import Message
+
+    match = db.get(Match, match_id)
+    if not match:
+        raise HTTPException(404, "match not found")
+    if seat_of(match, user.id) is None:
+        raise HTTPException(403, "only players in this match can chat")
+    text = (body.body or "").strip()[:1000]
+    if not text:
+        raise HTTPException(400, "empty message")
+    msg = Message(match_id=match_id, user_id=user.id, name=user.display_name, body=text)
+    db.add(msg)
     db.commit()
     return {"ok": True}
 

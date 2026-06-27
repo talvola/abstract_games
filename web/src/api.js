@@ -51,6 +51,8 @@ export const api = {
   leaderboard: (uid) => get(`/api/leaderboard/${uid}`),
   userProfile: (id) => get(`/api/users/${id}`),
   matchReplay: (id) => get(`/api/matches/${id}/replay`),
+  matchMessages: (id) => get(`/api/matches/${id}/messages`),
+  postMessage: (id, body) => post(`/api/matches/${id}/messages`, { body }),
 
   // upload a game package (.zip)
   uploadGame: async (file) => {
