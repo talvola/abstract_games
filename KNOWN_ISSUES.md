@@ -1,8 +1,27 @@
 # Known issues
 
-## 🔴 Bot (MCTS) is unusably slow for heavy games — esp. Chess (UI appears "hung")
-**Reported:** 2026-06-25, on the hosted instance. Chess vs computer sat at
-"Computer to move (thinking…)" for 15+ minutes.
+## ✅ FIXED (2026-06-26) — Bot (MCTS) was unusably slow for heavy games — esp. Chess
+**Was:** Chess vs computer sat at "Computer to move (thinking…)" for 15+ minutes
+(reported 2026-06-25 on the hosted instance).
+
+**Fix shipped** (the ranked fixes 1+2 below, plus a heuristic eval):
+- `MCTSBot` now takes a **`max_time`** wall-clock budget — `select` returns the
+  best move so far once exceeded, so move time is bounded regardless of CPU/game.
+  The server passes `AGP_BOT_MAX_TIME` (default **3.0 s**) at every call site
+  (`server/games.py::advance_bots`, the `/api/games/{uid}/bot` endpoint).
+- **`max_rollout` default cut 400 → 50**; at the cutoff the position is scored by
+  an optional **`game.heuristic(state)`** hook instead of drifting ~400 random
+  plies to a draw. `ChessLike.heuristic` = tanh-squashed material balance (incl.
+  drop reserves); games without the hook fall back to a draw (unchanged behaviour).
+- Measured: a chess opening move went from **minutes/hours → ~3 s** (the budget);
+  MCTS now beats RandomBot on material and never loses TTT. Verify with the repro
+  below (should print ~`3.0s`).
+
+Possible future work (not needed for launch): async `/advance` (return "pending" +
+poll) so even a long think never *looks* hung; a capture-biased rollout policy;
+per-category iteration tuning.
+
+<details><summary>Original diagnosis (kept for reference)</summary>
 
 ### Root cause (measured, not guessed)
 - The bot is `agp.MCTSBot` (`engine/agp/mcts.py`). Each MCTS *iteration* runs a

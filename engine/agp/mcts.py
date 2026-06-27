@@ -12,6 +12,7 @@ swapped for ISMCTS; the interface here stays the same.
 from __future__ import annotations
 
 import math
+import time
 from typing import Optional
 
 from .game import Game
@@ -40,21 +41,45 @@ class _Node:
 
 
 class MCTSBot:
+    """UCT search with truncated, heuristic-evaluated rollouts.
+
+    Two knobs keep heavy games (chess-family) responsive:
+
+    * ``max_time`` -- a wall-clock budget (seconds). ``select`` returns the
+      best move found so far once it is exceeded, so move time is bounded
+      regardless of CPU speed or game length. ``None`` = no time limit (run the
+      full ``iterations`` count, the old behaviour).
+    * ``max_rollout`` -- random playouts stop after this many plies and the
+      position is scored by ``game.heuristic(state)`` (if the game provides one;
+      otherwise treated as a draw) instead of drifting ~400 random plies to a
+      draw. Short rollouts + a real eval are far faster *and* stronger than long
+      random rollouts that almost never reach a decisive terminal.
+    """
+
     def __init__(self, rng, iterations: int = 800, c: float = 1.41,
-                 max_rollout: int = 400):
+                 max_rollout: int = 50, max_time: Optional[float] = None):
         self.rng = rng
         self.iterations = iterations
         self.c = c
         self.max_rollout = max_rollout
+        self.max_time = max_time
 
     def select(self, game: Game, state: State) -> Move:
         root = _Node(game, state)
         if len(root.moves) == 1:
             return root.moves[0]
 
-        for _ in range(self.iterations):
-            self._iterate(game, root)
+        deadline = None
+        if self.max_time is not None:
+            deadline = time.monotonic() + self.max_time
 
+        for i in range(self.iterations):
+            self._iterate(game, root)
+            if deadline is not None and time.monotonic() >= deadline:
+                break
+
+        if not root.children:                     # ran out of time before expanding
+            return self.rng.choice(root.moves)
         # Most-visited move (robust choice).
         return max(root.children.items(), key=lambda kv: kv[1].visits)[0]
 
@@ -99,12 +124,24 @@ class MCTSBot:
         steps = 0
         while not game.is_terminal(state):
             if steps >= self.max_rollout:
-                # Pathological game length; treat as a draw to stay robust.
-                return [0.0] * game.num_players
+                # Cutoff: score the position with the game's heuristic if it
+                # exposes one, else treat as a draw (robust generic fallback).
+                return self._evaluate(game, state)
             move = self.rng.choice(game.legal_moves(state))
             state = game.apply_move(state, move)
             steps += 1
         return game.returns(state)
+
+    def _evaluate(self, game: Game, state: State) -> list[float]:
+        h = getattr(game, "heuristic", None)
+        if h is not None:
+            try:
+                val = h(state)
+                if val is not None:
+                    return val
+            except Exception:
+                pass
+        return [0.0] * game.num_players
 
 
 def play_match(game: Game, agents: list, rng, max_moves: int = 2000,

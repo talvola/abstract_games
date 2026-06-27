@@ -22,6 +22,7 @@ ordinary and Berolina pawns.
 
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass, field
 from typing import Optional
 
@@ -484,6 +485,31 @@ class ChessLike(Game):
         if self._draw(state) or not self.in_check(state.board, state.to_move):
             return [0.0, 0.0]
         return [-1.0, 1.0] if state.to_move == WHITE else [1.0, -1.0]
+
+    # Material values for the MCTS rollout cutoff heuristic. Royal pieces score
+    # 0 (always present); unknown variant pieces fall back to a minor's worth.
+    PIECE_VALUES = {"P": 1.0, "N": 3.0, "B": 3.0, "R": 5.0, "Q": 9.0, "K": 0.0}
+
+    def heuristic(self, state) -> list:
+        """Material-balance eval squashed to (-1, 1), as MCTS payoffs [white, black].
+
+        Used by ``MCTSBot`` when a random rollout is truncated before reaching a
+        terminal position — a material count is a far better signal than the
+        draw that ~400 random plies would otherwise drift to. Returns are in the
+        same [white_payoff, black_payoff] convention as ``returns``.
+        """
+        vals = self.PIECE_VALUES
+        bal = 0.0  # positive = WHITE (player 0) is ahead on material
+        for (pl, t) in state.board.values():
+            v = vals.get(t, 3.0)
+            bal += v if pl == WHITE else -v
+        if self.DROPS.enabled:                      # captured material in reserve counts
+            for p, hand in state.hands.items():
+                sign = 1.0 if p == WHITE else -1.0
+                for t, n in hand.items():
+                    bal += sign * vals.get(t, 3.0) * n
+        score = math.tanh(bal / 8.0)
+        return [score, -score]
 
     # ---- apply --------------------------------------------------------------
     def apply_move(self, state, move, rng=None):

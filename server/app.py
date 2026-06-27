@@ -583,7 +583,7 @@ def stateless_bot(uid: str, body: BotBody):
     if game.is_terminal(state):
         raise HTTPException(400, "game is over")
     iters = max(1, min(body.iterations, 5000))
-    move = MCTSBot(_rng, iterations=iters).select(game, state)
+    move = MCTSBot(_rng, iterations=iters, max_time=G.BOT_MAX_TIME).select(game, state)
     return {"move": move}
 
 

@@ -33,6 +33,11 @@ from agp.loader import MANIFEST_NAME, load_manifest  # noqa: E402
 BUNDLED_DIR = ENGINE / "games"
 UPLOAD_DIR = Path(os.environ.get("AGP_UPLOAD_DIR", ROOT / "data" / "games"))
 
+# Wall-clock budget (seconds) per bot move. Caps "thinking" time regardless of
+# game weight or CPU so /advance never blocks past the HTTP timeout. Tunable via
+# env for the constrained free-tier instance. See KNOWN_ISSUES.md.
+BOT_MAX_TIME = float(os.environ.get("AGP_BOT_MAX_TIME", "3.0"))
+
 # SECURITY — uploads are remote code execution.
 # A registered game's game.py is imported and executed IN-PROCESS by this API
 # server (on registry.reload() and on every move). There is no sandbox yet
@@ -291,7 +296,8 @@ def advance_bots(match, game) -> None:
         seat = match.players[seat_idx]
         if seat.get("type") != "bot":
             break
-        move = MCTSBot(_rng, iterations=int(seat.get("iterations", 300))).select(game, state)
+        move = MCTSBot(_rng, iterations=int(seat.get("iterations", 300)),
+                       max_time=BOT_MAX_TIME).select(game, state)
         state = game.apply_move(state, move, rng=_rng)
         match.moves.append(_move_record(match.id, ply, seat_idx, move))
         ply += 1
