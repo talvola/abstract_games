@@ -378,3 +378,56 @@ def rate_finished_match(db, match) -> None:
         row.rating, row.rd, row.vol = after.rating, after.rd, after.vol
 
     db.commit()
+
+
+# ---------------------------------------------------------------------------
+#  correspondence move deadlines + auto-forfeit (anti-rot)
+# ---------------------------------------------------------------------------
+# A global per-move deadline keeps correspondence games from rotting when an
+# opponent stops moving. Computed from match.updated_at (= the last move's time,
+# i.e. when the current player's turn started) so it needs NO new column. Only
+# human-vs-human matches are clocked; vs-bot/anonymous never time out. The sweep
+# is opportunistic (run on lobby/match reads) — no separate worker, which suits
+# free-tier hosting (an idle service has no games to forfeit anyway).
+MOVE_DEADLINE_DAYS = float(os.environ.get("AGP_MOVE_DEADLINE_DAYS", "7"))
+
+
+def is_correspondence(match) -> bool:
+    seats = match.players or []
+    return len(seats) == 2 and all(s.get("type") == "user" for s in seats)
+
+
+def match_deadline(match):
+    """When the side to move must move by (datetime), or None if not clocked."""
+    from datetime import timedelta
+
+    if match.status != "active" or not is_correspondence(match) or not match.updated_at:
+        return None
+    return match.updated_at + timedelta(days=MOVE_DEADLINE_DAYS)
+
+
+def forfeit_if_overdue(db, match) -> bool:
+    """If a clocked match is past its move deadline, the side to move forfeits
+    (their opponent wins) and the result is rated. Returns True if it forfeited."""
+    from datetime import datetime
+
+    dl = match_deadline(match)
+    if dl is None or datetime.utcnow() <= dl:
+        return False
+    match.status = "finished"
+    match.winner = 1 - match.current_player  # the stalling side loses
+    db.commit()
+    rate_finished_match(db, match)
+    return True
+
+
+def sweep_overdue(db) -> int:
+    """Forfeit every correspondence match that has blown its deadline. Cheap: only
+    scans currently-active matches. Returns how many were forfeited."""
+    from .models import Match
+
+    n = 0
+    for m in db.query(Match).filter(Match.status == "active").all():
+        if forfeit_if_overdue(db, m):
+            n += 1
+    return n

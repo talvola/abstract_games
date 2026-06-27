@@ -4,6 +4,7 @@ import Board from './Board'
 import MoveLog from './MoveLog'
 import RulesModal from './RulesModal'
 import { SEAT_FILL } from './colors'
+import { timeLeft, deadlineUrgent } from './timeleft'
 
 // Correspondence match screen. Polls while waiting so an opponent's (or bot's)
 // move appears without a manual refresh.
@@ -101,6 +102,11 @@ export default function MatchPlay({ id, me, go }) {
       </div>
 
       <div className="status" style={{ borderColor: color, color }}>{status}</div>
+      {!m.terminal && m.deadline && (
+        <div className={`deadline-line ${deadlineUrgent(m.deadline) ? 'urgent' : ''}`}>
+          ⏰ {timeLeft(m.deadline)} to move
+        </div>
+      )}
 
       <div className="play-area">
         <div className="board-col">

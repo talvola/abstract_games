@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { api } from './api'
 import GamePicker from './GamePicker'
 import GameOptions, { defaultOptions } from './GameOptions'
+import { timeLeft, deadlineUrgent } from './timeleft'
 
 export default function Lobby({ me, games, go, refreshGames }) {
   const [seeks, setSeeks] = useState([])
@@ -23,6 +24,8 @@ export default function Lobby({ me, games, go, refreshGames }) {
     const t = setInterval(refresh, 6000) // pick up opponents' moves / new challenges
     return () => clearInterval(t)
   }, [])
+
+  const myTurnCount = matches.filter((m) => m.status === 'active' && m.my_turn).length
 
   return (
     <div className="lobby">
@@ -63,12 +66,17 @@ export default function Lobby({ me, games, go, refreshGames }) {
       </section>
 
       <section>
-        <h2>Your games</h2>
+        <h2>Your games{myTurnCount > 0 && <span className="turn-count">{myTurnCount} to move</span>}</h2>
         {matches.length === 0 && <div className="muted small">No games yet.</div>}
         {matches.map((m) => (
           <div className="match-row" key={m.id}>
             <button className="match-open" onClick={() => go({ name: 'match', id: m.id })}>
-              <span>{m.game_name} · vs <strong>{m.opponent}</strong></span>
+              <span>
+                {m.game_name} · vs <strong>{m.opponent}</strong>
+                {m.status === 'active' && m.deadline && (
+                  <span className={`deadline ${deadlineUrgent(m.deadline) ? 'urgent' : ''}`}>{timeLeft(m.deadline)}</span>
+                )}
+              </span>
               <span className={`badge ${badgeClass(m)}`}>{badgeText(m)}</span>
             </button>
             <button

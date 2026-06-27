@@ -154,6 +154,7 @@ def match_view(match: Match, me_id: int | None, db: Session | None = None) -> di
         and match.current_player == my_seat,
         "status": match.status,
         "winner": match.winner,
+        "deadline": (lambda d: d.isoformat() if d else None)(G.match_deadline(match)),
         "history": G.build_history(game, match),
         **pos,
     }
@@ -455,6 +456,7 @@ def new_match(body: NewMatchBody, db: Session = Depends(get_db), user: User = De
 
 @app.get("/api/matches")
 def my_matches(db: Session = Depends(get_db), user: User = Depends(current_user)):
+    G.sweep_overdue(db)  # opportunistic: clear rotted correspondence games on lobby load
     # Small-scale: scan recent matches and filter by membership in Python.
     rows = db.query(Match).order_by(Match.updated_at.desc()).limit(200).all()
     out = []
@@ -463,6 +465,7 @@ def my_matches(db: Session = Depends(get_db), user: User = Depends(current_user)
         if seat is None:
             continue
         opp = next((s.get("name") for i, s in enumerate(m.players) if i != seat), "?")
+        dl = G.match_deadline(m)
         out.append({
             "id": m.id,
             "game_name": game_name(m.game_uid),
@@ -472,6 +475,7 @@ def my_matches(db: Session = Depends(get_db), user: User = Depends(current_user)
             "winner_is_me": m.status == "finished" and m.winner == seat,
             "winner": m.winner,
             "updated_at": m.updated_at.isoformat(),
+            "deadline": dl.isoformat() if dl else None,
         })
     out.sort(key=lambda r: (r["status"] != "active", not r["my_turn"]))
     return {"matches": out}
@@ -482,6 +486,7 @@ def get_match(match_id: str, db: Session = Depends(get_db), user: User | None = 
     match = db.get(Match, match_id)
     if not match:
         raise HTTPException(404, "match not found")
+    G.forfeit_if_overdue(db, match)  # opening an overdue game settles it
     return match_view(match, user.id if user else None, db)
 
 

@@ -192,6 +192,14 @@ main { display: flex; flex-direction: column; align-items: center; padding-top: 
 .replay-controls input[type=range] { flex: 1; max-width: 280px; accent-color: var(--accent); }
 .replay-controls button { min-width: 38px; }
 
+/* correspondence deadlines + turn dashboard */
+.turn-count { margin-left: 10px; font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase;
+  background: rgba(92,186,107,0.2); color: #5cba6b; padding: 2px 8px; border-radius: 10px; vertical-align: middle; }
+.deadline { margin-left: 8px; font-size: 0.74rem; color: var(--muted); }
+.deadline.urgent { color: #e8a020; }
+.deadline-line { text-align: center; font-size: 0.82rem; color: var(--muted); margin: -4px 0 6px; }
+.deadline-line.urgent { color: #e8a020; }
+
 .add-game a { color: var(--accent); }
 .upload-row { display: flex; gap: 10px; align-items: center; margin-top: 8px; flex-wrap: wrap; }
 .upload-row input[type=file] { color: var(--muted); font-size: 0.8rem; }
