@@ -30,7 +30,6 @@ export default function Lobby({ me, games, go, refreshGames }) {
   return (
     <div className="lobby">
       {error && <div className="error small">{error}</div>}
-      <NewChallenge games={games} go={go} onCreated={refresh} />
 
       <section>
         <h2>Open challenges</h2>
@@ -38,7 +37,9 @@ export default function Lobby({ me, games, go, refreshGames }) {
         {seeks.map((s) => (
           <div className="seek-row" key={s.id}>
             <span>
-              <strong>{s.creator_name}</strong> · {s.game_name}
+              <strong>{s.creator_name}</strong>
+              {s.creator_rating && <span className="seat-rating">{s.creator_rating.rating}{s.creator_rating.provisional ? '?' : ''}</span>}
+              {' · '}{s.game_name}
               {s.options?.size ? ` (size ${s.options.size})` : ''}
             </span>
             {s.mine ? (
@@ -78,6 +79,11 @@ export default function Lobby({ me, games, go, refreshGames }) {
                 )}
               </span>
               <span className={`badge ${badgeClass(m)}`}>{badgeText(m)}</span>
+              {m.delta != null && (
+                <span className="seat-delta" style={{ color: m.delta >= 0 ? '#5cba6b' : '#e86050' }}>
+                  {m.delta >= 0 ? '+' : ''}{m.delta}
+                </span>
+              )}
             </button>
             <button
               className="row-remove"
@@ -92,6 +98,8 @@ export default function Lobby({ me, games, go, refreshGames }) {
           </div>
         ))}
       </section>
+
+      <NewChallenge games={games} go={go} onCreated={refresh} />
 
       {me.can_upload && <AddGame onUploaded={() => { refreshGames(); refresh() }} />}
     </div>

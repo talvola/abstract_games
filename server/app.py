@@ -376,12 +376,22 @@ def me(user: User | None = Depends(optional_user)):
 # ===========================================================================
 @app.get("/api/seeks")
 def list_seeks(db: Session = Depends(get_db), user: User | None = Depends(optional_user)):
+    from .models import UserGameRating
+
     seeks = db.query(Seek).order_by(Seek.created_at.desc()).all()
+
+    def creator_rating(s):
+        r = (db.query(UserGameRating)
+               .filter_by(user_id=s.creator_id, game_uid=s.game_uid).first())
+        return {"rating": round(r.rating), "provisional": r.rd > 110} if r else None
+
     return {
         "seeks": [
             {
                 "id": s.id,
                 "creator_name": s.creator_name,
+                "creator_id": s.creator_id,
+                "creator_rating": creator_rating(s),
                 "game_uid": s.game_uid,
                 "game_name": game_name(s.game_uid),
                 "options": s.options,
@@ -456,6 +466,8 @@ def new_match(body: NewMatchBody, db: Session = Depends(get_db), user: User = De
 
 @app.get("/api/matches")
 def my_matches(db: Session = Depends(get_db), user: User = Depends(current_user)):
+    from .models import MatchRatingChange
+
     G.sweep_overdue(db)  # opportunistic: clear rotted correspondence games on lobby load
     # Small-scale: scan recent matches and filter by membership in Python.
     rows = db.query(Match).order_by(Match.updated_at.desc()).limit(200).all()
@@ -466,6 +478,12 @@ def my_matches(db: Session = Depends(get_db), user: User = Depends(current_user)
             continue
         opp = next((s.get("name") for i, s in enumerate(m.players) if i != seat), "?")
         dl = G.match_deadline(m)
+        delta = None
+        if m.status == "finished":
+            ch = (db.query(MatchRatingChange)
+                    .filter_by(match_id=m.id, user_id=user.id).first())
+            if ch:
+                delta = round(ch.delta, 1)
         out.append({
             "id": m.id,
             "game_name": game_name(m.game_uid),
@@ -476,6 +494,7 @@ def my_matches(db: Session = Depends(get_db), user: User = Depends(current_user)
             "winner": m.winner,
             "updated_at": m.updated_at.isoformat(),
             "deadline": dl.isoformat() if dl else None,
+            "delta": delta,
         })
     out.sort(key=lambda r: (r["status"] != "active", not r["my_turn"]))
     return {"matches": out}
