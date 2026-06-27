@@ -120,6 +120,9 @@ export default function MatchPlay({ id, me, go }) {
       <div className="controls">
         <button onClick={() => go({ name: 'home' })}>← Lobby</button>
         <button onClick={() => setShowRules(true)}>Rules</button>
+        {m.terminal && (m.history || []).length > 0 && (
+          <button onClick={() => go({ name: 'replay', id })}>Replay</button>
+        )}
         {!m.terminal && m.my_seat != null && (
           <button
             className="danger"

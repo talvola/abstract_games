@@ -49,6 +49,7 @@ export const api = {
   // ratings
   leaderboard: (uid) => get(`/api/leaderboard/${uid}`),
   userProfile: (id) => get(`/api/users/${id}`),
+  matchReplay: (id) => get(`/api/matches/${id}/replay`),
 
   // upload a game package (.zip)
   uploadGame: async (file) => {

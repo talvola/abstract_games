@@ -604,6 +604,46 @@ def leaderboard(game_uid: str, limit: int = 50, db: Session = Depends(get_db)):
     }
 
 
+@app.get("/api/matches/{match_id}/replay")
+def match_replay(match_id: str, db: Session = Depends(get_db)):
+    """Step-through frames of a match: the render + caption at every ply, from the
+    initial position to the final one. Re-applies the stored moves (same path as
+    build_history). Public — any finished/ongoing match can be reviewed."""
+    match = db.get(Match, match_id)
+    if not match:
+        raise HTTPException(404, "match not found")
+    _, game = registry.get(match.game_uid)
+    names = [s.get("name") for s in match.players]
+    try:
+        state = game.initial_state(options=match.options or {})
+    except Exception:
+        raise HTTPException(500, "cannot replay this match")
+
+    def frame(ply, mover, label):
+        r = game.render(state)
+        return {"ply": ply, "render": r, "caption": r.get("caption"),
+                "mover": mover, "label": label}
+
+    frames = [frame(0, None, None)]
+    for mr in sorted(match.moves, key=lambda r: r.ply):
+        try:
+            label = game.describe_move(state, mr.move)
+        except Exception:
+            label = mr.move
+        try:
+            state = game.apply_move(state, mr.move)
+        except Exception:
+            break
+        mover = names[mr.seat] if mr.seat < len(names) else f"P{mr.seat}"
+        frames.append(frame(mr.ply + 1, mover, label))
+    return {
+        "id": match.id, "game_uid": match.game_uid,
+        "game_name": game_name(match.game_uid),
+        "players": [{"name": s.get("name"), "type": s["type"]} for s in match.players],
+        "winner": match.winner, "status": match.status, "frames": frames,
+    }
+
+
 @app.get("/api/users/{user_id}")
 def user_profile(user_id: int, db: Session = Depends(get_db)):
     """Public profile: display name + per-game ratings/records, best games first."""
