@@ -235,6 +235,11 @@ class SeekBody(BaseModel):
     seat_pref: str = "random"
 
 
+class QuickPairBody(BaseModel):
+    game_uid: str
+    options: dict | None = None
+
+
 class MoveBody(BaseModel):
     move: str
 
@@ -437,6 +442,43 @@ def accept_seek(seek_id: str, background: BackgroundTasks, db: Session = Depends
     db.commit()
     notify_turn(db, match, user.id, background)  # if the creator is to move first
     return {"match_id": match.id}
+
+
+def _rating_value(db, user_id: int, game_uid: str) -> float:
+    from .models import UserGameRating
+    r = db.query(UserGameRating).filter_by(user_id=user_id, game_uid=game_uid).first()
+    return r.rating if r else 1500.0
+
+
+@app.post("/api/quickpair")
+def quick_pair(body: QuickPairBody, background: BackgroundTasks,
+               db: Session = Depends(get_db), user: User = Depends(current_user)):
+    """One-click pairing. If an open seek for this game (+options) exists from
+    another player, pair with the CLOSEST-rated one immediately and return the
+    match. Otherwise post a seek and return paired=false (the caller waits)."""
+    registry.get(body.game_uid)  # validate game exists
+    opts = body.options or {}
+    candidates = [
+        s for s in db.query(Seek).filter(Seek.game_uid == body.game_uid).all()
+        if s.creator_id != user.id and (s.options or {}) == opts
+        and db.get(User, s.creator_id) is not None
+    ]
+    if candidates:
+        my_r = _rating_value(db, user.id, body.game_uid)
+        seek = min(candidates, key=lambda s: abs(_rating_value(db, s.creator_id, body.game_uid) - my_r))
+        creator = db.get(User, seek.creator_id)
+        players = order_seats(seat_user(creator), seat_user(user), seek.seat_pref)
+        match = create_match(db, seek.game_uid, seek.options, players)
+        db.delete(seek)
+        db.commit()
+        notify_turn(db, match, user.id, background)
+        return {"paired": True, "match_id": match.id}
+    # No opponent waiting — post our own seek.
+    seek = Seek(id=G.new_id(), creator_id=user.id, creator_name=user.display_name,
+                game_uid=body.game_uid, options=opts, seat_pref="random")
+    db.add(seek)
+    db.commit()
+    return {"paired": False, "seek_id": seek.id}
 
 
 @app.delete("/api/seeks/{seek_id}")

@@ -37,6 +37,7 @@ export const api = {
     post('/api/seeks', { game_uid, options, seat_pref }),
   acceptSeek: (id) => post(`/api/seeks/${id}/accept`),
   cancelSeek: (id) => del(`/api/seeks/${id}`),
+  quickPair: (game_uid, options) => post('/api/quickpair', { game_uid, options }),
   newBotMatch: (game_uid, options, seat, bot_iterations) =>
     post('/api/matches', { game_uid, options, opponent: 'bot', seat, bot_iterations }),
   myMatches: () => get('/api/matches'),

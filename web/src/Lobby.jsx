@@ -164,14 +164,16 @@ function NewChallenge({ games, go, onCreated }) {
   const [seat, setSeat] = useState('random')
   const [difficulty, setDifficulty] = useState(300)
   const [busy, setBusy] = useState(false)
+  const [note, setNote] = useState('')
 
   const game = games.find((g) => g.uid === uid)
   const freeform = !!game?.freeform
   useEffect(() => setOpts(defaultOptions(game?.options)), [uid]) // eslint-disable-line
   useEffect(() => { if (freeform) setOpponent('human') }, [freeform])
+  useEffect(() => setNote(''), [uid, opponent])
 
   async function create() {
-    setBusy(true)
+    setBusy(true); setNote('')
     try {
       const options = opts
       if (opponent === 'computer') {
@@ -181,6 +183,18 @@ function NewChallenge({ games, go, onCreated }) {
         await api.createSeek(uid, options, seat)
         onCreated()
       }
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  // One-click: pair with a waiting opponent instantly, else post a seek and wait.
+  async function playNow() {
+    setBusy(true); setNote('')
+    try {
+      const r = await api.quickPair(uid, opts)
+      if (r.paired) go({ name: 'match', id: r.match_id })
+      else { setNote('No opponent waiting — your challenge is posted. We’ll pair you when someone joins.'); onCreated() }
     } finally {
       setBusy(false)
     }
@@ -218,9 +232,15 @@ function NewChallenge({ games, go, onCreated }) {
           </>
         )}
       </div>
-      <button className="start" onClick={create} disabled={busy}>
-        {opponent === 'computer' ? 'Start game' : 'Post challenge'}
-      </button>
+      <div className="challenge-actions">
+        {opponent === 'human' && !freeform && (
+          <button className="start" onClick={playNow} disabled={busy}>⚡ Play now</button>
+        )}
+        <button className={opponent === 'human' && !freeform ? 'secondary' : 'start'} onClick={create} disabled={busy}>
+          {opponent === 'computer' ? 'Start game' : 'Post challenge'}
+        </button>
+      </div>
+      {note && <div className="muted small" style={{ marginTop: 8 }}>{note}</div>}
     </section>
   )
 }
