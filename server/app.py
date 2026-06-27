@@ -104,7 +104,36 @@ def game_name(uid: str) -> str:
     return entry["manifest"]["name"] if entry else uid
 
 
-def match_view(match: Match, me_id: int | None) -> dict:
+def _seat_ratings(db, match) -> list[dict]:
+    """Per-seat rating snapshot for match_view: current rating/rd/games for each
+    human seat, plus the rating `delta` once the match is rated. db may be None
+    (e.g. some read paths) — then no rating fields are attached."""
+    from .models import MatchRatingChange, UserGameRating
+
+    out = [{"name": s.get("name"), "type": s["type"],
+            **({"user_id": s["user_id"]} if s.get("type") == "user" else {})}
+           for s in match.players]
+    if db is None:
+        return out
+    deltas = {}
+    if match.status == "finished":
+        for ch in db.query(MatchRatingChange).filter_by(match_id=match.id).all():
+            deltas[ch.user_id] = round(ch.delta, 1)
+    for seat, s in zip(out, match.players):
+        if s.get("type") != "user":
+            continue
+        uid = s.get("user_id")
+        r = db.query(UserGameRating).filter_by(user_id=uid, game_uid=match.game_uid).first()
+        if r is not None:
+            seat["rating"] = round(r.rating)
+            seat["rd"] = round(r.rd)
+            seat["provisional"] = r.rd > 110  # high RD = not yet settled
+        if uid in deltas:
+            seat["delta"] = deltas[uid]
+    return out
+
+
+def match_view(match: Match, me_id: int | None, db: Session | None = None) -> dict:
     _, game = registry.get(match.game_uid)
     state = game.deserialize(match.state)
     my_seat = seat_of(match, me_id)
@@ -118,7 +147,7 @@ def match_view(match: Match, me_id: int | None) -> dict:
         "game_uid": match.game_uid,
         "game_name": game_name(match.game_uid),
         "options": match.options,
-        "players": [{"name": s.get("name"), "type": s["type"]} for s in match.players],
+        "players": _seat_ratings(db, match),
         "my_seat": my_seat,
         "my_turn": match.status == "active"
         and my_seat is not None
@@ -453,7 +482,7 @@ def get_match(match_id: str, db: Session = Depends(get_db), user: User | None = 
     match = db.get(Match, match_id)
     if not match:
         raise HTTPException(404, "match not found")
-    return match_view(match, user.id if user else None)
+    return match_view(match, user.id if user else None, db)
 
 
 @app.post("/api/matches/{match_id}/move")
@@ -489,8 +518,9 @@ def make_match_move(
     G.apply_human_move(match, game, body.move)
     db.commit()
     db.refresh(match)
+    G.rate_finished_match(db, match)  # idempotent; only fires on human-vs-human finish
     notify_turn(db, match, user.id, background)
-    return match_view(match, user.id)
+    return match_view(match, user.id, db)
 
 
 @app.post("/api/matches/{match_id}/advance")
@@ -507,7 +537,7 @@ def advance_match(match_id: str, db: Session = Depends(get_db), user: User = Dep
         G.advance_bots(match, game)
         db.commit()
         db.refresh(match)
-    return match_view(match, user.id)
+    return match_view(match, user.id, db)
 
 
 @app.post("/api/matches/{match_id}/resign")
@@ -519,14 +549,15 @@ def resign_match(match_id: str, db: Session = Depends(get_db), user: User = Depe
     if seat is None:
         raise HTTPException(403, "you are not a player in this match")
     if match.status != "active":
-        return match_view(match, user.id)
+        return match_view(match, user.id, db)
     _, game = registry.get(match.game_uid)
     match.status = "finished"
     # 2-player: the opponent wins. Otherwise just end it with no winner.
     match.winner = (1 - seat) if game.num_players == 2 else None
     db.commit()
     db.refresh(match)
-    return match_view(match, user.id)
+    G.rate_finished_match(db, match)
+    return match_view(match, user.id, db)
 
 
 @app.delete("/api/matches/{match_id}")
@@ -545,6 +576,56 @@ def delete_match(match_id: str, db: Session = Depends(get_db), user: User = Depe
     db.delete(match)
     db.commit()
     return {"ok": True}
+
+
+# ===========================================================================
+#  ratings: leaderboards + player profiles
+# ===========================================================================
+@app.get("/api/leaderboard/{game_uid}")
+def leaderboard(game_uid: str, limit: int = 50, db: Session = Depends(get_db)):
+    """Top rated players for one game (provisional ratings — RD>110 — ranked last)."""
+    from .models import User, UserGameRating
+
+    limit = max(1, min(limit, 200))
+    rows = (db.query(UserGameRating, User)
+              .join(User, User.id == UserGameRating.user_id)
+              .filter(UserGameRating.game_uid == game_uid, UserGameRating.games > 0)
+              .all())
+    ranked = sorted(rows, key=lambda ru: (ru[0].rd > 110, -ru[0].rating))[:limit]
+    return {
+        "game_uid": game_uid,
+        "game_name": game_name(game_uid),
+        "entries": [
+            {"user_id": u.id, "name": u.display_name, "rating": round(r.rating),
+             "rd": round(r.rd), "provisional": r.rd > 110,
+             "games": r.games, "wins": r.wins, "losses": r.losses, "draws": r.draws}
+            for r, u in ranked
+        ],
+    }
+
+
+@app.get("/api/users/{user_id}")
+def user_profile(user_id: int, db: Session = Depends(get_db)):
+    """Public profile: display name + per-game ratings/records, best games first."""
+    from .models import User, UserGameRating
+
+    u = db.get(User, user_id)
+    if not u:
+        raise HTTPException(404, "user not found")
+    ratings = (db.query(UserGameRating)
+                 .filter_by(user_id=user_id).filter(UserGameRating.games > 0).all())
+    ratings.sort(key=lambda r: (r.rd > 110, -r.rating))
+    return {
+        "id": u.id,
+        "display_name": u.display_name,
+        "created_at": u.created_at.isoformat() if u.created_at else None,
+        "ratings": [
+            {"game_uid": r.game_uid, "game_name": game_name(r.game_uid),
+             "rating": round(r.rating), "rd": round(r.rd), "provisional": r.rd > 110,
+             "games": r.games, "wins": r.wins, "losses": r.losses, "draws": r.draws}
+            for r in ratings
+        ],
+    }
 
 
 # ===========================================================================

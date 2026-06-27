@@ -13,7 +13,9 @@ from __future__ import annotations
 
 from datetime import datetime
 
-from sqlalchemy import JSON, DateTime, ForeignKey, Integer, String, Text
+from sqlalchemy import (
+    JSON, DateTime, Float, ForeignKey, Integer, String, Text, UniqueConstraint,
+)
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .db import Base
@@ -63,6 +65,49 @@ class MoveRecord(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, default=_now)
 
     match: Mapped[Match] = relationship(back_populates="moves")
+
+
+class UserGameRating(Base):
+    """A player's Glicko-2 rating for ONE game, plus their W/L/D record in it.
+
+    Per (user, game_uid) because skill doesn't transfer across 205 different
+    games. Created lazily the first time a user finishes a rated (human-vs-human)
+    match of a game. Stored on the familiar Glicko scale (1500 ± 350)."""
+
+    __tablename__ = "user_game_ratings"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
+    game_uid: Mapped[str] = mapped_column(String(64), index=True)
+    rating: Mapped[float] = mapped_column(Float, default=1500.0)
+    rd: Mapped[float] = mapped_column(Float, default=350.0)
+    vol: Mapped[float] = mapped_column(Float, default=0.06)
+    games: Mapped[int] = mapped_column(Integer, default=0)
+    wins: Mapped[int] = mapped_column(Integer, default=0)
+    losses: Mapped[int] = mapped_column(Integer, default=0)
+    draws: Mapped[int] = mapped_column(Integer, default=0)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=_now, onupdate=_now)
+
+    __table_args__ = (UniqueConstraint("user_id", "game_uid", name="uq_user_game"),)
+
+
+class MatchRatingChange(Base):
+    """One row per player per RATED match: the before/after/delta of their rating.
+
+    Doubles as the idempotency guard — a match with any rows here has already
+    been rated, so the completion hook never double-counts. Also powers the
+    post-game "+25" display and a player's rating history."""
+
+    __tablename__ = "match_rating_changes"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    match_id: Mapped[str] = mapped_column(ForeignKey("matches.id"), index=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
+    game_uid: Mapped[str] = mapped_column(String(64), index=True)
+    before: Mapped[float] = mapped_column(Float)
+    after: Mapped[float] = mapped_column(Float)
+    delta: Mapped[float] = mapped_column(Float)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=_now)
 
 
 class Seek(Base):

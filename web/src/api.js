@@ -46,6 +46,10 @@ export const api = {
   resignMatch: (id) => post(`/api/matches/${id}/resign`),
   deleteMatch: (id) => del(`/api/matches/${id}`),
 
+  // ratings
+  leaderboard: (uid) => get(`/api/leaderboard/${uid}`),
+  userProfile: (id) => get(`/api/users/${id}`),
+
   // upload a game package (.zip)
   uploadGame: async (file) => {
     const fd = new FormData()

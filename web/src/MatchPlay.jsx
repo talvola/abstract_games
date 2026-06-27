@@ -74,6 +74,9 @@ export default function MatchPlay({ id, me, go }) {
   } else {
     status = `Waiting for ${opponent}`; color = '#8a7a62'
   }
+  // Append the player's rating change once a rated (human-vs-human) game ends.
+  const myDelta = m.terminal && m.my_seat != null ? m.players[m.my_seat]?.delta : null
+  if (myDelta != null) status += ` (${myDelta >= 0 ? '+' : ''}${myDelta})`
 
   return (
     <div className="play">
@@ -83,7 +86,15 @@ export default function MatchPlay({ id, me, go }) {
           {m.players.map((p, i) => (
             <span key={i} className={`seat-chip ${i === m.current_player && !m.terminal ? 'active-seat' : ''}`}>
               <span className="seat-dot" style={{ background: SEAT_FILL[i] }} />
-              {p.name}{p.type === 'bot' ? ' 🤖' : ''}{m.my_seat === i ? ' (you)' : ''}
+              {p.type === 'user' && p.user_id
+                ? <a className="seat-link" onClick={() => go({ name: 'profile', id: p.user_id })}>{p.name}</a>
+                : p.name}{p.type === 'bot' ? ' 🤖' : ''}{m.my_seat === i ? ' (you)' : ''}
+              {p.rating != null && <span className="seat-rating">{p.rating}{p.provisional ? '?' : ''}</span>}
+              {p.delta != null && (
+                <span className="seat-delta" style={{ color: p.delta >= 0 ? '#5cba6b' : '#e86050' }}>
+                  {p.delta >= 0 ? '+' : ''}{p.delta}
+                </span>
+              )}
             </span>
           ))}
         </div>

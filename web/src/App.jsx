@@ -4,6 +4,8 @@ import Auth from './Auth'
 import Lobby from './Lobby'
 import QuickPlay from './QuickPlay'
 import MatchPlay from './MatchPlay'
+import Leaderboard from './Leaderboard'
+import Profile from './Profile'
 
 export default function App() {
   const [me, setMe] = useState(undefined) // undefined = loading, null = anonymous
@@ -34,6 +36,8 @@ export default function App() {
           <Home me={me} setMe={setMe} games={games} go={go} refreshGames={refreshGames} />
         )}
         {games && screen.name === 'quickplay' && <QuickPlay games={games} go={go} />}
+        {games && screen.name === 'leaderboard' && <Leaderboard games={games} uid={screen.uid} go={go} />}
+        {screen.name === 'profile' && <Profile id={screen.id} go={go} />}
         {screen.name === 'match' && <MatchPlay id={screen.id} me={me} go={go} />}
       </main>
     </div>
@@ -50,6 +54,7 @@ function Home({ me, setMe, games, go, refreshGames }) {
           Quick play — no account
         </button>
         <div className="muted small">Hotseat or vs the computer, right now.</div>
+        <button className="link" onClick={() => go({ name: 'leaderboard' })}>🏆 Leaderboards</button>
       </div>
 
       {me ? (

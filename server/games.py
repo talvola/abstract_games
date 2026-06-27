@@ -326,3 +326,55 @@ def _move_record(match_id, ply, seat, move):
     from .models import MoveRecord
 
     return MoveRecord(match_id=match_id, ply=ply, seat=seat, move=move)
+
+
+def rate_finished_match(db, match) -> None:
+    """Apply Glicko-2 rating changes once a human-vs-human match finishes.
+
+    Idempotent (guarded by existing MatchRatingChange rows) so it is safe to call
+    after every move/advance/resign. Only rates 1v1 matches where BOTH seats are
+    human — bot games and 3+-player matches stay unrated. Commits its own writes.
+    """
+    from .models import MatchRatingChange, UserGameRating
+    from .rating import DEFAULT_RATING, DEFAULT_RD, DEFAULT_VOL, Rating, update_pair
+
+    if match.status != "finished":
+        return
+    seats = match.players or []
+    if len(seats) != 2 or any(s.get("type") != "user" for s in seats):
+        return
+    uid0, uid1 = seats[0].get("user_id"), seats[1].get("user_id")
+    if uid0 is None or uid1 is None or uid0 == uid1:
+        return
+    if db.query(MatchRatingChange).filter_by(match_id=match.id).first():
+        return  # already rated
+
+    def row_for(user_id):
+        r = (db.query(UserGameRating)
+               .filter_by(user_id=user_id, game_uid=match.game_uid).first())
+        if r is None:
+            r = UserGameRating(user_id=user_id, game_uid=match.game_uid,
+                               rating=DEFAULT_RATING, rd=DEFAULT_RD, vol=DEFAULT_VOL,
+                               games=0, wins=0, losses=0, draws=0)
+            db.add(r)
+        return r
+
+    r0, r1 = row_for(uid0), row_for(uid1)
+    snap0 = Rating(r0.rating, r0.rd, r0.vol)
+    snap1 = Rating(r1.rating, r1.rd, r1.vol)
+    score0 = 0.5 if match.winner is None else (1.0 if match.winner == 0 else 0.0)
+    new0, new1 = update_pair(snap0, snap1, score0)
+
+    for row, before, after, score in (
+        (r0, snap0, new0, score0), (r1, snap1, new1, 1.0 - score0)
+    ):
+        row.games += 1
+        row.wins += score == 1.0
+        row.losses += score == 0.0
+        row.draws += score == 0.5
+        db.add(MatchRatingChange(
+            match_id=match.id, user_id=row.user_id, game_uid=match.game_uid,
+            before=before.rating, after=after.rating, delta=after.rating - before.rating))
+        row.rating, row.rd, row.vol = after.rating, after.rd, after.vol
+
+    db.commit()
