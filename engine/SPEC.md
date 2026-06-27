@@ -146,6 +146,16 @@ Cell ids are your move-notation cell strings: `"col,row"` for square, `"q,r"`
   prongs in this screen convention and map `0`→+row when moving.)
 - (default, none of the above) — a normal filled disc.
 
+**Spec-level `"pieceset": "chess"`** — a *piece-set hint*: the renderer maps each
+piece's `label` to a real glyph from that set instead of drawing the bare letter.
+The `chess` set covers the standard letters `K Q R B N P` (drawn as solid Unicode
+chess silhouettes, filled in the seat colour); any other label (fairy pieces
+`A`/`C`/`M`/… or a non-chess game) falls back to the plain `label`, so it is safe
+to set on every variant. `ChessLike` sets it automatically (`PIECESET = "chess"`,
+also applied to reserve-tray chips); a variant that reuses a *standard* letter for
+a non-standard piece can set `PIECESET = None` to opt out. New families can register
+their own set in `web/src/Board.jsx` (`PIECE_GLYPHS`).
+
 `board.extent: [minX, minY, w, h]` pins the SVG viewBox to a fixed window
 instead of fitting the current cells — use it for a **shrinking board** (ZÈRTZ:
 emit only the rings that still exist as `cells`; removed rings then leave a gap

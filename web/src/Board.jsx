@@ -11,6 +11,15 @@ import { SEAT_FILL, SEAT_STROKE } from './colors'
 
 const colors = (o) => ({ fill: SEAT_FILL[o] ?? '#aaa', stroke: SEAT_STROKE[o] ?? '#555' })
 const PIECE_NAMES = { Q: 'Queen', R: 'Rook', N: 'Knight', B: 'Bishop', K: 'King', P: 'Pawn' }
+// Real piece glyphs per `spec.pieceset` (opt-in, set by the engine). The chess
+// family maps its standard letters to solid Unicode chess silhouettes so they
+// render as actual pieces (filled in the seat colour) instead of the bare letter.
+// Any letter not in the set (fairy pieces A/C/M/…) falls back to the letter, so
+// variants stay correct. Other families can add their own set later.
+const PIECE_GLYPHS = {
+  chess: { K: '♚', Q: '♛', R: '♜', B: '♝', N: '♞', P: '♟' },
+}
+const glyphFor = (spec, label) => (label && PIECE_GLYPHS[spec.pieceset]?.[label]) || null
 // Friendly labels for any "=choice" suffix (chess promotion pieces, stone colours, …).
 const CHOICE_NAMES = { ...PIECE_NAMES, M: 'Marshall', C: 'Cardinal', red: 'Red', blue: 'Blue', '+': 'Promote' }
 const PROMO_LETTERS = new Set(['Q', 'R', 'N', 'B', 'M', 'C', '+'])
@@ -313,7 +322,7 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
           <button key={letter} disabled={!active}
             className={`reserve-chip${active ? ' active' : ''}${drop === letter && active ? ' selected' : ''}`}
             onClick={active ? () => { setDrop(drop === letter ? null : letter); setSel([]); setPromo(null) } : undefined}>
-            <span style={{ color: c.fill }}>{letter}</span>
+            <span style={{ color: c.fill }}>{glyphFor(spec, letter) || letter}</span>
             {n > 1 && <span className="reserve-count">×{n}</span>}
           </button>
         ))}
@@ -475,6 +484,19 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
     })}</g>
   }
 
+  // Real piece glyph (chess family): a solid Unicode chess silhouette filled in
+  // the seat colour with a contrasting outline (paint-order: stroke behind fill)
+  // so it reads as an actual carved piece on the dark board. Sized to fill the
+  // cell; the glyph box has built-in padding so fontSize runs a bit over s.r.
+  function pieceGlyph(s, piece, glyph) {
+    const c = colors(piece.owner)
+    return (
+      <text x={s.cx} y={s.cy + s.r * 0.04} textAnchor="middle" dominantBaseline="central"
+        fontSize={s.r * 1.85} fill={c.fill} stroke={c.stroke} strokeWidth={s.r * 0.05}
+        paintOrder="stroke" style={{ pointerEvents: 'none' }}>{glyph}</text>
+    )
+  }
+
   return (
     <div className="board-wrap">
       {tray(1, 'top')}
@@ -547,6 +569,8 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
                             <text x={s.cx} y={s.cy} textAnchor="middle" dominantBaseline="central"
                               fontSize={s.r * 0.62} fontWeight="bold" fill={piece.stroke || '#111'}>{piece.label}</text>
                           </g>
+                        : glyphFor(spec, piece.label)
+                          ? pieceGlyph(s, piece, glyphFor(spec, piece.label))
                         : piece.label
                           ? <text x={s.cx} y={s.cy} textAnchor="middle" dominantBaseline="central" fontSize={s.r * 1.0} fontWeight="bold" fill={colors(piece.owner).fill}>{piece.label}</text>
                           // `piece.fill`/`piece.stroke` override the seat colour — e.g. ZÈRTZ's

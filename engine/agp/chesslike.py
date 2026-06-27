@@ -320,6 +320,11 @@ class ChessLike(Game):
     PLY_CAP = 600
     PIECES: dict = {}
     HEAVY = ("P", "R", "Q")
+    # Frontend piece-set hint: the renderer maps standard letters (KQRBNP) to real
+    # chess glyphs instead of drawing the letter. Fairy pieces (A/C/M/…) and any
+    # other letters fall back to the letter. A variant that reuses a STANDARD
+    # letter for a non-standard piece can set ``PIECESET = None`` to opt out.
+    PIECESET = "chess"
     PAWN: PawnRules = None
     PROMOTION: PromotionRules = None
     CASTLING: Castling = NoCastling()
@@ -704,6 +709,8 @@ class ChessLike(Game):
             "highlights": [],
             "caption": caption,
         }
+        if self.PIECESET:
+            spec["pieceset"] = self.PIECESET
         if self.DROPS.enabled:
             spec["reserve"] = {
                 str(p): {L: n for L, n in sorted(h.items()) if n > 0}
