@@ -13,6 +13,7 @@ See PLATFORM_PLAN.md (roadmap) and engine/SPEC.md (game authoring contract).
 - `./dev.sh` — backend :8000 + frontend :5173 (Vite proxies `/api`); sources gitignored `dev.env` (e.g. `AGP_ADMIN_EMAILS`).
 - **Restart the backend after any engine/game change** — the game registry loads game code at startup and is cached (uvicorn runs without --reload).
 - Frontend `web/src` edits are live via Vite HMR on :5173 — **no `npm run build` needed in dev** (build only for production/`dist`).
+- **Prod-parity check locally:** `cd web && npm run build` then `uvicorn server.app:app --port 8000` — the backend serves the built SPA + `/api` from one origin (it auto-mounts `web/dist` when present), exactly like the Render deploy.
 - Stop a server by PORT, never `pkill -f vite|uvicorn` (the pattern matches the bash command itself → exit 144): `kill $(ss -ltnp | grep ':8000 ' | grep -oP 'pid=\K[0-9]+')`.
 - Start long-lived servers via the Bash tool's `run_in_background`, not `nohup ... &` in a foreground call.
 
@@ -66,6 +67,7 @@ See PLATFORM_PLAN.md (roadmap) and engine/SPEC.md (game authoring contract).
 - Backend via `TestClient`: call `server.db.init_db()` first (bare TestClient skips the startup lifespan → no tables). Use `httpx` in `.venv` (not `requests`).
 - **RenderSpec-format bugs are INVISIBLE to `validate`/selftest** (those test the Python game logic, not `Board.jsx`) — a 100%-logic-correct game can still white-screen-crash the board. **Browser-verify EVERY new game** (a 0-nodes / blank page after START = a render crash; the lobby still renders, so it's game-specific). Diagnose via `render(initial_state())['board']` vs `web/src/Board.jsx`.
 - Browser checks use pinchtab: click custom buttons by **ref**; click SVG board cells via `[data-cell="c,r"]` CSS and non-a11y SVG elements (wall ghosts, cards) via a class selector with `--mode dom`; coordinate clicks are flaky — verify with a screenshot. **Sessions expire on long runs** — recreate with `pinchtab session create` on a `401 bad_session`. **In Quick Play you must click the game CARD to select it BEFORE hotseat/START**, else it launches the default game (search by a unique term — e.g. "Baduk" for Go).
+- **pinchtab external sites:** navigation is gated by an allowlist (`~/.pinchtab/config.json` → `security.allowedDomains`; `403 IDPI: Domain not in allowlist` if missing). The hosted apps (`abstract-games.onrender.com`, `gamefinder-seven.vercel.app`, `generic-poker.onrender.com`, `erikbar.duckdns.org`) are allowlisted for UI testing — `pinchtab server restart` after editing the list. Otherwise verify a live site with `curl`.
 
 ## Conventions
 - Frontend: one generic `Board` renderer; all board types (`square`/`hex`/`polygons`) go through a unified polygon shape model — `polygons` games supply each cell's vertices as **`board.cells` = a LIST of `{id, points}`** (NOT a dict; vertex key is `points` not `polygon` — getting it wrong crashes the renderer; see SPEC.md). No per-game UI. Seat colors in `web/src/colors.js`.
