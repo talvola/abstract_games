@@ -290,6 +290,13 @@ button.secondary:hover { color: var(--text); border-color: var(--accent); }
 .cat-label { font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase;
   color: var(--accent); opacity: 0.8; margin: 6px 0 4px; }
 
+/* first-visitor hero (anonymous landing) */
+.hero { text-align: center; padding: 8px 4px 4px; }
+.hero-tagline { font-size: 1.02rem; line-height: 1.5; color: var(--text); margin: 0 0 10px; }
+.hero-tagline strong { color: var(--accent); }
+.hero-points { display: flex; flex-wrap: wrap; gap: 8px 14px; justify-content: center;
+  color: var(--muted); font-size: 0.82rem; }
+
 /* ---- mobile / narrow screens (≤560px) ---- *
  * The desktop layout is flexbox + max-widths + flex-wrap, so it mostly adapts;
  * this only fixes the things that overflow or read awkwardly on a phone. */

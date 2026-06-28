@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <rect x="1" y="1" width="30" height="30" rx="6" fill="#1a1612" stroke="#c9a96e" stroke-width="1.5"/>
+  <!-- abstract board: a 2x2 checker hint -->
+  <rect x="7" y="7" width="9" height="9" fill="#c9a96e" opacity="0.85"/>
+  <rect x="16" y="16" width="9" height="9" fill="#c9a96e" opacity="0.85"/>
+  <!-- a stone -->
+  <circle cx="20.5" cy="11.5" r="3.6" fill="#e8dcc8"/>
+  <circle cx="11.5" cy="20.5" r="3.6" fill="#8a7a62"/>
+</svg>

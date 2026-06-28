@@ -51,6 +51,19 @@ export default function App() {
 function Home({ me, setMe, games, go, refreshGames }) {
   return (
     <div className="home">
+      {!me && (
+        <div className="hero">
+          <p className="hero-tagline">
+            Play <strong>{games.length}</strong> abstract board games — Chess, Go, Hive, Arimaa, and {games.length - 4} more.
+          </p>
+          <div className="hero-points">
+            <span>🤖 Instant vs the computer</span>
+            <span>📈 Rated games vs people</span>
+            <span>🆓 Free — no account to start</span>
+          </div>
+        </div>
+      )}
+
       <Auth me={me} setMe={setMe} />
 
       <div className="quick-launch">
