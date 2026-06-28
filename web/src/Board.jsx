@@ -86,6 +86,7 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
   const [sel, setSel] = useState([])
   const [promo, setPromo] = useState(null) // { cells, options: [{choice, move}] }
   const [drop, setDrop] = useState(null)   // selected reserve piece letter (for a drop)
+  const [hover, setHover] = useState(null) // cell being hovered (for move preview)
   useEffect(() => { setSel([]); setPromo(null); setDrop(null) }, [JSON.stringify(legalMoves), disabled, freeform])
 
   if (!spec) return null
@@ -119,6 +120,17 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
   const selSet = new Set(sel)
   const sources = new Set(paths.map((p) => p[0]))
   const firstStep = sel.length === 0
+
+  // Move preview (e.g. Abalone group moves): when hovering a destination that
+  // completes a move, ghost ALL the cells the mover's pieces land on — so a
+  // group move reads as the whole set shifting, not just one encoded cell.
+  // Driven by spec.moveTargets {moveString: [cellId,…]} (opt-in per game).
+  const previewCells = (() => {
+    if (disabled || !hover || !spec.moveTargets) return null
+    const m = moves.find((mm) => sameCells(mm.cells, [...sel, hover]))
+    return m ? spec.moveTargets[m.raw] : null
+  })()
+  const previewSet = new Set(previewCells || [])
 
   function click(cellId) {
     if (disabled || promo) return
@@ -524,7 +536,10 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
             : isGoal ? '#c9a96e' : isSource && piece ? '#7a6a3a' : '#4a4238'
           const sw = (selected || isTarget || isGoal ? 0.14 : 0.07) * s.r
           return (
-            <g key={s.id} data-cell={s.id} onClick={clickable ? () => click(s.id) : undefined} style={{ cursor: clickable ? 'pointer' : 'default' }}>
+            <g key={s.id} data-cell={s.id} onClick={clickable ? () => click(s.id) : undefined}
+              onMouseEnter={isTarget ? () => setHover(s.id) : undefined}
+              onMouseLeave={isTarget ? () => setHover((h) => (h === s.id ? null : h)) : undefined}
+              style={{ cursor: clickable ? 'pointer' : 'default' }}>
               <polygon points={s.poly} fill={fill} stroke={stroke} strokeWidth={sw} />
               {tiles[s.id] ? tileGlyph(s, tiles[s.id]) : null}
               {tracks[s.id] ? trackGlyph(s, tracks[s.id]) : null}
@@ -585,6 +600,15 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
           )
         })}
         {overlayLines}
+        {/* Ghost preview: where the mover's whole group lands for the hovered move. */}
+        {previewCells && previewCells.map((cid) => {
+          const s = shapeById[cid]
+          if (!s) return null
+          const c = colors(currentPlayer)
+          return <circle key={`gh${cid}`} cx={s.cx} cy={s.cy} r={s.r * 0.6}
+            fill={c.fill} stroke="#e7c87a" strokeWidth={s.r * 0.12}
+            opacity="0.55" style={{ pointerEvents: 'none' }} />
+        })}
         {wallEls}
         {tokens.map((tk, i) => {
           const s = shapeById[tk.cell]

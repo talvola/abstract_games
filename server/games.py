@@ -277,8 +277,19 @@ def freeform_move_ok(game, state, move: str) -> bool:
 
 def position_view(game, state) -> dict:
     terminal = game.is_terminal(state)
+    render = game.render(state)
+    # Optional generic move-preview: a game may map each legal move → the cells
+    # its pieces land on, so the board can ghost-preview a whole group move (not
+    # just the single encoded destination). Carried inside `render` so the Board
+    # component (which only receives the render spec) can use it. Abalone uses it.
+    mt = getattr(game, "move_targets", None)
+    if mt is not None and not terminal:
+        try:
+            render["moveTargets"] = mt(state)
+        except Exception:  # noqa: BLE001 — preview is cosmetic; never break the view
+            pass
     return {
-        "render": game.render(state),
+        "render": render,
         "legal_moves": game.legal_moves(state),
         "current_player": game.current_player(state),
         "num_players": game.num_players,

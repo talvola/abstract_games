@@ -78,6 +78,17 @@ cases naturally (click the marbles in order, then the lead destination). A
 cell; this is fully legal and unambiguous but is a slightly longer click path
 than a typical two-click move.
 
+**Selecting & previewing a group move:** click your marbles one at a time to
+build the line (they highlight together), then **hover a destination** — the
+board ghosts where the *whole group* will land (not just the one encoded cell),
+so a broadside reads as the entire set shifting. Click the destination to commit.
+
+**Move-log notation:** cells are shown as **row + file** — rows **A–I top to
+bottom**, files **1…n left-to-right within each row** (so the centre is `E5`).
+A move reads `group→destination (type direction)`, e.g. `C3-C5→D4-D6
+(broadside SE)` or `B5→C5 (push 2 NW — EJECT)`. Because the hex rows are offset,
+the same column shifts file number between adjacent rows — that is expected.
+
 ## Termination safeguard (non-original)
 
 Real Abalone can stall indefinitely (players shuffling marbles without

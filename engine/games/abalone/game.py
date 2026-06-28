@@ -82,6 +82,23 @@ def _cstr(c) -> str:
     return f"{c[0]},{c[1]}"
 
 
+def _notation(c) -> str:
+    """Human-readable cell label: rows A (top, r=-N) .. I (bottom, r=N); files
+    1..n left-to-right within a row — matching how the board is drawn. So the
+    centre is E5. Used in the move log so it's locatable on screen."""
+    q, r = c
+    row = chr(ord("A") + (r + N))
+    min_q = max(-N, -N - r)
+    return f"{row}{q - min_q + 1}"
+
+
+# Screen-oriented names for the 6 hex directions (row r grows downward).
+_DIRNAME = {
+    (1, 0): "E", (-1, 0): "W", (0, 1): "SE", (0, -1): "NW",
+    (1, -1): "NE", (-1, 1): "SW",
+}
+
+
 @lru_cache(maxsize=None)
 def standard_start() -> tuple:
     """The STANDARD Abalone opening: two armies facing across the board.
@@ -405,21 +422,37 @@ class Abalone(Game):
             scells, axis, d, effect = self._parse_path(s.board, s.to_move, move)
         except ValueError:
             return move
-        dirname = {
-            (1, 0): "E", (-1, 0): "W", (0, 1): "SE", (0, -1): "NW",
-            (1, -1): "NE", (-1, 1): "SW",
-        }.get(d, str(d))
-        grp = "+".join(_cstr(c) for c in scells)
+        dirname = _DIRNAME.get(d, str(d))
+        cells = sorted(scells)
+        # A line is shown by its end marbles ("C3-C5"); a single marble by itself.
+        span = lambda cs: _notation(cs[0]) if len(cs) == 1 else f"{_notation(cs[0])}-{_notation(cs[-1])}"  # noqa: E731
+        grp = span(cells)
+        dst = span(sorted(_add(c, d) for c in cells))
         kind = effect["kind"]
         if kind == "push":
             n = len(effect["pushed"])
-            # detect potential ejection
-            behind = _add(effect["pushed"][-1], d)
-            eject = "" if _onboard(*behind) else " EJECT"
-            return f"{grp} push {n} {dirname}{eject}"
-        if kind == "broadside":
-            return f"{grp} broadside {dirname}"
-        return f"{grp} {dirname}"
+            off = not _onboard(*_add(effect["pushed"][-1], d))
+            tag = f"push {n} {dirname}" + (" — EJECT" if off else "")
+        elif kind == "broadside":
+            tag = f"broadside {dirname}"
+        else:
+            tag = dirname
+        return f"{grp}→{dst} ({tag})"
+
+    def move_targets(self, s: AbaloneState) -> dict:
+        """For the click UI: map each legal move → the cells the MOVER's marbles
+        land on (the whole group translated by the move direction), so the board
+        can preview the entire group's destination, not just the one encoded
+        anchor cell. Generic opt-in hook read by ``position_view``/``Board.jsx``."""
+        me = s.to_move
+        out = {}
+        for mv in self._gen_moves(s):
+            try:
+                scells, axis, d, effect = self._parse_path(s.board, me, mv)
+            except ValueError:
+                continue
+            out[mv] = [_cstr(_add(c, d)) for c in scells]
+        return out
 
     def render(self, s: AbaloneState, perspective=None) -> dict:
         pieces = [
