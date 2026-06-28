@@ -289,3 +289,23 @@ button.secondary:hover { color: var(--text); border-color: var(--accent); }
 .cat-group { margin-bottom: 10px; }
 .cat-label { font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase;
   color: var(--accent); opacity: 0.8; margin: 6px 0 4px; }
+
+/* ---- mobile / narrow screens (≤560px) ---- *
+ * The desktop layout is flexbox + max-widths + flex-wrap, so it mostly adapts;
+ * this only fixes the things that overflow or read awkwardly on a phone. */
+@media (max-width: 560px) {
+  .app { padding: 12px 10px; }
+  /* "ABSTRACT GAMES" at 1.8rem + 0.4em spacing is ~400px wide → horizontal
+     scroll on a phone. Shrink it so it fits a ~343px content width. */
+  header h1 { font-size: 1.2rem; letter-spacing: 0.22em; }
+  .tagline { font-size: 0.62rem; letter-spacing: 0.12em; }
+  /* When the play-area wraps, let the move log + chat span the full width
+     instead of a cramped 190px column under the board. */
+  .play-area { gap: 12px; }
+  .side-col { width: 100%; }
+  .movelog { flex: 1 1 auto; width: 100%; min-height: 0; }
+  .movelog-list { max-height: 160px; }
+  /* Keep dense rating tables readable without horizontal scroll. */
+  .rating-table { font-size: 0.82rem; }
+  .rating-table th, .rating-table td { padding: 5px 6px; }
+}
