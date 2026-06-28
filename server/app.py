@@ -546,6 +546,40 @@ def my_matches(db: Session = Depends(get_db), user: User = Depends(current_user)
     return {"matches": out}
 
 
+@app.get("/api/matches/public")
+def public_matches(limit: int = 40, db: Session = Depends(get_db)):
+    """Browsable index of human-vs-human matches to spectate — live games first,
+    then recently finished. (Anyone can already open a match by id; this is the
+    discovery layer.) Bot/anonymous games are excluded — nothing to watch."""
+    from .models import UserGameRating
+
+    limit = max(1, min(limit, 100))
+    rows = db.query(Match).order_by(Match.updated_at.desc()).limit(300).all()
+
+    def rating_of(uid_, game_uid):
+        r = db.query(UserGameRating).filter_by(user_id=uid_, game_uid=game_uid).first()
+        return round(r.rating) if r else None
+
+    out = []
+    for m in rows:
+        if not G.is_correspondence(m):
+            continue
+        out.append({
+            "id": m.id,
+            "game_name": game_name(m.game_uid),
+            "game_uid": m.game_uid,
+            "players": [{"name": s.get("name"), "rating": rating_of(s.get("user_id"), m.game_uid)}
+                        for s in m.players],
+            "status": m.status,
+            "winner": m.winner,
+            "updated_at": m.updated_at.isoformat(),
+        })
+        if len(out) >= limit * 2:
+            break
+    out.sort(key=lambda r: (r["status"] != "active", ))  # live games first; stable by recency
+    return {"matches": out[:limit]}
+
+
 @app.get("/api/matches/{match_id}")
 def get_match(match_id: str, db: Session = Depends(get_db), user: User | None = Depends(optional_user)):
     match = db.get(Match, match_id)

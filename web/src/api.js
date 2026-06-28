@@ -41,6 +41,7 @@ export const api = {
   newBotMatch: (game_uid, options, seat, bot_iterations) =>
     post('/api/matches', { game_uid, options, opponent: 'bot', seat, bot_iterations }),
   myMatches: () => get('/api/matches'),
+  publicMatches: () => get('/api/matches/public'),
   getMatch: (id) => get(`/api/matches/${id}`),
   matchMove: (id, move) => post(`/api/matches/${id}/move`, { move }),
   advanceMatch: (id) => post(`/api/matches/${id}/advance`),

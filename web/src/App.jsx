@@ -7,6 +7,7 @@ import MatchPlay from './MatchPlay'
 import Leaderboard from './Leaderboard'
 import Profile from './Profile'
 import Replay from './Replay'
+import Spectate from './Spectate'
 
 export default function App() {
   const [me, setMe] = useState(undefined) // undefined = loading, null = anonymous
@@ -38,6 +39,7 @@ export default function App() {
         )}
         {games && screen.name === 'quickplay' && <QuickPlay games={games} go={go} />}
         {games && screen.name === 'leaderboard' && <Leaderboard games={games} uid={screen.uid} go={go} />}
+        {screen.name === 'spectate' && <Spectate go={go} />}
         {screen.name === 'profile' && <Profile id={screen.id} go={go} />}
         {screen.name === 'replay' && <Replay id={screen.id} go={go} />}
         {screen.name === 'match' && <MatchPlay id={screen.id} me={me} go={go} />}
@@ -57,6 +59,7 @@ function Home({ me, setMe, games, go, refreshGames }) {
         </button>
         <div className="muted small">Hotseat or vs the computer, right now.</div>
         <button className="link" onClick={() => go({ name: 'leaderboard' })}>🏆 Leaderboards</button>
+        <button className="link" onClick={() => go({ name: 'spectate' })}>👁 Watch games</button>
       </div>
 
       {me ? (

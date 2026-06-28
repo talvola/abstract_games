@@ -184,7 +184,9 @@ main { display: flex; flex-direction: column; align-items: center; padding-top: 
 .rating-table td { padding: 6px 10px; border-bottom: 1px solid rgba(255,255,255,0.04); }
 .rating-table td.rating-cell, .rating-table td.rating-cell { font-variant-numeric: tabular-nums; color: var(--text); font-weight: bold; }
 .rating-table a { color: var(--accent); cursor: pointer; }
-.leaderboard, .profile { max-width: 560px; margin: 0 auto; }
+.leaderboard, .profile, .spectate { max-width: 560px; margin: 0 auto; }
+.spectate .cat-label { margin: 14px 0 6px; }
+.spectate-row { width: 100%; margin-bottom: 6px; }
 .lb-select { width: 100%; padding: 8px 10px; margin: 4px 0 8px; background: var(--panel, #2a2620);
   color: var(--text); border: 1px solid var(--line); border-radius: 6px; font-family: inherit; font-size: 0.95rem; }
 .replay-status { text-align: center; color: var(--muted); margin: 8px 0; font-size: 0.9rem; }
