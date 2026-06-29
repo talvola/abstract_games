@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { SEAT_FILL, SEAT_STROKE } from './colors'
+import { pieceImageHref } from './pieceImages'
 
 // Generic renderer + move input. Draws ANY game from its RenderSpec and derives
 // interaction from the legal-move list. A move is a ">"-separated PATH of cell
@@ -509,6 +510,17 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
     )
   }
 
+  // A compound-piece icon (chancellor/archbishop): a real piece image (cburnett)
+  // recoloured to the seat colour, so a fairy piece reads as a piece, not a letter.
+  function pieceImage(s, piece, href) {
+    const z = s.r * 2.1
+    return <image href={href} x={s.cx - z / 2} y={s.cy - z / 2} width={z} height={z}
+      style={{ pointerEvents: 'none' }} />
+  }
+  const iconHref = (piece) => piece.icon
+    ? pieceImageHref(piece.icon, colors(piece.owner).fill, colors(piece.owner).stroke)
+    : null
+
   return (
     <div className="board-wrap">
       {tray(1, 'top')}
@@ -584,6 +596,8 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
                             <text x={s.cx} y={s.cy} textAnchor="middle" dominantBaseline="central"
                               fontSize={s.r * 0.62} fontWeight="bold" fill={piece.stroke || '#111'}>{piece.label}</text>
                           </g>
+                        : iconHref(piece)
+                          ? pieceImage(s, piece, iconHref(piece))
                         : glyphFor(spec, piece.label)
                           ? pieceGlyph(s, piece, glyphFor(spec, piece.label))
                         : piece.label

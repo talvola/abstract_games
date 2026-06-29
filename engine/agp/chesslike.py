@@ -30,6 +30,11 @@ from .game import Game
 
 WHITE, BLACK = 0, 1
 
+# Movement signatures for classifying compound pieces → a UI icon (see _piece_icon).
+_ORTHO_DIRS = {(1, 0), (-1, 0), (0, 1), (0, -1)}
+_DIAG_DIRS = {(1, 1), (1, -1), (-1, 1), (-1, -1)}
+_KNIGHT_OFFS = {(1, 2), (2, 1), (-1, 2), (-2, 1), (1, -2), (2, -1), (-1, -2), (-2, -1)}
+
 ORTHO = [(1, 0), (-1, 0), (0, 1), (0, -1)]
 DIAG = [(1, 1), (1, -1), (-1, 1), (-1, -1)]
 ALL8 = ORTHO + DIAG
@@ -690,11 +695,34 @@ class ChessLike(Game):
         text = f"{t}{alg(frm)}{'x' if capture else '-'}{alg(to)}"
         return text + (f"={promo}" if promo else "")
 
+    def _piece_icon(self, t: str):
+        """A movement-derived icon name for compound pieces that have no usable
+        Unicode glyph, so the UI can draw a real piece image instead of the bare
+        letter. Keyed on MOVEMENT (not the letter, which collides across variants:
+        "M" is a Chancellor here but a Met/ferz in Makruk, an Amazon in Maharajah).
+        chancellor = rook-rays+knight, archbishop = bishop-rays+knight,
+        amazon = queen-rays+knight."""
+        slides, leaps = self.PIECES.get(t, ((), ()))
+        sl, lp = set(slides), set(leaps)
+        if not _KNIGHT_OFFS <= lp:
+            return None
+        ortho, diag = _ORTHO_DIRS <= sl, _DIAG_DIRS <= sl
+        if ortho and diag:
+            return "amazon"
+        if ortho:
+            return "chancellor"
+        if diag:
+            return "archbishop"
+        return None
+
     def render(self, state, perspective=None) -> dict:
-        pieces = [
-            {"cell": f"{c},{r}", "owner": pl, "label": t}
-            for (c, r), (pl, t) in state.board.items()
-        ]
+        pieces = []
+        for (c, r), (pl, t) in state.board.items():
+            p = {"cell": f"{c},{r}", "owner": pl, "label": t}
+            icon = self._piece_icon(t)
+            if icon:
+                p["icon"] = icon
+            pieces.append(p)
         names = {WHITE: "White", BLACK: "Black"}
         if self.is_terminal(state):
             ret = self.returns(state)
