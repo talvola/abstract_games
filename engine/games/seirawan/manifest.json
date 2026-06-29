@@ -7,7 +7,7 @@
   "players": { "min": 2, "max": 2 },
   "has_randomness": false,
   "hidden_info": false,
-  "category": "Chess variants",
+  "category": "Chess & chess-like",
   "tags": ["square", "chess", "chess variant", "drops", "fairy", "gating"],
   "bgg_url": "https://en.wikipedia.org/wiki/Seirawan_chess",
   "description": "Standard chess plus a Hawk (Bishop+Knight) and an Elephant (Rook+Knight) held in reserve. They enter by 'gating': the first time a back-rank piece moves (or you castle) you may drop one onto the vacated square."
