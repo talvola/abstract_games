@@ -124,6 +124,9 @@ Cell ids are your move-notation cell strings: `"col,row"` for square, `"q,r"`
 
 **Optional per-piece fields** (the generic renderer honours these; all default off):
 - `"label": "X"` — centre text glyph.
+- `"glyph": "♚"` — a display symbol for a *distinct* piece (e.g. a tafl King vs
+  its plain soldier discs), drawn large and filled in the seat colour (any single
+  character: Unicode chess/symbol glyphs work well). Takes precedence over `label`.
 - `"stack": [owner, …]` — an ordered tower of owners (bottom→top); drawn as
   layered bands with a height badge (draughts towers — Lasca/Bashni/Focus/Lasca).
 - `"shape": "ring"` — a hollow ring in the owner's colour (YINSH/GIPF rings).

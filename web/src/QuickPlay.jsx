@@ -108,6 +108,9 @@ function Play({ match, setMatch, onExit }) {
 
   return (
     <div className="play">
+      <div className="match-head">
+        <div className="game-name">{match.name}</div>
+      </div>
       <div className="vs">
         {Array.from({ length: view.num_players || 2 }, (_, i) => i).map((i) => (
           <span key={i} className={`seat-chip ${i === cp && !view.terminal ? 'active-seat' : ''}`}>

@@ -596,6 +596,8 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
                             <text x={s.cx} y={s.cy} textAnchor="middle" dominantBaseline="central"
                               fontSize={s.r * 0.62} fontWeight="bold" fill={piece.stroke || '#111'}>{piece.label}</text>
                           </g>
+                        : piece.glyph
+                          ? pieceGlyph(s, piece, piece.glyph)
                         : iconHref(piece)
                           ? pieceImage(s, piece, iconHref(piece))
                         : glyphFor(spec, piece.label)

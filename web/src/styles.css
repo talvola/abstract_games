@@ -162,7 +162,8 @@ main { display: flex; flex-direction: column; align-items: center; padding-top: 
 .badge.done { background: rgba(232,96,80,0.15); color: #e86050; }
 
 .match-head { text-align: center; }
-.match-head .game-name { color: var(--accent); font-weight: bold; letter-spacing: 0.1em; }
+.match-head .game-name { color: var(--accent); font-weight: bold; letter-spacing: 0.1em;
+  font-size: 1.15rem; margin-bottom: 2px; }
 .match-head .vs { color: var(--muted); font-size: 0.85rem; }
 .vs { display: flex; gap: 18px; justify-content: center; align-items: center; flex-wrap: wrap;
   color: var(--muted); font-size: 0.9rem; margin-bottom: 4px; }

@@ -203,7 +203,7 @@ class Tablut(Game):
         return f"{s.board.get(frm, '?')}:{alg(frm)}-{alg(to)}"
 
     def render(self, s: TaflState, perspective=None) -> dict:
-        pieces = [{"cell": f"{c},{r}", "owner": _owner(p), "label": "K" if p == "K" else ""}
+        pieces = [{"cell": f"{c},{r}", "owner": _owner(p), "label": "", "glyph": "♚" if p == "K" else None}
                   for (c, r), p in s.board.items()]
         names = {ATTACKERS: "Attackers", DEFENDERS: "Defenders"}
         if self.is_terminal(s):
