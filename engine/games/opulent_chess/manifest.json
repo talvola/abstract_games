@@ -1,0 +1,14 @@
+{
+  "uid": "opulent_chess",
+  "name": "Opulent Chess",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Greg Strong (2005) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "variant", "grand chess", "fairy pieces"],
+  "bgg_url": "https://www.chessvariants.com/rules/opulent-chess",
+  "description": "Greg Strong's 10x10 Grand Chess derivative (2005) with 10 piece types. Alongside the Chancellor (rook+knight) and Archbishop (bishop+knight) it adds two short-range leapers — the Wizard (camel + one step diagonally, colorbound) and the Lion (Betza's Half-Duck: leaps 2 or 3 squares orthogonally over anything, or steps one diagonally) — and strengthens the Knight with an extra one-square orthogonal step, so Bishop, Knight, Lion and Wizard are all worth about the same. Pawns start on the third rank (double step, en passant); no castling; Grand-Chess promotion: only to a piece type you have lost — optional on ranks 8/9, compulsory on rank 10 (with nothing to promote to, a pawn may not enter the last rank). Checkmate wins."
+}
