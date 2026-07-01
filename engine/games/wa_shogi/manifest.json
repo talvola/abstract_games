@@ -1,0 +1,14 @@
+{
+  "uid": "wa_shogi",
+  "name": "Wa Shogi",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "shogi", "animals", "large", "variant"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Wa_shogi",
+  "description": "Wa Shogi (和将棋): a large 11x11 traditional Shogi variant where all 27 pieces per side are named for animals and birds -- Crane King, Cloud Eagle, Treacherous Fox, Running Rabbit, Violent Wolf, Sparrow Pawns and more. Pieces promote in the far three ranks. This is the classic DROP-LESS ruleset (captured pieces leave play)."
+}
