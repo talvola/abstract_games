@@ -1,0 +1,14 @@
+{
+  "uid": "omweso",
+  "name": "Omweso",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "AGP",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Mancala",
+  "tags": ["mancala", "sowing", "capture", "four-row", "square", "abstract", "uganda"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/6996/omweso",
+  "description": "Omweso, the traditional four-row Ugandan (Baganda) Mancala. Each player owns two rows of eight pits and sows counterclockwise around their own side only, relaying through occupied pits. Land in an occupied inner-row pit whose opposing column is full to capture the opponent's two pits and re-sow the loot. Seeds never leave the board — you win when your opponent can no longer move."
+}
