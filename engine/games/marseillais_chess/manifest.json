@@ -1,0 +1,14 @@
+{
+  "uid": "marseillais_chess",
+  "name": "Marseillais Chess",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "AGP",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "multi-move", "variant"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Marseillais_chess",
+  "description": "The multi-move chess variant: each player makes TWO moves per turn. This is the Balanced version (Robert Bruce, 1963; Fischer-endorsed) in which White's first turn is a single move and every turn thereafter is two moves, giving the order White · Black Black · White White · … . Marseillais rules: giving check ends your turn (you forfeit the second move); if you are in check you must escape it on your first move; and your king may never be left in check between your two moves. Standard 8x8 army, castling, promotion and en passant."
+}
