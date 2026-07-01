@@ -1,0 +1,14 @@
+{
+  "uid": "kings_valley",
+  "name": "King's Valley",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Kanare Kato (Logy Games) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "5x5", "race", "sliding", "abstract", "kanare-kato"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/86169/kings-valley",
+  "description": "King's Valley (Kanare Kato) on a 5x5 board. Each side has 1 King + 4 Soldiers; every piece slides the MAXIMUM distance in a straight line (no stopping short). Race your King onto the central 'King's Valley' square to win. Only the King may stop on the centre; a trapped King loses."
+}
