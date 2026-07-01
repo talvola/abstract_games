@@ -1,0 +1,14 @@
+{
+  "uid": "cheskers",
+  "name": "Cheskers",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "AGP port of Solomon W. Golomb's Cheskers (1948)",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "checkers", "chess", "hybrid", "capture", "leaper"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Cheskers",
+  "description": "Solomon Golomb's 1948 chess/checkers crossover, played on the 32 dark squares. Each side has two Kings, a Bishop, a Camel and eight Pawns. Pawns and Kings move and capture by checkers jumps (forced capture); the Bishop slides and the Camel (a 1,3 leaper) capture by replacement. Capture all enemy Kings or stalemate the opponent."
+}
