@@ -1,0 +1,22 @@
+{
+  "uid": "lasker_morris",
+  "name": "Lasker Morris",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Positional",
+  "tags": ["mill", "placement", "movement", "morris", "lasker", "classic"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Nine_men%27s_morris#Variations",
+  "options": {
+    "flying": {
+      "choices": ["yes", "no"],
+      "default": "yes",
+      "label": "Flying when down to 3 men",
+      "labels": { "yes": "Allowed (standard)", "no": "Not allowed" }
+    }
+  },
+  "description": "Emanuel Lasker's improved Nine Men's Morris (Ten Men's Morris): ten men each on the classic 24-point board, and -- the key change -- on every turn while you still hold men in hand you may either place a new man or slide one already on the board, freely interleaved. Form a mill (three in a row) to capture an enemy man; reduce the opponent below three men to win."
+}
