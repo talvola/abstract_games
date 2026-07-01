@@ -1,0 +1,14 @@
+{
+  "uid": "whale_shogi",
+  "name": "Whale Shogi",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "drops", "shogi"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Whale_Shogi",
+  "description": "Whale Shogi (Kujira Shogi, R. W. Schmittberger 1981): a 6x6 shogi variant with a whaling-themed army. Capture the opponent's White Whale. Captured pieces switch sides and are dropped like Shogi, but there is no promotion zone: the Porpoise promotes to a Killer Whale only when it is captured."
+}
