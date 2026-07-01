@@ -1,0 +1,14 @@
+{
+  "uid": "nard",
+  "name": "Nard",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": true,
+  "hidden_info": false,
+  "category": "Race",
+  "tags": ["race", "dice", "roll-and-move", "tables", "persian", "backgammon-family"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Nard_(game)",
+  "description": "Nard (Long Nardy): the Persian tables race game. All 15 of your checkers start stacked on your 'head' in diagonally opposite corners, and BOTH players run them the same way around the 24-point board into their home quadrant, then bear them off; first to bear off all 15 wins. Unlike backgammon there is NO hitting — a checker may never land on any point holding an opposing checker, so there are no blots, no bar and no re-entry, making it a pure race-and-block contest. Only one checker may leave the head each turn (two on your first turn). Roll two dice; doubles move four times; you must use both dice if you legally can. (No doubling cube.)"
+}
