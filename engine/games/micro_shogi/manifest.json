@@ -1,0 +1,14 @@
+{
+  "uid": "micro_shogi",
+  "name": "Micro Shogi",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "drops", "shogi", "flip"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Micro_shogi",
+  "description": "Micro Shogi (4x5 shogi): a five-piece drop game with NO promotion zone -- a piece flips to its other face the moment it captures (Silver<->Lance, Gold<->Rook, Bishop<->Tokin, Pawn<->Knight), and flips back when it captures again. Drops may show either face with no restrictions."
+}
