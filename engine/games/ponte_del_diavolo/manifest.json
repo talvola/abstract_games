@@ -1,0 +1,14 @@
+{
+  "uid": "ponte_del_diavolo",
+  "name": "Ponte del Diavolo",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Territory",
+  "tags": ["territory", "connection", "tile-placement", "bridges", "square"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/27172/ponte-del-diavolo",
+  "description": "Ponte del Diavolo (Martin Ebel, 2007): on a 10x10 grid, place two tiles per turn to build four-tile islands, then connect them with bridges. Each bridge-linked group of islands scores a triangular number, so linking islands is worth far more than leaving them alone. Islands must never grow past four tiles or touch a same-colour neighbour, even diagonally."
+}
