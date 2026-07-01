@@ -1,0 +1,14 @@
+{
+  "uid": "grand_shatranj",
+  "name": "Grand Shatranj",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Joe Joyce (2006) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "shatranj", "variant", "large", "short-range"],
+  "bgg_url": "https://www.chessvariants.com/rules/grand-shatranj",
+  "description": "Joe Joyce's 10x10 'what if chess pieces never became long-range sliders?' (2006). Every piece steps or jumps at most a few squares: the Jumping General (step 1 or leap 2 any direction), Minister (wazir + dabbabah + knight), High Priestess (ferz + alfil + knight), and two double-riders that move once or twice in a straight line -- the diagonal Oliphant and the orthogonal Lightning War Machine (1-4 squares, jumping over men). Pawns have no double step and promote only to lost pieces (optional on the 9th rank, mandatory on the 10th; a pawn stranded on the 10th shuffles sideways until a piece is lost). Win by checkmate or by baring the enemy king -- but an immediate counter-bare is a draw. This is the author's primary 'D' setup (War Machines in the corners, not rooks)."
+}
