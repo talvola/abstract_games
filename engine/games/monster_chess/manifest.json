@@ -1,0 +1,14 @@
+{
+  "uid": "monster_chess",
+  "name": "Monster Chess",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "AGP",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "asymmetric", "double-move"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Monster_chess",
+  "description": "Asymmetric double-move chess: White has only a King (e1) and four pawns (c2, d2, e2, f2) but makes TWO moves every turn, against Black's full army moving once. The game is won by capturing the enemy king. White's king may pass through check between its two moves; Black must never leave its king where White can capture it within two moves. White (player 0) moves first."
+}
