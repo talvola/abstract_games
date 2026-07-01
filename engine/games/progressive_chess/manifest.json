@@ -1,0 +1,14 @@
+{
+  "uid": "progressive_chess",
+  "name": "Progressive Chess",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "AGP",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "progressive", "multi-move"],
+  "bgg_url": "https://www.chessvariants.com/multimove.dir/progressive.html",
+  "description": "Progressive Chess (Italian rules / Scacchi progressivi): players make progressively longer series of moves - White plays 1 move, Black plays 2, White plays 3, Black plays 4, and so on. All pieces move as in standard chess (castling, en passant and promotion included). The Italian check rule is the twist: a check may be given ONLY on the last move of a series, and a king in check must be freed on the very first move of the series. If the only way out of check would give check on a non-final move it is progressive checkmate. Stalemate (no legal move, not in check) is a draw. White moves first."
+}
