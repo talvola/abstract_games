@@ -6,66 +6,58 @@ universe map and capability gaps live in `GAME_BACKLOG.md`; this file is the
 
 ---
 
-## ⭐ CATCH-UP DIGEST (read this first) — autonomous run of 2026-06-21 [LOOP WOUND DOWN]
+## ⭐ SESSION HANDOFF (read this first) — 2026-07-01
 
-**The factory ran unattended while you were away; I've wound it down to a clean,
-green stopping point.** Everything below is on `origin/main`; the dev app is live.
+**Clean stopping point for a fresh session.** Tree clean, 0 unpushed, HEAD `1a2f7b6`,
+**218 games** on `origin/main`, all auto-deployed live at https://abstract-games.onrender.com.
 
-### Headline
-- **54 games on `main`** (session started at **24** → **+30** added).
-- **10 batches**, every game = `agp validate` + an **independent rule-review**,
-  perft/reference-anchored where a published number or engine (python-chess /
-  shakmaty / World Draughts Forum) exists. **Full test suite green.**
-- **The review gate caught + I fixed 4 real bugs before shipping**, and I declined
-  1 clone — quality held the whole way, **zero escalations needed**.
+### What this session (2026-06-30 → 07-01) did — +13 games (#206–218) + 1 UX fix
+All browser- **and** anchor-verified, each its own commit, `GAME_STATUS.md`/this file/memory kept current.
+- **Traditionals/small:** Hexapawn #206 (Gardner 3×3, minimax anchor), Micro Shogi #207 (4×5 flip-on-capture),
+  Whale Shogi #208 (6×6 Kujira), Lasker Morris #209 (interleaved place/move), Cheskers #210 (Golomb chess/checkers),
+  Wa Shogi #211 (11×11 animal), Omweso #212 (first 4-row mancala), Nard #213 (no-hitting backgammon).
+- **Multi-move chess (Erik-directed):** Monster #214, Progressive #215, Marseillais #216. **KEY REUSABLE PATTERN:**
+  multi-move turns = the backgammon pattern (apply_move keeps `to_move` until the sub-move budget is spent) →
+  **NO UI change**; each is a self-contained ChessLike subclass with `MState(CState)` adding `moves_left`, reusing
+  `_pseudo`/`attacked`/`in_check`, own move-gen (NOT `super().legal_moves`); the other ~40 chess variants untouched.
+- **Coverage + Reddit (Erik-directed):** King's Valley #217 (5×5 slide-to-center; closed the LAST gap vs
+  **playabstractgames.com** — we now cover all 19 of theirs) + Ponte del Diavolo #218 (10×10 island/bridge,
+  triangular scoring, bridges via the TwixT `board.overlay` primitive).
+- **UX fix:** GamePicker search was an unranked substring match → exact names buried (Erik hit this with "Tak").
+  Added `relevance()` ranking (exact name>prefix>word-prefix>substring>tag>category>desc); searching shows a flat
+  best-first list, browse keeps category groups (`web/src/GamePicker.jsx`). Deployed.
 
-### The 30 new games, by family
-- **Chess variants (perft/reference-anchored):** King of the Hill, Three-Check,
-  Racing Kings, Horde, Antichess, Atomic *(all python-chess/shakmaty-verified)*.
-- **Historical chess:** Makruk, Shatranj, Capablanca, Courier, Wildebeest.
-- **Asian chess (hopper family):** **Xiangqi**, **Janggi**, Dou Shou Qi (Jungle).
-- **Tafl:** Tablut, Hnefatafl, Ard Ri *(+ Brandub from before)*.
-- **Draughts:** International, Turkish, Brazilian, Frisian, Konane.
-- **Go family (new liberty/capture core):** Atari Go, NoGo, Gonnect, Tanbo.
-- **Connection:** Havannah, Gonnect.
-- **Mancala:** Oware.  **Alignment:** Connect6.  **Classics:** Fanorona, Dao.
+### ▶ NEXT TASK (queued, Erik-directed): games from Dr Eric Silverman's blog
+`https://drericsilverman.com/2021/02/12/quick-picks-interesting-abstract-games-in-brief/` — 60 titles.
+**Already deduped (2026-07-01):** ~18 already exist (Catchup, Grand Chess, Shako, Kensington, Othello[=reversi],
+Hex, Game of Y[=`y`], Yodd, Star, Starweb, Havannah, Shatranj, Trike, Tumbleweed, Lines of Action, Poly-Y, TwixT,
+Courier Chess). **~42 candidates**, grouped:
+- **A. Large shogi (marquee-hard, Chu-tier — focused builds, may want Erik input):** Chu Shogi (12×12), Dai Shogi
+  (15×15), Tenjiku Shogi (16×16, jumping generals — brutal), Dai Dai (17×17), Maka Dai Dai (19×19), Heian Dai
+  (13×13). ⚠️ VERIFY which "nut-named" ones are real vs the blogger's jokes: Nutty/Cashew/Macademia/Mitsugumi/
+  Suzumu Shogi.
+- **B. Chess variants (standard-ish render, perft-anchorable — the reliable seam):** Omega Chess (10×10 + 4 corner
+  cells + Wizard/Champion — needs a slightly custom board), Opulent Chess, Metamachy (Cazaux 12×10), Grand Shatranj
+  (10×10), Caissa Britannia, Elven Chess, Decimaka, Gross Chess, Zanzibar-XL.
+- **C. Connection / Y / hex-render family (mostly hex/polygons — primitives exist; some may need render work):**
+  Iris, Lotus, Medusa, Rosette, Exo-Hex, Pex, Volo, Tintas, Ayu, YvY, Side Stitch, Permute; Y-family: Odd-Y, 5-Y,
+  Snodd, Xodd, Star-Y, Double Star, Superstar.
+- Plus the long-flagged marquees **Tamerlane** & **Bao** (Bao not on the blog; still queued).
+**Recommendation:** start with B (chess variants — reliable, fast, perft-anchorable), sample C (verify render needs
+first — hex boards use the polygons primitive), and treat A as focused one-at-a-time builds needing Erik's eye.
 
-### Quality scorecard (the gate working)
-1. Courier Chess — insufficient-material masked a K+2Manns checkmate → fixed.
-2. Frisian Draughts — wrong capture-weighting → fixed to the official king=1.5.
-3. Atomic — factory selftest imported python-chess (broke the suite) → rewrote
-   pure-stdlib **and hardened the factory** so future selftests stay dep-free.
-4. Wildebeest — castling rook on the wrong side + a bogus no-op castle → replaced
-   with NoCastling (the authentic 11-wide rule is unsourced).
-5. Declined **Tawlbwrdd** — the factory made it byte-identical to Hnefatafl.
+### How the loop works (quick reminder for a fresh session)
+Per game: launch a general-purpose build agent (verify rules vs sources + OVERRIDE the brief on conflict; subclass
+`agp.chesslike`/`agp.shogilike` for chess/shogi; pure-stdlib `selftest.py` with a perft/known-result anchor; do NOT
+commit) → orchestrator QA (validate + selftest + probe the signature mechanic) → **browser-verify** (restart backend
+by PORT only; pinchtab: QuickPlay → search the FULL distinct name [gotcha: "Lasker"→Lasca, substrings match desc] →
+click `button.game-card-main --mode dom` → START → screenshot) → commit (one game/commit) → regen `GAME_STATUS.md`
+(`engine/tools/gen_game_status.py`) → log a row here → push (auto-deploys; verify via RENDER_API_KEY, pin commitId).
+Read `[[game-factory-continuation]]` + `[[platform-direction]]` memories + `CLAUDE.md` for full conventions.
+DEDUP every candidate first; decline clones. Standard-render chess/shogi = fast-path (anchor + render-probe, batch
+browser checks); custom-render games = always browser-verify.
 
-### ⚠️ Needs your decision: _none._ Nothing is blocked on you.
-
-### ▶ When you're back — suggested next moves (your call)
-The headless game long-tail is largely drained of *distinct, high-value* titles.
-The next frontier is the **capability investments** — they unlock the biggest
-missing names but touch the **renderer/server, so they want your eyes**:
-1. **Drops / reserve tray** (M effort) → **Nine Men's Morris family, Crazyhouse,
-   Shogi**. Highest fame-per-effort.
-2. **Stacking** (L) → **Tak, DVONN, TZAAR, Focus**.
-3. **Go territory scoring** (L) → **full Go** — *de-risked this session*: the Go
-   liberty/capture core is already built (Atari Go/NoGo/Gonnect/Tanbo); this is
-   just the scoring/UI layer on top.
-Lower-priority: point-and-line boards (TwixT), Pentago's rotate UI, >2-seat UI
-(Chinese Checkers). See `GAME_BACKLOG.md` for the full ranked map.
-Also worth a pass: **play-test the new games in the browser** — especially the
-unusual boards (Oware 6×2 with seed-count labels; Xiangqi/Janggi/Jungle 9×10/7×9;
-Fanorona 9×5) — to confirm rendering/UX reads well. Logic is fully tested; only
-visual polish hasn't had a human eye.
-
-### How to review fast
-Every game ships a one-page `rules.md` (rules as implemented + any documented
-simplifications) and a `selftest.py` (its correctness anchor, run by the suite via
-`test_package_selftests`). `git log --oneline` shows the per-game merge rationale.
-The factory is a reusable Workflow (`.claude/.../game-factory-*.js`) — "run the
-factory on \<games\>" restarts it anytime.
-
-_Final digest update: after batch 10 merge (54 games). Loop wound down._
+### ⚠️ Needs your decision: _none blocking._ Next task is queued (blog games above); pick a group to start.
 
 ---
 
