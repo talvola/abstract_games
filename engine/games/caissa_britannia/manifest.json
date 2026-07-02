@@ -1,0 +1,14 @@
+{
+  "uid": "caissa_britannia",
+  "name": "Caissa Britannia",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Fergus Duniho (2003) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "variant", "large board", "fairy pieces", "royal queen"],
+  "bgg_url": "https://www.chessvariants.com/large.dir/british.html",
+  "description": "Fergus Duniho's British-themed 10x10 variant (2003, originally British Chess) in which the QUEEN is the royal piece: checkmate her to win. She slides like a chess Queen but may not pass over any square where she would stand in check, and the two Queens may never face each other across an open line. The King is replaced by a Prince Consort (slides like a Queen without capturing, captures one step), the Bishops are Anglican (diagonal slider plus a non-capturing orthogonal step), and three heraldic pieces join: the Lion of England (Leo -- moves as a Queen, captures cannon-style over one screen), the Unicorn of Scotland (Bishop + Nightrider) and the Dragon of Wales (repeated two-square leaps in one direction, colorbound to a quarter of the board). Pawns start on the third rank (double step, en passant) and must promote on the last rank -- to a Knight or to any captured piece. No castling; stalemate is a draw."
+}
