@@ -1,0 +1,14 @@
+{
+  "uid": "metamachy",
+  "name": "Metamachy",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Jean-Louis Cazaux (2012) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "variant", "large-board", "fairy", "cazaux", "gryphon", "cannon"],
+  "bgg_url": "https://www.chessvariants.com/rules/metamachy",
+  "description": "Jean-Louis Cazaux's flagship large chess variant (2012) on a 12x12 board: the orthodox army plus an Eagle (gryphon: one diagonal step then an outward orthogonal slide), a Lion (leaps to any square within two king steps), two Princes (non-royal kings with a pawn-like double push that promote on the last rank), two Camels ((1,3) leapers), two Elephants (ferz + alfil), and two Xiangqi Cannons (hop-capture over a screen). Pawns -- and Princes -- may make their non-capturing double step from ANY square, with en passant (by pawns only) anywhere on the board; promotion is to Queen, Eagle or Lion only. There is no castling: instead an unmoved King may once leap two squares in any of 16 directions (orthogonal, diagonal or knight-wise) over any piece, but not out of check and not over a threatened square. This port fixes the standard default array (Queen f1, King g1, Lion f2, Eagle g2); the real game lets Black permute those four pieces (12 setups). Checkmate wins; stalemate is a draw."
+}
