@@ -1,0 +1,14 @@
+{
+  "uid": "gross_chess",
+  "name": "Gross Chess",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Fergus Duniho (2009) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "variant", "large-board", "fairy", "cannon", "12x12"],
+  "bgg_url": "https://www.chessvariants.com/large.dir/gross.html",
+  "description": "Fergus Duniho's 'natural extension of Chess' to a 12x12 board of 144 squares (a gross). Each side fields the full chess army plus tried-and-tested pieces from other variants: the Marshall (rook+knight) and Archbishop (bishop+knight), the Omega Chess Champion (leaps 1 orthogonally or 2 in any direction) and Wizard (ferz+camel), and the Chinese-style Cannon and Vao (move like rook/bishop, capture by hopping over one screen). Pawns may open with a two- or three-square step and can be captured en passant on any square they pass; they promote on the last three ranks, only to pieces held in reserve, with the strongest pieces reserved for the last rank. Castling is flexible: the king slides two or more squares toward a rook and the rook leaps to the square just behind it. Checkmate wins; stalemate is a draw."
+}
