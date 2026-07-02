@@ -1,0 +1,14 @@
+{
+  "uid": "elven_chess",
+  "name": "Elven Chess",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "H. G. Muller (2014) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "variant", "10x10", "chu shogi", "lion", "fairy pieces"],
+  "bgg_url": "https://www.chessvariants.com/rules/elven-chess",
+  "description": "H. G. Muller's 10x10 hybrid of orthodox Chess and Chu Shogi (2014). The full FIDE army is joined by four crowned pieces: the Goblin (rook + king step), Elf (bishop + king step), Dwarf (a king-stepping commoner) and the mighty Warlock — the Chu-Shogi Lion, which may take two king-steps in one turn: capture twice, capture and run, capture and return (igui), or step out-and-back to pass. Two signature rules make Warlocks nearly impossible to trade: a Warlock may capture the other Warlock only onto a king-safe square, and after a non-Warlock captures a Warlock the survivor is 'iron' (uncapturable) for one turn. Pawns promote on entering the last three ranks (to Q/R/B/N only); the king castles three squares. Checkmate wins."
+}
