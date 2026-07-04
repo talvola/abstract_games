@@ -1,0 +1,14 @@
+{
+  "uid": "decimaka",
+  "name": "Decimaka",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "H. G. Muller (2018) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "variant", "10x10", "fairy pieces", "maka dai dai", "capture promotion"],
+  "bgg_url": "https://www.chessvariants.com/rules/decimaka",
+  "description": "H. G. Muller's 10x10 chess variant (2018) that borrows the promotion dynamics of Maka Dai Dai Shogi: pieces promote by MAKING A CAPTURE, anywhere on the board — there is no promotion zone at all. The Fiancee (a non-royal king-mover) becomes a Queen, the Knight a Nightrider, the Tee a Trident, while the short-range Cross, Y, Star, Lion — and Pawns — all 'promote' to the humble Omni (moves orthogonally, captures diagonally). Promotion is optional, but capturing a promoted piece forces it, and capturing a Queen turns ANY capturer (except the King) into a Queen on the spot. Rooks and Bishops never promote; a Pawn reaching the last rank is dead wood. Orthodox pawns from the 3rd rank, three-step castling, checkmate wins."
+}
