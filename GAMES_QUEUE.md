@@ -6,10 +6,51 @@ universe map and capability gaps live in `GAME_BACKLOG.md`; this file is the
 
 ---
 
-## ⭐ SESSION HANDOFF (read this first) — 2026-07-01
+## ⭐ SESSION HANDOFF (read this first) — 2026-07-03
 
-**Clean stopping point for a fresh session.** Tree clean, 0 unpushed, HEAD `1a2f7b6`,
-**218 games** on `origin/main`, all auto-deployed live at https://abstract-games.onrender.com.
+**Clean stopping point.** Tree clean, HEAD `4db62cf`, **227 games** on `origin/main`,
+auto-deployed live at https://abstract-games.onrender.com.
+
+### Blog run, group B COMPLETE (2026-07-01 → 07-03) — all 9 chess variants, #219–227
+Erik picked group B of the Silverman-blog queue. Per game: build agent (source-verified) →
+orchestrator gate (validate+selftest+render probe) → **independent adversarial deep-QA agent**
+(fetches sources itself, own probe scripts, fixes or verdicts) → browser-verify → commit → push.
+All 9 = MERGE (2 with trivial fixes: a bot piece-value tweak, a docstring).
+- **#219 Opulent Chess** (Strong 10×10): Lion=HFD, Wizard=CF, N+wazir; Grand promotion. perft d1=52 hand-verified.
+- **#220 Grand Shatranj** (Joyce 10×10, D preset): KAD/WDN/FAN leapers, Oliphant/War-Machine 2-leg riders,
+  baring win; QA ran an exhaustive 8-ray×27-occupancy rider oracle (0 mismatches).
+- **#221 Gross Chess** (Duniho 12×12): Cannon/Vao, flexible castling, 1/2/3-step pawns + multi-square e.p.,
+  tiered pool promotion. perft d1=72 hand-verified, d2=72² structurally proven.
+- **#222 Elven Chess** (Muller 10×10): Warlock = full Chu-Shogi Lion (double moves `f>m>t`, igui `f>m>f`, pass)
+  + iron/royal-for-one-turn anti-trade rules (stateful iron flag in poskey); 3-square castling.
+- **#223 Caissa Britannia** (Duniho 10×10): ROYAL QUEEN (through-check ban, facing ban), Dragon DDAA,
+  Unicorn B+Nightrider, Lion=Leo, liberation promotion.
+- **#224 Metamachy** (Cazaux 12×12): double-step from ANY square + e.p. anywhere, 16-direction one-time
+  King jump, Eagle gryphon; placement variant fixed to default array (future manifest option).
+- **#225 Omega Chess** (MacDonald): **first non-rectangular ChessLike** — 12×12 embed, `on()` override
+  (104 cells), polygons render w/ detached purple wizard squares (NO Board.jsx change); official 0–9/w1–w4
+  notation; both published Wikipedia mate lines replayed as anchors.
+- **#226 Decimaka** (Muller 10×10): promote-on-CAPTURE (F→Q, N→NN, T→Trident, others→Omni; Q-capture
+  override); pawns go dead on last rank. Builder died at session limit post-gates → the QA agent's
+  independent source extraction doubled as the build report (pattern worth reusing).
+- **#227 Zanzibar-XL** (Cazaux 12×12, 80 pieces/19 types): setup phase as **reserve-tray drops** (`L@c,r`,
+  reuses the Crazyhouse primitive — no UI change); Eagle/Rhino bent riders w/ reverse ray-traced attacked()
+  (differential 800 pos × 144 sq, 0 mismatches); validate 87s after perf work.
+**Ops lessons this run:** 5-hour session limits killed whole agent waves repeatedly (13 agent deaths) —
+partial packages must be deleted + relaunched fresh (or gate-checked if complete); when the **Fable model
+cap** hit, relaunching agents with `model: "opus"` worked fine for build/QA. Stagger launches (≤3) so a
+limit kills less in flight. pinchtab agent sessions expire between waves — recreate per batch.
+
+### ▶ NEXT: blog groups A & C still queued (see below)
+Group A = large shogi (Chu 12×12 … Maka Dai Dai 19×19; verify the joke "nut-named" ones), group C =
+connection/Y/hex family (Iris/Lotus/Medusa/…/Y-variants; hex/polygons primitives exist, verify render needs).
+Plus long-flagged Tamerlane & Bao.
+
+---
+
+## Previous handoff (2026-07-01, superseded)
+
+**218 games** on `origin/main` at HEAD `1a2f7b6`.
 
 ### What this session (2026-06-30 → 07-01) did — +13 games (#206–218) + 1 UX fix
 All browser- **and** anchor-verified, each its own commit, `GAME_STATUS.md`/this file/memory kept current.
