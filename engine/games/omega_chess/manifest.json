@@ -1,0 +1,14 @@
+{
+  "uid": "omega_chess",
+  "name": "Omega Chess",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Daniel MacDonald (1992) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "variant", "champion", "wizard", "10x10", "commercial"],
+  "bgg_url": "https://www.chessvariants.com/large.dir/omega/rules.html",
+  "description": "Omega Chess (Daniel MacDonald, 1992): the commercial 104-square variant endorsed by grandmasters Michael Rohde and Alex Sherzer. A 10x10 board plus four extra 'wizard' squares attached diagonally beyond each corner. The standard army is joined by two Champions (step 1 orthogonally, leap 2 orthogonally or diagonally) on the corner squares and two Wizards (step 1 diagonally, (1,3) camel leap; colour-bound) on the wizard squares. Pawns may advance 1, 2 or 3 squares on their first move and can be captured en passant on any passed square; castling is orthodox in form (king two squares toward either rook); pawns promote on the far rank of the 10x10 field to any piece except a king. Checkmate wins."
+}
