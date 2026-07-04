@@ -1,0 +1,14 @@
+{
+  "uid": "zanzibar_xl",
+  "name": "Zanzibar-XL",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Jean-Louis Cazaux (2020) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "variant", "large-board", "fairy", "cazaux", "gryphon", "cannon", "12x12", "setup"],
+  "bgg_url": "https://ftp.chessvariants.com/rules/zanzibar-xl",
+  "description": "Jean-Louis Cazaux's 12x12 great-chess variant (2020) with 80 pieces of 19 types. Alongside the orthodox army it fields an Eagle (gryphon: one diagonal step then an outward orthogonal slide) and its counterpart Rhinoceros (orthogonal step then diagonal slide), a Lion (leaps within two king steps), a Duchess (leaps 1-3 squares along any queen line), a Sorceress (queen-line cannon), Cannons and Archers (orthogonal and diagonal hop-capture cannons), a Buffalo (knight+camel+giraffe leaper), Giraffes ((2,3) leapers), Camels ((1,3) leapers), Machines (wazir+dabbaba), Elephants (ferz+alfil) and two Princes (non-royal kings with a pawn-like double push). Pawns and Princes may double-step from any square, with en passant (pawns only); promotion is to any 'chief' (Queen, Eagle, Lion, Duchess, Sorceress, Rhinoceros or Buffalo). There is no castling: an unmoved King may once leap two squares in any of 16 directions over any piece, but not out of check nor over a threatened square. Its signature is a player-chosen opening: Black freely arranges its King/Queen/Eagle/Lion on the four centre squares and its Duchess/Sorceress/Rhinoceros/Buffalo on the four flanks, then White's chiefs mirror and White moves first (288 distinct setups). Checkmate wins; stalemate is a draw."
+}
