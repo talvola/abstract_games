@@ -1,0 +1,14 @@
+{
+  "uid": "tintas",
+  "name": "Tintas",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Dieter Stein (2016); module by the Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": true,
+  "hidden_info": false,
+  "category": "Positional",
+  "tags": ["hex", "collection", "majority", "random-setup", "shared-piece"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/207951/tintas",
+  "description": "Tintas (Dieter Stein, 2016): 49 pieces in seven colours are scattered at random over a 49-cell hex board. Slide the shared pawn straight to the first piece in a line and collect it, chaining extra same-colour pickups. Collect all seven of one colour — or, once no colour can be completed, hold 4+ pieces in four different colours — to win."
+}
