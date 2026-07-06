@@ -1,0 +1,21 @@
+{
+  "uid": "xodd",
+  "name": "Xodd",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Luis Bolaños Mures / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Connection",
+  "options": {
+    "size": {
+      "choices": [9, 11, 13],
+      "default": 9,
+      "label": "Board size"
+    }
+  },
+  "tags": ["square", "placement", "parity"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/112111/xodd",
+  "description": "Xodd, by Luis Bolaños Mures (2011) — the square-board sibling of Yodd. On an empty square board, players alternate dropping one or two stones of EITHER colour (Black moves first, and only one stone on the opening turn). A group is a set of orthogonally connected like-coloured stones, and at the end of every turn the TOTAL number of groups on the board must be odd. You may pass when it keeps the count odd; two passes in a row end the game, and whoever has FEWER groups of their own colour wins. Because the total is odd, the two counts can never tie — there are no draws. Boards of base 9–13 are recommended."
+}
