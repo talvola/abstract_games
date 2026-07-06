@@ -1,0 +1,17 @@
+{
+  "uid": "permute",
+  "name": "Permute",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Eric Silverman (2020) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Positional",
+  "tags": ["square", "twist", "rotation", "groups", "rubik", "silverman", "pie-rule"],
+  "bgg_url": "https://mindsports.nl/index.php/the-pit/1074-permute",
+  "options": {
+    "size": { "choices": [9, 13], "default": 9, "label": "Board size" }
+  },
+  "description": "Eric Silverman's twisty-puzzle strategy game (2020). The board starts full of stones in a two-colour chequerboard; each turn you rotate a 2x2 'face' 90 degrees like a Rubik's Cube, then must bandage one of your own stones in it, locking every face containing it forever. When no twists remain, largest connected group wins, ties broken by successively smaller groups (Catchup-style). Pie rule after the first move."
+}
