@@ -1,0 +1,28 @@
+{
+  "uid": "exo_hex",
+  "name": "Exo-Hex",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Craig Duncan (2019) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "pie": true,
+  "category": "Connection",
+  "tags": ["hex", "hexhex", "connection", "scoring", "placement", "duncan", "side stitch", "exo-stones", "recursive tiebreak"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/291638/exo-hex",
+  "options": {
+    "size": {
+      "choices": ["5", "7", "9"],
+      "default": "7",
+      "label": "Board size (hexhex side, odd)"
+    },
+    "pie": {
+      "choices": [true, false],
+      "default": true,
+      "label": "Pie (swap) rule",
+      "labels": { "true": "On", "false": "Off" }
+    }
+  },
+  "description": "Craig Duncan's distilled sibling of Side Stitch: a hexhex board whose six sides are flanked OUTSIDE by pre-placed 'exo-stones' — on each side one black and one white string, alternating around the perimeter with empty gaps at the corners. Exo-stones are owned and connective: your groups extend through them. Place one stone per turn (pie rule; pass allowed); when the board fills or both players pass, each group scores the exo-stones it contains and the owner of the single best group wins, ties broken recursively down the group lists."
+}
