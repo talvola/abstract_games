@@ -1,0 +1,34 @@
+{
+  "uid": "odd_y",
+  "name": "Odd-Y",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Bill Taylor (2015) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "pie": true,
+  "category": "Connection",
+  "tags": ["connection", "hex", "pentagon", "heptagon", "y", "drawless", "placement", "pie-rule"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/223551/odd-y",
+  "options": {
+    "sides": {
+      "choices": [5, 7],
+      "default": 5,
+      "label": "Board sides",
+      "labels": { "5": "Pentagon (5-Y)", "7": "Heptagon (7-Y)" }
+    },
+    "size": {
+      "choices": [3, 4, 5],
+      "default": 4,
+      "label": "Board side (cells per spoke)"
+    },
+    "pie": {
+      "choices": [true, false],
+      "default": true,
+      "label": "Pie (swap) rule",
+      "labels": { "true": "On", "false": "Off" }
+    }
+  },
+  "description": "Bill Taylor's generalisation of the Game of Y to boards with any odd number of sides. Place a stone each turn; corner cells count for both adjacent sides. Win by connecting three sides whose midpoint triangle contains the board's centre — on the pentagon (5-Y, Ea Ea's 'Star Y') that is any three sides except three consecutive ones. Drawless; pie rule included."
+}
