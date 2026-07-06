@@ -46,6 +46,52 @@ Group A = large shogi (Chu 12×12 … Maka Dai Dai 19×19; verify the joke "nut-
 connection/Y/hex family (Iris/Lotus/Medusa/…/Y-variants; hex/polygons primitives exist, verify render needs).
 Plus long-flagged Tamerlane & Bao.
 
+### Group C SCOPED (2026-07-04) — two research agents, all 19 titles resolved; builds started
+**Y-family (7 names → 4 buildable):** `odd_y` [A; Bill Taylor 2015, BGG 223551; one package w/ `sides` option
+5(default)/7 ABSORBS "5-Y" and Ea Ea's "Star-Y" (same win rule: 3 sides whose midpoint-triangle contains center;
+pentagon = any 3 non-consecutive sides); reuse poly_y mudcrack board] · `xodd` [A; Bolaños Mures 2011, BGG 112111,
+mindsports /624-xodd; = yodd parity rules on square grid w/ orthogonal adjacency, size 9-13] · `superstar` [B;
+Freeling mid-1980s, mindsports /552-superstar; 12-sided star hex board, scores stars(edge-touch) + superstars
+(5×(S−2) sides connected) + loops(empties + 5/trapped enemy); board must be reconstructed from diagram; komi
+unestablished → document tie rule like starweb] · `snodd` [B+; Silverman 2021, blog-only, designer-playtested only;
+= yodd on snub-square tiling VERTICES (degree 5); optional] · **Double Star = only as a `star_star` (*Star) build
+w/ stones-per-turn 1/2 option** [B; Ea Ea; gamepuzzles.com/starbook-final.pdf pp.14-22; *Star itself is a real
+library gap — our `star` is Schensted's earlier different game; scoring invariant: combined = edge cells + 1, odd].
+**Designer dozen (all complete rules, ranked):** 1 `permute` [A; Silverman 2020; 2×2 twist+bandage, full chequerboard,
+catchup-cascade scoring, provably terminates] · 2 `tintas` [A; Dieter Stein 2016, spielstein.com; 49-cell hexhex-4+
+6 pinwheel bumps (axial coords in scout report), 7×7 colors random spread, shared pawn collects, ≤49 turns,
+has_randomness] · 3 `ayu` [A; Bolaños Mures 2011, mindsports /724; 11×11 interleaved-singleton setup, amoeba
+moves w/ approach-closest rule, CAN'T-MOVE=WIN, repetition=draw] · 4 `exo_hex` [A; Duncan 2019, BGG 291638; hexhex-7
+odd + exterior exo-stone strings, best-group-by-exo-stones + recursive tiebreak, pie] · 5 `iris` [A; Duncan 2019,
+BGG 286792; hexhex-5, 1-then-2-stones protocol, colored-rim forced 180° pair placement, atomic pair move `c1>c2`] ·
+6 `side_stitch` [A; Duncan 2017, BGG 223388; hexhex-8, 7 six-cell perimeter arcs (hard-code from image), best-group
+sides-touched + recursive tiebreak; SIBLING of exo_hex — ship both or prefer exo_hex] · 7 `rosette` [A; Mark Berger
+1975 (NOT Freeling), mindsports /1098; Go on honeycomb VERTICES (6n², base-5=150 default) + rosette immunity,
+superko, area scoring] · 8 `lotus` [A−; Freeling pre-1992, mindsports /538; REUSES kensington 72-point board;
+Go liberties + Othello-FLIP capture (cascading re-reversal), lotus immunity, pass-marker track, provably ends] ·
+9 `pex` [B; Bush + Marjorie Rice 2008, iggamecenter rules; Hex verbatim on Rice type-11 pentagon tiling (5/7-degree
+cells) — all effort = polygons board construction, 8×8=128 cells] · 10 `yvy` [B; Freeling+Bush 2009, mindsports
+/555; board+sprout map must be transcribed from diagram; loop=instant win, sprouts−2×groups scoring, "fenced in"
+needs formal def] · 11 `volo` [B; Dieter Stein 2010; hexhex-7 points −corners−center=120, bird placement/flock
+line-flight, region-removal w/ mover's survival CHOICE inside move, needs loop guard] · 12 `medusa` [B-DEFER;
+Freeling; compound turns (place + per-group slides w/ lost-move state), non-terminating → cap, weak MCTS — cost].
+Full quoted rules + URLs in the two scout reports (session transcript); sources re-fetchable
+(mindsports/spielstein/iggamecenter/drericsilverman fetch fine; BGG via
+api.geekdo.com/api/geekitems?objectid=<id>&objecttype=thing or Wayback).
+
+### Group C SHIPPED so far (2026-07-06) — #228–232 committed+pushed, all deep-QA'd + browser-verified
+- **#228 Xodd** `85fe1ee` — QA MERGE (legal-move exactness vs brute force ~3600 pos; 330-game fuzz).
+- **#229 Odd-Y** `c851854` — QA MERGE-WITH-FIXES (dead import); triple tables derived 3 ways; pentagon
+  graph-identical to poly_y; 550 full boards single-winner. Pentagon+heptagon both browser-rendered.
+- **#230 Permute** `50abe26` — QA MERGE; swap-semantics proven; 2-click twist + CW/CCW picker + ✕ bandage
+  all work in browser.
+- **#231 Ayu** `436277b` — QA MERGE; setup + distance rule verified against the official Dagaz JS engine;
+  3440-position adversarial exactness. LESSON: distance-rule readings proven equivalent.
+- **#232 Exo-Hex** `9df0c31` — QA MERGE-WITH-FIXES: **genuine tie → DRAW (never invent a winner —
+  build had an unsourced 'White wins ties' fallback; random early-double-pass games tie ~12%)**.
+**In flight: tintas (QA), iris (build), rosette (build). Next: side_stitch, lotus, superstar, then
+B-grades (pex/yvy/volo/snodd/star_star; medusa deferred).**
+
 ---
 
 ## Previous handoff (2026-07-01, superseded)
