@@ -1,0 +1,14 @@
+{
+  "uid": "lotus",
+  "name": "Lotus",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Connection",
+  "tags": ["go", "territory", "capture", "flip", "tessellation", "hexagon", "freeling"],
+  "bgg_url": "https://mindsports.nl/index.php/the-pit/538-lotus",
+  "description": "Lotus (Christian Freeling, 1980s) — a Go-like territory game on the 72 vertices of the Kensington rhombitrihexagonal board. Bi-coloured flip stones: a captured group is not removed but REVERSED to the capturer's colour (with a cascading re-reversal if the new group is itself liberty-less). Suicide is legal, holding a 'lotus' (all 6 points of a hexagon) grants permanent immunity, and passing nudges a marker that adds bonus points at the end. Stones only added or flipped, so the game always terminates. Highest territory wins."
+}
