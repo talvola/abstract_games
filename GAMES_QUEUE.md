@@ -89,8 +89,21 @@ api.geekdo.com/api/geekitems?objectid=<id>&objecttype=thing or Wayback).
   3440-position adversarial exactness. LESSON: distance-rule readings proven equivalent.
 - **#232 Exo-Hex** `9df0c31` — QA MERGE-WITH-FIXES: **genuine tie → DRAW (never invent a winner —
   build had an unsourced 'White wins ties' fallback; random early-double-pass games tie ~12%)**.
-**In flight: tintas (QA), iris (build), rosette (build). Next: side_stitch, lotus, superstar, then
-B-grades (pex/yvy/volo/snodd/star_star; medusa deferred).**
+### Group C batch 2 SHIPPED (2026-07-06) — #234–236 committed+pushed+deployed, all deep-QA MERGE + browser-verified
+- **#234 Iris** `e6be652` — QA MERGE, 0 fixes; antipodal-pair protocol exact vs reference over 2132 pos.
+- **#235 Rosette** `3f983cf` — QA MERGE, 0 fixes; honeycomb graph rebuilt (Euler verified), rosette immunity
+  both directions, situational superko. Go-on-honeycomb-vertices, 150-pt board renders clean.
+- **#236 Lotus** `89e11db` — QA MERGE, 0 fixes; flip-capture cascade verified on a real 13-stone case,
+  27,615-placement fuzz vs independent _resolve. Reuses kensington 72-vertex board.
+
+### ▶ REMAINING group C (2026-07-06): superstar + volo builds DIED at opus session limit (reset 7:20pm PT),
+both left NOTHING on disk (clean — relaunch fresh). superstar = Freeling 12-sided star board, stars+superstars
++loops scoring (grade B, board reconstruction was decoded: Starweb 217-cell shape, edge=60-cell outer ring,
+side=5-cell arc; havannah ring-detection for loops). volo = Dieter Stein bird-flocking unification (grade B,
+region-survival choice inside the move + win-priority ordering are the crux; hexhex-7 points −corners−center=120).
+Then: side_stitch (flagged near-sibling of exo_hex — defer-able), pex (Hex on Rice pentagon tiling), yvy, snodd,
+star_star (*Star + Double Star option — real library gap). medusa DEFERRED (compound multi-move + non-terminating).
+Group A (large shogi) still fully untouched. **9 group-C games shipped this session: #228-236.**
 
 ---
 
