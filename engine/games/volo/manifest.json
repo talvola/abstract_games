@@ -1,0 +1,22 @@
+{
+  "uid": "volo",
+  "name": "Volo",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Dieter Stein (2010)",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Connection",
+  "tags": ["hex", "flocking", "movement", "unification", "abstract", "stein", "nestorgames"],
+  "bgg_url": "https://spielstein.com/games/volo/rules",
+  "options": {
+    "size": {
+      "choices": [120, 84],
+      "default": 120,
+      "label": "Board size",
+      "labels": { "120": "Standard (120 points, edge 7)", "84": "Small (84 points, edge 6)" }
+    }
+  },
+  "description": "Dieter Stein's flocking-birds game on a hexagonal point board (the 'sky', corners and centre removed). Add birds and let flocks fly in straight lines to gather ALL your birds into one contiguous flock — while fragmenting your opponent's into stranded regions that fly away."
+}
