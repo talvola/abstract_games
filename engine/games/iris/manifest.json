@@ -1,0 +1,22 @@
+{
+  "uid": "iris",
+  "name": "Iris",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Craig Duncan (2019) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "pie": false,
+  "category": "Connection",
+  "tags": ["hex", "hexhex", "connection", "scoring", "placement", "duncan", "side stitch", "exo-hex", "rainbow", "antipodal", "recursive tiebreak"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/286792/iris",
+  "options": {
+    "size": {
+      "choices": ["4", "5", "6"],
+      "default": "5",
+      "label": "Board size (hexhex side)"
+    }
+  },
+  "description": "Craig Duncan's rainbow-perimeter sibling of Exo-Hex / Side Stitch, a finalist in BGG's 2019 Best Combinatorial 2-Player Game contest. A hexhex board whose coloured rim cells are paired by 180-degree rotation (each cell's twin is its antipode). Black opens with ONE stone on a gray interior cell; thereafter each turn is TWO stones — a coloured rim cell forces its antipode, a gray cell forces any non-adjacent gray cell. When the board fills or both players pass, each group scores the coloured cells it occupies and the owner of the single best group wins, ties broken recursively down the group lists (a genuine total tie is a draw)."
+}
