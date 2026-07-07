@@ -1,0 +1,14 @@
+{
+  "uid": "ordo",
+  "name": "Ordo",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Dieter Stein (2009)",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Capture / annihilation",
+  "tags": ["square", "race", "connection", "phalanx", "capture", "abstract"],
+  "bgg_url": "https://spielstein.com/games/ordo/rules",
+  "description": "Dieter Stein's 2009 abstract on a 10x8 board. All of your 20 men must stay connected in one group. Men move forward or sideways; a straight line of men (an 'ordo') slides sideways together. Reach the opponent's home row, wipe them out, or split their group beyond repair."
+}
