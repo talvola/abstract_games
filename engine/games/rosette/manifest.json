@@ -1,0 +1,28 @@
+{
+  "uid": "rosette",
+  "name": "Rosette",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Mark Berger (Richard Kramberger), 1975 — module by the Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Connection",
+  "tags": ["go", "territory", "capture", "honeycomb", "hex", "go-variant"],
+  "bgg_url": "https://mindsports.nl/index.php/arena/rosette/1098-rosette-rules",
+  "options": {
+    "size": {
+      "choices": [5, 6, 7],
+      "default": 5,
+      "label": "Board size (hexes per side)",
+      "labels": { "5": "Base-5 (150 points)", "6": "Base-6 (216 points)", "7": "Base-7 (294 points)" }
+    },
+    "komi": {
+      "choices": [0, 4.5, 5.5],
+      "default": 4.5,
+      "label": "Komi (White compensation)",
+      "labels": { "0": "0 (draws possible)", "4.5": "4.5", "5.5": "5.5" }
+    }
+  },
+  "description": "Rosette (Mark Berger, 1975) transposes Go to the vertices of a honeycomb — every interior point has three neighbours. All the usual Go rules apply, plus one: a group that surrounds a small hexagon (six like-coloured stones = a rosette) lives forever and can never be captured. Chinese/area scoring after two passes."
+}
