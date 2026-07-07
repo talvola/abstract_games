@@ -1,0 +1,22 @@
+{
+  "uid": "star_star",
+  "name": "*Star",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Ea Ea / Craige Schensted (c. 2004, Kadon Enterprises) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Connection",
+  "tags": ["star", "schensted", "ea-ea", "connection", "scoring", "territory", "placement", "drawless", "hex", "pentagon"],
+  "bgg_url": "https://gamepuzzles.com/starbook-final.pdf",
+  "options": {
+    "stones_per_turn": {
+      "choices": [1, 2],
+      "default": 1,
+      "label": "Stones per turn",
+      "labels": { "1": "*Star (1 stone)", "2": "Double *Star (2 stones)" }
+    }
+  },
+  "description": "Ea Ea's (Craige Schensted's) acclaimed later connection-scoring game, on the five-sided *STAR board: 5 sectors of 10 rings around a central star-shaped bridge, 275 cells with 50 edge cells and 5 corner points. You never play the bridge but both players connect through it. White first; place a stone (or pass); two passes end the game. A 'star' is a connected group holding 2+ edge cells; it owns the edge cells it contains plus those it surrounds. Score = edge cells owned, +1 for owning 3+ corners, then an award of twice the star-count difference favouring the player with FEWER stars. The combined score is always 51 -- odd, so the game is drawless. Double *Star option: place two stones per turn (one on the first move)."
+}
