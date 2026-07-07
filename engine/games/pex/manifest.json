@@ -1,0 +1,15 @@
+{
+  "uid": "pex",
+  "name": "Pex",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "David J. Bush & Marjorie Rice (2008) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "pie": true,
+  "category": "Connection",
+  "tags": ["connection", "placement", "pentagon", "hex-family", "polygons", "no-draw"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/39288/pex",
+  "description": "Hex played on Marjorie Rice's convex-pentagon tiling (type 11): a rhombus of 128 pentagons where half the interior cells have 7 neighbours and half have 5. Place stones to link your two opposite coloured edges. Trivalent tiling ⇒ no draws, exactly like Hex. Pie rule."
+}
