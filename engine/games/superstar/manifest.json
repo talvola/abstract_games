@@ -1,0 +1,21 @@
+{
+  "uid": "superstar",
+  "name": "Superstar",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Christian Freeling (mid-1980s) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Connection",
+  "tags": ["superstar", "freeling", "hex", "connection", "scoring", "territory", "star", "havannah"],
+  "bgg_url": "https://mindsports.nl/index.php/the-pit/552-superstar",
+  "options": {
+    "komi": {
+      "choices": [0, 1, 2, 3, 5],
+      "default": 0,
+      "label": "Komi (points for Black)"
+    }
+  },
+  "description": "Christian Freeling's connection-scoring game, the 'missing link' between Star and Starweb, played on the same 217-cell star-shaped board with a Havannah flavour. White moves first; players alternately place a stone or pass, and the game ends on two successive passes. Each of your connected chains scores simultaneously as a STAR (edge cells touched minus 2), a SUPERSTAR (5x(sides connected minus 2)), and a LOOP (enclosed territory: 1 per vacant cell, 5 per trapped enemy stone). Highest total wins; a genuine tie is a draw. Black may receive komi."
+}
