@@ -96,14 +96,32 @@ api.geekdo.com/api/geekitems?objectid=<id>&objecttype=thing or Wayback).
 - **#236 Lotus** `89e11db` — QA MERGE, 0 fixes; flip-capture cascade verified on a real 13-stone case,
   27,615-placement fuzz vs independent _resolve. Reuses kensington 72-vertex board.
 
-### ▶ REMAINING group C (2026-07-06): superstar + volo builds DIED at opus session limit (reset 7:20pm PT),
-both left NOTHING on disk (clean — relaunch fresh). superstar = Freeling 12-sided star board, stars+superstars
-+loops scoring (grade B, board reconstruction was decoded: Starweb 217-cell shape, edge=60-cell outer ring,
-side=5-cell arc; havannah ring-detection for loops). volo = Dieter Stein bird-flocking unification (grade B,
-region-survival choice inside the move + win-priority ordering are the crux; hexhex-7 points −corners−center=120).
-Then: side_stitch (flagged near-sibling of exo_hex — defer-able), pex (Hex on Rice pentagon tiling), yvy, snodd,
-star_star (*Star + Double Star option — real library gap). medusa DEFERRED (compound multi-move + non-terminating).
-Group A (large shogi) still fully untouched. **9 group-C games shipped this session: #228-236.**
+### Group C batch 3 SHIPPED (2026-07-06) — #237–238 committed+pushed+deployed, both deep-QA MERGE + browser-verified
+- **#237 Superstar** `ee3cda8` — QA MERGE, 0 fixes; Freeling 12-sided star board (Starweb 217 cells + 60-cell
+  edge ring, verified byte-identical to starweb + edge recomputed), 12-side partition confirmed, star/superstar/
+  loop scoring fuzzed vs referees over 3000 chains + 1000 boards. Star board + gold edge ring renders clean.
+- **#238 Volo** `8186489` — QA MERGE, 0 fixes; Stein bird-flocking unification, 120/84-pt hexhex; 648 fly moves
+  audited; 'mover never self-fragments' PROVEN (validates single-suffix region encoding); win-priority confirmed.
+  `hex`-render (corners/center show empty-unplayable, cosmetic-safe, no crash).
+
+### ▶ REMAINING group C (2026-07-06): **11 games shipped this session (#228–238)** = xodd, odd_y, permute, ayu,
+exo_hex, tintas, iris, rosette, lotus, superstar, volo. Left in group C, all HARDER/lower-value long tail:
+- **side_stitch** (Duncan 2017, BGG 223388) — grade A but flagged a near-sibling of exo_hex (both best-group
+  hexhex scoring); the 7-arc perimeter table must be hard-coded from the image. DEFER-ABLE.
+- **pex** (Bush + Marjorie Rice 2008) — grade B; Hex verbatim on the Rice type-11 pentagon tiling; all effort =
+  constructing that polygons board (5/7-degree cells).
+- **yvy** (Freeling+Bush 2009) — grade B; board+sprout map must be transcribed from the mindsports diagram;
+  loop=instant-win, sprouts−2×groups scoring, "fenced in" needs a formal def.
+- **snodd** (Silverman 2021) — grade B+; yodd on a snub-square tiling (degree-5 vertices) — near-clone geometry,
+  designer-playtested only; needs a snub-square polygons board.
+- **star_star** (*Star + Double Star as a stones-per-turn option) — grade B; a REAL library gap (our `star` is
+  Schensted's earlier different game) but needs the bespoke *Star tournament board + edge-ownership scoring.
+- **medusa** — DEFERRED (compound multi-move turns + non-terminating + weak MCTS = high cost/low payoff).
+**Group A (large shogi: Chu/Dai/Tenjiku/Dai-Dai/Maka-Dai-Dai/Heian-Dai; verify the "nut-named" jokes) fully
+untouched.** DECISION POINT for Erik: continue the C long-tail (pex/yvy/star_star are the most distinct), start
+group A (marquee-hard focused builds), or pause. Ops this session: Fable cap → opus relaunch worked well; ~4 more
+session-limit agent deaths, all recovered (partials cleaned + relaunched); every game deep-QA'd MERGE with ≤1
+trivial fix (only real fix all session: exo_hex invented-winner → honest draw).
 
 ---
 
