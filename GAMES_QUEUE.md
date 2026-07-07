@@ -136,6 +136,16 @@ REJECTS (already-have/clone/off-theme): crossway(have), Morpheus/Squer/Rhode/Fli
 (Stigmergy sib), Kopano(Konobi sib), Peon(=Cation), DiaGo(Go variant), HexHive(Hex reskin), Foxxy(fox&geese),
 Faction(extermination not connection), Karl-Scherer solitaire puzzles, mis-tagged shogi/chess/dama bulk.
 Recommended port order: Ordo → Stigmergy → Emulsion → Flipway → (Cation/Konobi after rule-verification).
+
+**PROGRESS (2026-07-07): Ordo SHIPPED (#240). Next 3 STAGED + BLOCKED ON MODEL LIMITS — Emulsion, Stigmergy,
+Flipway build agents were launched (full briefs ready, all 3 ReadMes already fetched/confirmed complete) but ALL
+died: Opus session limit (resets 12:30am PT) AND Fable usage-credit limit both hit. Nothing on disk (clean).
+TO RESUME: relaunch the 3 builds on opus (after 12:30am PT reset) or fable (after credits refill) — briefs are in
+the session transcript; each = download the Zillions .zip ReadMe (authoritative), verify vs designer/BGG, implement,
+selftest, then deep-QA + browser + commit. Stigmergy default board = hexhex side-8 (per its .zrf), reuse tumbleweed
+geometry; confirm distinct-from-tumbleweed (no stacks). Emulsion = full-board swap-only, provably finite. Flipway
+= 2×2-drop + crosscut-flip connection (drop-maximality is the subtle rule). After these: Cation/Konobi need the
+designer's public rules first; then remaining known-C (yvy/snodd/side_stitch) or group A (large shogi).**
 **NOTE: zillions-to-platform skill last updated 2026-06-18 — still works (procedure doc); could refresh with newer
 render primitives if a Zillions game ever needs one, but this batch is all standard square/hex so not needed.**
 
