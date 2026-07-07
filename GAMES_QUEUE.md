@@ -117,7 +117,31 @@ exo_hex, tintas, iris, rosette, lotus, superstar, volo. Left in group C, all HAR
 - **star_star** (*Star + Double Star as a stones-per-turn option) — grade B; a REAL library gap (our `star` is
   Schensted's earlier different game) but needs the bespoke *Star tournament board + edge-ownership scoring.
 - **medusa** — DEFERRED (compound multi-move turns + non-terminating + weak MCTS = high cost/low payoff).
-**Group A (large shogi: Chu/Dai/Tenjiku/Dai-Dai/Maka-Dai-Dai/Heian-Dai; verify the "nut-named" jokes) fully
+### ZILLIONS connection-games scout (2026-07-06, Erik-directed) — mined theme=4 (~1800 mostly mis-tagged entries,
+775 parsed, top ReadMes read). Best genuinely-distinct picks (mostly Luis Bolaños Mures); geometry all
+square/square-intersection/hex-of-hexes = NO new render primitive; rules live in the .zip ReadMe (skill ports fine):
+1. **Ordo** (Dieter Stein 2009, id=2345) — grade A, TOP PICK; stay-connected race, men + line-slide "ordo" move,
+   all your men must stay one 8-connected group; win = reach back row / split enemy. **BUILDING NOW.**
+2. **Stigmergy** (Bolaños Mures & Metzger 2021, id=3126) — grade A/B; hex-of-hexes line-of-sight control + flip +
+   area score. Distinct from tumbleweed (no stacks). Ship this, SKIP its sibling Robble(3117) + square-cousin Pletore.
+3. **Emulsion** (Bolaños Mures 2020, id=3089) — grade B, VERY clean; full square board, swap-only (swap must raise
+   your piece value), largest-group scoring, PROVABLY FINITE (monotone potential, no cap). Totally novel.
+4. **Flipway** (Bolaños Mures 2020, id=3051) — grade B; 2×2 multi-drop + crosscut-flip, connect your two edges,
+   drawless. Head of a family (Morpheus/Squer/Rhode/Flicker/Cation = near-dups → ship ONE, Flipway is cleanest).
+5. **Pletore** (id=3198) — square cousin of Stigmergy; ship only if we want both (prob skip — near-dup of Stigmergy).
+6. **Cation** (2016, id=2500) — grade B; row-flip connection; ReadMe lacks rules → needs designer's public rules first.
+7. **Konobi** (2012, id=2014) — grade B; square drawless connection w/ weak-diagonal restriction; FLAG dedup vs
+   crossway (closest existing) — confirm before building; ReadMe boilerplate → needs designer rules.
+REJECTS (already-have/clone/off-theme): crossway(have), Morpheus/Squer/Rhode/Flicker(Flipway near-dups), Robble
+(Stigmergy sib), Kopano(Konobi sib), Peon(=Cation), DiaGo(Go variant), HexHive(Hex reskin), Foxxy(fox&geese),
+Faction(extermination not connection), Karl-Scherer solitaire puzzles, mis-tagged shogi/chess/dama bulk.
+Recommended port order: Ordo → Stigmergy → Emulsion → Flipway → (Cation/Konobi after rule-verification).
+**NOTE: zillions-to-platform skill last updated 2026-06-18 — still works (procedure doc); could refresh with newer
+render primitives if a Zillions game ever needs one, but this batch is all standard square/hex so not needed.**
+
+### KNOWN Group C remaining (harder/lower-value long tail): star_star (*Star — BUILDING NOW), pex (BUILDING NOW),
+yvy (board+sprout transcription), snodd (yodd-on-snub-square near-clone), side_stitch (exo_hex near-sibling); medusa
+DEFERRED. **Group A (large shogi: Chu/Dai/Tenjiku/Dai-Dai/Maka-Dai-Dai/Heian-Dai; verify the "nut-named" jokes) fully
 untouched.** DECISION POINT for Erik: continue the C long-tail (pex/yvy/star_star are the most distinct), start
 group A (marquee-hard focused builds), or pause. Ops this session: Fable cap → opus relaunch worked well; ~4 more
 session-limit agent deaths, all recovered (partials cleaned + relaunched); every game deep-QA'd MERGE with ≤1
