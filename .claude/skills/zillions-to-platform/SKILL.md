@@ -13,19 +13,34 @@ more games.
 
 ## 1. Get the game
 
-Zillions submission pages have a download link `...submissions.cgi?do=download;id=N`.
+Zillions submission pages have a download link `...submissions.cgi?do=download;id=N`
+that **302-redirects** to `https://zillions-of-games.com/ftp/games/<Name>.zip` — you
+can fetch that path directly (with `-L` to follow the redirect):
 ```bash
-cd /tmp && curl -sL "https://www.zillions-of-games.com/cgi-bin/zilligames/submissions.cgi?do=download;id=N" -o g.zip
+cd /tmp && curl -sL -A "Mozilla/5.0" "https://www.zillions-of-games.com/cgi-bin/zilligames/submissions.cgi?do=download;id=N" -o g.zip
 unzip -o g.zip -d game && ls -R game
 ```
-You get: a **`.zrf`** (plain-text rules — the source of truth), `.zsg` (saved
-games; the numbers in their names are *solution move counts*, not cell counts),
-board **`.bmp`** images, and `ReadMe`/`intro` text. View a board to ground-truth
-geometry:
+You get: a **`.zrf`** (plain-text rules), `.zsg` (saved games; the numbers in their
+names are *solution move counts*, not cell counts), board **`.bmp`** images, and
+`ReadMe`/`intro` text. View a board to ground-truth geometry:
 ```bash
 python3 -c "from PIL import Image; Image.open('game/.../Wide4.bmp').save('/tmp/b.png')"
 ```
 then Read `/tmp/b.png`. If you can't download, ask the user to paste the `.zrf`.
+
+**The `.zrf` is NOT always the best source of truth.** For classic single-board
+games it is. But many *modern* designer games on Zillions (e.g. the Luis Bolaños
+Mures / Dieter Stein connection family) ship a **machine-generated, multi-board
+`.zrf`** whose scoring/win logic is deliberately incomplete ("omitted for coding
+simplicity" — komi, largest-group scoring, and even the win check are often not
+wired up), while the bundled **`ReadMe` carries the complete, authoritative
+ruleset**. And some bundles have only a boilerplate ReadMe with NO rules, plus a
+Zillions catalog **blurb that is often wrong** (seen: Konobi's blurb says "like
+Sokoban" — false). So: **prefer the designer's own published rules** (BGG,
+spielstein.com, mindsports.nl, nestorgames PDFs) as the authority, cross-check the
+ReadMe, and treat the `.zrf` as the tie-breaker for exact move geometry — NOT as
+gospel. When the designer's site and the `.zrf` port disagree (e.g. Ordo's ordo-move
+directions), **follow the designer and document the deviation in `rules.md`**.
 
 ## 2. Map ZRF sections → the contract
 
@@ -122,18 +137,66 @@ label to `"colindex,rowindex"`) and keep the ZRF label only for `describe_move`.
 
 ## 5. Implement, validate, wire
 
-1. Write `engine/games/<uid>/{manifest.json, game.py, rules.md}` against the
-   contract. Pick a `category` (reuse an existing one if it fits); put
+1. Write `engine/games/<uid>/{manifest.json, game.py, rules.md, selftest.py}`
+   against the contract. Pick a `category` (reuse an existing one if it fits); put
    variants/sizes in `options`; set `bgg_url` to the source page. Add a
    `describe_move` for readable move-log notation. **`rules.md`** is a one-page
    writeup of the rules *as implemented* (note any interpretation you had to make
    when the ZRF/source was ambiguous) — the UI shows it via a "Rules" button.
+   Ship a **`selftest.py`** too (see §6).
 2. **Guarantee termination** — if random play could loop, add a no-progress /
    ply-cap draw (conformance plays random games to a terminal).
-3. `cd engine && PYTHONPATH=. python3 -m agp.cli validate games/<uid>` until
+3. **Scoring/win logic is usually the real porting work.** The territory/group
+   games' `.zrf` ports don't enforce the win condition, so you implement it: a
+   largest-connected-group flood-fill, an area count, a line-of-sight control test.
+   Write these in plain Python from the ReadMe/designer rules. **A genuine tie must
+   resolve to an honest DRAW** (`winner=None`, `returns [0,0]`) — NEVER invent a
+   winner via a fallback tiebreak "that should be unreachable" (it usually isn't:
+   an early symmetric double-pass ties, and a fake winner is an exploitable rule
+   bug). If the designer says "draws are impossible," that's a claim about *full*
+   boards — still implement the honest draw for the reachable tie.
+4. `cd engine && PYTHONPATH=. python3 -m agp.cli validate games/<uid>` until
    `RESULT: OK`; then `playtest`/`render` to sanity-check.
-4. Restart the backend (the registry caches game code at startup) and screenshot
-   the board to verify rendering. Add a conformance test to `engine/tests/`.
+5. Restart the backend (the registry caches game code at startup; kill by PORT
+   only) and **browser-verify** the board (a RenderSpec bug is invisible to
+   validate/selftest but white-screens the board): pinchtab → QuickPlay → click the
+   game card → START → screenshot; confirm the board renders and a signature move
+   works.
+
+## 6. Anchor with a `selftest.py` + independent QA
+
+- **`selftest.py` (pure stdlib — import only `agp` + your own game; no PIL/numpy):**
+  a fast standalone script asserting the port's correctness anchors — board
+  construction (cell count/adjacency/degrees), the signature move rules, win/score
+  on hand-built positions, and a random-playout-terminates check. It runs under
+  `tests/test_games.py::test_package_selftests` on system `python3`, so pip-only
+  deps are forbidden. If you needed an image/library to *build* a static board,
+  do that ONCE offline and ship the result as a `board.json` data file loaded at
+  runtime (see `games/pex`) — runtime stays pure-stdlib.
+- **Independent adversarial QA is worth it** for any non-trivial port: a *separate*
+  agent re-fetches the sources, writes its OWN reference move-generator / scorer,
+  and differential-fuzzes it against your `legal_moves`/`returns` over thousands of
+  positions (exact set-equality is the gold standard). For connection games the
+  **no-draw oracle** is decisive — 2-color the full board tens of thousands of
+  times and assert exactly one player connects every time; a draw or double-win
+  means the adjacency/edge graph is wrong (this is how `pex`'s reconstructed
+  pentagon board was proven genuine).
+
+## 7. Render primitives available (you rarely need a new one)
+
+`polygons` covers almost any board (supply each cell's `points` — a LIST of
+`{id, points}`, NOT a dict; vertex key is `points`). On top of the base
+`square`/`hex`/`polygons` types the renderer already supports (see `SPEC.md` +
+`GAME_STATUS.md` for the live menu): `board.tints` (per-cell colours — terrain,
+goal edges, ownership), `board.lines` (under-cell grooves, e.g. a vertex board's
+graph edges), `board.overlay` (over-cell lines, e.g. bridges), `board.walls`,
+`board.tiles`/`board.tokens`/`board.tracks` (path/track tiles), `board.cards`
+(movement-pattern strips), a per-seat `reserve` tray with click-to-drop (drop move
+`"L@c,r"`), `piece.stack`/`piece.prongs`/`piece.label`. Vertex-played boards (Go on
+a graph, honeycomb) render as small `polygons` cells at each vertex + `board.lines`
+for the edges (see `games/{rosette,lotus,kensington}`). If a game genuinely needs a
+NEW primitive, that's an orchestrator-owned change to `web/src/Board.jsx` (a render
+bug white-screens EVERY game) — flag it, don't hack it into one game.
 
 ## Gotchas (from real ports)
 
