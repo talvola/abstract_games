@@ -1,0 +1,16 @@
+{
+  "uid": "rhode",
+  "name": "Rhode",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Luis Bolaños Mures (2016) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "pie": true,
+  "category": "Connection",
+  "tags": ["square", "connection", "placement", "weak-pair", "crosscut", "no-draw"],
+  "bgg_url": "https://boardgamegeek.com/thread/1593043",
+  "options": { "size": { "choices": [5, 7, 9, 11, 13], "default": 11, "label": "Board size" } },
+  "description": "Drawless square-board connection game (Bolaños Mures, 2016). Connect your two edges with an orthogonal chain. Diagonal links must be consolidated and it costs a whole turn: whenever you have a weak pair (a diagonal pair of your stones with no friendly stone adjacent to both), you must fill a point adjacent to both — and after every placement your other stones caught in crosscuts are removed."
+}
