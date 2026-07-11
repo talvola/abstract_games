@@ -1,0 +1,14 @@
+{
+  "uid": "neutreeko",
+  "name": "Neutreeko",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Jan Kristian Haugland (2001) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "N-in-a-row",
+  "tags": ["square", "movement", "abstract", "solved"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/3319/neutreeko",
+  "description": "Neutreeko (Jan Kristian Haugland, 2001) on a 5x5 board — a portmanteau of Neutron and Teeko. Each player has three pieces; a piece slides orthogonally or diagonally until stopped by a piece or the board edge (it cannot stop short). Win by getting your three pieces in a connected row, orthogonally or diagonally. The same position occurring three times is a draw. Solved: perfect play from the official start is a draw. Official site: neutreeko.net."
+}
