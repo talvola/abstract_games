@@ -1,0 +1,14 @@
+{
+  "uid": "oxono",
+  "name": "Oxono",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory (game by Tom Delahaye, Cosmoludo 2024)",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": true,
+  "hidden_info": false,
+  "category": "N-in-a-row",
+  "tags": ["oxono", "square", "6x6", "4-in-a-row", "shared-pieces", "totems", "cosmoludo", "delahaye"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/398388/oxono",
+  "description": "Oxono (Tom Delahaye, Cosmoludo 2024): a double-natured four-in-a-row on a 6x6 board. Two SHARED totems - one X, one O - start on the central dot squares. On your turn, move a totem of your choice like a rook (over empty squares only), then place one of your tokens of the SAME symbol on an empty square orthogonally next to the totem's new position. A totem whose four neighbours are all occupied may instead JUMP over them to the first free square (and if its whole row and column are full, fly anywhere; if it lands fully enclosed, your token may go on any free square). First to line up 4 tokens of their COLOUR (any symbols) or 4 of one SYMBOL (any colours - the player completing the line wins it), horizontally or vertically, wins; totems never count in a line. If all 32 tokens are placed with no line, the game is a draw."
+}
