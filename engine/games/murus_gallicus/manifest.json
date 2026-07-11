@@ -1,0 +1,14 @@
+{
+  "uid": "murus_gallicus",
+  "name": "Murus Gallicus",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Phil Leduc (2009) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Capture / annihilation",
+  "tags": ["square", "race", "stacking", "breakthrough", "sacrifice"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/55131/murus-gallicus",
+  "description": "Phil Leduc's 2009 breakthrough game on an 8x7 board, named for Caesar's Gallic siege walls. Each side starts with eight two-stone towers on its home row. A tower moves by distributing its two stones onto the next two cells in a straight line (each must be empty or a friendly wall); single stones are immobile walls. A tower may sacrifice a stone to demolish an adjacent enemy wall. Reach the opponent's home row, or leave them without a move, to win."
+}
