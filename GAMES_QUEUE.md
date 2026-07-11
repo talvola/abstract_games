@@ -6,10 +6,17 @@ universe map and capability gaps live in `GAME_BACKLOG.md`; this file is the
 
 ---
 
-## ⭐ SESSION HANDOFF (read this first) — 2026-07-03
+## ⭐ SESSION HANDOFF (read this first) — updated 2026-07-10
 
-**Clean stopping point.** Tree clean, HEAD `4db62cf`, **227 games** on `origin/main`,
-auto-deployed live at https://abstract-games.onrender.com.
+**Current state: 247 games** on `origin/main`, auto-deployed live at
+https://abstract-games.onrender.com. Latest wave = #242–247 (Emulsion/Stigmergy/Flipway/
+Cation/Konobi/Rhode, see the 2026-07-10 SHIPPED block below) + **Group A (large shogi)
+underway — Chu Shogi build in flight** (see the Group A block below). Two non-blocking
+flags for Erik in the "⚠️ Flags" block (Emulsion tie rule, crossway swap).
+
+---
+
+Previous handoff (2026-07-03): tree clean, HEAD `4db62cf`, **227 games**.
 
 ### Blog run, group B COMPLETE (2026-07-01 → 07-03) — all 9 chess variants, #219–227
 Erik picked group B of the Silverman-blog queue. Per game: build agent (source-verified) →
@@ -148,6 +155,54 @@ geometry; confirm distinct-from-tumbleweed (no stacks). Emulsion = full-board sw
 designer's public rules first; then remaining known-C (yvy/snodd/side_stitch) or group A (large shogi).**
 **NOTE: zillions-to-platform skill last updated 2026-06-18 — still works (procedure doc); could refresh with newer
 render primitives if a Zillions game ever needs one, but this batch is all standard square/hex so not needed.**
+
+### SHIPPED (2026-07-10): the whole staged wave + Cation/Konobi/Rhode → **247 games**, #242–247
+All six = build agent → orchestrator gate → independent adversarial deep-QA (own source fetch + differential
+probes) → browser-verified (batched backend restart, pinchtab QuickPlay, signature move played) → committed →
+pushed. Erik supplied saved-MHTML BGG rules for Cation/Rhode (designer thread 1593043) and Konobi (game page),
+unblocking the rule-verification gate; Rhode added on Erik's call (same thread as Cation; designer later
+superseded it with Akimbo/Okimba — noted in its rules.md; those two are future candidates).
+- **#242 Emulsion** `d8f6546` — swap-only largest-group, designer-authored ReadMe anchor; QA MERGE-WITH-FIXES
+  (doc-only). Deep-QA diff 0 mismatches / 1,439 positions; 122 genuine even-board full ties matched.
+- **#243 Stigmergy** `9fa1716` — LoS-control hexhex territory + komi/button; QA MERGE 0 fixes (9,186 positions,
+  132 games, exact match; .zrf flag machinery decoded as cross-check). Distinct from tumbleweed (no stacks).
+- **#244 Flipway** `3df00e8` — maximal-2×2-drop + crosscut-flip connection; QA MERGE-WITH-FIXES — **real rules
+  bug caught**: checkered-setup opening must be a single white-stone replacement, not a flip (fixed).
+- **#245 Cation** `0eb0051` (+ swap fix `2ab169e`) — crosscut-ko connection; builder died post-write at a session
+  limit → deep-QA served as the sole independent check (Decimaka pattern): MERGE 0 fixes, 12,272 states diffed,
+  both designer-recorded games replayed. "Streamlined Cation" (Apr 2026 designer post) is unpublished — 2016
+  rules implemented with a version note; revisit if he publishes it.
+- **#246 Konobi** `5957530` — weak-connection-ban connection; build found an argument-transposition TYPO in the
+  designer's .zrf (contradicts the rule text embedded in the same file); QA independently CONFIRMED (717/21,271
+  positions diverge as-written; corrected reading = prose exactly). Official PDF sample game replayed.
+- **#247 Rhode** `7ac73a2` — forced weak-pair completion + crosscut self-removal; QA MERGE-WITH-FIXES (pie swap
+  → value-preserving transpose mirror); win-timing-after-removal anchored both ways (540 break cases).
+
+### ⚠️ Flags for Erik (non-blocking, from this wave's QA)
+1. **Emulsion even-board tie rule — genuine designer-source conflict**: the 2020 Zillions ReadMe says an
+   even-board full recursive tie goes to the LAST MOVER as a WIN; the designer's current BGG description says
+   the last mover LOSES (and adds a pie rule). No third source resolves it. Package follows the Zillions
+   edition and documents the conflict (default 9×9 odd board can never hit it). Flip = one line in `returns()`.
+2. **Crossway's pie swap recolours in place** — same non-value-preserving pattern Rhode's QA caught (goals are
+   transposed, so "change sides" should transpose-mirror the stone; Cation was fixed in `2ab169e`). NOT changed:
+   crossway is long-live and swap semantics changes replay differently in persisted matches. Decide whether to
+   align it (one-line + selftest) or leave documented.
+
+### ▶ Group A (large shogi) STARTED 2026-07-10 — scout complete, Chu Shogi build in flight
+Scout resolved the whole queue (full report in session transcript): **build Chu (12×12, M/L, flagship —
+Wikipedia article is implementation-grade and is HaChu's own spec; `apt install hachu` = differential oracle,
+incl. Lion-trading rules w/ okazaki toggle) → Dai (15×15, M — Chu core + 8 weak step-movers, NO Lion-trading
+rules) → Heian Dai (13×13, S freebie, partially-reconstructed rules documented) → optionally Tenjiku (16×16,
+XL, NO oracle — HaChu's attempt failed; jumping generals + Fire Demon burn + partial-Lion pieces = 3 new
+mechanisms) which then unlocks Nutty/Mitsugumi as M follow-ups. SKIP historic Dai Dai (17×17) & Maka Dai Dai
+(19×19): Edo sources contradict each other piece-by-piece, no oracle, 96 pieces/side — Muller's 13×13 Cashew
+(Dai-Dai-flavor) + Macadamia (Maka-Dai-Dai-flavor) are the clean modern proxies. **Nut-named verdicts: ALL
+REAL** (Muller: Nutty/Cashew/Macadamia 13×13 shrinks; DeWitt: Suzumu 16×16 fixed Tenjiku + Mitsugumi 13×13
+shrink; all on chessvariants.com). Key engine facts: all six drop-less AND no check rule (win = capture all
+royals, pseudo-legal movegen — big perf win); Elven Chess's Warlock = complete Chu Lion incl. f>m>t/igui
+encoding; Wa Shogi = the (slides,leaps,ranged) large-board template; square render proven to 19×19 (Go),
+labels ≤2 chars. Suggested seam: a shared large-shogi layer (ShogiLike + Wa tables + direction-scoped Lion
+component) proven by Chu, making Dai/Heian-Dai table-transcription builds.
 
 ### KNOWN Group C remaining (harder/lower-value long tail): star_star (*Star — BUILDING NOW), pex (BUILDING NOW),
 yvy (board+sprout transcription), snodd (yodd-on-snub-square near-clone), side_stitch (exo_hex near-sibling); medusa
