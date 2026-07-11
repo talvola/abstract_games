@@ -1,0 +1,14 @@
+{
+  "uid": "byte",
+  "name": "Byte",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Stacking",
+  "tags": ["square", "stacking", "merger", "steere", "checkers-set"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/19360/byte",
+  "description": "Byte (Mark Steere, 2005): a merge-only stacking game with a checkers set on the dark squares of an 8x8 board. Isolated stacks must slide toward their closest stack; adjacent stacks merge by lifting your checker (and everything above it) to a strictly higher altitude. A stack of exactly 8 is removed and scored for the owner of its top checker; win 2 of the 3 stacks. Drawless by design."
+}
