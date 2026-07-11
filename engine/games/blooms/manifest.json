@@ -1,0 +1,23 @@
+{
+  "uid": "blooms",
+  "name": "Blooms",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Nick Bentley (2018) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Territory",
+  "tags": ["blooms", "hex", "hexhex", "go-like", "capture", "bentley", "four-colour"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/249095/blooms",
+  "options": {
+    "size": { "choices": [4, 5, 6], "default": 5, "label": "Board size (cells per side)" },
+    "target": {
+      "choices": ["auto", "15", "20", "25", "30"],
+      "default": "auto",
+      "label": "Capture target (X)",
+      "labels": { "auto": "Auto (15/20/30 by size)" }
+    }
+  },
+  "description": "Nick Bentley's Go-like capture game on a hexhex board where each player owns TWO colours of stones. Place 1 or 2 stones per turn (2 must be different colours), then capture every enemy bloom (same-colour group) left with no empty neighbour. Suicide is legal, there is no passing, and the first player to capture X stones wins. Winner of the 2018 Best Combinatorial Game award."
+}
