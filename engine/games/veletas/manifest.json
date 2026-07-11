@@ -1,0 +1,23 @@
+{
+  "uid": "veletas",
+  "name": "Veletas",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Luis Bolaños Mures (2013) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "pie": true,
+  "category": "Positional",
+  "tags": ["square", "territory", "movement", "shooters", "claiming", "pie", "no-draw"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/151224/veletas",
+  "options": {
+    "size": {
+      "choices": [7, 9, 10],
+      "default": 9,
+      "label": "Board size",
+      "labels": { "7": "7×7 (3 shooters)", "9": "9×9 (5 shooters)", "10": "10×10 (7 shooters, official)" }
+    }
+  },
+  "description": "Drawless territory game, a close relative of Amazons (Bolaños Mures, 2013; BGG Best Combinatorial 2-Player Game of 2013). Shared neutral shooters move like chess queens and shoot stones of your colour. A shooter that can no longer move is claimed by whoever owns the biggest group of stones orthogonally adjacent to it (tie or none: the trapper's opponent). Claim a majority of the shooters to win. Setup pie rule: the second player chooses sides after the first player places the initial shooters and stone."
+}
