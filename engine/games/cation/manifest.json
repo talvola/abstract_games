@@ -1,0 +1,16 @@
+{
+  "uid": "cation",
+  "name": "Cation",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Luis Bolaños Mures (2016) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "pie": true,
+  "category": "Connection",
+  "tags": ["square", "connection", "placement", "crosscut", "ko", "no-draw"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/202476/cation",
+  "options": { "size": { "choices": [5, 7, 9, 11, 13], "default": 11, "label": "Board size" } },
+  "description": "Drawless square-board connection game with ko fights (Bolaños Mures, 2016). Connect your two edges with an orthogonal chain. You may form a crosscut (a 2x2 of two black + two white diagonal pairs) only against stones older than your opponent's latest — and whenever a crosscut exists, its resolution is forced: the player to move must lift one of their stones out of it and replay it elsewhere."
+}
