@@ -1,0 +1,14 @@
+{
+  "uid": "mixtour",
+  "name": "Mixtour",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory (game by Dieter Stein, 2011)",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Stacking",
+  "tags": ["square", "stacking", "stein", "5x5"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/90942/mixtour",
+  "description": "Mixtour (Dieter Stein, 2011): a pure stacking game on an empty 5x5 board. Enter a piece or move any stack's top pieces in a straight line onto another stack -- the move's distance must exactly equal the TARGET stack's height. Build a stack of five or more with your colour on top to win. You may move your opponent's pieces, but you may never take their last move straight back."
+}
