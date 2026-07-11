@@ -1,0 +1,14 @@
+{
+  "uid": "heian_dai_shogi",
+  "name": "Heian Dai Shogi",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "shogi", "historic", "large", "variant"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Heian_dai_shogi",
+  "description": "Heian Dai Shogi (平安大将棋): the earliest known large Shogi variant, described in the 12th-century Nichureki. 13x13 board, 34 pieces a side in 13 types -- all simple movers (the Flying Dragon is a bishop, the Free Chariot a vertical rook). No drops; almost everything promotes to a Gold General in the far three ranks. Win by checkmate or by reducing the opponent to a bare King."
+}
