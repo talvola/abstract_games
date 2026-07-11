@@ -188,6 +188,61 @@ superseded it with Akimbo/Okimba — noted in its rules.md; those two are future
    crossway is long-live and swap semantics changes replay differently in persisted matches. Decide whether to
    align it (one-line + selftest) or leave documented.
 
+### ▶ NEXT-WAVE QUEUE scouted 2026-07-11 (Zillions/CVP/designer sites; Erik-directed overnight run)
+All deduped vs the 248 uids + prior rejects; sources fetched + verified complete. Build in mix-balanced waves of 3:
+1. **cannon_game** [A; Whitcher 2003; 10×10 soldiers form 3-in-line "cannons" that slide/shoot; nestorgames PDF +
+   iggamecenter + Zillions id=150; distinct vs mak_yek/xiangqi/epaminondas] · **murus_gallicus** [A; Leduc 2009; 8×7
+   tower-distribution walls; Wikipedia + nestorgames PDF + Zillions id=1891; piece.stack ht-2] · **duck_chess**
+   [A-; Paulden 2016; chess + shared duck blocker moved after each move (backgammon sub-move pattern, king-capture
+   win); Fairy-Stockfish `duck` = perft oracle]
+2. **mixtour** [A; Stein 2011; 5×5 stack-climbing, move dist = target height; spielstein rules; CYCLABLE → no-progress
+   cap] · **blooms** [A; Bentley 2018; hexhex two-colors-each, fenced-bloom capture, BGA oracle] · **shatar** [A-;
+   Mongolian chess; FSF `shatar` oracle; shak/tuk mate-class rules = crux, document FSF's interpretation]
+3. **byte** [A; Steere 2005; merge-only stacks, pyramid-of-8 scoring; marksteeregames PDF] · **dodo** [A; Steere 2021;
+   hex misère blocking race, first-stuck WINS; PDF] · **shogun_chess** [B+; crazyhouse hybrid w/ rank-6 shogi
+   promotion + demote-into-hand; FSF variants.ini oracle; CrazyhouseDrops shipped]
+4. **omega_nra** [A-; Romeral Andrés 2010; hex, place one stone of EVERY color, PRODUCT-of-group-sizes scoring,
+   2-4p; nestorgames PDF] · **urbino** [A-; Stein 2018; shared architects + building placement, district scoring;
+   =CHOICE picker for building type] · **congo** [B+; Freeling 1982; 7×7 animal chess, river drowning + monkey
+   chain-jumps; Wikipedia complete]
+5. **veletas** [B+; Bolaños Mures 2013; shared queen-shooters claimed by immobilization; nestorgames PDF] ·
+   **banqi** [B+; Dark Chess 4×8 flip-reveal, Taiwanese hierarchy; randomness-in-state pattern, has_randomness] ·
+   **tamerlane_chess** [B+; c.1400, 11×10+citadels (omega_chess non-rect precedent), CVP complete] or
+   **hexagonal_chess** [B+; Gliński 91-cell hexhex; NO oracle, custom engine — biggest single build; stalemate=¾
+   point → implement draw + document]
+Backups (sources verified): redstone/king_and_courtesan (Steere, capped to avoid flooding), abande/attangle/accasta
+(Stein seam), breakthru (Randolph 1965, 2-moves pattern; name-confusion warning vs breakthrough), onyx (connection
+fatigue), neutron, isolation, salta, jetan (CVP mainline + document ambiguities), CwDA (armies as options), raumschach
+(5×5×5 via qubic layers), chad (mindsports, find page via site search). **Akimbo/Okimba: need Erik-saved MHTML** (BGG
+thread 3671219 has Akimbo's final rules in post 2; Okimba rules not public; BGG APIs now auth-gated).
+Rejects logged by the scout (clones/render-heavy/contested-rules): hexdame, morabaraba, chaturanga, sho_shogi,
+minixiangqi, gothic/embassy, LYNGK, avalam, terrace, rithmomachia, kriegspiel/bughouse (hidden info/two-board),
+rococo, avalanche, palago/akron/margo/shibumi, six/kulami/katarenga/barragoon/boku/chase/bizingo/djambi.
+Zillions gotcha: theme-listing URLs are dead — the submissions.cgi search is POST-only (`search_term`); name-search works.
+
+### SHIPPED overnight 2026-07-11 (Erik-directed autonomous run) → **253 games**, #248–253
+All six: build → orchestrator gate → independent adversarial deep-QA → browser-verified → committed → pushed.
+- **#248 Chu Shogi** `c20d77b` — the Group A flagship. Lion-trading + counterstrike rules; HaChu differential
+  (551 build + 600 QA self-play moves replayed w/ per-ply board sync; 4,144 root-list moves compared; perft
+  36/1,296/48,819 d1-HaChu-confirmed); deep-QA MERGE 0 fixes, independent 28-move-kind audit; QA also proved
+  HaChu 0.21 itself deviates from the written spec in 2 spots (package correct). Ubuntu `hachu` binary +
+  threaded CECP driver patterns live in the session scratchpad (`scratchpad/chu/`).
+- **#249 Heian Dai Shogi** `26f7002` — 13×13 Nichūreki reconstruction; check rules + bare-king win (sourced);
+  perft 29/841/25085; deep-QA MERGE 0 fixes (independent generator, 7,200-position diff exact). FD→Dragon Horse
+  + Iron-not-forced source-conflict calls upheld.
+- **#250 Dai Shogi** `563a4d2` — 15×15, Chu core + 8 weak pieces (VO/FD = new bounded-slide RANGED mechanism);
+  NO Lion-trading (triple-sourced + contrast-tested vs chu); promo zone = 5 (CVP diagram typo identified);
+  perft 71/5041/357978; two clean HaChu differentials (build + QA); deep-QA MERGE 0 fixes.
+- **#251 Duck Chess** `545b20c` — chess + shared duck; fowling = stalemated player WINS; pyffish perft
+  640/379,440 exact + 23 games full turn-set equality across build+QA; deep-QA MERGE 0 fixes.
+- **#252 Cannon** `9768e84` — Whitcher soldier/cannon-formation; plain-capture Town win (the .zrf 'checkmated'
+  idiom documented as the alternative reading — the one judgment call); long-shot-over-occupied-middle legal
+  (rulebook + .zrf beat iggamecenter's paraphrase); deep-QA MERGE doc-only, 19,840 positions 0 mismatches.
+- **#253 Murus Gallicus** `be430cd` — Leduc tower-distribution siege; deep-QA MERGE 0 fixes (12,888+568+200
+  positions exact); QA constructed a REAL repetition shuttle cycle proving the threefold backstop necessary.
+Group A remaining: Tenjiku (XL, no oracle) → unlocks Nutty/Mitsugumi; Cashew/Macadamia as the sanctioned
+Dai-Dai/Maka-Dai-Dai proxies. Next-wave queue (above): wave 2 = mixtour/blooms/shatar.
+
 ### ▶ Group A (large shogi) STARTED 2026-07-10 — scout complete, Chu Shogi build in flight
 Scout resolved the whole queue (full report in session transcript): **build Chu (12×12, M/L, flagship —
 Wikipedia article is implementation-grade and is HaChu's own spec; `apt install hachu` = differential oracle,
