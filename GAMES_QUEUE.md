@@ -243,6 +243,28 @@ All six: build → orchestrator gate → independent adversarial deep-QA → bro
 Group A remaining: Tenjiku (XL, no oracle) → unlocks Nutty/Mitsugumi; Cashew/Macadamia as the sanctioned
 Dai-Dai/Maka-Dai-Dai proxies. Next-wave queue (above): wave 2 = mixtour/blooms/shatar.
 
+### SHIPPED overnight waves 2-4 (2026-07-11) → **262 games**, #254–262
+Same pipeline per game (build → gate → adversarial deep-QA → browser → commit → push). All MERGE.
+- **#254 Mixtour** `a4ce811` — Stein stack-climber; ko-triple proven ≡ board restoration (QA: 15,644 pos).
+- **#255 Blooms** `44f184e` — Bentley two-colour hex capture race, v2.0 ruleset (boardspace's 1.0 rejected);
+  4-colour per-piece fill render; end-of-turn simultaneous capture confirmed vs sources (QA: 22,344 states).
+- **#256 Shatar** `1632305` — Mongolian chess, shak/tuk/niol/robado mate classes; full pyffish differential
+  (perft d1-4 exact; ~102k positions QA); shak-chain state serialized.
+- **#257 Byte** `26f7002`-family — Steere merge-only pyramids; QA attacked the Chebyshev metric w/ BFS —
+  proven identical on all dark-square pairs; Fig 6 replayed checker-for-checker.
+- **#258 Dodo** — Steere misère hex race; setup blob-detected from the PDF figure by build AND QA
+  independently; size-2 solve reproduced; BGA random-play stats matched.
+- **#259 Shogun Chess** — crazyhouse/shogi hybrid; pyffish perft d1-4 exact; **QA caught a REAL bug**
+  (50-move counter not reset on promotions) — fixed + anchored.
+- **#260 Omega (omega_nra)** — Romeral Andrés product scoring; place-both-colours sub-turns; rulebook's
+  explicit Black-wins-ties; QA 18,320 pos 0 mismatches. (Scout's BGG id was wrong; corrected to 81588.)
+- **#261 Congo** — Freeling 7x7 animal chess; timer-less drowning proven equivalent; monkey chains;
+  QA 39,325 pos lockstep 0 mismatches; perft 24/576/14332.
+- **#262 Urbino** — Stein shared-architect districts + official Monuments option; QA clean-room matched
+  all 8,923 plies; all official scoring examples reproduced.
+**Remaining scouted queue: wave 5 = veletas + banqi + (tamerlane_chess or hexagonal_chess — Erik's pick;
+Gliński hex is the biggest single build, no oracle). Backups list above. Group A: Tenjiku/nut-trio.**
+
 ### ▶ Group A (large shogi) STARTED 2026-07-10 — scout complete, Chu Shogi build in flight
 Scout resolved the whole queue (full report in session transcript): **build Chu (12×12, M/L, flagship —
 Wikipedia article is implementation-grade and is HaChu's own spec; `apt install hachu` = differential oracle,
