@@ -1,0 +1,14 @@
+{
+  "uid": "mijnlieff",
+  "name": "Mijnlieff",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Andy Hopwood (2010), Hopwood Games / AGP",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "N-in-a-row",
+  "tags": ["mijnlieff", "hopwood", "abstract", "placement", "square", "lines"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/72667/mijnlieff",
+  "description": "Mijnlieff (Andy Hopwood, 2010 — UK Games Expo Best Abstract Game). A 4x4 tile-placement duel where every tile you play dictates where your OPPONENT must play next: Straights force the same row/column, Diagonals the same diagonal, Pullers a touching square, Pushers a non-touching square. Each player has 8 tiles (two of each type); the first tile must go on an edge square. If you can't play you pass and your opponent places freely. When a player places their last tile the opponent gets ONE final placement. Score 1 point per line of 3 in your colour (a line of 4 = 2); highest score wins."
+}
