@@ -1,0 +1,14 @@
+{
+  "uid": "tamerlane_chess",
+  "name": "Tamerlane Chess",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Traditional (Persia, c. 1400) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "historic", "shatranj", "tamerlane", "great chess", "citadel", "11x10"],
+  "bgg_url": "https://www.chessvariants.com/historic.dir/tamerlane.html",
+  "description": "Tamerlane Chess (Shatranj Kamil, Persia c. 1400): the great chess of Timur's court. An 11x10 board plus two citadel squares. Beside the shatranj army (king, general, vizier, knights, rooks, elephants) it fields giraffes (one diagonal step then at least three straight), pickets (bishops that must move two or more), camels ((3,1) leapers) and war engines ((2,0) jumpers) - and ELEVEN kinds of pawn, each promoting to its own piece. The pawn of kings makes a second royal prince; the pawn of pawns follows a famous three-stage rule ending as an adventitious king. A checked king may once per game swap places with any friendly piece, and a losing king can force a draw by reaching the opponent's citadel. Checkmate and stalemate both win."
+}
