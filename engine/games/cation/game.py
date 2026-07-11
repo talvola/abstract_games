@@ -199,10 +199,15 @@ class Cation(Game):
                                winner=s.winner, draw=s.passes + 1 >= 2,
                                ply=s.ply + 1, passes=s.passes + 1)
         if move == "swap":
-            # Pie rule: White claims Black's lone opening stone as their own.
+            # Pie rule ("change sides"): White claims Black's opening stone.
+            # Because the two goals are transposed (rows vs columns), the
+            # value-preserving mirror is the diagonal transpose (c,r)->(r,c),
+            # not a recolour in place (hex/konobi convention).
             (cell, _owner), = s.board.items()
-            return CationState(size=s.size, board={cell: s.to_move},
-                               to_move=1 - s.to_move, last=cell,
+            c, r = cell
+            mirrored = (r, c)
+            return CationState(size=s.size, board={mirrored: s.to_move},
+                               to_move=1 - s.to_move, last=mirrored,
                                ply=s.ply + 1)
         me = s.to_move
         board = dict(s.board)

@@ -14,6 +14,9 @@ resolves the classic square-grid crosscut problem with **ko fights**.
   connect.
 - Black moves first. **Pie rule**: on White's first turn only, White may play
   `swap` to take over Black's opening stone instead of making a regular move.
+  Because the two goals are transposed (rows vs columns), the stone is claimed
+  at the diagonally mirrored point `(c,r)→(r,c)` — the value-preserving
+  equivalent of "changing sides" (same convention as Hex, Konobi and Rhode).
 
 ## Crosscuts
 

@@ -194,16 +194,22 @@ def _cell_occupied(s, mv):
 
 
 def test_pie_rule_swap():
-    """(g) White may swap on their first turn only; the stone changes hands."""
+    """(g) White may swap on their first turn only; the stone changes hands
+    via the value-preserving diagonal transpose (c,r)->(r,c)."""
     s = G.initial_state({"size": 5})
     assert "swap" not in G.legal_moves(s)
-    s = G.apply_move(s, "2,2")
-    assert "swap" in G.legal_moves(s)
-    ns = G.apply_move(s, "swap")
-    assert ns.board == {(2, 2): WHITE} and ns.to_move == BLACK
+    # Off-diagonal opening: the mirrored point must be the transpose.
+    s2 = G.apply_move(s, "1,3")
+    assert "swap" in G.legal_moves(s2)
+    ns = G.apply_move(s2, "swap")
+    assert ns.board == {(3, 1): WHITE} and ns.to_move == BLACK
     assert "swap" not in G.legal_moves(ns)
-    # ... and not offered on any later ply either.
-    ns2 = G.apply_move(G.apply_move(s, "1,1"), "3,3")
+    # Diagonal opening is a fixed point of the mirror.
+    sd = G.apply_move(s, "2,2")
+    nd = G.apply_move(sd, "swap")
+    assert nd.board == {(2, 2): WHITE}
+    # ... and swap is not offered on any later ply either.
+    ns2 = G.apply_move(G.apply_move(s2, "1,1"), "3,3")
     assert "swap" not in G.legal_moves(ns2)
 
 
