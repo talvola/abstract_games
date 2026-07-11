@@ -265,6 +265,37 @@ Same pipeline per game (build → gate → adversarial deep-QA → browser → c
 **Remaining scouted queue: wave 5 = veletas + banqi + (tamerlane_chess or hexagonal_chess — Erik's pick;
 Gliński hex is the biggest single build, no oracle). Backups list above. Group A: Tenjiku/nut-trio.**
 
+### SHIPPED wave 5 (2026-07-11) → **265 games**, #263–265
+- **#263 Veletas** — Bolaños Mures shared-shooter claiming; QA clean-room ~14k plies, both rulebook examples;
+  drawless proof verified. (Scout BGG id wrong again — verify ids; correct = 151224.)
+- **#264 Banqi** — Taiwanese Dark Chess; randomness-in-state; QA exhaustive capture matrix + 80k-ply diff +
+  render-leak audit (face-down pieces never expose identity).
+- **#265 Tamerlane Chess** — the long-flagged historic marquee; 11 pawn types, pawn-of-pawns lifecycle,
+  citadel draw, king-swap; perft 24/576/14518; QA node-level move-set equality through the perft tree.
+
+### ▶ PerGioco Masters coverage (Erik-directed, scouted 2026-07-11) — **48/78 rating categories covered (~62%)**
+Roster from pergioco.net/live/pgmasters (IIS bot-block needs full browser headers) + the 2026 schedule PDF +
+playstrategy.org/variant. Platforms are BGA/PlayStrategy/AbstractPlay ⇒ every gap has a live online anchor.
+All heavyweights already covered (GIPF project, draughts family, Hex/Havannah/Twixt, shogi/xiangqi/go, etc.).
+**Ranked gap queue (waves of 3; waves 1–7 ⇒ ~83% coverage):**
+1. zola (Steere PDF) · boop (Brady 2022, publisher PDF+BGA) · mijnlieff (Hopwood 2010)
+2. neutreeko+bobail (one category; neutreeko is SOLVED = perfect anchor) · oxono (Cosmoludo, official PDF)
+3. squadro (Gigamic; piece.prongs) · qawale (stack-sowing; piece.stack) · soluna (Blue Orange)
+4. icebreaker · silo · rive (the Mark Steere trio, uniform PDF sourcing + BGA anchors)
+5. strands (iggamecenter rules; honest-draw care) · italian_draughts (traditional gap!) · alveole (open-source ref)
+6. yoxii (Cosmoludo) · donuts/INSERT (Cathala; has_randomness tiles) · complica
+7. VARIANT BATCH on existing engines: draughts medley (russian/pool/spanish/antidraughts/frysk/brkthru-draughts/
+   scrambled-eggs-LOA), othello variants (octagon/grand-10x10/anti), five-check + no-castling chess, mini xiangqi
+   (PST rates it despite our earlier clone-reject), bestemshe, nackgammon/hyper-backgammon, quarto-2x2 option.
+8. B-grades by value: cairo_corridor (Cairo pentagon tiling, pex board.json precedent) → fendo (Stein, board.walls)
+   → enso (Stein) → bug (Bentley; shape-equality crux) → tanbo → linkage (nestorgames PDF) → pyrga →
+   battle_of_lits → sensei/diaballik → siam → onyx (backup-list; new justification) → four → hus (DEDUP vs
+   omweso!) → exit_strategy (verify rules) → kulami (prior reject; reopenable via board.json) →
+   patchwork/marrakech/kingdomino (euro-weight, last).
+NOT PLATFORM FIT: colorpop (secret colour = hidden info), 61-autumn-leaves (roll-and-write), flowers (card
+drafting), lucky_numbers (low value). Full per-game sources in the scout report (session transcript) +
+fetched pages in the session scratchpad `scout_pergioco/`.
+
 ### ▶ Group A (large shogi) STARTED 2026-07-10 — scout complete, Chu Shogi build in flight
 Scout resolved the whole queue (full report in session transcript): **build Chu (12×12, M/L, flagship —
 Wikipedia article is implementation-grade and is HaChu's own spec; `apt install hachu` = differential oracle,
