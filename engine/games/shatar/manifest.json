@@ -1,0 +1,14 @@
+{
+  "uid": "shatar",
+  "name": "Shatar",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "AGP",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "mongolian", "historic"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Shatar",
+  "description": "Shatar (Mongolian chess) on an 8x8 board, traditional rules. The Bers (queen, J) moves like a rook or one square diagonally; bishop, rook, knight and king are as in chess; pawns have no double step and promote only to a Bers. The obligatory opening 1.d4 d5 is pre-played. Mate only wins if the final unbroken series of checks contains a shak (a check by bers, rook or knight); a mate from bishop/pawn checks alone is niol, a draw; a mate delivered by the knight alone is forbidden and loses; baring either king (robado) and stalemate are draws. White (player 0) moves first."
+}
