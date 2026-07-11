@@ -1,0 +1,21 @@
+{
+  "uid": "omega_nra",
+  "name": "Omega",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Néstor Romeral Andrés (2010) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Territory",
+  "tags": ["hex", "hexhex", "placement", "scoring", "group", "nestorgames", "romeral", "omega"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/81588/omega",
+  "options": {
+    "size": {
+      "choices": [5, 6, 7, 8, 9, 10],
+      "default": 6,
+      "label": "Board side (hexes)"
+    }
+  },
+  "description": "Néstor Romeral Andrés' 2010 scoring game on a hexagonal grid (NOT Omega Chess). Each turn you place one stone of EVERY colour in play — one of yours, then one of your opponent's — on free cells. The game ends when fewer than 4 free cells remain before White's turn. Your score is the PRODUCT of the sizes of your connected groups; highest product wins, and per the rulebook a tie goes to the later player in turn order (Black). Board side 5–10 selectable; sizes beyond 8 produce gigantic scores."
+}
