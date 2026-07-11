@@ -1,0 +1,14 @@
+{
+  "uid": "cannon_game",
+  "name": "Cannon",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "David E. Whitcher (2003) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Capture / annihilation",
+  "tags": ["square", "war", "soldiers", "cannon", "whitcher"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/8553/cannon",
+  "description": "Cannon (David E. Whitcher, 2003). Each player places a Town on their back rank, then 15 soldiers fight on a 10x10 grid of points. Soldiers step forward, capture forward or sideways, and may retreat two points when touching the enemy. Three soldiers in a line form a CANNON: it can slide along its line, or shoot an enemy piece 2 or 3 points beyond its muzzle without moving. Capture or shoot the enemy Town to win; a player with no legal move loses."
+}
