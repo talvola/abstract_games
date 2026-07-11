@@ -1,0 +1,14 @@
+{
+  "uid": "boop",
+  "name": "boop.",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Scott Brady (2022), Smirk & Dagger / AGP",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "N-in-a-row",
+  "tags": ["boop", "square", "placement", "pushing", "cats", "brady", "smirk-and-dagger"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/355433/boop",
+  "description": "boop. (Scott Brady, Smirk & Dagger 2022). Place Kittens on the 6x6 quilted bed; every placed piece 'boops' all adjacent pieces one square away (off the bed = back to its owner's pool), but a piece with another piece directly behind it doesn't budge, and Kittens can't boop Cats. Line up three of your pieces to graduate them into Cats (removed, three Cats to your pool); with all 8 of your pieces on the bed you may instead pick one up. Win by lining up three of your CATS, or having all 8 of your Cats on the bed."
+}
