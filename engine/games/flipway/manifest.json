@@ -1,0 +1,31 @@
+{
+  "uid": "flipway",
+  "name": "Flipway",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Luis Bolaños Mures (2020) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Connection",
+  "tags": ["square", "connection", "placement", "flip", "no-draw", "zillions"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/314559/flipway",
+  "options": {
+    "size": {
+      "choices": [6, 8, 10, 12, 14, 16],
+      "default": 12,
+      "label": "Board size"
+    },
+    "setup": {
+      "choices": ["plain", "checkered", "bicheckered"],
+      "default": "plain",
+      "label": "Starting position",
+      "labels": {
+        "plain": "Empty board",
+        "checkered": "Checkered (full board — flips only)",
+        "bicheckered": "Bicheckered (2x2 blocks — flips only)"
+      }
+    }
+  },
+  "description": "Drawless connection game by Luis Bolaños Mures (2020). Black links top and bottom, White links left and right, with orthogonal chains of stones. On your turn either DROP — pick a 2x2 area and fill every empty point in it, provided no other 2x2 area contains those empty points plus another empty point — or FLIP a crosscut, replacing the two enemy stones of a 2x2 diagonal crossing with your own. Black opens with a single stone (in the full-board checkered setups, by recolouring a single white stone)."
+}
