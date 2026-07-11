@@ -1,0 +1,22 @@
+{
+  "uid": "urbino",
+  "name": "Urbino",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory (game by Dieter Stein, 2018)",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Territory",
+  "tags": ["urbino", "stein", "square", "9x9", "placement", "territory", "majority"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/237009/urbino",
+  "options": {
+    "monuments": {
+      "choices": [false, true],
+      "default": false,
+      "label": "Monuments variant",
+      "labels": { "false": "Off", "true": "On" }
+    }
+  },
+  "description": "Urbino (Dieter Stein, 2018): two players jointly build a town on a 9x9 board using two SHARED architect figures. Each turn, optionally teleport one architect to any empty square, then you MUST erect one of your buildings (house=1, palace=2, tower=3) on a square both architects can see along clear queen-lines. Districts (orthogonally connected buildings) may hold at most one connected block per player, and towers/palaces may never sit orthogonally next to a building of the same type. When both players must skip in a row, each two-coloured district scores its full value for whichever player contributed the higher total. Optional Monuments variant: lines of three (H-H-H, P-H-P, T-P-T) score double."
+}
