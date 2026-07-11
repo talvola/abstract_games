@@ -1,0 +1,14 @@
+{
+  "uid": "congo",
+  "name": "Congo",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Demian Freeling (1982) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess-like", "animal", "river", "freeling", "chain-capture"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/18813/congo",
+  "description": "Demian Freeling's 7x7 animal chess (1982), designed when he was 7. A river crosses the middle row: non-crocodile pieces that linger there drown at the end of their owner's turn. Each Lion is confined to its 3x3 castle but may snipe the enemy Lion along an open file or diagonal (facing lions). The Monkey captures draughts-style with optional chain jumps; Elephants and Giraffes leap; the Crocodile rules the river; pawns promote to Superpawns. Win by capturing the enemy Lion - there is no check, and stalemate loses."
+}
