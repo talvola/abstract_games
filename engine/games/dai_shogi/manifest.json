@@ -1,0 +1,14 @@
+{
+  "uid": "dai_shogi",
+  "name": "Dai Shogi",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "shogi", "large", "lion", "historic"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Dai_shogi",
+  "description": "Dai Shogi (大将棋, 'large shogi'): the historical 15x15 Japanese great shogi from the Kamakura period (~1230 AD), the ancestor of Chu Shogi -- 65 pieces a side of 29 types, no drops, the double-moving Lion (double captures, igui capture-in-place, turn passes) with NO trading restrictions, plus eight weak extra pieces (Iron & Stone Generals, Knight, Angry Boar, Cat Sword, Evil Wolf, Violent Ox, Flying Dragon) that all promote to Gold. Win by capturing ALL the opponent's royals (King, plus a Prince if a Drunk Elephant promoted); there is no check rule. Promotion in the far five ranks on entry or on a capture."
+}
