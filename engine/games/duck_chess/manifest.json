@@ -1,0 +1,14 @@
+{
+  "uid": "duck_chess",
+  "name": "Duck Chess",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "AGP",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "duck", "blocker", "multi-move", "king-capture"],
+  "bgg_url": "https://duckchess.com/",
+  "description": "Tim Paulden's 2016 variant: standard chess plus a shared rubber duck. Each turn you make a normal chess move, then MUST move the duck to a different empty square — nothing may land on or slide through it (knights jump over). There is no check: win by actually capturing the enemy king, and a player left with no move at all is 'fowled' and WINS. White (player 0) moves first; the duck enters the board after White's first move."
+}
