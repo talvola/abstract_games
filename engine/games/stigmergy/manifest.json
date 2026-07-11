@@ -1,0 +1,19 @@
+{
+  "uid": "stigmergy",
+  "name": "Stigmergy",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Luis Bolaños Mures & Steven Metzger (2021) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Territory",
+  "tags": ["stigmergy", "hex", "territory", "line-of-sight", "flipping", "modern", "drawless"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/333767/stigmergy",
+  "options": {
+    "size": { "choices": [4, 5, 6, 7, 8, 10, 12], "default": 8, "label": "Board side length" },
+    "komi": { "choices": [0, 1, 2, 3, 4, 5], "default": 0,
+              "label": "Komi (points added to White)" }
+  },
+  "description": "Bolaños Mures & Metzger's drawless line-of-sight territory game (2021), based on Tumbleweed but with single flippable stones instead of stacks. Place a stone on an empty cell your opponent doesn't control, or flip an enemy stone on a cell you do control — control means more than half of a cell's neighbours' worth of your stones can see it. Most stones plus controlled territory wins."
+}
