@@ -1,0 +1,16 @@
+{
+  "uid": "konobi",
+  "name": "Konobi",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Luis Bolaños Mures (2012) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "pie": true,
+  "category": "Connection",
+  "tags": ["square", "connection", "placement", "no-draw", "pie-rule"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/123213/konobi",
+  "options": { "size": { "choices": [7, 9, 11, 13, 15], "default": 11, "label": "Board size" } },
+  "description": "Drawless connection game on the points of a square board. Black links top-bottom, White left-right; chains use strong (orthogonal) and weak (diagonal) links — but the signature kosumi rule forbids a weak attachment to a stone whenever a clean strong attachment to it is available, and crosscuts are banned outright. Pie rule on move 2."
+}
