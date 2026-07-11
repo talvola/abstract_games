@@ -1,0 +1,17 @@
+{
+  "uid": "zola",
+  "name": "Zola",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Mark Steere (2021) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Capture / annihilation",
+  "tags": ["square", "capture", "checkers", "drawless", "steere"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/331666/zola",
+  "options": {
+    "size": { "choices": [6, 8, 10], "default": 6, "label": "Board size" }
+  },
+  "description": "Mark Steere's drawless centrifuge. The board starts packed with checkers; quiet moves must step AWAY from the center, while queen-line captures must hold or close the distance. Capture every enemy checker to win — if you can't move, you must sit and wait."
+}
