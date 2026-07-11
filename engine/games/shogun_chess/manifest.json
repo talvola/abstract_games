@@ -1,0 +1,14 @@
+{
+  "uid": "shogun_chess",
+  "name": "Shogun Chess",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "shogi", "drops", "promotion"],
+  "bgg_url": "https://www.pychess.org/variants/shogun",
+  "description": "Couch Tomato's crazyhouse/shogi hybrid (2019): chess with shogi-style promotion in the far three ranks (pawn to Captain, knight to General, bishop to Archbishop, rook to Mortar, Duchess to Queen) and captured pieces demoting into your hand for drops on your first five ranks."
+}
