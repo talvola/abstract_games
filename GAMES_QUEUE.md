@@ -6,13 +6,29 @@ universe map and capability gaps live in `GAME_BACKLOG.md`; this file is the
 
 ---
 
-## ⭐ SESSION HANDOFF (read this first) — updated 2026-07-10
+## ⭐ SESSION HANDOFF (read this first) — updated 2026-07-13
 
-**Current state: 247 games** on `origin/main`, auto-deployed live at
-https://abstract-games.onrender.com. Latest wave = #242–247 (Emulsion/Stigmergy/Flipway/
-Cation/Konobi/Rhode, see the 2026-07-10 SHIPPED block below) + **Group A (large shogi)
-underway — Chu Shogi build in flight** (see the Group A block below). Two non-blocking
-flags for Erik in the "⚠️ Flags" block (Emulsion tie rule, crossway swap).
+**Current state: 276 games** on `origin/main`, auto-deployed live at
+https://abstract-games.onrender.com. Latest = **#275 Akimbo + #276 Okimba** (Bolaños
+Mures 2026, Rhode's successors — Erik saved their BGG pages as MHTML + pointed at the
+designer's reference JS at github.com/luigio/games; both deep-QA MERGE + browser-verified,
+see the 2026-07-13 SHIPPED block below). Prior: #266–274 PerGioco gap-fill, #248–265
+Group A large shogi + mixed wave. Two non-blocking flags for Erik in the "⚠️ Flags"
+block (Emulsion tie rule, crossway swap).
+
+### SHIPPED (2026-07-13) → **276 games**, #275–276
+- **akimbo #275** — Bolaños Mures 2026 (BGG 466041), Rhode's *capturing* successor. Default
+  13×13; legal iff ≤1 naked diagonal PER COLOUR on the raw board BEFORE removal ("not even
+  momentarily"); completing a crosscut removes your OTHER stone. Pie rule, drawless.
+- **okimba #276** — Bolaños Mures 2026 (BGG 468749), the *no-captures* successor. Default
+  11×11 (per BGG "11×11 Grids"); legal iff ≤1 naked diagonal TOTAL across both colours →
+  crosscuts can never form → no removals. Pie rule, drawless.
+- Both: template = games/rhode; built from the designer's own reference JS (Akimbo.html/
+  Okimba.html) + Erik's saved BGG MHTML. Independent adversarial deep-QA reimplemented the
+  ref naked-diagonal counter from scratch and found **0 mismatches** (akimbo: 28,591 legality
+  + 783,642 removal; okimba: 16,870 legality + 20,000 naked-count), 0 draws in playouts,
+  honest [0,0] double-pass + ply-cap backstops. pinchtab browser-verified both (render, edge
+  colours, place + pie-swap button). One commit each.
 
 ---
 
@@ -213,8 +229,9 @@ All deduped vs the 248 uids + prior rejects; sources fetched + verified complete
 Backups (sources verified): redstone/king_and_courtesan (Steere, capped to avoid flooding), abande/attangle/accasta
 (Stein seam), breakthru (Randolph 1965, 2-moves pattern; name-confusion warning vs breakthrough), onyx (connection
 fatigue), neutron, isolation, salta, jetan (CVP mainline + document ambiguities), CwDA (armies as options), raumschach
-(5×5×5 via qubic layers), chad (mindsports, find page via site search). **Akimbo/Okimba: need Erik-saved MHTML** (BGG
-thread 3671219 has Akimbo's final rules in post 2; Okimba rules not public; BGG APIs now auth-gated).
+(5×5×5 via qubic layers), chad (mindsports, find page via site search). **✅ Akimbo/Okimba SHIPPED
+#275–276 (2026-07-13)** — Erik saved the BGG pages as MHTML + pointed at the designer's reference JS
+(github.com/luigio/games); see the 2026-07-13 SHIPPED block at top.
 Rejects logged by the scout (clones/render-heavy/contested-rules): hexdame, morabaraba, chaturanga, sho_shogi,
 minixiangqi, gothic/embassy, LYNGK, avalam, terrace, rithmomachia, kriegspiel/bughouse (hidden info/two-board),
 rococo, avalanche, palago/akron/margo/shibumi, six/kulami/katarenga/barragoon/boku/chase/bizingo/djambi.
