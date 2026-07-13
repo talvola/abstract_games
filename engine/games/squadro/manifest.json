@@ -1,0 +1,14 @@
+{
+  "uid": "squadro",
+  "name": "Squadro",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Adrián Jiménez Pascual (Gigamic, 2018) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Race",
+  "tags": ["race", "square", "abstract", "gigamic", "movement", "jump"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/245222/squadro",
+  "description": "Squadro (Adrián Jiménez Pascual, Gigamic 2018): a sharp 2-player racing game. Each side has five pieces, one on each of its five lines, moving perpendicular to the opponent. A piece advances at a fixed speed (1, 2 or 3 — the dots on its start cell), turning around at the far edge to return at the complementary speed. Pass over an opponent's piece and you leapfrog it, sending it all the way back to its base while your move stops short. First to complete the round trip with four of five pieces wins."
+}
