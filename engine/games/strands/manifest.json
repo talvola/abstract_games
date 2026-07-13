@@ -1,0 +1,21 @@
+{
+  "uid": "strands",
+  "name": "Strands",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Nick Bentley (2022) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Territory",
+  "tags": ["hex", "hexhex", "placement", "territory", "group", "bentley"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/364343/strands",
+  "options": {
+    "size": {
+      "choices": [5, 6, 7],
+      "default": 6,
+      "label": "Board size (cells per side)"
+    }
+  },
+  "description": "Nick Bentley's largest-group placement game on a pre-numbered hexagonal board. Cover up to X empty cells marked X each turn; the biggest connected group of stones when the board fills wins."
+}
