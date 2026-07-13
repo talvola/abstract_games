@@ -8,9 +8,16 @@ universe map and capability gaps live in `GAME_BACKLOG.md`; this file is the
 
 ## ⭐ SESSION HANDOFF (read this first) — updated 2026-07-13
 
-**Current state: 282 games** on `origin/main`, auto-deployed live at
-https://abstract-games.onrender.com. Latest = **PerGioco wave 5 #280–282 (SHIPPED
-2026-07-13):** Strands (Bentley largest-group placement on a numbered hexhex — numbers
+**Current state: 285 games** on `origin/main`, auto-deployed live at
+https://abstract-games.onrender.com. Latest = **PerGioco wave 6 #283–285 (SHIPPED
+2026-07-13):** Yoxii (Partinico/Cosmoludo totem surround on a 37-cell OCTAGON — brief's
+"cross" corrected to octagon from the rulebook; polygons render + valued =CHOICE pieces),
+Donuts/INSERT (Cathala; 6×6 random-tile line board, has_randomness, forced-direction +
+insertion flips; per-cell lines via board.overlay — no Board.jsx change), Complica (Knizia
+1991 Connect-4 with column-push, differential-tested vs AbstractPlay). All 3 deep-QA MERGE
+0-fixes (0 mismatches: yoxii 30k totem moves, donuts 6,462 steps, complica 2,000 playouts),
+browser-verified. **Next: wave 7 (VARIANT BATCH on existing engines), grade-B singles — see
+below.** Prior = **PerGioco wave 5 #280–282 (SHIPPED 2026-07-13):** Strands (Bentley largest-group placement on a numbered hexhex — numbers
 render as neutral labelled discs, no Board.jsx change; incremental single-cell placement
 avoids a move blowup), Italian Draughts (traditional 8×8 per the FID rulebook — short
 non-flying kings, men can't take kings, full mandatory-capture priority chain; a build-agent
@@ -327,7 +334,7 @@ All heavyweights already covered (GIPF project, draughts family, Hex/Havannah/Tw
 3. ✅ squadro #272 · qawale #273 · soluna #274 (SHIPPED 2026-07-12)
 4. ✅ icebreaker #277 · silo #278 · rive #279 (Mark Steere trio, SHIPPED 2026-07-13)
 5. ✅ strands #280 · italian_draughts #281 · alveole #282 (SHIPPED 2026-07-13)
-6. yoxii (Cosmoludo) · donuts/INSERT (Cathala; has_randomness tiles) · complica
+6. ✅ yoxii #283 · donuts #284 · complica #285 (SHIPPED 2026-07-13)
 7. VARIANT BATCH on existing engines: draughts medley (russian/pool/spanish/antidraughts/frysk/brkthru-draughts/
    scrambled-eggs-LOA), othello variants (octagon/grand-10x10/anti), five-check + no-castling chess, mini xiangqi
    (PST rates it despite our earlier clone-reject), bestemshe, nackgammon/hyper-backgammon, quarto-2x2 option.
