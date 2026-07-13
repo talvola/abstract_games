@@ -1,0 +1,23 @@
+{
+  "uid": "silo",
+  "name": "Silo",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Mark Steere (2021) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "pie": true,
+  "category": "Stacking",
+  "tags": ["stacking", "square", "consolidation", "steere", "1xN"],
+  "bgg_url": "https://www.marksteeregames.com/Silo_rules.pdf",
+  "options": {
+    "setup": {
+      "choices": ["1x6", "1x8"],
+      "default": "1x6",
+      "label": "Setup",
+      "labels": { "1x6": "1x6, stacks of 3 (default)", "1x8": "1x8, stacks of 4" }
+    }
+  },
+  "description": "Silo (Mark Steere, 2021): a 1x6 strip set up with alternating stacks of 3 red and 3 blue checkers. Players sit on opposite sides, so 'your right' is opposite for each. On your turn, move your highest own checker one square to your right, carrying any enemy checkers stacked above it and dropping them on top of the destination. Win by gathering all your checkers into one contiguous substack. Tower-of-Hanoi-inspired; uses the pie rule."
+}
