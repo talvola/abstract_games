@@ -1,0 +1,14 @@
+{
+  "uid": "complica",
+  "name": "Complica",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Reiner Knizia (1991)",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "N-in-a-row",
+  "tags": ["square", "alignment", "drop", "knizia"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/7476/complica",
+  "description": "Reiner Knizia's Connect-4 variant on a 4-wide, 7-tall grid. Drop a disc into a column: a non-full column stacks it on top, but a FULL column is pushed down one row (the bottom disc falls off) and your disc enters at the top. First to line up four of their own discs — horizontal, vertical, or diagonal — wins. If a single move gives BOTH players a four-in-a-row, no one wins and play continues."
+}
