@@ -1,0 +1,14 @@
+{
+  "uid": "soluna",
+  "name": "Soluna",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": true,
+  "hidden_info": false,
+  "category": "Stacking",
+  "tags": ["stacking", "merger", "faidutti", "shared-pieces", "last-move-wins", "random-setup"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/131199/soluna",
+  "description": "Soluna (Bruno Faidutti, 2012; Blue Orange / Steffen-Spiele): 12 shared celestial discs are dealt at random as 12 single-disc stacks. On your turn move any whole stack on top of another stack showing the same top symbol OR of the same height. Neither player owns anything; whoever makes the last possible move wins. A 5-minute brain-burner solved fresh every deal."
+}
