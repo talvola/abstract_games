@@ -8,9 +8,17 @@ universe map and capability gaps live in `GAME_BACKLOG.md`; this file is the
 
 ## ⭐ SESSION HANDOFF (read this first) — updated 2026-07-13
 
-**Current state: 285 games** on `origin/main`, auto-deployed live at
-https://abstract-games.onrender.com. Latest = **PerGioco wave 6 #283–285 (SHIPPED
-2026-07-13):** Yoxii (Partinico/Cosmoludo totem surround on a 37-cell OCTAGON — brief's
+**Current state: 288 games** on `origin/main`, auto-deployed live at
+https://abstract-games.onrender.com. Latest = **wave 7 draughts medley #286–288 (SHIPPED
+2026-07-13):** Russian Draughts (any-capture + promote-mid-capture-continues), Spanish
+Draughts (forward-only men that CAN take kings + flying kings + max-priority — Italian
+inverted), Pool Checkers (Russian but promotion DEFERRED to end of chain). All 3 perft
+7/49/302/1469, deep-QA MERGE with the clone gate explicitly passed (Russian vs Pool produce
+different legal moves on a mid-capture-promotion position). Committed on the fast-path
+(perft anchor + render-shape probe identical to the browser-verified italian/brazilian
+draughts). The rest of the variant batch was triaged as options/already-covered — see wave 7
+below. **Next: grade-B singles + the deferred option-additions (Erik's call).** Prior =
+**PerGioco wave 6 #283–285 (SHIPPED 2026-07-13):** Yoxii (Partinico/Cosmoludo totem surround on a 37-cell OCTAGON — brief's
 "cross" corrected to octagon from the rulebook; polygons render + valued =CHOICE pieces),
 Donuts/INSERT (Cathala; 6×6 random-tile line board, has_randomness, forced-direction +
 insertion flips; per-cell lines via board.overlay — no Board.jsx change), Complica (Knizia
@@ -335,9 +343,16 @@ All heavyweights already covered (GIPF project, draughts family, Hex/Havannah/Tw
 4. ✅ icebreaker #277 · silo #278 · rive #279 (Mark Steere trio, SHIPPED 2026-07-13)
 5. ✅ strands #280 · italian_draughts #281 · alveole #282 (SHIPPED 2026-07-13)
 6. ✅ yoxii #283 · donuts #284 · complica #285 (SHIPPED 2026-07-13)
-7. VARIANT BATCH on existing engines: draughts medley (russian/pool/spanish/antidraughts/frysk/brkthru-draughts/
-   scrambled-eggs-LOA), othello variants (octagon/grand-10x10/anti), five-check + no-castling chess, mini xiangqi
-   (PST rates it despite our earlier clone-reject), bestemshe, nackgammon/hyper-backgammon, quarto-2x2 option.
+7. **✅ DRAUGHTS MEDLEY SHIPPED (2026-07-13): russian_draughts #286 · spanish_draughts #287 · pool_checkers #288**
+   (3 genuinely-distinct national 8×8 variants; clone gate PASSED — Russian promote-continue vs Pool deferred
+   promotion produce different legal moves; Spanish = Italian inverted [men-take-kings + flying kings]; all
+   perft 7/49/302/1469, deep-QA MERGE). REST OF THE VARIANT BATCH = better as OPTIONS or already covered, NOT
+   built (orchestrator triage): reversi/three_check/king_of_the_hill/checkless_chess/xiangqi/backgammon/nard/
+   quarto ALL EXIST → five-check (three_check checks=5 option), no-castling chess, grand/anti othello (reversi
+   size+misère options), nackgammon+hypergammon (backgammon start-setup options), quarto-2×2-wins (quarto
+   option) are one-toggle OPTION additions, deferred to Erik. **bestemshe = a MANCALA** (Kazakh 5-pit
+   Toğyzqumalaq-family, not draughts) — future mancala add. mini_xiangqi previously clone-rejected. antidraughts/
+   frysk/breakthrough-draughts/scrambled-eggs-LOA = lower-value option/near-clone material, deferred.
 8. B-grades by value: cairo_corridor (Cairo pentagon tiling, pex board.json precedent) → fendo (Stein, board.walls)
    → enso (Stein) → bug (Bentley; shape-equality crux) → tanbo → linkage (nestorgames PDF) → pyrga →
    battle_of_lits → sensei/diaballik → siam → onyx (backup-list; new justification) → four → hus (DEDUP vs
