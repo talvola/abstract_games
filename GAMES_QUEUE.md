@@ -8,8 +8,17 @@ universe map and capability gaps live in `GAME_BACKLOG.md`; this file is the
 
 ## ⭐ SESSION HANDOFF (read this first) — updated 2026-07-13
 
-**Current state: 276 games** on `origin/main`, auto-deployed live at
-https://abstract-games.onrender.com. Latest = **#275 Akimbo + #276 Okimba** (Bolaños
+**Current state: 279 games** on `origin/main`, auto-deployed live at
+https://abstract-games.onrender.com. Latest = **PerGioco wave 4, the Mark Steere trio
+#277–279 (SHIPPED 2026-07-13):** Icebreaker (hexhex gradient-capture, BFS-around-ships
+distance, capture the majority of icebergs), Silo (1×6 stacking consolidation, `piece.stack`
+towers, opposite-side "your right", pie rule), Rive (hexhex group-minimisation capture with
+multi-placement turns — the intricate one; QA reproduced Figs 3b/3d exactly + dropped the
+size 5/7 options to avoid a legal_moves explosion). All three built from Steere's official
+PDFs (vector figures rendered to images), independent adversarial deep-QA (0 differential
+mismatches: icebreaker 2,966 positions, silo 20,339 moves, rive 7,900 positions), browser-
+verified, one commit each. **Next: wave 5 (strands/italian_draughts/alveole), waves 6–7, the
+variant batch — see the ranked queue below.** Prior = **#275 Akimbo + #276 Okimba** (Bolaños
 Mures 2026, Rhode's successors — Erik saved their BGG pages as MHTML + pointed at the
 designer's reference JS at github.com/luigio/games; both deep-QA MERGE + browser-verified,
 see the 2026-07-13 SHIPPED block below). Prior: #266–274 PerGioco gap-fill, #248–265
@@ -308,7 +317,7 @@ All heavyweights already covered (GIPF project, draughts family, Hex/Havannah/Tw
 1. ✅ zola #266 · boop #267 · mijnlieff #268 (SHIPPED 2026-07-11)
 2. ✅ neutreeko #269 + bobail #270 · oxono #271 (SHIPPED 2026-07-11)
 3. ✅ squadro #272 · qawale #273 · soluna #274 (SHIPPED 2026-07-12)
-4. icebreaker · silo · rive (the Mark Steere trio, uniform PDF sourcing + BGA anchors)
+4. ✅ icebreaker #277 · silo #278 · rive #279 (Mark Steere trio, SHIPPED 2026-07-13)
 5. strands (iggamecenter rules; honest-draw care) · italian_draughts (traditional gap!) · alveole (open-source ref)
 6. yoxii (Cosmoludo) · donuts/INSERT (Cathala; has_randomness tiles) · complica
 7. VARIANT BATCH on existing engines: draughts medley (russian/pool/spanish/antidraughts/frysk/brkthru-draughts/
