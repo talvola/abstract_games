@@ -1,0 +1,14 @@
+{
+  "uid": "alveole",
+  "name": "Alvéole",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Cédric Leclinche / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Positional",
+  "tags": ["hex", "hexhex", "connection", "movement", "capture", "lines-of-action"],
+  "bgg_url": "https://boardgamearena.com/gamepanel?game=alveole",
+  "description": "Lines of Action on a hexagonal honeycomb board (5 cells per side, 61 cells). Slide a piece along one of the six hex directions exactly as many cells as there are pieces (both colours) on that whole line; jump your own pieces, capture an enemy by landing on it. Bring all your surviving pieces into a single connected group to win — but a capture that leaves the OPPONENT connected hands THEM the win."
+}
