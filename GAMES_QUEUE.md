@@ -13,8 +13,9 @@ https://abstract-games.onrender.com. Latest = **#275 Akimbo + #276 Okimba** (Bol
 Mures 2026, Rhode's successors — Erik saved their BGG pages as MHTML + pointed at the
 designer's reference JS at github.com/luigio/games; both deep-QA MERGE + browser-verified,
 see the 2026-07-13 SHIPPED block below). Prior: #266–274 PerGioco gap-fill, #248–265
-Group A large shogi + mixed wave. Two non-blocking flags for Erik in the "⚠️ Flags"
-block (Emulsion tie rule, crossway swap).
+Group A large shogi + mixed wave. **Both long-standing Erik flags now RESOLVED (2026-07-13):
+Emulsion tie-rule + pie (`368f86b`), Crossway transpose-mirror swap (`8f68c1b`) — see the
+"✅ Flags" block below.** No open flags.
 
 ### SHIPPED (2026-07-13) → **276 games**, #275–276
 - **akimbo #275** — Bolaños Mures 2026 (BGG 466041), Rhode's *capturing* successor. Default
@@ -194,15 +195,15 @@ superseded it with Akimbo/Okimba — noted in its rules.md; those two are future
 - **#247 Rhode** `7ac73a2` — forced weak-pair completion + crosscut self-removal; QA MERGE-WITH-FIXES (pie swap
   → value-preserving transpose mirror); win-timing-after-removal anchored both ways (540 break cases).
 
-### ⚠️ Flags for Erik (non-blocking, from this wave's QA)
-1. **Emulsion even-board tie rule — genuine designer-source conflict**: the 2020 Zillions ReadMe says an
-   even-board full recursive tie goes to the LAST MOVER as a WIN; the designer's current BGG description says
-   the last mover LOSES (and adds a pie rule). No third source resolves it. Package follows the Zillions
-   edition and documents the conflict (default 9×9 odd board can never hit it). Flip = one line in `returns()`.
-2. **Crossway's pie swap recolours in place** — same non-value-preserving pattern Rhode's QA caught (goals are
-   transposed, so "change sides" should transpose-mirror the stone; Cation was fixed in `2ab169e`). NOT changed:
-   crossway is long-live and swap semantics changes replay differently in persisted matches. Decide whether to
-   align it (one-line + selftest) or leave documented.
+### ✅ Flags for Erik — BOTH RESOLVED (2026-07-13, Erik-directed)
+1. **Emulsion even-board tie rule — RESOLVED** (`368f86b`): aligned to the designer's CURRENT BGG description
+   (last mover LOSES + added the pie rule), which supersedes the 2020 Zillions ReadMe — same precedent as Rhode
+   being superseded by Akimbo/Okimba. Pie = recolour-all + pass-to-Black (colour-inversion symmetry); tie flipped
+   in `returns()`. Verified: pie preserves the shared move set (0/400), tie flips both ways, browser-verified
+   (Swap button appears + applies + recolours). Default 9×9 (odd) never triggers the tie regardless.
+2. **Crossway pie swap — RESOLVED** (`8f68c1b`): now transpose-mirrors (c,r)→(r,c) + recolours (was recolour-in-
+   place), matching Rhode/Cation/Konobi. Verified value-preserving over 3,000 boards (0 mismatches both
+   directions) + browser-verified (open b4 → swap → single White stone at 3,1).
 
 ### ▶ NEXT-WAVE QUEUE scouted 2026-07-11 (Zillions/CVP/designer sites; Erik-directed overnight run)
 All deduped vs the 248 uids + prior rejects; sources fetched + verified complete. Build in mix-balanced waves of 3:
