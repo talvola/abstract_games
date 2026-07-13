@@ -1,0 +1,14 @@
+{
+  "uid": "italian_draughts",
+  "name": "Italian Draughts",
+  "version": "1.0.0",
+  "author": "traditional / AGP port",
+  "engine_api": "1",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Checkers & draughts",
+  "tags": ["square", "draughts", "capture", "8x8", "traditional"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Italian_draughts",
+  "description": "Italian draughts (dama italiana): the traditional 8x8 game per the FID official rules. Men move and capture forward only and can never capture a king; kings are short (non-flying) and capture in all directions. Capture is mandatory and maximal with a strict quality priority chain (most pieces, then with a king, then most kings, then earliest king). Leave the opponent with no legal move to win."
+}
