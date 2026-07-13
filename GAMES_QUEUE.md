@@ -8,9 +8,17 @@ universe map and capability gaps live in `GAME_BACKLOG.md`; this file is the
 
 ## ⭐ SESSION HANDOFF (read this first) — updated 2026-07-13
 
-**Current state: 279 games** on `origin/main`, auto-deployed live at
-https://abstract-games.onrender.com. Latest = **PerGioco wave 4, the Mark Steere trio
-#277–279 (SHIPPED 2026-07-13):** Icebreaker (hexhex gradient-capture, BFS-around-ships
+**Current state: 282 games** on `origin/main`, auto-deployed live at
+https://abstract-games.onrender.com. Latest = **PerGioco wave 5 #280–282 (SHIPPED
+2026-07-13):** Strands (Bentley largest-group placement on a numbered hexhex — numbers
+render as neutral labelled discs, no Board.jsx change; incremental single-cell placement
+avoids a move blowup), Italian Draughts (traditional 8×8 per the FID rulebook — short
+non-flying kings, men can't take kings, full mandatory-capture priority chain; a build-agent
+correction fixed my wrong "flying kings" brief), Alvéole (hex Lines of Action, differential-
+tested vs the author's open-source BGA implementation). All 3 deep-QA MERGE (0 mismatches:
+strands scoring/120 games, italian 400 games, alveole 76,000 positions), browser-verified.
+**Next: wave 6 (yoxii/donuts/complica), wave 7 (variant batch), grade-B singles — ranked
+queue below.** Prior = **PerGioco wave 4, the Mark Steere trio #277–279 (SHIPPED 2026-07-13):** Icebreaker (hexhex gradient-capture, BFS-around-ships
 distance, capture the majority of icebergs), Silo (1×6 stacking consolidation, `piece.stack`
 towers, opposite-side "your right", pie rule), Rive (hexhex group-minimisation capture with
 multi-placement turns — the intricate one; QA reproduced Figs 3b/3d exactly + dropped the
@@ -318,7 +326,7 @@ All heavyweights already covered (GIPF project, draughts family, Hex/Havannah/Tw
 2. ✅ neutreeko #269 + bobail #270 · oxono #271 (SHIPPED 2026-07-11)
 3. ✅ squadro #272 · qawale #273 · soluna #274 (SHIPPED 2026-07-12)
 4. ✅ icebreaker #277 · silo #278 · rive #279 (Mark Steere trio, SHIPPED 2026-07-13)
-5. strands (iggamecenter rules; honest-draw care) · italian_draughts (traditional gap!) · alveole (open-source ref)
+5. ✅ strands #280 · italian_draughts #281 · alveole #282 (SHIPPED 2026-07-13)
 6. yoxii (Cosmoludo) · donuts/INSERT (Cathala; has_randomness tiles) · complica
 7. VARIANT BATCH on existing engines: draughts medley (russian/pool/spanish/antidraughts/frysk/brkthru-draughts/
    scrambled-eggs-LOA), othello variants (octagon/grand-10x10/anti), five-check + no-castling chess, mini xiangqi
