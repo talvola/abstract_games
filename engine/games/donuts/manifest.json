@@ -1,0 +1,15 @@
+{
+  "uid": "donuts",
+  "name": "Donuts",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Bruno Cathala / AGP port",
+  "year": 2023,
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": true,
+  "hidden_info": false,
+  "category": "N-in-a-row",
+  "tags": ["square", "alignment", "placement", "capture", "random-setup"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/341358/donuts",
+  "description": "Donuts (Bruno Cathala, first playable as INSERT): a 6x6 board randomly assembled from four 3x3 tiles, every square carrying a horizontal / vertical / diagonal line. Place a ring; the line under it forces the direction of your opponent's next ring. Bracket a run of your rings with two enemy rings and they flip to your colour. Align 5 to win."
+}
