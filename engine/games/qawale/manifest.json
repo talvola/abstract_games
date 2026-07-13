@@ -1,0 +1,14 @@
+{
+  "uid": "qawale",
+  "name": "Qawale",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory (game by Romain Froger & Didier Lenain-Bragard, Gigamic 2022)",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "N-in-a-row",
+  "tags": ["square", "4x4", "stacking", "sowing", "line", "gigamic", "mensa-select"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/368465/qawale",
+  "description": "Qawale (Romain Froger & Didier Lenain-Bragard, Gigamic 2022): a 4x4 stacking race inspired by wayside stone piles. Place one of your 8 pebbles on any stack, then pick the whole stack up and sow it: one pebble per square along an orthogonal path, bottom pebble first, never doubling straight back. The first line of four of your colour on top of the stacks - row, column or diagonal - wins; sow carelessly and you lay your opponent's line for them. Two neutral pebbles start stacked on each corner."
+}
