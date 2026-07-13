@@ -273,14 +273,23 @@ Gliński hex is the biggest single build, no oracle). Backups list above. Group 
 - **#265 Tamerlane Chess** — the long-flagged historic marquee; 11 pawn types, pawn-of-pawns lifecycle,
   citadel draw, king-swap; perft 24/576/14518; QA node-level move-set equality through the perft tree.
 
-### ▶ PerGioco Masters coverage (Erik-directed, scouted 2026-07-11) — **48/78 rating categories covered (~62%)**
+### ▶ PerGioco Masters gap-fill IN PROGRESS — 9 shipped (#266–274), waves 1–3 done
+**SHIPPED (all deep-QA MERGE + browser-verified):** zola #266, boop #267, mijnlieff #268 (solved: 2nd-player win,
+verified via a 2.47B-node alpha-beta solve), neutreeko #269 (solved: draw, full 3.4M-position retrograde solve
+reproducing all published stats), bobail #270, oxono #271, squadro #272, qawale #273, soluna #274. Coverage now
+~57/78 categories (~73%). **NEXT: wave 4 = icebreaker + silo + rive (Mark Steere trio, uniform PDF sourcing +
+BGA anchors), then wave 5 (strands/italian_draughts/alveole), wave 6 (yoxii/donuts/complica), wave 7 (VARIANT
+BATCH on existing engines: draughts medley, othello variants, five-check/no-castling chess, mini xiangqi,
+bestemshe, nackgammon), then the grade-B singles.** Full ranked queue below.
+
+### PerGioco Masters coverage (Erik-directed, scouted 2026-07-11) — was **48/78 (~62%)** at scout time
 Roster from pergioco.net/live/pgmasters (IIS bot-block needs full browser headers) + the 2026 schedule PDF +
 playstrategy.org/variant. Platforms are BGA/PlayStrategy/AbstractPlay ⇒ every gap has a live online anchor.
 All heavyweights already covered (GIPF project, draughts family, Hex/Havannah/Twixt, shogi/xiangqi/go, etc.).
 **Ranked gap queue (waves of 3; waves 1–7 ⇒ ~83% coverage):**
-1. zola (Steere PDF) · boop (Brady 2022, publisher PDF+BGA) · mijnlieff (Hopwood 2010)
-2. neutreeko+bobail (one category; neutreeko is SOLVED = perfect anchor) · oxono (Cosmoludo, official PDF)
-3. squadro (Gigamic; piece.prongs) · qawale (stack-sowing; piece.stack) · soluna (Blue Orange)
+1. ✅ zola #266 · boop #267 · mijnlieff #268 (SHIPPED 2026-07-11)
+2. ✅ neutreeko #269 + bobail #270 · oxono #271 (SHIPPED 2026-07-11)
+3. ✅ squadro #272 · qawale #273 · soluna #274 (SHIPPED 2026-07-12)
 4. icebreaker · silo · rive (the Mark Steere trio, uniform PDF sourcing + BGA anchors)
 5. strands (iggamecenter rules; honest-draw care) · italian_draughts (traditional gap!) · alveole (open-source ref)
 6. yoxii (Cosmoludo) · donuts/INSERT (Cathala; has_randomness tiles) · complica
