@@ -1,0 +1,16 @@
+{
+  "uid": "akimbo",
+  "name": "Akimbo",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Luis Bolaños Mures (2026) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "pie": true,
+  "category": "Connection",
+  "tags": ["square", "connection", "placement", "naked-diagonal", "crosscut", "no-draw", "bolanos-mures"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/466041/akimbo",
+  "options": { "size": { "choices": [9, 11, 13], "default": 13, "label": "Board size" } },
+  "description": "Drawless square-board connection game (Bolaños Mures, 2026), the successor to Rhode. Connect your two edges with an orthogonal chain. You may never leave more than one 'naked diagonal' per colour after placing; completing a crosscut removes your own other stone in it."
+}
