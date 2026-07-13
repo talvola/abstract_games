@@ -1,0 +1,17 @@
+{
+  "uid": "icebreaker",
+  "name": "Icebreaker",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Mark Steere (2021) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Capture",
+  "tags": ["icebreaker", "hex", "hexhex", "capture", "steere", "gradient", "race"],
+  "bgg_url": "https://www.marksteeregames.com/Icebreaker_rules.pdf",
+  "options": {
+    "size": { "choices": [4, 5, 6], "default": 5, "label": "Board size (cells per side)" }
+  },
+  "description": "Mark Steere's hexagonal-grid capture game. Three red and three black ships start at the corners; every other cell holds a white iceberg. On your turn move one ship one cell, and it must move closer to its nearest iceberg (distance routes around the other ships); landing on an iceberg captures it. Capture the majority of the icebergs (28 of 55 on the size-5 board) to win."
+}
