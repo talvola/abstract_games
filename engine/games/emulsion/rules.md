@@ -37,18 +37,29 @@ once — there is no passing).
 Your **score is the size of your largest group**. If scores are tied, each
 player adds the size of their **second-largest** group, then the third-largest,
 and so on. **On even-sized boards, if the tie persists all the way down, the
-player who made the last move wins.** (On odd boards a full tie is impossible,
+player who made the last move LOSES.** (On odd boards a full tie is impossible,
 because the two colours have different piece counts.)
+
+## Pie rule
+
+To offset Black's first-move advantage, **on White's first turn only** White may
+**swap sides** (adopt Black's position) instead of making a regular move. Because
+Emulsion is symmetric under a global colour inversion, the swap recolours every
+piece black↔white and passes the move to Black — White thereby claims the
+opening advantage while yielding the tempo. Choose it via the **Swap** button.
 
 ## Source note (documented interpretation)
 
 The designer has published two slightly different rule texts. This port follows
-his **Zillions of Games edition** (submission #3089, 2020-10-31): full tie on an
-even board → the **last mover wins**, and there is no pie rule. His current
-**BoardGameGeek description** states the opposite tiebreak (the last mover
-*loses*, phrased as pairwise removal of equal groups until the board is empty —
-otherwise equivalent to the recursive comparison above) and adds a pie rule for
-White. On the default 9×9 (odd) board the tiebreak never triggers either way.
+his **current BoardGameGeek description** (the maintained, authoritative version):
+a full tie on an even board → the **last mover loses** (phrased there as pairwise
+removal of equal groups until the board is empty — equivalent to the recursive
+comparison above), plus a **pie rule** for White. His older **Zillions of Games
+edition** (submission #3089, 2020-10-31) stated the opposite tiebreak (last mover
+*wins*) and had no pie rule; we followed it initially, then aligned to the current
+rules (the same designer's living BGG text supersedes the 2020 edition, matching
+how Rhode was superseded by Akimbo/Okimba). On the default 9×9 (odd) board the
+tiebreak never triggers either way.
 
 ## Implementation notes
 

@@ -11,7 +11,8 @@ bundled ReadMe.txt ruleset (identical to the submission-page blurb and the
   * monotone potential: every move strictly increases the number of
     monochromatic orthogonal adjacencies -> provable termination;
   * scoring: largest group, then second-largest, etc.; even-board full tie ->
-    last mover wins.
+    last mover LOSES (designer's current BGG rules);
+  * pie rule: White may swap sides on its first turn only.
 
 Run standalone:  cd engine && PYTHONPATH=. python3 games/emulsion/selftest.py
 """
@@ -158,11 +159,31 @@ def test_scoring_tiebreaks():
              for c in range(4) for r in range(4)}
     st = EmulsionState(n=4, board=board, to_move=WHITE, ply=17)
     assert G.legal_moves(st) == [] and G.is_terminal(st)
-    assert G.returns(st) == [1.0, -1.0]                       # last mover = Black
+    # Designer's current rule: last mover LOSES on an even-board full tie.
+    assert G.returns(st) == [-1.0, 1.0]                       # last mover = Black -> Black loses
     st2 = EmulsionState(n=4, board=board, to_move=BLACK, ply=18)
-    assert G.returns(st2) == [-1.0, 1.0]                      # last mover = White
+    assert G.returns(st2) == [1.0, -1.0]                      # last mover = White -> White loses
     st3 = EmulsionState(n=4, board=board, to_move=BLACK, ply=0)
     assert G.returns(st3) == [0.0, 0.0]                       # no last mover: draw
+
+
+def test_pie_rule():
+    """White may 'swap' (adopt Black's side) only on its first turn; the swap
+    recolours every piece and passes the move back to Black, value-preservingly."""
+    G0 = G
+    s = G0.initial_state({"size": 8})
+    # Not offered before White's first turn (Black to move, ply 0).
+    assert "swap" not in G0.legal_moves(s)
+    s1 = G0.apply_move(s, G0.legal_moves(s)[0])               # Black's first move, ply 1
+    assert s1.to_move == WHITE and s1.ply == 1
+    assert "swap" in G0.legal_moves(s1)                       # offered on White's first turn
+    s2 = G0.apply_move(s1, "swap")
+    assert s2.to_move == BLACK and s2.ply == 2
+    assert "swap" not in G0.legal_moves(s2)                   # never offered again
+    # Swap = exact colour inversion of the pre-swap board.
+    assert all(s2.board[cell] == 1 - s1.board[cell] for cell in s1.board)
+    assert len(s2.board) == len(s1.board)
+    assert G0.serialize(G0.deserialize(G0.serialize(s2))) == G0.serialize(s2)
 
 
 def test_monotone_potential_and_termination():
@@ -175,7 +196,10 @@ def test_monotone_potential_and_termination():
             m_prev = _mono_adjacencies(s.board, n)
             plies = 0
             while not G.is_terminal(s):
-                s = G.apply_move(s, rng.choice(G.legal_moves(s)))
+                # exclude the one-time pie "swap" (it preserves the potential by
+                # design); this test is about the monotonicity of piece-swaps.
+                choices = [m for m in G.legal_moves(s) if m != "swap"]
+                s = G.apply_move(s, rng.choice(choices))
                 m_now = _mono_adjacencies(s.board, n)
                 assert m_now > m_prev, "potential must strictly increase"
                 m_prev = m_now
@@ -192,5 +216,6 @@ if __name__ == "__main__":
     test_delta_formula_and_shared_move_sets()
     test_legality_anchors()
     test_scoring_tiebreaks()
+    test_pie_rule()
     test_monotone_potential_and_termination()
     print("emulsion selftest: OK")

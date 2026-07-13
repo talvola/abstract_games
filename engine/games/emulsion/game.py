@@ -18,8 +18,13 @@ END + SCORING. The game ends when no swaps are available (which happens for
 both players at once). Your score is the size of your largest orthogonally
 connected group of your colour. If tied, second-largest groups are added, and
 so on down the (multiset of) group sizes. On even-sized boards, if the tie
-persists all the way down, whoever made the LAST move wins. On odd boards a
-full tie is impossible (the piece counts differ).
+persists all the way down, whoever made the LAST move LOSES (designer's current
+BGG rules). On odd boards a full tie is impossible (the piece counts differ).
+
+PIE RULE. To balance first-move advantage, on White's first turn only White may
+"swap" (adopt Black's side) instead of a regular move. Emulsion is symmetric
+under a global colour inversion, so the swap recolours every piece black<->white
+and passes the move to Black.
 
 TERMINATION. Every legal swap strictly increases the total "friendliness"
 potential (monochromatic orthogonal adjacencies plus the half-edge bonuses),
@@ -40,6 +45,7 @@ from agp.game import Game
 
 BLACK, WHITE = 0, 1          # Black moves first (per the designer's ZRF turn order)
 DEFAULT_SIZE = 9
+PIE_RULE = True              # designer's current rules: White may swap sides on turn 1
 
 ORTH = ((0, 1), (0, -1), (1, 0), (-1, 0))
 DIRS8 = ((0, 1), (0, -1), (1, 0), (-1, 0), (1, 1), (1, -1), (-1, 1), (-1, -1))
@@ -165,12 +171,27 @@ class Emulsion(Game):
     def legal_moves(self, s: EmulsionState) -> list:
         if s.drawn:
             return []
-        return self._raw_moves(s.board, s.n, s.to_move)
+        moves = self._raw_moves(s.board, s.n, s.to_move)
+        if PIE_RULE and s.ply == 1:      # White's first turn: pie option
+            moves.append("swap")
+        return moves
 
     def is_terminal(self, s: EmulsionState) -> bool:
         return s.drawn or not self._raw_moves(s.board, s.n, s.to_move)
 
     def apply_move(self, s: EmulsionState, move: str, rng=None) -> EmulsionState:
+        if move == "swap":
+            # Pie rule ("swap sides"): White adopts Black's role. Emulsion is
+            # symmetric under a global colour inversion (the move set is shared,
+            # so recolouring every piece black<->white maps a Black-favouring
+            # position to an equally White-favouring one). We recolour the board
+            # and pass the move to Black -- White thereby claims the first-move
+            # advantage while yielding the tempo, exactly like the connection
+            # packages' transpose+recolour swap (here no transpose is needed,
+            # since both players share the same goal).
+            board = {cell: 1 - col for cell, col in s.board.items()}
+            return EmulsionState(n=s.n, board=board, to_move=1 - s.to_move,
+                                 ply=s.ply + 1, drawn=s.drawn, last=None)
         a_s, b_s = move.split(">")
         a, b = _cell(a_s), _cell(b_s)
         board = dict(s.board)
@@ -187,14 +208,14 @@ class Emulsion(Game):
         cmp = _compare_scores(_group_sizes(s.board, BLACK),
                               _group_sizes(s.board, WHITE))
         if cmp == 0:
-            # Full tie. Rules: on even-sized boards the player who made the
-            # LAST move wins. (On odd boards a full tie is impossible -- the
-            # colours have different piece counts.) If no move was ever made
-            # there is no "last mover": honest draw (unreachable in practice --
-            # the initial position always has moves).
+            # Full tie. Designer's current rules (BGG): on even-sized boards the
+            # player who made the LAST move LOSES. (On odd boards a full tie is
+            # impossible -- the colours have different piece counts.) If no move
+            # was ever made there is no "last mover": honest draw (unreachable in
+            # practice -- the initial position always has moves).
             if s.n % 2 == 0 and s.ply > 0:
                 last_mover = 1 - s.to_move
-                return [1.0, -1.0] if last_mover == BLACK else [-1.0, 1.0]
+                return [-1.0, 1.0] if last_mover == BLACK else [1.0, -1.0]
             return [0.0, 0.0]
         return [1.0, -1.0] if cmp > 0 else [-1.0, 1.0]
 
@@ -233,6 +254,8 @@ class Emulsion(Game):
         return f"{chr(ord('a') + c)}{r + 1}"
 
     def describe_move(self, s: EmulsionState, move: str) -> str:
+        if move == "swap":
+            return "swap (pie)"
         a, b = move.split(">")
         return f"{self._alg(s, a)}↔{self._alg(s, b)}"
 

@@ -7,6 +7,7 @@
   "players": { "min": 2, "max": 2 },
   "has_randomness": false,
   "hidden_info": false,
+  "pie": true,
   "category": "Territory",
   "tags": ["square", "swap", "territory", "largest group", "scoring", "bolanos mures", "full board", "monotone"],
   "bgg_url": "https://boardgamegeek.com/boardgame/311851/emulsion",
@@ -17,5 +18,5 @@
       "label": "Board size"
     }
   },
-  "description": "Luis Bolaños Mures' full-board coalescence game (2020). The board starts checkered with black and white pieces; on your turn you swap two adjacent (orthogonally or diagonally) opposite-coloured pieces so that your piece's value — its same-coloured orthogonal neighbours plus half its adjacent board edges — increases. Every swap raises both pieces' values equally, so both players always share the same move set, and the colours steadily curdle out of the emulsion into blobs. When no swaps remain, the largest group wins (ties: second-largest, and so on; on even boards a full tie goes to the last mover)."
+  "description": "Luis Bolaños Mures' full-board coalescence game (2020). The board starts checkered with black and white pieces; on your turn you swap two adjacent (orthogonally or diagonally) opposite-coloured pieces so that your piece's value — its same-coloured orthogonal neighbours plus half its adjacent board edges — increases. Every swap raises both pieces' values equally, so both players always share the same move set, and the colours steadily curdle out of the emulsion into blobs. When no swaps remain, the largest group wins (ties: second-largest, and so on; on even boards a full tie goes AGAINST the last mover). The pie rule applies: on White's first turn White may swap sides instead of moving."
 }
