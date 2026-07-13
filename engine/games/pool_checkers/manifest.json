@@ -1,0 +1,14 @@
+{
+  "uid": "pool_checkers",
+  "name": "Pool Checkers",
+  "version": "1.0.0",
+  "author": "traditional / AGP port",
+  "engine_api": "1",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Checkers & draughts",
+  "tags": ["square", "draughts", "checkers", "capture", "8x8", "flying-kings"],
+  "bgg_url": "https://playstrategy.org/variant/pool",
+  "description": "Pool checkers (American Pool draughts): 8x8, 12 men each. Men capture forward and backward, flying kings, capture mandatory but ANY (not maximum). Defining rule: DEFERRED promotion — a man reaching the king row mid-capture keeps jumping as a man and promotes only at the end of the sequence (unlike Russian draughts, where it promotes and continues as a king). Leave the opponent with no legal move to win."
+}
