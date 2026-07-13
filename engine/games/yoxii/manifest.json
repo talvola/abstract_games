@@ -1,0 +1,14 @@
+{
+  "uid": "yoxii",
+  "name": "Yoxii",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Jeremy Partinico (Cosmoludo, 2022) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Territory",
+  "tags": ["yoxii", "octagon", "totem", "placement", "surround", "valued-pieces", "cosmoludo", "partinico"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/361084/yoxii",
+  "description": "Yoxii (Jeremy Partinico, Cosmoludo 2022): a two-player totem game on a 37-square octagonal board. One neutral Totem starts in the centre. Each player owns 18 valued pieces (5x1 'O', 5x2 'II', 5x3 'Y', 3x4 'X'). On your turn you MOVE the Totem one square in any of the 8 directions to a free square (or jump it over a straight, continuous line of your OWN pieces to the first free square beyond it — never over an opponent's piece), then PLACE one of your pieces of any value on a free square around the Totem's new position (or, if it is fully surrounded, on any free square). The game ends when the Totem can no longer move; each player sums the values of their pieces around the encircled Totem. Higher sum wins; tie broken by more pieces around the Totem; still tied is an honest draw."
+}
