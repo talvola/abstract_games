@@ -8,6 +8,45 @@ universe map and capability gaps live in `GAME_BACKLOG.md`; this file is the
 
 ## ⭐ SESSION HANDOFF (read this first) — updated 2026-07-13
 
+### ▶▶ NEXT WAVE — PRE-STAGED & LAUNCH-READY: the OPTION-ADDITIONS (deduped 2026-07-13)
+Erik chose the option-additions as the next wave. These are variant TOGGLES on existing games
+(default = current behaviour, so non-breaking) + one tiny new ChessLike package. All deduped
+against the 288-game library. Kick off with: *"continue the game factory — option-additions wave
+per the GAMES_QUEUE handoff."* Per game: edit/build → selftest anchor for the NEW variant →
+**browser-verify the new option plays** (these touch working games, so verify the default still
+works too) → commit → regen GAME_STATUS → log here. **⚠ quarto's 2×2-square-win is ALREADY an
+option — do NOT re-add (this is why we dedup).**
+
+1. **five-check** → EDIT `games/three_check` (currently hardcodes 3, `options:{}`): add a
+   `checks_to_win` option `{choices:[3,5], default:3, label:"Checks to win"}`; read it in
+   `initial_state`, store on state, use in the win check. Selftest: a 5th check wins under
+   `checks_to_win=5` but not under 3. Source: standard three-/five-check chess.
+2. **grand othello + anti-othello** → EDIT `games/reversi` (already has an `opening` option, so
+   options infra exists): add `size` `{choices:[8,10], default:8, label:"Board size"}` (10 =
+   Grand Othello) AND `goal` `{choices:["most","fewest"], default:"most", labels:{most:"Standard",
+   fewest:"Anti / misère"}}` (fewest discs wins = Anti-Othello). Parameterize the board size in
+   setup + flip the win comparison for `fewest`. Selftests: legal 10×10 play to a full board; a
+   misère win goes to the player with FEWER discs (honest draw on equal). Sources: standard.
+3. **nackgammon + hypergammon** → EDIT `games/backgammon` (`options:{}`; setup lives in
+   `initial_state`): add `setup` `{choices:["standard","nackgammon","hypergammon"], default:
+   "standard"}`. Nackgammon start (per side): 2×24-pt, 2×23-pt, 4×13-pt, 3×8-pt, 4×6-pt.
+   Hypergammon: 1 checker each on the 24/23/22-pts (3 total). Selftests: each setup's exact
+   opening point counts; a hypergammon race terminates. Source: Wikipedia/standard.
+4. **no-castling chess** → NEW tiny package `games/no_castling_chess` (NOT an option — the
+   ChessLike framework picks CASTLING as a class attribute, and a separate entry is more
+   discoverable). Subclass Chess with `CASTLING = NoCastling`, everything else identical (~15
+   lines; see games/{berolina,los_alamos_chess} for the ~40-line variant pattern). Anchor:
+   perft d1=20/d2=400/d3=8902 (identical to chess — castling can't occur that shallow) + a
+   selftest position where standard chess WOULD offer castling and no_castling_chess does NOT.
+   Source: Kramnik's No-Castling Chess.
+
+**Coverage note:** the OTHER wave-7 items were triaged out (see wave 7 block below) — quarto-2×2
+DONE (existing option), bestemshe = a mancala (future), mini_xiangqi clone-rejected, antidraughts/
+frysk/breakthrough-draughts = lower-value option/near-clone material. After this wave → grade-B
+singles.
+
+---
+
 **Current state: 288 games** on `origin/main`, auto-deployed live at
 https://abstract-games.onrender.com. Latest = **wave 7 draughts medley #286–288 (SHIPPED
 2026-07-13):** Russian Draughts (any-capture + promote-mid-capture-continues), Spanish
@@ -17,7 +56,8 @@ inverted), Pool Checkers (Russian but promotion DEFERRED to end of chain). All 3
 different legal moves on a mid-capture-promotion position). Committed on the fast-path
 (perft anchor + render-shape probe identical to the browser-verified italian/brazilian
 draughts). The rest of the variant batch was triaged as options/already-covered — see wave 7
-below. **Next: grade-B singles + the deferred option-additions (Erik's call).** Prior =
+below. **NEXT WAVE = the OPTION-ADDITIONS (Erik chose these 2026-07-13) — PRE-STAGED &
+LAUNCH-READY, see the block immediately below.** Prior =
 **PerGioco wave 6 #283–285 (SHIPPED 2026-07-13):** Yoxii (Partinico/Cosmoludo totem surround on a 37-cell OCTAGON — brief's
 "cross" corrected to octagon from the rulebook; polygons render + valued =CHOICE pieces),
 Donuts/INSERT (Cathala; 6×6 random-tile line board, has_randomness, forced-direction +
