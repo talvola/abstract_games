@@ -1,0 +1,14 @@
+{
+  "uid": "russian_draughts",
+  "name": "Russian Draughts",
+  "version": "1.0.0",
+  "author": "traditional / AGP port",
+  "engine_api": "1",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Checkers & draughts",
+  "tags": ["square", "draughts", "capture", "8x8", "shashki", "traditional"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Russian_draughts",
+  "description": "Russian draughts (shashki): the traditional 8x8 variant with 12 men per side. Men capture forward and backward, flying kings, capture is mandatory but ANY (choice of capture, not forced maximum). A man that reaches the king row during a capture promotes immediately and continues jumping as a flying king. Leave the opponent with no legal move to win."
+}
