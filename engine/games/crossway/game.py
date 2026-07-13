@@ -24,7 +24,10 @@ marksteeregames.com, May 2007.)
 If a player has NO legal placement, they forfeit (pass) and the opponent keeps
 placing. Crossway can never end in a draw — exactly one player connects. So
 termination is automatic. Crossway uses the pie rule: on move 2 White may
-"swap" — claim Black's opening as their own (colours switch).
+"swap" — take over Black's opening. Because the goals are transposed (Black
+joins rows, White joins columns), the swap reflects Black's lone stone across
+the main diagonal (c,r)->(r,c) and recolours it White, which preserves its
+value; recolouring in place would not.
 """
 
 from __future__ import annotations
@@ -144,9 +147,15 @@ class Crossway(Game):
                                  to_move=1 - s.to_move, winner=s.winner,
                                  ply=s.ply + 1)
         if move == "swap":
-            # Pie rule: White claims Black's lone opening stone as their own.
+            # Pie rule ("change sides"): White takes over Black's opening.
+            # Crossway's goals are transposed (Black joins top<->bottom rows,
+            # White joins left<->right columns), so the value-preserving swap
+            # reflects the lone stone across the main diagonal (c,r)->(r,c) and
+            # recolours it White. Recolouring in place would NOT preserve value
+            # (the colours aim at different edges). Same convention as Rhode/
+            # Cation/Konobi.
             (c, r), _ = next(iter(s.board.items()))
-            return CrosswayState(size=s.size, board={(c, r): s.to_move},
+            return CrosswayState(size=s.size, board={(r, c): s.to_move},
                                  to_move=1 - s.to_move, winner=None, ply=s.ply + 1)
         c, r = _cell(move)
         board = dict(s.board)

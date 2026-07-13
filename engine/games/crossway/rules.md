@@ -53,8 +53,11 @@ automatic; there are no draw or repetition caps.
 ## Pie rule (swap)
 
 Black places first. On White's first turn, instead of placing, White may
-**swap**: claim Black's opening stone as their own (the colours switch). This
-equalises the first-move advantage and can be used only once, only on move 2.
+**swap**: take over Black's opening. Because the goals are transposed (Black
+joins the top/bottom edges, White the left/right), the swap reflects Black's
+lone stone across the main diagonal — (c,r)→(r,c) — and recolours it White, so
+White's position is exactly as strong as Black's was. This equalises the
+first-move advantage and can be used only once, only on move 2.
 
 ## Board size
 

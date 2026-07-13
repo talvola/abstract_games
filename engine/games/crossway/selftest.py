@@ -139,6 +139,24 @@ def test_no_draw_random_games():
         _ok(s.winner in (BLACK, WHITE), f"trial {trial}: no winner (a draw!)")
 
 
+def test_pie_swap_transpose_mirror():
+    """The pie swap is value-preserving: it reflects Black's lone opening stone
+    across the main diagonal (c,r)->(r,c) and recolours it White (goals are
+    transposed), NOT a recolour in place."""
+    g = Crossway()
+    s = g.initial_state({"size": 7})
+    # Black opens off the main diagonal so transpose is observable.
+    s1 = g.apply_move(s, "1,4")            # Black at (c=1, r=4)
+    _ok("swap" in g.legal_moves(s1), "swap must be offered on White's first turn")
+    s2 = g.apply_move(s1, "swap")
+    _ok(s2.board == {(4, 1): WHITE},
+        f"swap should mirror to (4,1)=White, got {s2.board}")
+    _ok(s2.to_move == BLACK, "after swap it is Black to move")
+    _ok("swap" not in g.legal_moves(s2), "swap must not be offered again")
+    d = g.serialize(s2)
+    _ok(g.serialize(g.deserialize(d)) == d, "swap-state serialize round-trip")
+
+
 def test_serialize_roundtrip():
     g = Crossway()
     s = g.initial_state({"size": 7})
@@ -160,6 +178,7 @@ def main():
     test_crossing_block_rule()
     test_winning_connection_sets_winner()
     test_no_draw_random_games()
+    test_pie_swap_transpose_mirror()
     test_serialize_roundtrip()
     print("SELFTEST OK")
 
