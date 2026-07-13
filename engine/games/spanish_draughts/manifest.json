@@ -1,0 +1,14 @@
+{
+  "uid": "spanish_draughts",
+  "name": "Spanish Draughts",
+  "version": "1.0.0",
+  "author": "traditional / AGP port",
+  "engine_api": "1",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Checkers & draughts",
+  "tags": ["square", "draughts", "capture", "8x8", "traditional"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Spanish_draughts",
+  "description": "Spanish draughts (damas españolas): the traditional 8x8 game. Men move and capture forward only, but a man CAN capture a king (unlike Italian). Kings are flying (long-range) and capture in all directions. Capture is mandatory and maximum, chosen by quantity (most pieces) then quality (most kings). Leave the opponent with no legal move to win."
+}
