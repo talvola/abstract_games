@@ -11,6 +11,12 @@
   "tags": ["square", "flipping", "othello"],
   "bgg_url": "https://boardgamegeek.com/boardgame/2389/othello",
   "options": {
+    "size": {
+      "choices": [8, 10],
+      "default": 8,
+      "label": "Board size",
+      "labels": { "8": "8×8 (standard)", "10": "10×10 (Grand Othello)" }
+    },
     "opening": {
       "choices": ["othello", "reversi"],
       "default": "othello",
@@ -19,7 +25,16 @@
         "othello": "Othello (fixed centre)",
         "reversi": "Reversi (open centre)"
       }
+    },
+    "goal": {
+      "choices": ["most", "fewest"],
+      "default": "most",
+      "label": "Goal",
+      "labels": {
+        "most": "Standard (most discs)",
+        "fewest": "Anti / misère (fewest discs)"
+      }
     }
   },
-  "description": "Reversi (Othello), the 8x8 flipping game. Place a disc so it brackets a straight line of opponent discs between the new disc and another of your own; every bracketed disc flips to your colour. Pass only when you cannot move. When neither player can move, the majority of discs wins; equal counts draw. Black moves first. Opening option: the modern Othello fixed diagonal start, or the original Reversi open centre (players place the first four discs into the four central squares with no captures)."
+  "description": "Reversi (Othello), the flipping game. Place a disc so it brackets a straight line of opponent discs between the new disc and another of your own; every bracketed disc flips to your colour. Pass only when you cannot move. When neither player can move, the majority of discs wins; equal counts draw. Black moves first. Options: board size (8×8, or 10×10 Grand Othello); opening (the modern Othello fixed diagonal start, or the original Reversi open centre where players place the first four discs into the central squares with no captures); and goal (standard most-discs, or Anti-/misère Othello where FEWER discs wins)."
 }

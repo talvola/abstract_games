@@ -1,8 +1,8 @@
 # Reversi (Othello)
 
-A two-player game on an **8×8** board. Player 0 is **Black** and moves first;
-player 1 is **White**. The four centre cells start filled diagonally (two of each
-colour).
+A two-player game on an **8×8** board (or **10×10** with the size option). Player 0
+is **Black** and moves first; player 1 is **White**. The four centre cells start
+filled diagonally (two of each colour).
 
 ## How to play
 
@@ -17,7 +17,21 @@ colour).
 ## Ending and winning
 
 The game ends when **neither player can move** (usually a full board). The player
-with **more discs** wins; an equal split is a **draw**.
+with **more discs** wins; an equal split is a **draw**. (Under the *Anti / misère*
+goal option, this is reversed — see below.)
+
+## Board size (option)
+
+- **8×8 (standard)** — the default Othello board.
+- **10×10 (Grand Othello)** — the larger board, otherwise identical rules. The
+  four centre cells (e5/f5/e6/f6-equivalent) start filled diagonally.
+
+## Goal (option)
+
+- **Standard (most discs)** — the default; the player with more discs at the end
+  wins.
+- **Anti / misère (fewest discs)** — *Anti-Othello*; the player with **fewer**
+  discs at the end wins. An equal split is still an honest **draw**.
 
 ## Opening (option)
 
