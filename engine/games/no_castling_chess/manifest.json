@@ -1,0 +1,14 @@
+{
+  "uid": "no_castling_chess",
+  "name": "No-Castling Chess",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Vladimir Kramnik (2019) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "variant"],
+  "bgg_url": "https://en.wikipedia.org/wiki/No-castling_chess",
+  "description": "Standard chess with castling forbidden for both sides -- Vladimir Kramnik's 2019 variant, intended to cut opening theory and make king safety harder to achieve. Every other rule (en passant, pawn double-step, promotion to Q/R/B/N, check, checkmate, stalemate, and the usual draws) is identical to orthodox chess. White (player 0) moves first."
+}
