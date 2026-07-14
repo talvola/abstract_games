@@ -60,14 +60,27 @@ first, NOT the old easiest-first):
   pieces and a fuller army, ~78 pcs/side). Weak oracle (no HaChu/pyffish builtin for tenjiku) → lean
   on nutty's proven code + Wikipedia "Tenjiku shogi" + CVP; perft self-anchor. Source the extra
   pieces + the exact 16×16 setup carefully; the "Generals" hierarchy (jumping-rank) extends nutty's.
-- **maka_dai_dai_shogi (19×19).** Huge piece set, promote-by-CAPTURE-value (a piece promotes on
-  capturing, to a value-dependent form) — a DISTINCT promotion mechanic to build. Weak sources
-  (contradictory Edo texts) → document interpretations heavily. HARDEST faithful-rules effort.
-- **tai_shogi (25×25, ~177 pieces/side) + "mini_tai" — SCOPE BEFORE BUILDING (likely DROP).**
-  625-cell board ≈ unplayable in the generic UI; ~177-piece movegen ≈ too slow for the 3s MCTS
-  budget; ~90 piece types with NO oracle = high unfaithful risk. Recommend documenting as
-  out-of-scope for the generic platform unless Erik wants a display/curio build. ("mini_tai_shogi"
-  is not a well-defined historical variant — verify it exists before planning it.)
+- **maka_dai_dai_shogi (19×19) — DEFERRED (decision 2026-07-14, orchestrator diligence).** Contested
+  Edo-era sources (promote-by-CAPTURE-value etc.) AND **no oracle**: HaChu 0.21's runtime variant list
+  is `chu,nocastle,shogi,sho,dai,tenjiku,shatranj,makruk,lion,wa-shogi,werewolf,cashew-shogi,
+  macadamia-shogi` — **`maka` is NOT supported** (the "maka" string in the binary is a disabled/partial
+  feature). Shipping it = an unverifiable reconstruction of a FAMOUS game → below the faithfulness bar.
+  Matches the earlier project decision (skip Dai Dai / Maka Dai Dai in favor of Muller's proxies). Build
+  only if Erik explicitly wants a documented-reconstruction; otherwise use the proxies below.
+- **tai_shogi (25×25, ~177 pcs) + "mini_tai" — DROP-RECOMMENDED.** No oracle, ~90 piece types, 625-cell
+  board ≈ unplayable in the generic UI + very weak bot. Out-of-scope unless Erik wants a display/curio.
+  ("mini_tai_shogi" is not a well-defined historical variant.)
+- **▶ cashew_shogi + macadamia_shogi (13×13) — the VERIFIABLE large-shogi finale (HaChu-anchored).**
+  H.G. Muller's own 13×13 "nut" proxies: **Cashew ≈ demagnified Dai Dai, Macadamia ≈ demagnified Maka
+  Dai Dai** (Nutty, already shipped #295, is his Tenjiku proxy). **Both ARE in HaChu 0.21's variant
+  list** → a real CECP differential oracle, exactly how Chu #248 + Nutty #295 were anchored. Genuinely
+  missing (deduped 2026-07-14). Template off the committed nutty_shogi (same 13×13 Fire-Demon/jumping/
+  Lion family). Get each variant's setup + piece set from HaChu's `setup (...)` strings + Muller's
+  chessvariants pages (curl -A Mozilla). HaChu ops: `apt-get download hachu` (0.21 .deb, no sudo) →
+  `dpkg-deb -x` → `usr/games/hachu`; it speaks CECP/xboard — feed `protover 2` to dump `feature
+  variants=`; `variant cashew-shogi` / `variant macadamia-shogi` to select; the invalid-usermove trick
+  dumps its root move list; `@@@@` = Lion-pass null. (Chu #248's build used HaChu as a threaded CECP
+  differential oracle — reuse that harness.) THIS is the recommended wave-2 continuation over maka/tai.
 
 Op notes carried into wave 2: `.venv/bin/uvicorn` (not on PATH); pyffish 0.0.89 in .venv (general
 FSF oracle, load custom variants.ini first or SEGFAULT); HaChu not installed (apt-get download the
