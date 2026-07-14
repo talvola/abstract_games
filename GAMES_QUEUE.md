@@ -6,7 +6,78 @@ universe map and capability gaps live in `GAME_BACKLOG.md`; this file is the
 
 ---
 
-## ⭐ SESSION HANDOFF (read this first) — updated 2026-07-13
+## ⭐ SESSION HANDOFF (read this first) — updated 2026-07-14
+
+### ✅ SHOGI PHASE — wave 1 SHIPPED (2026-07-14) → **294 games**, #293–294 + 1 option
+Erik picked the SHOGI PHASE (model note: orchestrator on Opus 4.8 1M; build/QA agents
+Fable-or-Opus interchangeable — the real backbone is oracles/perft, not the model). The
+"easy tier" turned out front-loaded harder than the queue implied (only goro_goro_plus was
+trivial). All three shipped + independent adversarial deep-QA MERGE (0 fixes each) +
+browser-verified + pushed (`c2f35aa`, auto-deploy fired). Full suite green.
+- **Sho Shogi #293** (`4d638c4`) — 9×9 historical predecessor of modern shogi: standard army
+  + a **Drunk Elephant** (7 king-steps minus straight-back) that promotes to a **Crown Prince**
+  (royal), and **NO drops**. Dual royalty: "in check" iff EVERY royal is attacked → must capture
+  BOTH. Bare-king win + mutual-bare draw (CVP/Steve-Evans reconstruction, orchestrator-confirmed
+  vs source). Drunk Elephant/Crown Prince added via SHADOWED BASE_MOVE/PROMO_MOVE + rebuilt
+  reverse-attack maps IN-SUBCLASS (shogilike.py untouched). deep-QA: perft d1=26/d2=676/d3=17368
+  (2 independent gens agree), 601,801 attack-map checks 0 mismatch, 10k-pos legal-move diff 0
+  mismatch, all royalty/bare-king scenarios correct.
+- **Goro Goro Plus** (`656f0e3`) — delivered as a NON-breaking `variant [classic, plus]` OPTION on
+  the existing goro_goro_shogi (not a new package — Erik's option convention). `plus` = seed a
+  Lance + Knight into each starting hand (FSF/PyChess `gorogoroplus`); all L/N move/promote/drop
+  logic already in ShogiLike. `classic` byte-identical. Does not bump the game count.
+- **Shinjuu Shogi #294** (`c2f35aa`) — Silverman's own 11×11 four-Divine-Beasts drop shogi, 29
+  pieces/side of 16 types (14 novel), drops, checkmate. Deliberately CHIRAL (Divine Beasts have
+  no rotational partner → fairness from point-symmetric setup, not per-piece rotation). ShogiLike
+  subclass; **attacked() computed FORWARD from _piece_targets** (not reverse maps) for the
+  ranging/jumping/leap-over exotics. All 30 move-forms read square-by-square from Silverman's guide
+  PDF (400 DPI colour-sampled) by BUILD and independently re-read by deep-QA (0 discrepancies).
+  Multi-jump pieces (Golden Bird leap-over-3, Wooden Dove jump-to-3rd-then-slide, Great Dragon
+  sideways slide-or-jump-2/3) custom. **NO machine oracle** (Ai Ai desktop-only) → geometry anchored
+  to the PDF; 5 interpretations documented in rules.md. Labels switched kanji→romaji (chu/dai/sho
+  convention; kanji kept in rules.md). perf: legal_moves 3.7ms / in_check 0.056ms (fine for UI,
+  weak-but-functional bot). LESSON: for a novel non-standard piece, prefer FORWARD-computed
+  attacked() over the fragile reverse-attack maps (shinjuu) — but the shadowed-tables + rebuilt
+  reverse-map route also works and is verifiable (sho_shogi, 601k-check clean).
+
+### ▶▶ SHOGI PHASE — wave 2 (THE HARD GIANTS) — PRE-STAGED, next up
+The easy/moderate tier is DONE. Everything remaining is large-shogi needing Fire-Demon / jumping-
+general / Lion / area-move mechanics that exceed ShogiLike's (slides, leaps) model. Template =
+**chu_shogi/game.py** (557 lines: full Lion engine — igui/double-move/distance-2/Lion-trading —
++ Falcon/Eagle custom pieces + POWER_ATT reach; it subclasses ShogiLike but layers heavy custom
+movement). dai_shogi = the many-piece-types movement-table template. Build order (verifiability-
+first, NOT the old easiest-first):
+- **nutty_shogi (13×13) — ✅ SHIPPED #295 (`54b6362`).** Muller's demagnified Tenjiku; 50 pcs/25
+  types, drop-less, king-capture/BURN win ("win as event"). Fire Demon (BsR slide + 3-step area move;
+  active burn + passive-PRIORITY burn + win-on-burn + safe-capture), jumping generals (rank order
+  K>JQ>Regent>JR/JB>others), Lion/Griffon/Harpy (reused chu), Tetrarchs/Eagle/Unicorn. Built from
+  the CVP nutty-shogi Betza; chariot d2/buffalo k2 per the EXECUTABLE diagram config (prose disagrees).
+  deep-QA MERGE 0-fix (all 5 FD behaviours confirmed, perft 43/1845/85710 root checked piece-by-piece,
+  legal_moves 0.52ms), browser-verified (FD centered at g2). **THIS is now the Tenjiku template.**
+- **tenjiku_shogi (16×16) — NEXT, template off the COMMITTED nutty_shogi.** The classic; reuses
+  nutty's Fire-Demon/jumping/Lion machinery on a 16×16 board with MORE pieces/types (nutty is the
+  *demagnified* subset — tenjiku adds e.g. the Vice General / Great General / Heavenly-Tetrarch-class
+  pieces and a fuller army, ~78 pcs/side). Weak oracle (no HaChu/pyffish builtin for tenjiku) → lean
+  on nutty's proven code + Wikipedia "Tenjiku shogi" + CVP; perft self-anchor. Source the extra
+  pieces + the exact 16×16 setup carefully; the "Generals" hierarchy (jumping-rank) extends nutty's.
+- **maka_dai_dai_shogi (19×19).** Huge piece set, promote-by-CAPTURE-value (a piece promotes on
+  capturing, to a value-dependent form) — a DISTINCT promotion mechanic to build. Weak sources
+  (contradictory Edo texts) → document interpretations heavily. HARDEST faithful-rules effort.
+- **tai_shogi (25×25, ~177 pieces/side) + "mini_tai" — SCOPE BEFORE BUILDING (likely DROP).**
+  625-cell board ≈ unplayable in the generic UI; ~177-piece movegen ≈ too slow for the 3s MCTS
+  budget; ~90 piece types with NO oracle = high unfaithful risk. Recommend documenting as
+  out-of-scope for the generic platform unless Erik wants a display/curio build. ("mini_tai_shogi"
+  is not a well-defined historical variant — verify it exists before planning it.)
+
+Op notes carried into wave 2: `.venv/bin/uvicorn` (not on PATH); pyffish 0.0.89 in .venv (general
+FSF oracle, load custom variants.ini first or SEGFAULT); HaChu not installed (apt-get download the
+0.21 .deb when a Chu/Dai differential is needed — NOT needed for nutty/tenjiku, which have no HaChu
+support). pinchtab under WSL: `pinchtab server` foreground via run_in_background; eval works
+(allowEvaluate on) but IDPI intermittently blanks eval results → screenshot (pixels) is reliable;
+QuickPlay flow = click QUICK PLAY → React-native-setter inject search → click .game-card-main by
+exact title → hotseat → START → screenshot.
+
+### (prior handoff below) — updated 2026-07-13
 
 ### ✅ OPTION-ADDITIONS wave SHIPPED (2026-07-13) → **289 games**, #289 + 3 option edits
 All four done, full suite green ("all tests passed"), committed + pushed (auto-deploy fired for
