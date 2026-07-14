@@ -116,6 +116,32 @@ def main():
     assert G.serialize(G.deserialize(G.serialize(s0))) == G.serialize(s0)
     assert G.serialize(G.deserialize(G.serialize(st4))) == G.serialize(st4)
 
+    # ---- Goro Goro Plus variant --------------------------------------------
+    # 'classic' (default) is byte-identical to the original: empty hands.
+    assert G.initial_state({"variant": "classic"}).hands == {BLACK: {}, WHITE: {}}
+    assert G.serialize(G.initial_state()) == G.serialize(G.initial_state({"variant": "classic"}))
+
+    # 'plus' seeds a Lance + Knight into each hand, on the same board/setup.
+    sp = G.initial_state({"variant": "plus"})
+    assert sp.hands == {BLACK: {"L": 1, "N": 1}, WHITE: {"L": 1, "N": 1}}, sp.hands
+    # the board is unchanged vs classic (only the reserves differ)
+    assert sp.board == s0.board
+    # both reserve pieces are droppable on an empty central square from move 1
+    lm = G.legal_moves(sp)
+    assert "L@2,2" in lm and "N@2,2" in lm, "Lance & Knight should be droppable in Plus"
+    # drop restrictions still hold: no Lance on Black's last rank, no Knight on last two
+    assert not any(m == "L@c,5".replace("c", str(c)) for c in range(5) for m in lm), "Lance on last rank must be illegal"
+    assert not any(m == f"N@{c},{r}" for c in range(5) for r in (4, 5) for m in lm), "Knight on last two ranks must be illegal"
+    # a dropped Lance advancing to the last rank promotes to a Gold-mover (+L)
+    stL = SState(board={(2, 0): (BLACK, "K"), (2, 5): (WHITE, "K"), (0, 4): (BLACK, "L")},
+                 hands={BLACK: {}, WHITE: {}}, to_move=BLACK)
+    lmv = [m for m in G.legal_moves(stL) if m.startswith("0,4>")]
+    assert lmv == ["0,4>0,5=+"], lmv          # forced promotion on the last rank
+    stL2 = G.apply_move(stL, "0,4>0,5=+")
+    assert (0, 5) in stL2.promoted and stL2.board[(0, 5)] == (BLACK, "L")
+    # the plus initial position also round-trips
+    assert G.serialize(G.deserialize(G.serialize(sp))) == G.serialize(sp)
+
     print("goro_goro_shogi selftest OK")
 
 

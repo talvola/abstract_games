@@ -9,6 +9,17 @@
   "hidden_info": false,
   "category": "Chess & chess-like",
   "tags": ["square", "chess", "drops", "shogi"],
-  "bgg_url": "https://en.wikipedia.org/wiki/Shogi#Variants",
-  "description": "Goro Goro Shogi (5x6 shogi, a.k.a. Goro Goro Dobutsu Shogi): the full drop game on a 5x6 board with King, two Golds, two Silvers and three Pawns each -- no rook, bishop, knight or lance. Promotion zone is the far two ranks; only Silver and Pawn promote (to Gold)."
+  "bgg_url": "https://en.wikipedia.org/wiki/Goro_goro_shogi",
+  "description": "Goro Goro Shogi (5x6 shogi, a.k.a. Goro Goro Dobutsu Shogi): the full drop game on a 5x6 board with King, two Golds, two Silvers and three Pawns each -- no rook, bishop, knight or lance. Promotion zone is the far two ranks; only Silver and Pawn promote (to Gold). The 'plus' variant additionally gives each side a Lance and a Knight in hand.",
+  "options": {
+    "variant": {
+      "choices": ["classic", "plus"],
+      "default": "classic",
+      "label": "Variant",
+      "labels": {
+        "classic": "Classic Goro Goro",
+        "plus": "Goro Goro Plus (+Lance & Knight in hand)"
+      }
+    }
+  }
 }

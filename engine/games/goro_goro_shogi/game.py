@@ -14,6 +14,14 @@ Standard setup (5x6 ``sgkgs/5/1ppp1/1PPP1/5/SGKGS``): the back rank is
 **S G K G S** with the King centred, and the three Pawns sit on the central three
 files of the rank in front. The back rank is its own 180deg rotation, so both
 armies share the same order.
+
+**Variant option ``variant``**: ``plus`` selects **Goro Goro Plus** -- the board,
+army and setup are identical, but each side additionally begins with a **Lance
+and a Knight in hand** (droppable from move 1). Those two pieces exist only in the
+reserve; when dropped they move as in Shogi and promote to a Gold (``+L``/``+N``),
+so the ``plus`` game exercises the Lance/Knight move-gen, drop restrictions and
+promotions that ``ShogiLike`` already provides. ``classic`` (the default) is
+byte-identical to the original game.
 """
 
 from __future__ import annotations
@@ -31,7 +39,8 @@ class GoroGoroShogi(ShogiLike):
     PLY_CAP = 300
     LABELS = {
         "K": "K", "G": "G", "S": "S", "P": "P",
-        "+S": "+S", "+P": "+P",
+        "L": "L", "N": "N",
+        "+S": "+S", "+P": "+P", "+L": "+L", "+N": "+N",
     }
 
     def setup_board(self):
@@ -48,3 +57,11 @@ class GoroGoroShogi(ShogiLike):
         for c in (1, 2, 3):
             b[(c, 4)] = (WHITE, "P")
         return b, set()
+
+    def initial_state(self, options=None, rng=None):
+        st = super().initial_state(options, rng)
+        # Goro Goro Plus: seed a Lance + Knight into each hand (droppable at once).
+        if (options or {}).get("variant", "classic") == "plus":
+            st.hands = {BLACK: {"L": 1, "N": 1}, WHITE: {"L": 1, "N": 1}}
+            st.reps = {self._poskey(st): 1}   # hands are part of the position key
+        return st

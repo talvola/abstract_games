@@ -53,6 +53,21 @@ dropped (unpromoted) on a later turn, subject to the two-pawns (*nifu*),
 last-rank and drop-mate (*uchifuzume*) rules. **Checkmate wins.** A four-fold
 repetition is a **draw**, and a ply cap guarantees termination.
 
+## Variant: Goro Goro Plus
+
+Select **`variant` = `plus`** for **Goro Goro Plus**. The board (5×6), army on the
+board, and setup are unchanged, but **each side additionally starts with a Lance
+and a Knight in hand**, droppable from the very first move. This is the version
+playable on PyChess/lishogi (Fairy-Stockfish `gorogoroplus`).
+
+- The two reserve pieces move exactly as in Shogi: the **Lance** slides straight
+  forward, the **Knight** jumps to the two forward-knight squares.
+- They obey the usual drop restrictions: a Lance may not be dropped on the last
+  rank, a Knight not on the last two ranks (nowhere it could ever move).
+- When they reach the promotion zone they promote to a **Gold** (`+L` / `+N`).
+
+`classic` (the default) is the original game, unchanged.
+
 ## Notation
 
 As in Shogi: board moves are `from>to` (append `=+` to promote), drops are
