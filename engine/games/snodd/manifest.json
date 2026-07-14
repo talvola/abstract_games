@@ -1,0 +1,14 @@
+{
+  "uid": "snodd",
+  "name": "Snodd",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Dr Eric Silverman (2021) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Connection",
+  "tags": ["placement", "parity", "polygons", "pentagon", "snub-square", "hex-family"],
+  "bgg_url": "https://drericsilverman.com/2021/10/23/reviewing-almost-all-the-games-on-mindsports/",
+  "description": "Snodd, by Dr Eric Silverman (2021): Luis Bolaños Mures' Xodd/Yodd ported to the snub square tiling. Players place one or two stones of EITHER colour on an empty board of snub-square points (Red moves first, and only one stone on the opening turn); each interior point has degree 5, between Xodd's square grid and Yodd's hex. A group is a set of connected like-coloured stones, and at the end of every turn the TOTAL number of groups on the board must be odd. You may pass when it keeps the count odd; two passes in a row end the game, and whoever has FEWER groups of their own colour wins. Because the total is odd, the two counts can never tie — there are no draws. Rendered on the dual Cairo pentagonal tiling."
+}
