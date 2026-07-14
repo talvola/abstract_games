@@ -1,0 +1,14 @@
+{
+  "uid": "tenjiku_shogi",
+  "name": "Tenjiku Shogi",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "shogi", "large", "lion"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Tenjiku_shogi",
+  "description": "Tenjiku Shogi ('Indian chess'): the classic 16x16 large-shogi variant, 78 pieces a side of 36 types, DROP-LESS, won by capturing or BURNING the enemy's last royal (King, plus a Prince if a Drunk Elephant promotes). Famous for the range-jumping Generals — Great, Vice, Rook and Bishop Generals leap over lower-ranked pieces when capturing — and the Fire Demon, which burns every enemy on its eight neighbours (moving next to one is suicide) and has a 3-step area move. Also the double-moving Lion, Lion Hawk and Free Eagle, the Horned Falcon and Soaring Eagle stings, and the Heavenly Tetrarch. Promotion in the far five ranks. No drops."
+}
