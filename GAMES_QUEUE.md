@@ -35,8 +35,9 @@ reversi 10×10). `uvicorn` is at `.venv/bin/uvicorn` (not on PATH). The full sui
 selftest.py as a SUBPROCESS serially — parent shows low CPU while children work; ~7 min at 289 games,
 Python block-buffers the redirected log so it looks empty until the end (not hung — check child procs).
 
-### ✅ BESPOKE-POLYGONS-BOARD grade-B singles — IN PROGRESS (2026-07-13/14), 2 of 3 SHIPPED
-Erik chose this tier + supplied source images (Akimbo/Okimba MHTML pattern). Status:
+### ✅ BESPOKE-POLYGONS-BOARD grade-B singles — TIER COMPLETE (2026-07-14), ALL 3 SHIPPED (#290-292)
+Erik chose this tier + supplied source images (Akimbo/Okimba MHTML pattern). All three shipped +
+browser-verified + independently QA'd by the orchestrator. Status:
 - **Snodd #290 SHIPPED** (`46d25fc`) — Silverman 2021; Yodd/Xodd's exact parity rules (place 1-2 stones
   either colour, total groups must stay ODD, fewer own groups wins, no draws) on a snub-square tiling
   (degree-5 interior). game.py = faithful line-for-line yodd port with hex adjacency → a GENERATED
@@ -55,23 +56,35 @@ Erik chose this tier + supplied source images (Akimbo/Okimba MHTML pattern). Sta
   7 boundary cells touch two (perfectly symmetric). Orchestrator re-verified embedded PERIM_COLORS = the
   extraction (0 mismatch). Mirrors exo_hex; native hexhex + board.tints render. Confirmed distinct from
   exo_hex (touch-colour-sides vs contain-exo-stones). validate+selftest(8)+browser (7 arcs render).
-- **yvy — STAGED, NOT built (the hard one, deferred to a focused session).** Rules FULLY sourced from
-  the mindsports page (Erik's `~/Downloads/YvY.mhtml`): Freeling+Bush; hexhex "hexplane" (read like
-  Hex/Y/Havannah) with green **sprout** cells evenly on the perimeter (odd total → no draws). Place 1
-  stone/turn (own colour), pass allowed, swap/pie. **LOOP (a group surrounding ≥1 cell) = SUDDEN-DEATH
-  WIN.** Else both-pass end → highest score wins. Score = (# sprouts CONTROLLED: occupied OR fenced-in/
-  enclosed by your stones) − 2×(# your groups); before counting, DEAD groups (no stone on a sprout) are
-  removed, and a like-colour group fenced-in by another merges into it. Worked example: 11 sprouts/1
-  group = 9 pts vs 16 sprouts/3 groups = 10. **Why deferred:** most complex logic in the batch
-  (Havannah loop-detection + Go-style enclosure/territory scoring + dead-group removal + fenced-in
-  merging — bug-prone, needs rigorous QA) + a bespoke board to reconstruct from a low-res 431px gif.
-  Extraction so far (scratchpad, re-derive from the MHTML): board = hex grid, x-pitch 28 / y-pitch 42
-  offset; **21 green sprout cells** on the perimeter (top edge 3, bottom 4, sides paired); cols A-N,
-  rows 1-15 (likely hexhex-ish, NOT perfectly top/bottom symmetric — verify exact cell set + which
-  perimeter cells are sprouts before building). SOURCE IMAGE: extract `yvy_board.gif` from
-  `/mnt/c/Users/erik/Downloads/YvY.mhtml`. Plan: orchestrator nails the board (board.json: cells +
-  adjacency + sprout flags + render coords) → build agent does loop+territory logic → deep QA.
+- **YvY #292 SHIPPED** (`4771599`) — Freeling+Bush; the hard one (loop + territory). base-7 board =
+  a **serrated hexagonal board of 147 cells with 21 degree-2 sprout spikes** (21 = "7 sprouts per two
+  adjacent sides"). Board extracted from the mindsports image (Erik's `~/Downloads/YvY.mhtml`): detect
+  the playable light-grey hexagon (147 cells) vs off-board dark cells, confirm via zoom the sprouts are
+  genuine degree-2 spikes separated by off-board gaps, generate+render board.json (polygons). Rules:
+  place 1 stone/turn or pass, swap/pie; **LOOP (a group enclosing ≥1 cell) = SUDDEN-DEATH WIN**; else
+  double-pass → dead groups (no sprout) removed, score = (sprouts controlled) − 2×(groups), higher
+  wins, honest draw on tie. **KEY FINDING (verified by orchestrator):** on YvY *any* enclosure is a
+  loop = instant win, so at a pass-pass end NO enclosure survives → the "fenced-in / territory /
+  group-merging" machinery is provably INERT and sprout control reduces to occupation; game.py keeps
+  the full general enclosure flood-fill (faithful, future-proof) but it computes 0 territory here.
+  Independent QA: 6-stone ring → sudden-death loop win + center enclosed; line ≠ loop; scoring &
+  dead-group removal correct; no sprout enclosable even walling the whole board. validate+selftest+
+  browser (147 cells + green sprouts render, placement + turn advance).
 - `medusa` stays DEFERRED (compound multi-move + non-terminating + weak MCTS).
+
+**Tier lessons:** image-sourced bespoke boards → extract the board IMAGE from Erik's saved MHTML
+(`email.message_from_binary_file` → walk `image/*` parts) then read it PROGRAMMATICALLY (grey-cell
+connected-components → lattice-fit to axial → sample border colours / classify light-vs-dark cells)
+— beats eyeballing every time (nailed side_stitch's 7-arc map + yvy's 147-cell serrated board). A game
+whose geometry is a DEFINED tiling (snub-square/Cairo) needs no image — generate it. The orchestrator
+owns board.json + independent verification (dual-exactness, degree histograms, arc-map re-derivation,
+loop/scoring probes); build agents do rules on the given board.
+
+### ▶▶ NEXT WAVE — needs an Erik direction pick (bespoke-polygons tier now DONE)
+Remaining known candidates all cost more or need a decision:
+- **Large-shogi group-A tail** (Tenjiku + the Muller nut-trio; HaChu/pyffish oracles) — see group-A notes.
+- **A fresh scouted theme** — library is 292 games; dedup HARD (most famous distinct abstracts exist).
+- `medusa` (deferred), and any new Erik-supplied picks (the MHTML pattern works well for image-sourced games).
 - **Large-shogi group A tail** (still partially open — see the group-A notes below; Tenjiku + the
   Muller nut-trio, HaChu/pyffish oracles).
 - **A fresh scouted theme** (the library is 289 games — most famous distinct abstracts already exist,
@@ -85,11 +98,12 @@ bestemshe = a mancala (future), mini_xiangqi clone-rejected, antidraughts/frysk/
 
 ---
 
-**Current state: 291 games** on `origin/main`, auto-deployed live at
-https://abstract-games.onrender.com. Latest = **BESPOKE-POLYGONS grade-B singles (2 of 3 shipped
-2026-07-13/14):** Snodd #290 (Cairo/snub-square, generated geometry) + Side Stitch #291 (Duncan,
-7-arc perimeter extracted from the reference image); **yvy STAGED** (the complex loop+territory one
-— see the ✅ block at the very top). Prior = **OPTION-ADDITIONS wave (SHIPPED 2026-07-13):**
+**Current state: 292 games** on `origin/main`, auto-deployed live at
+https://abstract-games.onrender.com. Latest = **BESPOKE-POLYGONS grade-B singles TIER COMPLETE
+(all 3 shipped 2026-07-14):** Snodd #290 (Cairo/snub-square, generated geometry) + Side Stitch #291
+(Duncan, 7-arc perimeter extracted from the reference image) + YvY #292 (Freeling loop+territory,
+147-cell serrated board extracted from the mindsports image) — see the ✅ block at the very top.
+Prior = **OPTION-ADDITIONS wave (SHIPPED 2026-07-13):**
 No-Castling Chess #289 + three_check five-check + reversi size/goal + backgammon setup. Prior =
 **wave 7 draughts medley #286–288 (SHIPPED 2026-07-13):** Russian Draughts (any-capture + promote-mid-capture-continues), Spanish
 Draughts (forward-only men that CAN take kings + flying kings + max-priority — Italian
