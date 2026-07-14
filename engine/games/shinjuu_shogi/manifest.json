@@ -1,0 +1,14 @@
+{
+  "uid": "shinjuu_shogi",
+  "name": "Shinjuu Shogi",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "shogi", "drops"],
+  "bgg_url": "https://drericsilverman.com/2021/11/20/11x11-shogi-part-i-shinjuu-shogi/",
+  "description": "Dr. Eric Silverman's own 11x11 drop-shogi variant, themed on the Four Divine Beasts. 29 pieces a side of 16 exotic types (Blue Dragon, White Tiger, Vermillion Sparrow, Turtle Snake, Kirin, Phoenix, elephants and birds), full modern shogi drops (nifu / uchifuzume), promotion in the far three ranks, win by checkmate."
+}
