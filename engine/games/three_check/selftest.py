@@ -160,18 +160,61 @@ def test_double_check_counts_once():
     print("  double check counts as one OK")
 
 
+def test_five_check_option():
+    """Under checks_to_win=5, three checks do NOT end the game; five do.
+
+    The threshold is per-state (an option), so we verify it discriminates: the
+    SAME check tally is terminal at 3 but not at 5, and vice-versa."""
+    g = ThreeCheck()
+
+    # The option reaches the state.
+    s5 = g.initial_state(options={"checks_to_win": 5})
+    assert s5.checks_to_win == 5, s5.checks_to_win
+    s3 = g.initial_state()
+    assert s3.checks_to_win == 3, s3.checks_to_win
+
+    # Discriminating position: White has given exactly three checks.
+    def at(ctw, wchecks):
+        board = {(4, 0): (WHITE, "K"), (4, 7): (BLACK, "K"),
+                 (7, 7): (BLACK, "R")}
+        return TCState(board=board, to_move=WHITE, castling=frozenset(),
+                       ep=None, checks=[wchecks, 0], checks_to_win=ctw,
+                       reps={g._poskey(board, WHITE, frozenset(), None): 1})
+
+    assert g.is_terminal(at(3, 3)), "3 checks wins under the three-check rule"
+    assert not g.is_terminal(at(5, 3)), "3 checks must NOT win under five-check"
+    assert not g.is_terminal(at(5, 4)), "4 checks must NOT win under five-check"
+    assert g.is_terminal(at(5, 5)), "5 checks wins under the five-check rule"
+    assert g.returns(at(5, 5)) == [1.0, -1.0], g.returns(at(5, 5))
+    assert g.legal_moves(at(5, 5)) == [], "no moves once won"
+
+    # Replay the classic three-check forcing line but under checks_to_win=5:
+    # the third check must NOT end the game, and the counter keeps climbing.
+    s = g.initial_state(options={"checks_to_win": 5})
+    line = ["4,1>4,3", "4,6>4,4", "5,0>2,3", "1,7>2,5",
+            "3,0>7,4", "6,7>5,5", "7,4>4,4", "5,7>4,6",
+            "2,3>5,6", "4,7>5,6", "4,4>3,4"]   # ends on the THIRD check
+    s = play(g, s, line)
+    assert s.checks == [3, 0], s.checks
+    assert not g.is_terminal(s), "three checks must not win under five-check"
+    print("  five-check option OK (3 checks no longer wins; 5 does)")
+
+
 def test_serialize_roundtrip():
     g = ThreeCheck()
     s = g.initial_state()
     s = g.apply_move(s, "4,1>4,3")
     # Manually bump checks to a non-trivial value and round-trip.
     s = TCState(board=s.board, to_move=s.to_move, castling=s.castling, ep=s.ep,
-                halfmove=s.halfmove, ply=s.ply, reps=s.reps, checks=[2, 1])
+                halfmove=s.halfmove, ply=s.ply, reps=s.reps, checks=[2, 1],
+                checks_to_win=5)
     d = g.serialize(s)
     assert d["checks"] == [2, 1], d
+    assert d["checks_to_win"] == 5, d
     s2 = g.deserialize(d)
     assert isinstance(s2, TCState)
     assert s2.checks == [2, 1], s2.checks
+    assert s2.checks_to_win == 5, s2.checks_to_win
     # serialize(deserialize(serialize)) is stable.
     assert g.serialize(s2) == d
     print("  serialize round-trip of check counters OK")
@@ -182,6 +225,7 @@ def main():
     test_three_checks_wins()
     test_normal_move_no_increment()
     test_double_check_counts_once()
+    test_five_check_option()
     test_serialize_roundtrip()
     print("SELFTEST OK")
     return 0

@@ -10,5 +10,13 @@
   "category": "Chess & chess-like",
   "tags": ["square", "chess", "variant"],
   "bgg_url": "https://www.chess.com/terms/3-check-chess",
-  "description": "Standard chess with one twist: you win as soon as you have checked the enemy king three times in total over the game. Checkmate still wins, and the usual chess draws apply, but the third check ends the game immediately. All piece movement is identical to standard chess. White moves first."
+  "options": {
+    "checks_to_win": {
+      "choices": [3, 5],
+      "default": 3,
+      "label": "Checks to win",
+      "labels": { "3": "Three-check", "5": "Five-check" }
+    }
+  },
+  "description": "Standard chess with one twist: you win as soon as you have checked the enemy king a set number of times in total over the game. Checkmate still wins, and the usual chess draws apply, but reaching the check threshold ends the game immediately. All piece movement is identical to standard chess. White moves first. The 'Checks to win' option selects the classic three-check rule (default) or the longer five-check variant."
 }

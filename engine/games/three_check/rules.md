@@ -1,13 +1,20 @@
 # Three-Check Chess
 
-Standard chess on an 8×8 board, with one extra way to win: **deliver three checks**.
+Standard chess on an 8×8 board, with one extra way to win: **deliver a set number of checks** (three by default).
 
 ## Objective
 Win by either of:
 - **Checkmate** the opponent's king (as in normal chess), **or**
-- **Giving check three times** in total over the course of the game.
+- **Giving check the target number of times** in total over the course of the game.
 
-The two are tracked independently — most games are decided by the third check long before a checkmate.
+The two are tracked independently — most games are decided by the check counter long before a checkmate.
+
+## Checks to win (option)
+The **"Checks to win"** option selects the threshold:
+- **Three-check** (default) — the classic rule; reaching 3 checks wins.
+- **Five-check** — the longer variant; reaching 5 checks wins.
+
+The rest of this page describes the default three-check rule; under five-check, replace "3" with "5" throughout.
 
 ## Board, setup & movement
 Identical to standard chess. Pawns on the second rank, `R N B Q K B N R` behind them. White is player 1 and moves first; Black is player 2. All pieces move exactly as in standard chess, including:

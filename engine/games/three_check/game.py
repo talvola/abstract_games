@@ -26,13 +26,15 @@ from agp.chesslike import (
 
 BACK_RANK = ["R", "N", "B", "Q", "K", "B", "N", "R"]
 
-CHECKS_TO_WIN = 3
+CHECKS_TO_WIN = 3       # default threshold (also the "three-check" variant value)
 
 
 @dataclass
 class TCState(CState):
     # checks[player] = number of times `player` has given check so far.
     checks: list = field(default_factory=lambda: [0, 0])
+    # how many cumulative checks win the game (3 = classic, 5 = five-check).
+    checks_to_win: int = CHECKS_TO_WIN
 
 
 class ThreeCheck(ChessLike):
@@ -63,9 +65,10 @@ class ThreeCheck(ChessLike):
     def initial_state(self, options=None, rng=None):
         board = self.setup_board()
         rights = self.CASTLING.initial_rights()
+        ctw = int((options or {}).get("checks_to_win", CHECKS_TO_WIN))
         return TCState(board=board, to_move=WHITE, castling=rights, ep=None,
                        reps={self._poskey(board, WHITE, rights, None): 1},
-                       checks=[0, 0])
+                       checks=[0, 0], checks_to_win=ctw)
 
     def apply_move(self, state, move, rng=None):
         mover = state.to_move
@@ -78,14 +81,16 @@ class ThreeCheck(ChessLike):
             checks[mover] += 1
         return TCState(board=ns.board, to_move=ns.to_move, castling=ns.castling,
                        ep=ns.ep, halfmove=ns.halfmove, ply=ns.ply, reps=ns.reps,
-                       checks=checks)
+                       checks=checks,
+                       checks_to_win=getattr(state, "checks_to_win", CHECKS_TO_WIN))
 
     # ---- terminal / result --------------------------------------------------
     def _three_check_winner(self, state):
-        """Return the player who has reached three checks, or None."""
+        """Return the player who has reached the check threshold, or None."""
         checks = getattr(state, "checks", [0, 0])
+        ctw = getattr(state, "checks_to_win", CHECKS_TO_WIN)
         for p in (WHITE, BLACK):
-            if checks[p] >= CHECKS_TO_WIN:
+            if checks[p] >= ctw:
                 return p
         return None
 
@@ -111,6 +116,7 @@ class ThreeCheck(ChessLike):
     def serialize(self, state) -> dict:
         d = super().serialize(state)
         d["checks"] = list(getattr(state, "checks", [0, 0]))
+        d["checks_to_win"] = getattr(state, "checks_to_win", CHECKS_TO_WIN)
         return d
 
     def deserialize(self, d: dict):
@@ -118,18 +124,20 @@ class ThreeCheck(ChessLike):
         return TCState(board=base.board, to_move=base.to_move,
                        castling=base.castling, ep=base.ep,
                        halfmove=base.halfmove, ply=base.ply, reps=base.reps,
-                       checks=list(d.get("checks", [0, 0])))
+                       checks=list(d.get("checks", [0, 0])),
+                       checks_to_win=int(d.get("checks_to_win", CHECKS_TO_WIN)))
 
     # ---- presentation -------------------------------------------------------
     def render(self, state, perspective=None) -> dict:
         spec = super().render(state, perspective)
         checks = getattr(state, "checks", [0, 0])
-        tally = f"checks W:{checks[WHITE]} B:{checks[BLACK]}"
+        ctw = getattr(state, "checks_to_win", CHECKS_TO_WIN)
+        tally = f"checks W:{checks[WHITE]} B:{checks[BLACK]} (to win: {ctw})"
         w = self._three_check_winner(state)
         if w is not None and not self._draw(state) and len(self._legal(state)) > 0:
-            # Won by three checks (not already a mate/draw caption).
+            # Won by reaching the check threshold (not already a mate/draw caption).
             name = "White" if w == WHITE else "Black"
-            spec["caption"] = f"{name} wins (three checks) — {tally}"
+            spec["caption"] = f"{name} wins ({ctw} checks) — {tally}"
         else:
             spec["caption"] = f"{spec['caption']} — {tally}"
         return spec
