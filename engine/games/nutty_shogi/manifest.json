@@ -1,0 +1,14 @@
+{
+  "uid": "nutty_shogi",
+  "name": "Nutty Shogi",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "shogi", "large", "lion"],
+  "bgg_url": "https://www.chessvariants.com/rules/nutty-shogi",
+  "description": "Nutty Shogi: H. G. Muller's 'demagnified Tenjiku Shogi' -- a 13x13 large-shogi variant, 50 pieces a side of 25 types, DROP-LESS, that keeps Tenjiku's wildest pieces. Win by CAPTURING or BURNING the enemy King. The Fire Demon incinerates every enemy on its eight neighbours (moving next to one is suicide) and has a 3-step area move; Jumping Rook/Bishop/Queen and the Regent leap over lower-ranked pieces when capturing; the Lion, Griffon and Harpy double-move; the Tetrarchs skips the first square; the Eagle and Unicorn 'sting'. No drops. Promotion in the far four ranks."
+}
