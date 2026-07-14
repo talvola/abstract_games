@@ -27,6 +27,17 @@ The standard opening setup. For White:
 Black's setup is the exact mirror (Black's point *p* = White's point *25−p*):
 2 on point 1, 5 on point 12, 3 on point 17, 5 on point 19.
 
+### Setup option
+
+- **Standard backgammon** (default) — the layout above, 15 checkers a side.
+- **Nackgammon** (Nack Ballard's variant) — a more contact-heavy 15-checker
+  start. Per side: **2** on 24, **2** on 23, **4** on 13, **3** on 8, **4** on 6
+  (Black mirrored).
+- **Hypergammon** — a fast, tactical race with just **3 checkers** a side, one
+  each on points **24, 23 and 22** (Black mirrored). Everything else — dice,
+  hitting, the bar, bearing off — is unchanged; you simply win by bearing off all
+  **3**.
+
 ## Dice and movement
 
 On your turn you roll **two dice** (1–6). Each die lets you move **one** checker
@@ -62,8 +73,8 @@ If the entry point is **blocked** (2+ enemy checkers), that die can't enter; if
 
 ## Bearing off
 
-Once **all 15** of your checkers are in your home quadrant, you may **bear them
-off** (the only way to win):
+Once **all** of your checkers (15 normally; 3 in Hypergammon) are in your home
+quadrant, you may **bear them off** (the only way to win):
 
 - A die of value *d* bears off a checker from the point whose distance from the
   edge is *d* (for White, point *d*; for Black, point *25 − d*).
@@ -80,7 +91,8 @@ re-enter and bring it home before bearing off again.
 
 ## Winning
 
-The first player to **bear off all 15 checkers wins** (+1; the loser −1).
+The first player to **bear off all their checkers wins** (+1; the loser −1) — all
+15 in standard/Nackgammon, all 3 in Hypergammon.
 
 ## Simplifications (documented)
 

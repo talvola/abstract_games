@@ -47,9 +47,15 @@ NCHK = 15
 PLY_CAP = 4000   # hard draw cap; random play always terminates (see note below)
 
 
-# Standard starting position, as absolute point -> count, for White.  White
-# moves 24 -> 1.  Black is the 25-p mirror (Black moves 1 -> 24).
-WHITE_START = {24: 2, 13: 5, 8: 3, 6: 5}
+# Starting positions, as absolute point -> count, for White.  White moves
+# 24 -> 1.  Black is the 25-p mirror (Black moves 1 -> 24).  Each layout has 15
+# checkers a side except Hypergammon (3 a side).
+WHITE_START = {24: 2, 13: 5, 8: 3, 6: 5}                 # standard backgammon
+SETUPS = {
+    "standard":   {24: 2, 13: 5, 8: 3, 6: 5},            # 15 checkers
+    "nackgammon": {24: 2, 23: 2, 13: 4, 8: 3, 6: 4},     # 15 checkers (Nack Ballard)
+    "hypergammon": {24: 1, 23: 1, 22: 1},                # 3 checkers (Hyper-backgammon)
+}
 
 
 def _mirror(p):
@@ -57,13 +63,13 @@ def _mirror(p):
     return 25 - p
 
 
-def _start_points():
-    """Return {point: (owner, count)} for the standard opening setup.
+def _start_points(setup="standard"):
+    """Return {point: (owner, count)} for the chosen opening setup.
 
     White and Black occupy mirror points, which never coincide, so each point
     holds at most one owner."""
     pts = {}
-    for p, n in WHITE_START.items():
+    for p, n in SETUPS[setup].items():
         pts[p] = (WHITE, n)
         pts[_mirror(p)] = (BLACK, n)
     return pts
@@ -104,9 +110,12 @@ class Backgammon(Game):
     # -- setup --------------------------------------------------------------
     def initial_state(self, options=None, rng=None):
         rng = rng or random.Random()
+        setup = (options or {}).get("setup", "standard")
+        if setup not in SETUPS:
+            setup = "standard"
         roll = self._roll(rng)
         return BgState(
-            board=_start_points(),
+            board=_start_points(setup),
             bar={WHITE: 0, BLACK: 0},
             off={WHITE: 0, BLACK: 0},
             roll=roll,
@@ -145,8 +154,14 @@ class Backgammon(Game):
         o, n = self._owner_count(board, p)
         return o == (1 - pl) and n >= 2
 
+    def _total(self, s, pl):
+        """This player's total checker count (board + bar + off). Invariant over a
+        game; 15 for standard/nackgammon, 3 for hypergammon."""
+        return (s.off[pl] + s.bar[pl]
+                + sum(n for (o, n) in s.board.values() if o == pl))
+
     def _all_home(self, s, pl):
-        """All 15 of pl's checkers are in the home quadrant (none on bar/outside)."""
+        """All of pl's checkers are in the home quadrant (none on bar/outside)."""
         if s.bar[pl]:
             return False
         for p, (o, n) in s.board.items():
@@ -323,8 +338,10 @@ class Backgammon(Game):
             remaining = tuple(rest)
             ns.dice = remaining
 
-        # win check
-        winner = pl if ns.off[pl] >= NCHK else None
+        # win check: a player wins when ALL their checkers are borne off. The
+        # total per side is 15 in standard/nackgammon but 3 in hypergammon, so
+        # compare against that player's actual checker total, not a constant.
+        winner = pl if ns.off[pl] >= self._total(ns, pl) else None
 
         ply = s.ply + 1
         if winner is None and ply >= PLY_CAP:

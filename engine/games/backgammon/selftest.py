@@ -19,7 +19,7 @@ import random
 import sys
 
 from games.backgammon.game import (
-    Backgammon, BgState, WHITE, BLACK, NCHK, _start_points,
+    Backgammon, BgState, WHITE, BLACK, NCHK, _start_points, SETUPS, _mirror,
 )
 
 
@@ -70,6 +70,38 @@ def main():
     black = {p: n for p, (o, n) in s0.board.items() if o == BLACK}
     check(black == {1: 2, 12: 5, 17: 3, 19: 5}, f"black start {black}")
     check(s0.to_move == WHITE, "White moves first")
+
+    # --- 1b. alternate setups (nackgammon / hypergammon) ------------------
+    # Nackgammon: 15 checkers a side, exact White point counts.
+    sn = g.initial_state(options={"setup": "nackgammon"}, rng=random.Random(1))
+    wn = {p: n for p, (o, n) in sn.board.items() if o == WHITE}
+    check(wn == {24: 2, 23: 2, 13: 4, 8: 3, 6: 4}, f"nackgammon white {wn}")
+    check(sum(wn.values()) == NCHK, "nackgammon: 15 checkers a side")
+    bn = {p: n for p, (o, n) in sn.board.items() if o == BLACK}
+    check(bn == {_mirror(p): n for p, n in wn.items()}, "nackgammon black mirror")
+
+    # Hypergammon: 3 checkers a side on the 24/23/22-points.
+    sh = g.initial_state(options={"setup": "hypergammon"}, rng=random.Random(1))
+    wh = {p: n for p, (o, n) in sh.board.items() if o == WHITE}
+    check(wh == {24: 1, 23: 1, 22: 1}, f"hypergammon white {wh}")
+    check(g._total(sh, WHITE) == 3 and g._total(sh, BLACK) == 3,
+          "hypergammon: 3 checkers a side")
+    # an unknown setup falls back to standard
+    su = g.initial_state(options={"setup": "bogus"}, rng=random.Random(1))
+    check({p: n for p, (o, n) in su.board.items() if o == WHITE}
+          == {24: 2, 13: 5, 8: 3, 6: 5}, "unknown setup -> standard")
+
+    # a seeded hypergammon race terminates with a winner who bore off all 3.
+    rng = random.Random(99)
+    s = g.initial_state(options={"setup": "hypergammon"}, rng=rng)
+    steps = 0
+    while not g.is_terminal(s) and steps < 20000:
+        s = g.apply_move(s, rng.choice(g.legal_moves(s)), rng=rng)
+        steps += 1
+    check(g.is_terminal(s), "hypergammon race terminates")
+    check(s.winner in (WHITE, BLACK), "hypergammon has a winner")
+    check(s.off[s.winner] == 3 or s.ply >= 4000,
+          f"hypergammon winner bore off 3 (off={s.off})")
 
     # --- 2. dice distribution & doubles -----------------------------------
     counts = {}

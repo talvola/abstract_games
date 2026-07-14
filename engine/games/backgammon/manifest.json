@@ -10,5 +10,17 @@
   "category": "Race",
   "tags": ["race", "dice", "roll-and-move", "classic", "tables"],
   "bgg_url": "https://boardgamegeek.com/boardgame/2397/backgammon",
-  "description": "Backgammon: the classic race-and-block dice game. Roll two dice and move your 15 checkers around the 24-point board into your home quadrant, then bear them off; first to bear off all 15 wins. Land on a lone enemy checker (a blot) to send it to the bar, where it must re-enter before its owner can play anything else. Doubles let you move four times; you must use both dice if you legally can. (Single-game version: no doubling cube.)"
+  "options": {
+    "setup": {
+      "choices": ["standard", "nackgammon", "hypergammon"],
+      "default": "standard",
+      "label": "Starting setup",
+      "labels": {
+        "standard": "Standard backgammon",
+        "nackgammon": "Nackgammon",
+        "hypergammon": "Hypergammon (3 checkers)"
+      }
+    }
+  },
+  "description": "Backgammon: the classic race-and-block dice game. Roll two dice and move your checkers around the 24-point board into your home quadrant, then bear them off; first to bear off all of them wins. Land on a lone enemy checker (a blot) to send it to the bar, where it must re-enter before its owner can play anything else. Doubles let you move four times; you must use both dice if you legally can. (Single-game version: no doubling cube.) Setup option: standard backgammon (15 checkers), Nackgammon (a more contact-heavy 15-checker start), or Hypergammon (just 3 checkers each, on the 24/23/22-points, for a fast tactical race)."
 }
