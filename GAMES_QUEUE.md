@@ -80,11 +80,42 @@ whose geometry is a DEFINED tiling (snub-square/Cairo) needs no image — genera
 owns board.json + independent verification (dual-exactness, degree histograms, arc-map re-derivation,
 loop/scoring probes); build agents do rules on the given board.
 
-### ▶▶ NEXT WAVE — needs an Erik direction pick (bespoke-polygons tier now DONE)
-Remaining known candidates all cost more or need a decision:
-- **Large-shogi group-A tail** (Tenjiku + the Muller nut-trio; HaChu/pyffish oracles) — see group-A notes.
-- **A fresh scouted theme** — library is 292 games; dedup HARD (most famous distinct abstracts exist).
-- `medusa` (deferred), and any new Erik-supplied picks (the MHTML pattern works well for image-sourced games).
+### ▶▶ NEXT WAVE — PRE-STAGED (Erik will pick: SHOGI phase, or a Silverman /games/ wave)
+Erik (2026-07-14, pausing) named two directions; a scout of **https://drericsilverman.com/games/**
+shows they largely CONVERGE on the shogi family. Full list deduped against the 292-game library
+(2026-07-14) — everything below is genuinely MISSING:
+
+**A) SHOGI FAMILY (large/historical/variant) — the "shogi phase".** Anchor with **HaChu** (Chu/Dai
+differential, apt-get download hachu 0.21) and **pyffish** (Fairy-Stockfish, any FSF variant, perft +
+legal-move differential; load the variant config first or it SEGFAULTs) — both proven this project;
+add perft anchors. Candidates, roughly easiest→hardest:
+- **sho_shogi** — historical 9×9 precursor to modern shogi (has the drunk-elephant, NO drops). Easiest;
+  ShogiLike-adjacent.
+- **goro_goro_plus** — extended Goro Goro Shogi (we have goro_goro_shogi #204) — verify what "Plus" adds.
+- **shinjuu_shogi** — **Silverman's OWN 11×11 shogi** (designer-original — nice to have his game). Rules on
+  his blog/page; verify piece set.
+- **wa_shogi** variants aside (we HAVE wa_shogi). **nutty_shogi** — H.G. Muller's "Nutty Shogi" (the
+  nut-trio the older queue flagged); needs Muller's page for the piece set.
+- **tenjiku_shogi** — 16×16 large shogi with the fearsome "jumping generals" (fire-demon burning, etc.) —
+  long-flagged; HaChu can't differential it fully, so perft + careful source (Wikipedia + CVP). HARD.
+- **maka_dai_dai_shogi** (19×19) — was blog group-A; huge piece set, promote-by-capture-value rules. HARD.
+- **tai_shogi** (25×25, ~354 pieces) + **mini_tai_shogi** — the giants; likely too big for the generic
+  UI/bot to be playable — SCOPE before building (may be render/perf-prohibitive; document if dropped).
+
+**B) SILVERMAN /games/ NON-SHOGI (genuinely distinct from what we have):**
+- **onyx** — Onyx (2000), connection game on a mixed square+diagonal grid with a CAPTURE mechanic
+  (surrounded stone removed). Distinct from our connection games; needs the rules (BGG/designer).
+- **hexsymple** — HexSymple, Freeling's Hex+Symple hybrid (we have both hex & symple). Verify it's a
+  distinct ruleset, not just a UI mash-up.
+- **desdemona** — an Othello/Reversi variant (rotate-the-board twist). VERIFY distinct from our reversi
+  (now with size/goal options) before building — may be a near-clone.
+- **courier variants** — modern_courier / reformed_courier / courier_spiel (we have base courier_chess).
+  Likely thin variants of courier_chess — probably OPTIONS or skip; low priority, verify distinctness.
+
+**Recommendation:** if "shogi phase" → start sho_shogi (easy) → goro_goro_plus → shinjuu_shogi →
+nutty_shogi, then the hard giants (tenjiku/maka_dai_dai) with perft+pyffish, and SCOPE tai/mini_tai
+before committing. If "Silverman wave" → onyx + hexsymple + shinjuu_shogi are the freshest; check
+desdemona/courier-variants for dedup first. `medusa` stays deferred.
 - **Large-shogi group A tail** (still partially open — see the group-A notes below; Tenjiku + the
   Muller nut-trio, HaChu/pyffish oracles).
 - **A fresh scouted theme** (the library is 289 games — most famous distinct abstracts already exist,
