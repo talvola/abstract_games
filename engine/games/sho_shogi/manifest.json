@@ -1,0 +1,14 @@
+{
+  "uid": "sho_shogi",
+  "name": "Sho Shogi",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "shogi"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Sho_shogi",
+  "description": "Sho Shogi (小将棋, 'small/old shogi'): the 16th-century predecessor of modern Shogi on a 9x9 board. Same setup, plus a Drunk Elephant in front of each king that promotes to a Crown Prince (a second king you must also capture) -- but with NO drops (captured pieces leave play). Win by mating your opponent's sole royal, or by baring their king."
+}
