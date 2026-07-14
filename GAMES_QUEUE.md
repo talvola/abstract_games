@@ -35,15 +35,43 @@ reversi 10×10). `uvicorn` is at `.venv/bin/uvicorn` (not on PATH). The full sui
 selftest.py as a SUBPROCESS serially — parent shows low CPU while children work; ~7 min at 289 games,
 Python block-buffers the redirected log so it looks empty until the end (not hung — check child procs).
 
-### ▶▶ NEXT WAVE — needs an Erik direction pick (the easy option/variant seam is now DRAINED)
-The cheap seams (perft-anchored ChessLike variants, standard-render option toggles, draughts medley)
-are exhausted. Remaining candidates all cost more or need a decision:
-- **Grade-B singles that need a BESPOKE polygons board** (transcribe from a mindsports/image diagram,
-  build offline, ship as `board.json` like `games/pex` so game.py stays pure-stdlib): **side_stitch**
-  (Duncan 2017, BGG 223388; 7-arc perimeter hexhex best-group — near-sibling of exo_hex, confirm
-  distinct), **yvy** (Freeling+Bush 2009; sprout-map hexhex, loop=instant-win, needs a formal "fenced
-  in" def), **snodd** (Silverman 2021; yodd on a snub-square tiling, degree-5 vertices). All MISSING
-  (deduped 2026-07-13). `medusa` stays DEFERRED (compound multi-move + non-terminating + weak MCTS).
+### ✅ BESPOKE-POLYGONS-BOARD grade-B singles — IN PROGRESS (2026-07-13/14), 2 of 3 SHIPPED
+Erik chose this tier + supplied source images (Akimbo/Okimba MHTML pattern). Status:
+- **Snodd #290 SHIPPED** (`46d25fc`) — Silverman 2021; Yodd/Xodd's exact parity rules (place 1-2 stones
+  either colour, total groups must stay ODD, fewer own groups wins, no draws) on a snub-square tiling
+  (degree-5 interior). game.py = faithful line-for-line yodd port with hex adjacency → a GENERATED
+  `board.json` graph (pex pattern, pure-stdlib). Board = 84 snub-square points (56 interior degree-5)
+  rendered as the dual **Cairo pentagonal tiling** via the existing polygons primitive (NO Board.jsx
+  change). Geometry generated programmatically (snub square → Cairo dual) — orchestrator independently
+  verified: all 84 cells pentagons, adjacency symmetric/connected, every adjacent pentagon pair shares
+  exactly 1 edge + no non-adjacent pair shares any (exact dual), interior degree 5. validate+selftest+
+  browser (colour-pick placement, odd-invariant caption). **Generatable geometry = no image needed.**
+- **Side Stitch #291 SHIPPED** (`439c54d`) — Duncan 2017 (BGG 223388), the award-winning ORIGINAL that
+  our existing exo_hex is the "distilled" sibling of. hexhex-8 (169 cells), 7 colour-sides; group score
+  = # distinct colour-sides touched (boundary cell counts for both); recursive lexicographic tiebreak;
+  honest draw only on symmetric double-pass. **The 7-arc perimeter map was extracted PROGRAMMATICALLY
+  from Duncan's reference board image** (Silverman blog MHTML): detect 169 grey cells → lattice-fit to
+  axial → sample each of 42 perimeter cells' border colour(s) → 7 sides each touched by exactly 7 cells,
+  7 boundary cells touch two (perfectly symmetric). Orchestrator re-verified embedded PERIM_COLORS = the
+  extraction (0 mismatch). Mirrors exo_hex; native hexhex + board.tints render. Confirmed distinct from
+  exo_hex (touch-colour-sides vs contain-exo-stones). validate+selftest(8)+browser (7 arcs render).
+- **yvy — STAGED, NOT built (the hard one, deferred to a focused session).** Rules FULLY sourced from
+  the mindsports page (Erik's `~/Downloads/YvY.mhtml`): Freeling+Bush; hexhex "hexplane" (read like
+  Hex/Y/Havannah) with green **sprout** cells evenly on the perimeter (odd total → no draws). Place 1
+  stone/turn (own colour), pass allowed, swap/pie. **LOOP (a group surrounding ≥1 cell) = SUDDEN-DEATH
+  WIN.** Else both-pass end → highest score wins. Score = (# sprouts CONTROLLED: occupied OR fenced-in/
+  enclosed by your stones) − 2×(# your groups); before counting, DEAD groups (no stone on a sprout) are
+  removed, and a like-colour group fenced-in by another merges into it. Worked example: 11 sprouts/1
+  group = 9 pts vs 16 sprouts/3 groups = 10. **Why deferred:** most complex logic in the batch
+  (Havannah loop-detection + Go-style enclosure/territory scoring + dead-group removal + fenced-in
+  merging — bug-prone, needs rigorous QA) + a bespoke board to reconstruct from a low-res 431px gif.
+  Extraction so far (scratchpad, re-derive from the MHTML): board = hex grid, x-pitch 28 / y-pitch 42
+  offset; **21 green sprout cells** on the perimeter (top edge 3, bottom 4, sides paired); cols A-N,
+  rows 1-15 (likely hexhex-ish, NOT perfectly top/bottom symmetric — verify exact cell set + which
+  perimeter cells are sprouts before building). SOURCE IMAGE: extract `yvy_board.gif` from
+  `/mnt/c/Users/erik/Downloads/YvY.mhtml`. Plan: orchestrator nails the board (board.json: cells +
+  adjacency + sprout flags + render coords) → build agent does loop+territory logic → deep QA.
+- `medusa` stays DEFERRED (compound multi-move + non-terminating + weak MCTS).
 - **Large-shogi group A tail** (still partially open — see the group-A notes below; Tenjiku + the
   Muller nut-trio, HaChu/pyffish oracles).
 - **A fresh scouted theme** (the library is 289 games — most famous distinct abstracts already exist,
@@ -57,11 +85,13 @@ bestemshe = a mancala (future), mini_xiangqi clone-rejected, antidraughts/frysk/
 
 ---
 
-**Current state: 289 games** on `origin/main`, auto-deployed live at
-https://abstract-games.onrender.com. Latest = **OPTION-ADDITIONS wave (SHIPPED 2026-07-13):**
-No-Castling Chess #289 + three_check five-check + reversi size/goal + backgammon setup (see the
-✅ block at the very top). Prior = **wave 7 draughts medley #286–288 (SHIPPED
-2026-07-13):** Russian Draughts (any-capture + promote-mid-capture-continues), Spanish
+**Current state: 291 games** on `origin/main`, auto-deployed live at
+https://abstract-games.onrender.com. Latest = **BESPOKE-POLYGONS grade-B singles (2 of 3 shipped
+2026-07-13/14):** Snodd #290 (Cairo/snub-square, generated geometry) + Side Stitch #291 (Duncan,
+7-arc perimeter extracted from the reference image); **yvy STAGED** (the complex loop+territory one
+— see the ✅ block at the very top). Prior = **OPTION-ADDITIONS wave (SHIPPED 2026-07-13):**
+No-Castling Chess #289 + three_check five-check + reversi size/goal + backgammon setup. Prior =
+**wave 7 draughts medley #286–288 (SHIPPED 2026-07-13):** Russian Draughts (any-capture + promote-mid-capture-continues), Spanish
 Draughts (forward-only men that CAN take kings + flying kings + max-priority — Italian
 inverted), Pool Checkers (Russian but promotion DEFERRED to end of chain). All 3 perft
 7/49/302/1469, deep-QA MERGE with the clone gate explicitly passed (Russian vs Pool produce
