@@ -8,47 +8,59 @@ universe map and capability gaps live in `GAME_BACKLOG.md`; this file is the
 
 ## ⭐ SESSION HANDOFF (read this first) — updated 2026-07-13
 
-### ▶▶ NEXT WAVE — PRE-STAGED & LAUNCH-READY: the OPTION-ADDITIONS (deduped 2026-07-13)
-Erik chose the option-additions as the next wave. These are variant TOGGLES on existing games
-(default = current behaviour, so non-breaking) + one tiny new ChessLike package. All deduped
-against the 288-game library. Kick off with: *"continue the game factory — option-additions wave
-per the GAMES_QUEUE handoff."* Per game: edit/build → selftest anchor for the NEW variant →
-**browser-verify the new option plays** (these touch working games, so verify the default still
-works too) → commit → regen GAME_STATUS → log here. **⚠ quarto's 2×2-square-win is ALREADY an
-option — do NOT re-add (this is why we dedup).**
+### ✅ OPTION-ADDITIONS wave SHIPPED (2026-07-13) → **289 games**, #289 + 3 option edits
+All four done, full suite green ("all tests passed"), committed + pushed (auto-deploy fired for
+commit `11031e4`). Per-game selftests + render-shape probes + browser-verify where it mattered.
+- **No-Castling Chess #289** (`58821dd`) — Kramnik 2019; ChessLike subclass, `CASTLING=NoCastling`.
+  Anchor perft 20/400/8902 + selftest diffs vs `Chess` to prove BOTH castles removed while the
+  king still steps. Browser-verified: real chess glyphs, 64 cells, no white-screen.
+- **three_check five-check** (`33a7151`) — option `checks_to_win [3,5]` (default 3). Threshold on
+  `TCState`, read in `initial_state`, carried through `apply_move`, used in win check + serialized.
+  Selftest: same tally terminal at 3 but not 5; the classic forcing line's 3rd check no longer wins
+  under 5. Render caption shows "(to win: 5)".
+- **reversi size+goal** (`e4b1edf`) — `size [8,10]` (10 = Grand Othello) + `goal [most,fewest]`
+  (fewest = Anti-/misère, equal = honest draw). Parameterized helpers by `n`, extended notation
+  alphabet to 10 cols, both on state + serialized. Default 8×8/most byte-identical. Browser-verified
+  END-TO-END: 10×10 renders (100 cells), move+flip works, notation "B:e4", caption "(fewest wins)".
+- **backgammon setup** (`11031e4`, + GAME_STATUS regen) — `setup [standard,nackgammon,hypergammon]`
+  (default standard). Named start maps + mirror; win check now compares off[pl] vs the player's
+  actual checker total (`_total`) so Hypergammon's 3-checker race terminates (was hardcoded 15).
+  Selftest: each setup's exact counts, unknown→standard fallback, a hypergammon race bears off all 3.
 
-1. **five-check** → EDIT `games/three_check` (currently hardcodes 3, `options:{}`): add a
-   `checks_to_win` option `{choices:[3,5], default:3, label:"Checks to win"}`; read it in
-   `initial_state`, store on state, use in the win check. Selftest: a 5th check wins under
-   `checks_to_win=5` but not under 3. Source: standard three-/five-check chess.
-2. **grand othello + anti-othello** → EDIT `games/reversi` (already has an `opening` option, so
-   options infra exists): add `size` `{choices:[8,10], default:8, label:"Board size"}` (10 =
-   Grand Othello) AND `goal` `{choices:["most","fewest"], default:"most", labels:{most:"Standard",
-   fewest:"Anti / misère"}}` (fewest discs wins = Anti-Othello). Parameterize the board size in
-   setup + flip the win comparison for `fewest`. Selftests: legal 10×10 play to a full board; a
-   misère win goes to the player with FEWER discs (honest draw on equal). Sources: standard.
-3. **nackgammon + hypergammon** → EDIT `games/backgammon` (`options:{}`; setup lives in
-   `initial_state`): add `setup` `{choices:["standard","nackgammon","hypergammon"], default:
-   "standard"}`. Nackgammon start (per side): 2×24-pt, 2×23-pt, 4×13-pt, 3×8-pt, 4×6-pt.
-   Hypergammon: 1 checker each on the 24/23/22-pts (3 total). Selftests: each setup's exact
-   opening point counts; a hypergammon race terminates. Source: Wikipedia/standard.
-4. **no-castling chess** → NEW tiny package `games/no_castling_chess` (NOT an option — the
-   ChessLike framework picks CASTLING as a class attribute, and a separate entry is more
-   discoverable). Subclass Chess with `CASTLING = NoCastling`, everything else identical (~15
-   lines; see games/{berolina,los_alamos_chess} for the ~40-line variant pattern). Anchor:
-   perft d1=20/d2=400/d3=8902 (identical to chess — castling can't occur that shallow) + a
-   selftest position where standard chess WOULD offer castling and no_castling_chess does NOT.
-   Source: Kramnik's No-Castling Chess.
+**Lessons this wave:** integer option choices (`[8,10]`, `[3,5]`) are fully handled by the frontend
+`GameOptions.jsx` (stringify-and-find-back) — used by ~70 games, nil risk. The option infra
+(dropdowns → options → `initial_state`) is generic and proven; a standard-render option toggle on an
+already-verified game carries nil render risk, so browser-verify only the genuinely-new visual (here:
+reversi 10×10). `uvicorn` is at `.venv/bin/uvicorn` (not on PATH). The full suite runs each package's
+selftest.py as a SUBPROCESS serially — parent shows low CPU while children work; ~7 min at 289 games,
+Python block-buffers the redirected log so it looks empty until the end (not hung — check child procs).
 
-**Coverage note:** the OTHER wave-7 items were triaged out (see wave 7 block below) — quarto-2×2
-DONE (existing option), bestemshe = a mancala (future), mini_xiangqi clone-rejected, antidraughts/
-frysk/breakthrough-draughts = lower-value option/near-clone material. After this wave → grade-B
-singles.
+### ▶▶ NEXT WAVE — needs an Erik direction pick (the easy option/variant seam is now DRAINED)
+The cheap seams (perft-anchored ChessLike variants, standard-render option toggles, draughts medley)
+are exhausted. Remaining candidates all cost more or need a decision:
+- **Grade-B singles that need a BESPOKE polygons board** (transcribe from a mindsports/image diagram,
+  build offline, ship as `board.json` like `games/pex` so game.py stays pure-stdlib): **side_stitch**
+  (Duncan 2017, BGG 223388; 7-arc perimeter hexhex best-group — near-sibling of exo_hex, confirm
+  distinct), **yvy** (Freeling+Bush 2009; sprout-map hexhex, loop=instant-win, needs a formal "fenced
+  in" def), **snodd** (Silverman 2021; yodd on a snub-square tiling, degree-5 vertices). All MISSING
+  (deduped 2026-07-13). `medusa` stays DEFERRED (compound multi-move + non-terminating + weak MCTS).
+- **Large-shogi group A tail** (still partially open — see the group-A notes below; Tenjiku + the
+  Muller nut-trio, HaChu/pyffish oracles).
+- **A fresh scouted theme** (the library is 289 games — most famous distinct abstracts already exist,
+  so new picks are Zillions/CVP/traditional deep cuts; dedup HARD).
+Recommend: **ask Erik to pick a direction** (bespoke-board singles vs. group-A shogi vs. a new scout)
+rather than auto-starting — none is a clean one-line kickoff anymore.
+
+**Coverage note (kept):** wave-7 leftovers were triaged out — quarto-2×2 DONE (existing option),
+bestemshe = a mancala (future), mini_xiangqi clone-rejected, antidraughts/frysk/breakthrough-draughts
+= lower-value option/near-clone material.
 
 ---
 
-**Current state: 288 games** on `origin/main`, auto-deployed live at
-https://abstract-games.onrender.com. Latest = **wave 7 draughts medley #286–288 (SHIPPED
+**Current state: 289 games** on `origin/main`, auto-deployed live at
+https://abstract-games.onrender.com. Latest = **OPTION-ADDITIONS wave (SHIPPED 2026-07-13):**
+No-Castling Chess #289 + three_check five-check + reversi size/goal + backgammon setup (see the
+✅ block at the very top). Prior = **wave 7 draughts medley #286–288 (SHIPPED
 2026-07-13):** Russian Draughts (any-capture + promote-mid-capture-continues), Spanish
 Draughts (forward-only men that CAN take kings + flying kings + max-priority — Italian
 inverted), Pool Checkers (Russian but promotion DEFERRED to end of chain). All 3 perft
