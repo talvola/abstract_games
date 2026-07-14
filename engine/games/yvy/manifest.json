@@ -1,0 +1,15 @@
+{
+  "uid": "yvy",
+  "name": "YvY",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Christian Freeling & David Bush / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "pie": true,
+  "category": "Territory",
+  "tags": ["hex", "territory", "connection", "loop", "scoring", "polygons", "freeling"],
+  "bgg_url": "https://mindsports.nl/index.php/the-pit/555-yvy",
+  "description": "YvY, by Christian Freeling & David Bush: a territory game on a serrated hexagonal board whose 21 green 'sprout' cells give life. Place a stone of your colour or pass; completing a LOOP (a group that surrounds one or more cells) wins instantly. When both players pass, dead groups (those touching no sprout) are removed and each player scores the sprouts he controls minus twice his number of groups. Pie rule for the second player."
+}
