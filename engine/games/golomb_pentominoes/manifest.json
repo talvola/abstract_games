@@ -1,0 +1,14 @@
+{
+  "uid": "golomb_pentominoes",
+  "name": "Pentominoes",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Solomon W. Golomb",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Positional",
+  "tags": ["pentominoes", "polyomino", "tile-laying", "combinatorial", "cgt", "impartial", "golomb"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Pentomino",
+  "description": "Solomon W. Golomb's pentomino game (mid-1950s), popularised by Martin Gardner. Players alternate placing pentominoes on an empty 8x8 board, covering whole squares and without overlap. The twelve pieces are a SINGLE SHARED POOL — each is used at most once, by either player — so both players always have the same moves and the game is impartial (like Cram). Pieces are the twelve FREE pentominoes: rotations and reflections of a piece are the same piece. Normal play: the player who cannot make a move loses; there are no draws, and a game lasts at most 12 placements. There are exactly 2308 opening moves (296 discounting the board's 8 symmetries). Orman proved in 1996, by examining some 22 billion positions, that Pentominoes is a first-player win."
+}

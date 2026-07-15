@@ -1,0 +1,14 @@
+{
+  "uid": "blokus_duo",
+  "name": "Blokus Duo",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Bernard Tavitian (Sekkoia 2005; Mattel) / AGP",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Positional",
+  "tags": ["blokus", "polyomino", "tile-laying", "territory", "pentominoes", "tavitian"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/16395/blokus-duo",
+  "description": "The two-player Blokus, on a 14x14 board. Each player holds the same 21 pieces — every free polyomino of size 1 to 5 (1 monomino, 1 domino, 2 trominoes, 5 tetrominoes, 12 pentominoes; rotations and reflections both allowed). Your first piece must cover your starting point; every later piece must touch one of your own pieces at a corner and must never share an edge with your own colour. Pieces of different colours may touch freely. A blocked player passes; the game ends when both are blocked. Score -1 per remaining unit square, +15 for placing all 21 pieces, +5 more if your last piece was the single square. Highest score wins."
+}

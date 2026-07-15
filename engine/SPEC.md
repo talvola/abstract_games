@@ -213,8 +213,70 @@ clash with `>`). The web UI derives click-to-move from this:
   several moves differing only by that suffix, the UI shows a small picker of
   the choices. (`CHOICE` is shown via a friendly name for `Q/R/N/B/K/P`.)
 
+- **Polyomino placement** (a tile covering several cells at once): the move is
+  `"KEY:o@c,r"` — see `palette` below.
+
 Use this convention for any game you want clickable. Other notations still
 validate and play via the API.
+
+### `palette` — polyomino / multi-cell tile placement
+
+The primitive for **tile-laying** games where one move lays a shape covering
+several cells (Blokus, Cathedral, Pentominoes). Opt-in: absent ⇒ nothing renders.
+
+```jsonc
+"palette": {                    // per-SEAT list of the tiles that seat still holds
+  "0": [
+    { "key": "L4",              // tile id: [A-Za-z0-9_]+ (must not contain ":" or "@")
+      "label": "L tetromino",   // optional; tooltip only
+      "count": 1,               // optional; shown as "×n" when > 1
+      "orients": [              // EVERY placeable orientation, each a list of
+        [[0,0],[0,1],[0,2],[1,2]],   // [dc,dr] offsets from the ANCHOR cell
+        [[0,0],[1,0],[2,0],[0,1]]    // (rotations AND reflections if the game
+      ] }                            //  allows them — the ENGINE decides which
+  ],                                 //  orientations exist; the UI just lists them)
+  "1": [ … ]
+}
+```
+
+The move string is **`"KEY:o@c,r"`** — tile `KEY`, its orientation **index `o`**
+into that tile's `orients`, anchored at cell `c,r`. The covered cells are the
+anchor plus `orients[o]`'s offsets.
+
+**Every orientation MUST contain `[0,0]` — the anchor is always a cell the tile
+covers.** The anchor is what the player clicks, so an uncovered anchor means
+clicking a cell the tile does not occupy, sometimes several squares from where it
+lands. Normalise by translating so the **bottom-most, then left-most** covered
+cell is the anchor. This yields negative `dc` offsets, which is fine and fully
+supported. (Do NOT normalise to the shape's bounding-box corner: for a plus- or
+S-shaped tile that corner is empty.)
+
+**Shared pool.** If both players draw from ONE common set (Golomb's Pentominoes),
+emit `"palette": {"shared": [ …tiles… ]}` instead of per-seat keys; the UI then
+draws a single "Pool" tray in the mover's colour. This must be explicit — two
+separate but identical hands (Blokus Duo at move 1) are byte-identical, so the
+renderer cannot safely infer a shared pool by comparing the lists.
+
+The UI flow: click a tile chip → arm it (if several of its orientations have a
+legal placement, an orientation strip appears — pick one) → the legal **anchors**
+highlight → hovering one ghosts the tile's whole footprint → click to place.
+Tiles with no legal placement anywhere are greyed out but still shown.
+
+Rules that make this work:
+
+- **`legal_moves` stays the only source of truth.** The UI derives the placeable
+  orientations and anchors *from the legal move list*, never from `orients`
+  geometry — so an orientation you list but never generate simply never offers a
+  target. (Same enforcement path as drops: the server only checks
+  `move in legal_moves`; no server change is needed.)
+- **Offsets are in cell-coord space** (`+dr` = up the board, matching cell ids),
+  NOT screen space. The renderer y-flips thumbnails for you.
+- **Emit only the tiles a seat still holds** — the palette *is* the reserve
+  display for these games.
+- One tray per seat is drawn below the board, in seat order (works for 2- and
+  4-player alike). Seat colours come from the seat index, as everywhere else.
+- Distinct from `reserve`'s single-cell drop move `"K@c,r"` (no `:o`), which is
+  unchanged. A game may use either, not both.
 
 ### Categories
 

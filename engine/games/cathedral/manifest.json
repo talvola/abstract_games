@@ -1,0 +1,14 @@
+{
+  "uid": "cathedral",
+  "name": "Cathedral",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Robert P. Moore (1979) / AGP",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Territory",
+  "tags": ["polyomino", "tile-laying", "enclosure", "capture", "square", "classic"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/7/cathedral",
+  "description": "Robert Moore's 1979 classic of the medieval city. Light opens by placing the neutral Cathedral anywhere in the 10x10 walled city, then Dark makes the first move and the two alternate laying buildings — 14 polyominoes each, from the single-square Tavern to the five-square Castle, Tower and Academy. Pieces may be turned but NEVER flipped over, which is why each colour holds a mirror-image Abbey and Academy. Enclose part of the city with your buildings and the wall and it becomes your property; trap exactly one enemy building (or the Cathedral) inside and it is captured — a building goes back to its owner's stock to be replayed, but the Cathedral, once removed, is gone for good. Trap two, and both are safe. The player who places all 14 buildings while the other cannot wins; otherwise the smaller pile of unplaced squares takes it, and an equal pile is an honest draw."
+}

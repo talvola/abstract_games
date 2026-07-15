@@ -41,6 +41,13 @@ const isCellMove = (m) => m.split('>').every((seg) => CELL_RE.test(seg.split('='
 // Handled via the reserve tray, so it is neither a cell path nor an action button.
 const DROP_RE = /^([A-Za-z0-9])@(-?\d+,-?\d+)$/
 const isDropMove = (m) => DROP_RE.test(m)
+// A placement move lays a multi-cell POLYOMINO tile: "KEY:o@c,r" — KEY names the
+// tile in `spec.palette`, `o` indexes that tile's orientation list, and "c,r" is
+// the ANCHOR cell (the tile covers the anchor plus that orientation's offsets).
+// Driven by the palette tray, so it is neither a cell path nor an action button.
+// Distinct from DROP_RE (single-cell, no ":o"), which is left untouched.
+const PLACE_RE = /^([A-Za-z0-9_]+):(\d+)@(-?\d+,-?\d+)$/
+const isPlaceMove = (m) => PLACE_RE.test(m)
 // A wall move places a wall in a groove: "Hc,r" / "Vc,r" (Quoridor). Handled by
 // clickable slots between the cells, not as a cell path or an action button.
 const WALL_RE = /^([HV])(\d+),(\d+)$/
@@ -87,8 +94,10 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
   const [sel, setSel] = useState([])
   const [promo, setPromo] = useState(null) // { cells, options: [{choice, move}] }
   const [drop, setDrop] = useState(null)   // selected reserve piece letter (for a drop)
+  const [place, setPlace] = useState(null) // armed polyomino {key, orient} (for a placement)
   const [hover, setHover] = useState(null) // cell being hovered (for move preview)
-  useEffect(() => { setSel([]); setPromo(null); setDrop(null) }, [JSON.stringify(legalMoves), disabled, freeform])
+  useEffect(() => { setSel([]); setPromo(null); setDrop(null); setPlace(null) },
+    [JSON.stringify(legalMoves), disabled, freeform])
 
   if (!spec) return null
   const board = spec.board
@@ -108,13 +117,49 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
   const cellMoves = (legalMoves || []).filter(isCellPath)
   const dropMoves = (legalMoves || []).filter(isDropMove)
   const wallMoves = (legalMoves || []).filter(isWallMove)
-  const actions = (legalMoves || []).filter((m) => !isCellPath(m) && !isDropMove(m) && !isWallMove(m) && !isCardMove(m))
+  const placeMoves = (legalMoves || []).filter(isPlaceMove)
+  const actions = (legalMoves || []).filter((m) => !isCellPath(m) && !isDropMove(m) && !isWallMove(m)
+    && !isCardMove(m) && !isPlaceMove(m))
   const moves = cellMoves.map((m) => ({ raw: m, ...parseMove(m) }))
   const paths = moves.map((m) => m.cells)
 
   // Cells the currently-selected reserve piece may be dropped on.
   const dropTargets = new Set()
   if (drop) for (const m of dropMoves) { const x = m.match(DROP_RE); if (x[1] === drop) dropTargets.add(x[2]) }
+
+  // --- Polyomino palette (spec.palette) -------------------------------------
+  // Which (key, orientation) pairs actually have a legal placement, and where.
+  // anchorsFor["KEY:o"] = Set of legal anchor cell ids. Derived from legal_moves
+  // alone, so the engine stays the single source of truth (as with drops).
+  const anchorsFor = {}
+  for (const m of placeMoves) {
+    const x = m.match(PLACE_RE)
+    const k = `${x[1]}:${x[2]}`
+    ;(anchorsFor[k] || (anchorsFor[k] = new Set())).add(x[3])
+  }
+  // A game with a SHARED pool (Golomb's Pentominoes: both players draw from the
+  // same 12 tiles) emits `palette.shared` instead of per-seat lists. It must be
+  // explicit — two separate-but-identical hands (Blokus Duo at move 1) are
+  // byte-identical, so auto-detecting a shared pool by comparing lists would
+  // silently merge two real hands into one.
+  const paletteTiles = (seat) => (spec.palette
+    ? (spec.palette.shared || spec.palette[String(seat)] || []) : [])
+  const paletteFor = (key) => paletteTiles(currentPlayer).find((t) => t.key === key)
+  // Orientation indices of `key` that have at least one legal placement.
+  const legalOrients = (key) => {
+    const tile = paletteFor(key)
+    if (!tile) return []
+    return (tile.orients || []).map((_, i) => i).filter((i) => anchorsFor[`${key}:${i}`])
+  }
+  const placeTargets = place ? (anchorsFor[`${place.key}:${place.orient}`] || new Set()) : new Set()
+  // The cells the armed tile would cover if dropped on the hovered anchor.
+  const placeGhost = new Set()
+  if (place && hover && placeTargets.has(hover)) {
+    const tile = paletteFor(place.key)
+    const offs = tile && tile.orients ? tile.orients[place.orient] || [] : []
+    const [hc, hr] = hover.split(',').map(Number)
+    for (const [dc, dr] of offs) placeGhost.add(`${hc + dc},${hr + dr}`)
+  }
 
   const nextCells = new Set()
   for (const p of paths) if (p.length > sel.length && eqPrefix(p, sel)) nextCells.add(p[sel.length])
@@ -140,6 +185,12 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
       if (sel[0] === cellId) { setSel([]); return }  // click source again to cancel
       onMove(`${sel[0]}>${cellId}`); setSel([])
       return
+    }
+    if (place) {                                     // a palette tile is armed
+      if (placeTargets.has(cellId)) {
+        onMove(`${place.key}:${place.orient}@${cellId}`); setPlace(null); setSel([]); return
+      }
+      setPlace(null)                                 // clicked off-target: cancel, fall through
     }
     if (drop) {                                      // a reserve piece is armed
       if (dropTargets.has(cellId)) { onMove(`${drop}@${cellId}`); setDrop(null); setSel([]); return }
@@ -343,6 +394,97 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
     )
   }
 
+  // A polyomino tile drawn as a mini-grid of its cell offsets, for the palette
+  // chips and the orientation strip. NOTE the y-flip: the board draws row 0 at
+  // the BOTTOM (squareCells), so a thumbnail must plot +dr UPWARD or every tile
+  // would read vertically mirrored against the board it is placed on.
+  function tileThumb(offsets, col, size = 30) {
+    const cs = offsets.map(([dc, dr]) => [dc, dr])
+    const minC = Math.min(...cs.map((o) => o[0])), maxC = Math.max(...cs.map((o) => o[0]))
+    const minR = Math.min(...cs.map((o) => o[1])), maxR = Math.max(...cs.map((o) => o[1]))
+    const w = maxC - minC + 1, h = maxR - minR + 1
+    const n = Math.max(w, h)
+    return (
+      <svg viewBox={`-0.1 -0.1 ${n + 0.2} ${n + 0.2}`} width={size} height={size}>
+        {cs.map(([dc, dr], i) => (
+          <rect key={i} x={dc - minC + (n - w) / 2} y={(maxR - dr) + (n - h) / 2}
+            width="0.9" height="0.9" rx="0.12" fill={col} stroke="#2a2620" strokeWidth="0.06" />
+        ))}
+      </svg>
+    )
+  }
+
+  // Off-board polyomino palette (spec.palette): the tiles a seat has left. Click
+  // a tile to arm it; if it has several placeable orientations an orientation
+  // strip appears — pick one, then click a highlighted anchor on the board.
+  // Tiles with no legal placement anywhere are shown greyed-out (a Blokus player
+  // wants to see the pieces they are stuck with).
+  // One tray per seat, in seat order, BELOW the board. (Unlike the 2-seat
+  // reserve trays this must also read for 4-player Blokus, where a top/bottom
+  // split has nowhere to put seats 2 and 3.)
+  function paletteTrays() {
+    if (!spec.palette) return null
+    if (spec.palette.shared) return [paletteTray('shared')]
+    return Object.keys(spec.palette).map(Number).sort((a, b) => a - b)
+      .map((seat) => paletteTray(seat))
+  }
+
+  function paletteTray(seat) {
+    const pal = spec.palette
+    if (!pal) return null
+    const shared = seat === 'shared'
+    const tiles = paletteTiles(seat)
+    // A shared pool is always the live tray — whoever is to move draws from it,
+    // so it takes the mover's colour rather than a fixed seat's.
+    const active = !disabled && (shared || currentPlayer === seat)
+    const c = colors(shared ? currentPlayer : seat)
+    const label = shared ? 'Pool' : `P${seat + 1}`
+    const where = active ? 'active' : ''
+    if (tiles.length === 0) {
+      return <div key={seat} className={`palette-tray ${where}`}>
+        <span className="reserve-label">{label}</span>
+        <span className="reserve-empty">no tiles left</span>
+      </div>
+    }
+    const armed = place && active ? paletteFor(place.key) : null
+    const armedOrients = armed ? legalOrients(place.key) : []
+    return (
+      <div key={seat} className={`palette-tray ${where}`}>
+        <div className="palette-row">
+          <span className="reserve-label">{label}</span>
+          {tiles.map((t) => {
+            const playable = active && legalOrients(t.key).length > 0
+            const isArmed = !!place && place.key === t.key && active
+            return (
+              <button key={t.key} disabled={!playable} title={t.label || t.key}
+                className={`palette-chip${playable ? ' active' : ''}${isArmed ? ' selected' : ''}`}
+                onClick={playable ? () => {
+                  if (isArmed) { setPlace(null); return }
+                  const os = legalOrients(t.key)
+                  setPlace({ key: t.key, orient: os[0] }); setDrop(null); setSel([]); setPromo(null)
+                } : undefined}>
+                {tileThumb(t.orients[0], playable ? c.fill : '#5a5248')}
+                {t.count > 1 && <span className="reserve-count">×{t.count}</span>}
+              </button>
+            )
+          })}
+        </div>
+        {armed && armedOrients.length > 1 && (
+          <div className="palette-row orients">
+            <span className="reserve-label">Turn</span>
+            {armedOrients.map((oi) => (
+              <button key={oi}
+                className={`palette-chip active${place.orient === oi ? ' selected' : ''}`}
+                onClick={() => setPlace({ key: place.key, orient: oi })}>
+                {tileThumb(armed.orients[oi], c.fill, 26)}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+    )
+  }
+
   // Card games (Onitama): a strip of movement cards, each a 5×5 mini-grid of its
   // offsets (oriented toward its holder). Your selectable cards are clickable.
   function cardStrip() {
@@ -534,7 +676,10 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
           // Enforced games decorate legal targets/sources; freeform keeps every
           // cell clickable but only highlights the selected source (no 64 dots).
           const isDropTarget = !!drop && dropTargets.has(s.id) && !disabled
-          const isTarget = (!freeMode && !firstStep && nextCells.has(s.id) && !disabled && !selected) || isDropTarget
+          const isPlaceTarget = !!place && placeTargets.has(s.id) && !disabled
+          const isGhost = placeGhost.has(s.id)
+          const isTarget = (!freeMode && !firstStep && nextCells.has(s.id) && !disabled && !selected)
+            || isDropTarget || isPlaceTarget
           const isSource = freeMode
             ? sel.length === 0 && !!piece
             : sources.has(s.id) && !disabled && !selected && !isTarget
@@ -553,6 +698,10 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
               onMouseLeave={isTarget ? () => setHover((h) => (h === s.id ? null : h)) : undefined}
               style={{ cursor: clickable ? 'pointer' : 'default' }}>
               <polygon points={s.poly} fill={fill} stroke={stroke} strokeWidth={sw} />
+              {/* Footprint of the armed polyomino at the hovered anchor: the whole
+                  tile reads as one shape before you commit to it. */}
+              {isGhost && <polygon points={s.poly} fill={colors(currentPlayer).fill} opacity="0.5"
+                stroke={colors(currentPlayer).stroke} strokeWidth={sw} pointerEvents="none" />}
               {tiles[s.id] ? tileGlyph(s, tiles[s.id]) : null}
               {tracks[s.id] ? trackGlyph(s, tracks[s.id]) : null}
               {levels[s.id] ? levelGlyph(s, levels[s.id]) : null}
@@ -635,6 +784,7 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
         })}
       </svg>
       {tray(0, 'bottom')}
+      {paletteTrays()}
       {cardStrip()}
 
       {!disabled && actions.length > 0 && (

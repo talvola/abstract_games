@@ -270,6 +270,22 @@ button.secondary:hover { color: var(--text); border-color: var(--accent); }
   box-shadow: 0 0 0 1px var(--accent); }
 .reserve-count { font-size: 0.6rem; color: var(--muted); margin-left: 2px; vertical-align: super; }
 
+/* Polyomino palette (spec.palette) — one tray per seat below the board. Each
+   chip is a mini-grid of the tile's shape; the armed tile may expand into an
+   orientation strip. Mirrors .reserve-chip states (active/selected). */
+.palette-tray { width: 100%; max-width: 540px; margin-top: 8px; padding: 4px 0;
+  border-top: 1px solid var(--line); }
+.palette-tray.active { border-top-color: var(--accent); }
+.palette-row { display: flex; gap: 4px; align-items: center; justify-content: center; flex-wrap: wrap; }
+.palette-row.orients { margin-top: 5px; }
+.palette-chip { position: relative; background: var(--bg); border: 1px solid var(--line);
+  border-radius: 5px; padding: 2px; cursor: default; font-family: inherit; line-height: 0; }
+.palette-chip:disabled { opacity: 0.45; }
+.palette-chip.active { cursor: pointer; }
+.palette-chip.active:hover { border-color: var(--accent); }
+.palette-chip.selected { border-color: var(--accent); background: rgba(201,169,110,0.22);
+  box-shadow: 0 0 0 1px var(--accent); }
+
 .wall-ghost { stroke: #c9a96e; opacity: 0.08; cursor: pointer; }
 .wall-ghost:hover { opacity: 0.85; }
 
