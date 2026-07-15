@@ -82,6 +82,32 @@ Implement these. See `games/tic_tac_toe/game.py` (minimal) and `games/oust/game.
 | `move_to_str` / `parse_move` | optional; default to identity on strings |
 | `describe_move(state, move)` | optional; short label for the move log (state is *before* the move). Default = the raw move string; override for nicer notation (e.g. chess `Nb1-c3`) |
 | `player_view(state, player)` | only for hidden-info games; default = full info |
+| `heuristic(state)` | optional; makes the bot stronger. **MUST return a list of `num_players` payoffs, same convention as `returns`** — see below |
+
+### `heuristic` — the bot's eval (optional, but get the shape right)
+
+`MCTSBot` truncates random rollouts after `max_rollout` plies (default 50) and
+scores the position with `game.heuristic(state)` instead of drifting hundreds of
+plies to a meaningless draw. Games without one fall back to a draw, so adding a
+`heuristic` is the single cheapest way to make your game's bot stronger.
+
+**It must return one payoff PER SEAT — a list of length `num_players`, in the same
+convention as `returns`** (`ChessLike.heuristic` returns `[white, black]`). The
+value goes straight into back-propagation, which indexes it as `payoffs[p]`; a
+bare float raises `TypeError: 'float' object is not subscriptable`.
+
+That failure is easy to miss: it only fires when the rollout cutoff is actually
+reached, so a **short** game (fewer plies than `max_rollout`) can carry a malformed
+heuristic that never bites — until a longer game, or a lower `max_rollout`, reaches
+the cutoff. `blokus_duo` shipped exactly this bug. If you add a `heuristic`, test it
+with a deliberately low `max_rollout` to force the cutoff:
+
+```python
+MCTSBot(random.Random(1), iterations=30, max_rollout=4).select(game, state)
+```
+
+Values should be bounded (squash to roughly -1..+1, e.g. `tanh` or a clamped ratio)
+and zero-sum-ish, so they compare sanely against real `returns` at terminals.
 
 ### Hard invariants (checked by `agp validate`)
 

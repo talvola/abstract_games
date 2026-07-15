@@ -8,6 +8,57 @@ universe map and capability gaps live in `GAME_BACKLOG.md`; this file is the
 
 ## ⭐ SESSION HANDOFF (read this first) — updated 2026-07-15
 
+### ✅ BLOKUS FAMILY COMPLETE (2026-07-15, `df96acc`) → **303 games**, #302–303
+Erik: "continue with 4-player Blokus or others you pick". Shipped **blokus #302** (4p,
+20×20) + **blokus_trigon #303**, both Pentobi-anchored, + 2 Board.jsx additions. Suite
+green @303, browser-verified, pushed.
+
+- **blokus** — corners are **colour-assigned CLOCKWISE**: seat0 (0,19) top-left, seat1
+  (19,19), seat2 (19,0), seat3 (0,0) [our bottom-origin]. All 4 seats: **58** opening
+  moves, split `{1:1,2:2,3:5,4:13,5:37}`. Differential: identical to Pentobi over **367
+  positions / 6 complete games to terminal**, 6/6 final scores. R1983 never *states* the
+  corner assignment (it follows from the blue→yellow→red→green seating) → documented as
+  an interpretation.
+- **blokus_trigon** — **sources corrected my brief TWICE**: BGG **21550** (21942 is Sid
+  Sackson's *Camp* — the agent verified with control lookups), year **2006** not 2007.
+  Hexagonal board of **486 triangles** (Pentobi `TrigonGeometry`: `init(sz*4-1, sz*2)`,
+  sz=9 → 35×18, `dy=min(y,H-y-1); min_x=sz-dy-1; max_x=W-min_x-1`; row profile
+  19,21..35,35..21,19). 22 free polyiamonds (1/1/1/3/4/12 by size). **6 start points are
+  SHARED — any colour may open on any** (unlike classic's assigned corners): (9,6),
+  (9,11), (17,3), (17,14), (25,6), (25,11). Anchor **2478 = 6×413**, split
+  `{1:6,2:18,3:54,4:168,5:540,6:1692}`. Differential: identical over **405 positions / 6
+  full games**, final_score 6/6 (Pentobi counts PLACED cells; `ours = pentobi − 110`).
+  **KEY TECHNIQUE: a 60° rotation is NOT an integer map on (c,r) — do it on the VERTEX
+  lattice, where D6 is integer matrices**, then read back. Engine uses **UP ⟺ (c+r) ODD**.
+
+**Board.jsx additions (both generic + opt-in):**
+- **`grid: "tri"` + `parity[]`** (parallel to `orients`; `p_i`=0 ⇒ orientation i's ANCHOR
+  points UP) ⇒ polyiamond chips draw as triangles. **Purely RELATIVE to the anchor**, so
+  the engine indexes its board however it likes and need only stay self-consistent — I
+  first wrote a global "UP ⟺ c+r EVEN" rule into SPEC and it was WRONG for our
+  coords; caught before it propagated. Verified live: the 1-triangle piece's 2
+  orientations partition the 6 start points exactly 3 odd / 3 even.
+- **`piece.shape: "fill"`** floods the whole CELL in the seat colour so a tile reads as
+  ONE solid block, not a disc per cell. **Adopted by all 5 tiling games** — it makes the
+  corner-touch rule (the entire point of Blokus) visible at a glance. Big readability win.
+
+**REAL BUG FIXED (found by the blokus agent, in the game I'd shipped hours earlier):**
+`blokus_duo.heuristic` returned a **bare float**, but `MCTSBot._rollout` hands the value
+straight to back-prop which indexes `payoffs[p]` ⇒ `TypeError: 'float' object is not
+subscriptable`. **`heuristic` MUST return one payoff PER SEAT, like `returns`** (
+`ChessLike.heuristic` does). Invisible in Duo (~42 plies < default `max_rollout=50`, so
+the cutoff never fires) but fatal at Blokus's 84 plies. **LOWERING max_rollout triggers
+it, not raising.** Swept all 303 games: **102/103 heuristics were already well-formed** —
+blokus_duo was the only one. Fixed to `[v,-v]` + mutation-pinned by a selftest that forces
+the cutoff.
+
+**Pentobi family surveyed (what's left):** `blokus two-player`/`three-player` +
+`blokus trigon two-player`/`three-player` are official variants we DON'T ship (`num_players`
+is a fixed property read before any state exists ⇒ can't be a manifest option; each would
+need its own package — probably bloat). **callisto** (diamond of squares), **gembloq**
+(quarter-square gems), **nexos** (pieces on grid EDGES) each need NEW geometry; **blokus
+junior** is a kids' cut-down. ⇒ **The Blokus seam is DRAINED** unless we want one of those.
+
 ### ✅ TILING / POLYOMINO PHASE — SHIPPED (2026-07-15, `12633b9`) → **301 games**, #299–301
 Erik asked to look at Zillions' "Tiling games" theme (66 submissions, theme=30).
 **Scouting verdict: that theme is a DEAD END — but it pointed at a real gap.** All 66
