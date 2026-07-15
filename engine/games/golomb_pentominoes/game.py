@@ -265,7 +265,7 @@ class GolombPentominoes(Game):
             caption = f"Player {s.to_move + 1} to move — {left} pentominoes in the shared pool"
         return {
             "board": {"type": "square", "width": W, "height": H},
-            "pieces": [{"cell": f"{c},{r}", "owner": v} for (c, r), v in s.board.items()],
+            "pieces": [{"cell": f"{c},{r}", "owner": v, "shape": "fill"} for (c, r), v in s.board.items()],
             "highlights": [{"cell": f"{c},{r}", "kind": "last-move"} for c, r in s.last],
             "palette": palette,
             "caption": caption,

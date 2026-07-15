@@ -29,6 +29,34 @@ import games.blokus_duo.game as G  # noqa: E402
 GAME = G.BlokusDuo()
 
 
+def test_heuristic_is_per_seat_payoffs():
+    """`heuristic` must return ONE payoff PER SEAT, like `returns`.
+
+    MCTSBot._rollout hands the value straight to back-propagation, which indexes
+    it as `payoffs[p]`; a bare float raises "'float' object is not subscriptable".
+    This is invisible at the default max_rollout=50 (a Duo game is only ~42 plies,
+    so the cutoff is never reached) — hence this explicit check plus a search run
+    with a LOW max_rollout that forces the cutoff to actually fire.
+    """
+    import random
+
+    from agp.mcts import MCTSBot
+
+    s = GAME.initial_state()
+    for st in (s, GAME.apply_move(s, GAME.legal_moves(s)[0])):
+        h = GAME.heuristic(st)
+        assert isinstance(h, (list, tuple)), f"heuristic must be a list, got {type(h).__name__}"
+        assert len(h) == GAME.num_players, f"heuristic len {len(h)} != {GAME.num_players} seats"
+        assert all(isinstance(x, float) and -1.0 <= x <= 1.0 for x in h), h
+    # Zero-sum at the opening (a symmetric position scores 0 for both).
+    assert GAME.heuristic(s) == [0.0, 0.0], GAME.heuristic(s)
+    # Force the rollout cutoff: this crashed with TypeError while heuristic
+    # returned a float.
+    mv = MCTSBot(random.Random(1), iterations=30, max_rollout=4).select(GAME, s)
+    assert mv in GAME.legal_moves(s), mv
+    print("  heuristic returns per-seat payoffs; MCTS survives the rollout cutoff OK")
+
+
 def _size_of(move):
     return G.SIZES[move.split(":", 1)[0]]
 
@@ -368,7 +396,11 @@ def test_render_shape():
     s = GAME.apply_move(s, _move_for("I1", [(4, 9)]))
     v = GAME.render(s)
     assert len(v["palette"]["0"]) == 20
-    assert {"cell": "4,9", "owner": 0} in v["pieces"]
+    # Match on the MEANINGFUL fields, not the whole dict: pieces also carry
+    # `shape: "fill"` so a tile renders as one solid block rather than a disc
+    # per cell, and an exact-equality check would break on any such addition.
+    assert any(p["cell"] == "4,9" and p["owner"] == 0 for p in v["pieces"]), v["pieces"][:3]
+    assert all(p.get("shape") == "fill" for p in v["pieces"]), "tiles must render as filled cells"
     assert "4,9" not in v["board"]["tints"]
     print("  render: board/palette/tints shape OK")
 
@@ -384,4 +416,5 @@ if __name__ == "__main__":
     test_pass_and_termination()
     test_full_game_terminates()
     test_render_shape()
+    test_heuristic_is_per_seat_payoffs()
     print("blokus_duo selftest: all OK")

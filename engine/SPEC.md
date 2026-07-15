@@ -251,6 +251,26 @@ cell is the anchor. This yields negative `dc` offsets, which is fine and fully
 supported. (Do NOT normalise to the shape's bounding-box corner: for a plus- or
 S-shaped tile that corner is empty.)
 
+**Triangular lattices (polyiamonds).** A tile may set `"grid": "tri"` so its chip
+is drawn as a POLYIAMOND rather than squares (Blokus Trigon). Emit the board
+itself as `"type": "polygons"` with triangle vertices and numeric `"c,r"` ids —
+numeric because the ghost/anchor maths parses ids as `c,r` and adds the offsets.
+
+On a triangle lattice each cell points UP or DOWN, and which one a given offset
+lands on depends on the **anchor's** orientation — information the offsets alone
+don't carry. So a `"grid": "tri"` tile MUST also supply **`"parity": [p0, p1, …]`,
+parallel to `orients`**: `p_i` = 0 if orientation `i`'s ANCHOR cell points UP,
+1 if it points DOWN. The renderer then draws the cell at offset `(dc,dr)` pointing
+UP iff `(dc+dr) mod 2 === p_i`. This is purely RELATIVE to the anchor, so the
+engine is free to index its board however it likes (whether up-triangles fall on
+odd or even `c+r` is the engine's choice) — it need only keep its board geometry
+and its `parity` values consistent. Get `parity` wrong and the chip
+point-reflects into a *genuinely different* polyiamond, not a cosmetic wobble.
+
+Only parity-preserving translations are legal on such a lattice, so the engine
+must simply never generate an anchor of the wrong parity — `legal_moves` stays the
+sole authority, as ever.
+
 **Shared pool.** If both players draw from ONE common set (Golomb's Pentominoes),
 emit `"palette": {"shared": [ …tiles… ]}` instead of per-seat keys; the UI then
 draws a single "Pool" tray in the mover's colour. This must be explicit — two

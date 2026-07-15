@@ -466,7 +466,7 @@ class Cathedral(Game):
 
         return {
             "board": {"type": "square", "width": W, "height": H, "tints": tints},
-            "pieces": [{"cell": _cs(c), "owner": s.pieces[pid][0]}
+            "pieces": [{"cell": _cs(c), "owner": s.pieces[pid][0], "shape": "fill"}
                        for c, pid in s.board.items()],
             "highlights": highlights,
             "palette": palette,

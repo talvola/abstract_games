@@ -1,0 +1,15 @@
+{
+  "uid": "blokus_trigon",
+  "name": "Blokus Trigon",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Bernard Tavitian (Sekkoia 2006; Mattel) / AGP",
+  "players": { "min": 4, "max": 4 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Positional",
+  "tags": ["blokus", "polyiamond", "tile-laying", "territory", "triangular", "multiplayer", "tavitian"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/21550/blokus-trigon",
+  "description": "Blokus on a triangular lattice: a hexagonal board of 486 triangles, and four players each holding the same 22 pieces — every free polyiamond of 1 to 6 triangles (1 + 1 + 1 + 3 + 4 + 12; rotations and reflections both allowed). Six starting points are SHARED, so any colour may open on any of them; your first piece must cover one. Every later piece must touch one of your own pieces at a corner and must never share an edge with your own colour, while pieces of different colours may touch freely. A blocked player passes; the game ends when all four are blocked. Score -1 per remaining unit triangle, +15 for placing all 22 pieces, +5 more if your last piece was the single triangle. Highest score wins.",
+  "options": {}
+}

@@ -394,15 +394,47 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
     )
   }
 
-  // A polyomino tile drawn as a mini-grid of its cell offsets, for the palette
-  // chips and the orientation strip. NOTE the y-flip: the board draws row 0 at
-  // the BOTTOM (squareCells), so a thumbnail must plot +dr UPWARD or every tile
-  // would read vertically mirrored against the board it is placed on.
-  function tileThumb(offsets, col, size = 30) {
+  // A tile drawn as a mini-grid of its cell offsets, for the palette chips and
+  // the orientation strip. NOTE the y-flip: the board draws row 0 at the BOTTOM
+  // (squareCells), so a thumbnail must plot +dr UPWARD or every tile would read
+  // vertically mirrored against the board it is placed on.
+  //
+  // `grid: "tri"` draws a POLYIAMOND on a triangular lattice (Blokus Trigon)
+  // instead of squares. A cell there points UP or DOWN, and which one a given
+  // offset lands on depends on the ANCHOR's orientation — which the shape alone
+  // cannot tell us. The tile therefore supplies `parity[i]` for orientation i:
+  // 0 = its anchor points UP, 1 = DOWN. A cell at offset (dc,dr) is then UP iff
+  // (dc+dr) mod 2 === parity[i]. This is purely RELATIVE to the anchor, so the
+  // engine may index its board either way (blokus_trigon happens to use
+  // UP <=> c+r ODD) — it need only keep board and `parity` consistent. Getting
+  // parity wrong point-reflects the piece into a genuinely DIFFERENT polyiamond,
+  // not a cosmetic wobble.
+  function tileThumb(offsets, col, size = 30, grid = 'square', parity = 0) {
     const cs = offsets.map(([dc, dr]) => [dc, dr])
     const minC = Math.min(...cs.map((o) => o[0])), maxC = Math.max(...cs.map((o) => o[0]))
     const minR = Math.min(...cs.map((o) => o[1])), maxR = Math.max(...cs.map((o) => o[1]))
     const w = maxC - minC + 1, h = maxR - minR + 1
+    if (grid === 'tri') {
+      // Triangles half-overlap horizontally: step 0.5 per column, so the drawn
+      // width is (w+1)/2 cells wide. Height is one row per r.
+      const vw = (w + 1) / 2, vh = h
+      const n = Math.max(vw, vh)
+      const tri = (dc, dr) => {
+        const x = (dc - minC) / 2 + (n - vw) / 2      // left edge of this triangle
+        const y = (maxR - dr) + (n - vh) / 2          // top edge (y-flipped)
+        const up = (((dc + dr) % 2) + 2) % 2 === parity
+        return up
+          ? `${x},${y + 1} ${x + 1},${y + 1} ${x + 0.5},${y}`   // apex up
+          : `${x},${y} ${x + 1},${y} ${x + 0.5},${y + 1}`       // apex down
+      }
+      return (
+        <svg viewBox={`-0.1 -0.1 ${n + 0.2} ${n + 0.2}`} width={size} height={size}>
+          {cs.map(([dc, dr], i) => (
+            <polygon key={i} points={tri(dc, dr)} fill={col} stroke="#2a2620" strokeWidth="0.05" />
+          ))}
+        </svg>
+      )
+    }
     const n = Math.max(w, h)
     return (
       <svg viewBox={`-0.1 -0.1 ${n + 0.2} ${n + 0.2}`} width={size} height={size}>
@@ -463,7 +495,8 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
                   const os = legalOrients(t.key)
                   setPlace({ key: t.key, orient: os[0] }); setDrop(null); setSel([]); setPromo(null)
                 } : undefined}>
-                {tileThumb(t.orients[0], playable ? c.fill : '#5a5248')}
+                {tileThumb(t.orients[0], playable ? c.fill : '#5a5248', 30,
+                  t.grid, (t.parity || [])[0] || 0)}
                 {t.count > 1 && <span className="reserve-count">×{t.count}</span>}
               </button>
             )
@@ -476,7 +509,8 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
               <button key={oi}
                 className={`palette-chip active${place.orient === oi ? ' selected' : ''}`}
                 onClick={() => setPlace({ key: place.key, orient: oi })}>
-                {tileThumb(armed.orients[oi], c.fill, 26)}
+                {tileThumb(armed.orients[oi], c.fill, 26, armed.grid,
+                  (armed.parity || [])[oi] || 0)}
               </button>
             ))}
           </div>
@@ -719,6 +753,14 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
                       {piece.label && <text x={s.cx} y={s.cy} textAnchor="middle" dominantBaseline="central"
                         fontSize={s.r * 0.7} fontWeight="bold" fill={colors(piece.owner).fill}>{piece.label}</text>}
                     </g>
+                  : piece.shape === 'fill'
+                    // The whole CELL flooded in the seat colour, so adjacent cells
+                    // of one tile merge into a single readable block (the
+                    // tile-laying family: Blokus/Trigon/Pentominoes/Cathedral).
+                    // A per-cell disc would hide the very thing those games are
+                    // about — the shape and where its corners touch.
+                    ? <polygon points={s.poly} fill={colors(piece.owner).fill}
+                        stroke={colors(piece.owner).stroke} strokeWidth={s.r * 0.05} />
                   : piece.shape === 'marker'
                     // Small filled disc (YINSH marker, flippable two-sided stone).
                     ? <circle cx={s.cx} cy={s.cy} r={s.r * 0.46}
