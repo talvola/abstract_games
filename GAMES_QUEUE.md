@@ -70,6 +70,13 @@ first, NOT the old easiest-first):
 - **tai_shogi (25×25, ~177 pcs) + "mini_tai" — DROP-RECOMMENDED.** No oracle, ~90 piece types, 625-cell
   board ≈ unplayable in the generic UI + very weak bot. Out-of-scope unless Erik wants a display/curio.
   ("mini_tai_shogi" is not a well-defined historical variant.)
+- **✅ cashew_shogi #297 (`487c26b`) + macadamia_shogi #298 (`c013262`) SHIPPED — VERIFIABLE finale, SHOGI PHASE COMPLETE.**
+  Both deep-QA MERGE-WITH-FIXES (adversarial QA caught a REAL bug in each: cashew a c1/d1+j1/k1 setup
+  promoted-flag error via the HaChu-FEN differential; macadamia White's chiral pieces moving mirror-imaged
+  vs the 180°-rotation setup). HaChu caveat: search/usermove SIGSEGV on the nut variants → the differential
+  is Betza-definition + setup-FEN level (still authoritative; Muller wrote HaChu) + Muller's CVP pages are
+  complete. Nut-proxy TRIO now complete: Nutty=Tenjiku, Cashew=Dai Dai, Macadamia=Maka Dai Dai. Original
+  build notes below (historical):
 - **▶ cashew_shogi + macadamia_shogi (13×13) — the VERIFIABLE large-shogi finale (HaChu-anchored).**
   H.G. Muller's own 13×13 "nut" proxies: **Cashew ≈ demagnified Dai Dai, Macadamia ≈ demagnified Maka
   Dai Dai** (Nutty, already shipped #295, is his Tenjiku proxy). **Both ARE in HaChu 0.21's variant
