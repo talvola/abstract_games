@@ -1,0 +1,14 @@
+{
+  "uid": "cashew_shogi",
+  "name": "Cashew Shogi",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "shogi", "large", "lion"],
+  "bgg_url": "https://www.chessvariants.com/rules/cashew-shogi",
+  "description": "Cashew Shogi: H. G. Muller's 'demagnified Dai Dai Shogi' -- a 13x13 large-shogi variant, 54 pieces a side of 35 types (2 more via promotion), DROP-LESS. Win by CAPTURING the enemy King. Keeps Dai Dai's flavour: the Lion double-steps, the Wolf (Lion Dog) makes up to three king-steps along a ray annihilating everything it passes, the Goblin is a bent Bishop and the Hook Mover a bent Rook (both reach anywhere in two legs), and the flanking Generals, Guards and Chariots move asymmetrically. Promotion is by CAPTURE only -- a promotable piece that captures MUST promote (there is no promotion zone). No drops."
+}
