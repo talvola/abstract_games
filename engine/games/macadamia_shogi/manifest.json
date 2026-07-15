@@ -1,0 +1,14 @@
+{
+  "uid": "macadamia_shogi",
+  "name": "Macadamia Shogi",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "shogi", "large", "lion"],
+  "bgg_url": "https://www.chessvariants.com/rules/macadamia-shogi",
+  "description": "Macadamia Shogi: H. G. Muller's factor-two shrink of the historic Maka Dai Dai Shogi -- a 13x13 board, 48 pieces a side of 26 types with 11 more via promotion, DROP-LESS. Its defining twist is PROMOTION BY CAPTURE: a piece may promote (to a fixed form) only on the turn it captures, and promotion is FORCED when it captures an already-promoted piece. Capturing a Priest/Pirate turns the capturer into the game-dominating Saint/Ghost, so those pieces virtually never leave play. The Lion double-moves, the Wolf (Lion Dog) triple-moves and can annihilate three pieces at once, the Hook Mover and Capricorner make a 90-degree turn mid-slide, a King promotes to an all-powerful Emperor (Universal Leaper) and the Drunk Elephant to a second King. Win by capturing ALL enemy royals."
+}
