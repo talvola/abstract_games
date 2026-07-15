@@ -6,7 +6,94 @@ universe map and capability gaps live in `GAME_BACKLOG.md`; this file is the
 
 ---
 
-## ⭐ SESSION HANDOFF (read this first) — updated 2026-07-14
+## ⭐ SESSION HANDOFF (read this first) — updated 2026-07-15
+
+### ✅ TILING / POLYOMINO PHASE — SHIPPED (2026-07-15, `12633b9`) → **301 games**, #299–301
+Erik asked to look at Zillions' "Tiling games" theme (66 submissions, theme=30).
+**Scouting verdict: that theme is a DEAD END — but it pointed at a real gap.** All 66
+enumerated (the `offset` param silently drops the theme filter; you must POST the form
+with `zilligames_gam_criteria=props&1,30&offset&N&…`). Breakdown: **55 are SOLITAIRE
+puzzles**, ~60 of 66 are by ONE author (Karl Scherer — already in this file's REJECTS
+list from an earlier pass); of the 11 tagged 2-player, Crosscram = Domineering (have),
+"Square The Rectangle Large Board" is mis-tagged, Sticks-3D needs a 3D board. Residue =
+8 thin 2003-era singles (Dipole + Africa University by Ingo Althöfer are the best; both
+need ZERO new primitives — see "leftovers" below).
+
+**Two structural findings worth keeping:**
+1. **Stick/rectangle games need NO new primitive** — a 1×n stick or a rectangle is
+   determined by TWO cells, so `"first>last"` is the existing domineering/cram path
+   model. Only free-form polyominoes needed a palette.
+2. **55/66 need `num_players=1`, which the platform has NEVER had** (0 games use it).
+   Lobby/bot/ratings/async all assume ≥2 seats. Erik was offered this and DECLINED in
+   favour of the polyomino palette. Solo-puzzle support remains an open platform
+   question, not a rejected one.
+
+**Erik picked: build the polyomino palette** → unlocked the real tiling classics.
+
+**NEW PRIMITIVE — `palette`** (SPEC.md has the full contract). Move `"KEY:o@c,r"`
+(= drop syntax + orientation index; `DROP_RE` untouched ⇒ Crazyhouse/Gobblet/Shogi
+byte-identical). UI derives orientations/anchors from `legal_moves` ALONE ⇒ **no server
+change** (enforced path is still `move in legal_moves`), same as drops. Per-seat trays
+below the board (2- and 4-seat alike), shape thumbnails, orientation strip, legal-anchor
+highlight, hovered ghost footprint.
+- **`palette.shared`** = ONE "Pool" tray in the mover's colour (Golomb). **Must be
+  explicit**: Blokus Duo's two SEPARATE 21-piece hands are byte-identical at move 1, so
+  auto-merging identical lists would silently wreck it.
+- **ANCHOR CONTRACT (hard requirement): every orientation contains `[0,0]`** — anchor =
+  bottom-most then left-most COVERED cell. **Do NOT normalise to the bbox corner** (a
+  plus-pentomino's corner is empty ⇒ you click a cell the tile doesn't occupy; observed
+  live: anchor (7,2) with the tile landing on 9,4–11,6). This bug came from the throwaway
+  reference probe and propagated to 2 of 3 games — a build agent caught it. Pinned by a
+  "REVERT anchor to bbox corner" mutation test. **Gotcha:** the covered anchor makes `dc`
+  NEGATIVE, so placement loops must bound BOTH sides (`range(-lo_c, W-hi_c)`); the naive
+  `range(W-max)` silently DROPS placements. Bit both blokus_duo and cathedral.
+
+**Shipped:** blokus_duo #299 (Tavitian 2005, 14×14, BGG 16395) · golomb_pentominoes #300
+(Golomb mid-1950s, 8×8, 12 free pentominoes SHARED pool) · cathedral #301 (Robert P.
+Moore **1979** not 1978, BGG 7, 10×10). Full suite green @301; all browser-verified.
+
+**ORACLES (reusable — this is the valuable residue):**
+- **Pentobi** = the reference Blokus engine (Enzenberger, GPL) and a *general* Blokus-family
+  oracle: `cmake -B build -DPENTOBI_BUILD_GTP=ON -DPENTOBI_BUILD_GUI=OFF` (**`pip install
+  cmake` into .venv — cmake is NOT installed and apt needs sudo**; GTP target needs no Qt).
+  CECP-ish GTP: `set_game blokus duo` (the FULL name — `duo` alone is rejected), `all_legal
+  b`, `play b e10,e11,…`, `final_score`. Colours: duo=`b`/`w`; classic=`1`/`blue`. Ground
+  truth captured: **Duo opening 414** `{1:1,2:4,3:18,4:76,5:315}`; **classic Blokus opening
+  58** `{1:1,2:2,3:5,4:13,5:37}` (for a future 4p blokus). Differential lives at
+  `games/blokus_duo/_diff_pentobi.py` (env `PENTOBI_GTP=…`; compares covered-CELL-SETS so
+  it's anchor-agnostic). Result: identical on 272+ positions over full games; `final_score`
+  25/25 **including the margin**; Pentobi's source confirms bonus 15/5 for the classic set.
+- **Orman 1996** (`library.slmath.org/books/Book29/files/orman.pdf`) gives Golomb anchors
+  **2308 / 296 / 1181 / 1197**, all independently re-derived. ⚠️ **1181 belongs to a LOSING
+  opening**; 1197 is the N-class minimum (the drawn Fig-3 placement is 1216 — a figure-vs-text
+  imprecision in the paper). "min 5 / max 12 game length" is **NOT in Orman** — folklore.
+- **Cathedral has NO oracle.** Its anchor is arithmetic (`2×47+6=100` tiles the board
+  exactly) + the rulesheet's SIX worked examples (page 3 figure, no text layer → `pdftoppm`
+  and READ the figures). The only public Python impl (elliottower/cathedral-rl) is **BROKEN**
+  on chirality (Abbey==AbbeyFlipped) — do not copy it.
+
+**Rule traps banked:** Blokus and Cathedral have **OPPOSITE reflection rules** — Blokus
+allows flips (21 = exactly the FREE polyomino count; one-sided would be 29), Cathedral is
+**rotation-only**, which is *why* its Abbey/Academy are chiral. Cathedral rule 4's "corner to
+corner contact is not acceptable" ⇒ **buildings bound 4-connected, space floods 8-connected**
+(note 4) — *this*, not the chirality, is the real trap. Cathedral **rule 7 publishes an
+explicit DRAW**; **Wikipedia drops that clause and is wrong**. Blokus rulebooks are silent on
+ties ⇒ honest draw (Pentobi itself reports `"0"`; 5.7% of random games tie).
+
+**LEFTOVERS / next candidates (deduped):**
+- **blokus (4p, 20×20)** — the obvious next one: template off `blokus_duo` (we have >2-seat
+  seating + 4 colours), corners are colour-assigned, anchor = **58** opening moves from
+  Pentobi (`set_game blokus`, `all_legal 1`). Scoring identical (15/5). ~1 agent.
+- **Blokus Trigon** (polyiamonds) — Pentobi supports it (`set_game blokus trigon`) but needs a
+  triangular board primitive; scope before building.
+- From the Zillions theme, if ever wanted: **Dipole** + **Africa University** (Althöfer 2003;
+  both need ZERO new primitives — `board.tints` + 2-cell path + random setup, all shipped),
+  then Area / Square Down / Sticks For Two / Sticks-Dia / Sticks Ortho (Scherer, thin).
+  Match for Two would need the palette. **Quality bar caveat:** these are 2003 Zillions
+  experiments, well below the Freeling/Duncan/Silverman/Muller bar we've been holding.
+- **Cathedral open interpretations** (documented in its rules.md, worth revisiting if a
+  source surfaces): whether "your first move" means the first *building*; whether your OWN
+  buildings count toward "two or more"; mandatory-capture.
 
 ### ✅ SHOGI PHASE — wave 1 SHIPPED (2026-07-14) → **294 games**, #293–294 + 1 option
 Erik picked the SHOGI PHASE (model note: orchestrator on Opus 4.8 1M; build/QA agents
