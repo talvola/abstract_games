@@ -26,7 +26,10 @@ def test_package_selftests():
         proc = subprocess.run(
             [sys.executable, str(st.relative_to(ENGINE))],
             cwd=str(ENGINE), env={"PYTHONPATH": str(ENGINE), "PATH": __import__("os").environ.get("PATH", "")},
-            capture_output=True, text=True, timeout=120,
+            # Hang guard, not a perf gate: the heaviest anchors (shatar's 300
+            # playouts ~3.5min without CPU turbo) must still pass on a
+            # power-throttled laptop.
+            capture_output=True, text=True, timeout=360,
         )
         assert proc.returncode == 0, f"{st.parent.name}/selftest.py failed:\n{proc.stdout}\n{proc.stderr}"
 

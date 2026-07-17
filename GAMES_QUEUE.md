@@ -6,7 +6,81 @@ universe map and capability gaps live in `GAME_BACKLOG.md`; this file is the
 
 ---
 
-## ⭐ SESSION HANDOFF (read this first) — updated 2026-07-16
+## ⭐ SESSION HANDOFF (read this first) — updated 2026-07-17
+
+### ▶▶ IN PROGRESS: TRADITIONAL/REGIONAL WAVE (2026-07-17) — Ming Mang + kin (Erik pick)
+Three scouts complete (Ming Mang / Latrunculi+Gonu / broad regional sweep). **BATCH 1
+SHIPPED → 311 games: ming_mang #309 (`e9ac8b7`, deep-QA MERGE 0-fixes, 5.83M-comparison
+differential 0-mismatch) + ludus_latrunculorum #310 (`4beff3c`, MERGE-WITH-FIXES doc-only,
+103k-ply differential 0-mismatch, leaflet figures transcribed twice independently) + shax
+#311 (`0ff34c6`, MERGE-WITH-FIXES doc-only, 400-game geometric-oracle differential
+0-mismatch; QA UPGRADED the no-jare interpolation to source-supported via Davies'
+"Varieties of shax" passage). All three browser-verified (boards render, moves play).
+Batch-1 lessons: Shax's PDF author is Rick DAVIES 1988, not Jama (build corrected the
+brief); Locus Ludi leaflet ≠ Ludii encoding in 4 places (leaflet wins, divergences
+documented in rules.md).** NEXT = BATCH 2: jul_gonu + choko + sahkku (briefs below).
+
+**Batch-1 condensed briefs (full detail in scout reports; sources override):**
+- **ming_mang** (confidence B — consensus reconstruction; Shotwell shows only 2 period
+  sources, interpretations documented): n×n square, setup = full near file + interior of
+  adjacent rank per seat (2n−2 stones on board + 2n−2 reserve; 8×8→14, 9×9→16, 17×17→32);
+  rook moves; ACTIVE custodial capture, all 4 directions at once, runs of ≥1; captured
+  stones **CONVERTED to capturer's colour** (board population constant — the game's
+  identity); moving into a sandwich safe; corner immunity EMERGENT (not a rule);
+  positional-superko move ban (Wikipedia); cannot-move loses (covers annihilation-by-
+  conversion + blockade); no-progress N-ply + hard cap → honest DRAW (jpn fortress flaw is
+  real — do NOT invent a material tiebreak). Options: size [8,9,17] (9="Gundru"),
+  last_stone_leap [off,on] (Lha-mo 1926, Ludii Gundru HopCapture; removal not conversion,
+  non-compulsory). Do NOT implement corner-turning capture (contested; document). BGG
+  40573. Ludii = "Gundru" DLP.Games.358 (their "Mig Mang" is our tibetan_go!). Anchors:
+  frozen rule positions (Wikipedia 3 multi-capture cases, conversion invariant, corner
+  immunity, superko probe, reached cannot-move loss), opening mobility counts, 180°-sym
+  probe. Distinct from mak_yek (no intervention capture, conversion, L setup)/seega/hasami.
+- **ludus_latrunculorum** (confidence A): ship Schädler's reconstruction as the Locus Ludi
+  "Seneca" playable form; option variant [seneca,piso]. 8×8, 20 pcs/side (16–24 agreed);
+  placement phase (anywhere, no captures) then: 1-step orth + multi-leap over OWN-colour
+  counters (leaflet; Piso = no leaps, immediate custodial); custodial trap → *incitus*
+  (flipped, passive), NEXT turn mover MUST remove a still-guarded trapped piece before
+  moving; corner trap; trapped attacker frees its victim; restricted no-suicide; no
+  back-and-forth shuttle of one counter. End: reduced-to-1 or blockade; winner = most
+  captures ⇒ honest DRAW on tie. NO dux (Kowalski/Bell dux = thin evidence — skip those
+  rulesets). Authoritative: locusludi.ch/wp-content/uploads/2022/08/LUDUS-LATRUNCULORUM_rules_GB.pdf
+  (+ Ludii `war/custodial/Ludus Latrunculorum.lud` 30+ rulesets; leaflet wins conflicts,
+  e.g. leap-over-own-only vs Ludii's any-piece). Render: incitus = piece fill/stroke
+  override (redstone/blooms precedent). BGG 21488 (merged Petteia entry). Anchors: leaflet
+  worked figures as selftest positions; optional one-time Ludii-jar differential.
+- **shax** (confidence A−): Somali morris, 24-point NO-diagonal morris board, 12 pcs each
+  → board FULL after placement; NO removals during placement — after placement, FIRST
+  player to have formed a mill removes one, then opponent removes one regardless; jare/
+  oodan rule: blocked player ⇒ opponent MUST open an intersection, freeing move forming a
+  mill removes NOTHING; NO flying; win = reduce to 2. Open point: no mill formed by anyone
+  in placement (some accounts restart) — resolve from sources + document. Authoritative:
+  Jama Musse Jama "An Introduction to Shax" PDF (mogadishuimages.wordpress.com) +
+  Wikipedia. BGG 63875. Template: nine_mens_morris infra.
+
+**Batch 2 queued (after batch 1 lands):** jul_gonu (A− — 4×4 Korean custodial, active-only,
+flank 1-or-2 run, win = reduce-to-1 or stalemate, no-repetition rule; ~3M states ⇒ FULL
+SOLVE anchor; BGG 96254; distinct from four_field_kono [same board, jump-capture]);
+choko (B+ — 5×5 empty start, drop-or-move, jump capture + FREE second removal from
+anywhere; Murray/Ludii over Wikipedia's phased version; morris two-stage removal encoding);
+sahkku (B+ — Sámi 3×15, shared convertible neutral king "gonagas", 3 stick dice X/II/III/
+blank, stacking + stack capture, mirrored tracks; ship Vuovdaguoika ruleset; Ludii
+DLP.Games.646 + Borvo BGS 4 (2001); daldos pattern for dice-in-state; DRAW at cap, don't
+copy daldos's ties→player-0). **Tail candidates:** puluc (B+ — Ludii/Bell track, prisoner-
+carrying via piece.stack), tab (B — 4×N boustrophedon, conversion via tâb throw, banked
+throws), dablot_prejjesne (B — rank-restricted jump capture, BGG 13777, board lattice needs
+pinning), bao_la_kiswahili (B flagship — de Voogt codification, Ludii "Bao Ki Arabu" + BGA
+live implementation as oracles; own solo slot), hobak_gonu (B small — Ludii .lud + trivial
+full solve), gala German farmers' chess (C+ — CVP Bodlaender; NOT ChessLike, bent moves +
+deflection lines; naming hazard: Ludii "Gala" is a DIFFERENT Sulawesi game), kolowis
+size-option on awithlaknannai (cheap, Culin 1907: 49 pts, 23 pcs, centre empty).
+**CLONE-SKIP/DEFER (recorded so they aren't re-scouted):** petteia (every reconstruction ⊂
+latrunculi/hasami space), umul-gonu (=pong_hau_ki), gonjil-gonu (=12-morris), pat-gonu
+(=kono), boseog-gonu + ja-jeon-geo-gonu (Ludii "uncertain history", thin), terhüchü +
+sholo-guti (alquerque cluster), buga-shadara (bagh_chal family), zamma/kharbaga (draughts
+mechanics, lattice-only novelty), patolli (gambling economy, below faithfulness bar),
+main_chator (thin vs makruk/sittuyin). Note: cyningstan + mlwi.magix.net were DOWN during
+scouting — don't rely on them; Wayback works.
 
 ### ✅ GO-VARIANTS WAVE COMPLETE (2026-07-16) → **308 games**, #304–308 + go option pack
 Erik picked the theme ("Go variants — OGS forum / govariants.com / Wikipedia"). Scouted
