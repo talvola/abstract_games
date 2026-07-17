@@ -1,0 +1,22 @@
+{
+  "uid": "keil",
+  "name": "Keil",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Luis Bolaños Mures (2019) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Territory",
+  "tags": ["go", "hex", "territory", "bolanos-mures", "capture", "komi-pie"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/295889/keil",
+  "options": {
+    "size": {
+      "choices": [4, 5, 6, 7],
+      "default": 5,
+      "label": "Board size (hexhex side)",
+      "labels": { "4": "Side 4 (37 points)", "5": "Side 5 (61 points)", "6": "Side 6 (91 points)", "7": "Side 7 (127 points — designer's sample game)" }
+    }
+  },
+  "description": "Go adapted to a hexagonal board (Luis Bolaños Mures, 2019). The LINKING rule weakens the hex grid's connectivity — two adjacent points only connect if a point adjacent to both matches one of them — which restores Go's crosscuts and ko. Liberty capture, no suicide, and a repetition rule over your own previous positions. Opens with a komi pie: Black names a whole komi, the opponent chooses sides; the half-point BUTTON (take it instead of a board play; passing is illegal until it's gone) makes ties impossible. Score = stones + linked territory."
+}
