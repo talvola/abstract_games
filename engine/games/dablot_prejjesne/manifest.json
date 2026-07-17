@@ -1,0 +1,25 @@
+{
+  "uid": "dablot_prejjesne",
+  "name": "Dablot Prejjesne",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Capture / annihilation",
+  "tags": ["dablot", "dablo", "sami", "lapland", "alquerque", "draughts", "ranked-capture", "traditional"],
+  "options": {
+    "captures": {
+      "choices": ["optional", "compulsory"],
+      "default": "optional",
+      "label": "Captures",
+      "labels": {
+        "optional": "Optional (Keyland 1921)",
+        "compulsory": "Compulsory (modern)"
+      }
+    }
+  },
+  "bgg_url": "https://boardgamegeek.com/boardgame/13777/dablot-prejjesne",
+  "description": "The Sami battle game from Frostviken, Lapland (recorded by Nils Keyland, 1921): a Sami king, prince and 28 warriors against a landlord, his son and 28 tenant farmers on a 72-point Alquerque-style lattice. All pieces step one point along a drawn line and capture by short jump with chains, but only an enemy of equal or lower rank may be taken. Capture everything or trap the opponent to win; two lone kings are a draw, and two lone equal-rank pieces must fight to the death in single combat."
+}
