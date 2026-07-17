@@ -6,7 +6,88 @@ universe map and capability gaps live in `GAME_BACKLOG.md`; this file is the
 
 ---
 
-## ⭐ SESSION HANDOFF (read this first) — updated 2026-07-15
+## ⭐ SESSION HANDOFF (read this first) — updated 2026-07-16
+
+### ✅ GO-VARIANTS WAVE COMPLETE (2026-07-16) → **308 games**, #304–308 + go option pack
+Erik picked the theme ("Go variants — OGS forum / govariants.com / Wikipedia"). Scouted
+by 3 parallel agents, built in 2 batches of 3, every package adversarially deep-QA'd
+(MERGE ×5), all browser-verified, `go` options probe-verified. Commits `7aae4ec` (batch 1),
+`44bb17d` (go options), `466688b` (redstone), `621d01a` (keil).
+- **kropki #304** — Russian/Polish Dots (Точки), СКСТ/zagram "no-territory" rules (three
+  sources CONVERGE: playdots.ru СКСТ + zagram + pointsgame/oppai-rs — no dialect risk).
+  8-conn chain / 4-conn interior, empty-base ("домик") mover-precedence exception,
+  liberation w/ score rollback, edge never encloses, ties = honest draw (СКСТ explicit).
+  Sizes 13/20(default)/25/39×32, cross/empty start. **ORACLE: pointsgame/oppai-rs** (Rust;
+  `~/.cargo/bin/cargo` — rustup installed this session, minimal profile). `_diff_oppai.py`
+  env-gated, emits its own Rust harness (`--write-harness`): build 80 games/10,731 moves
+  full-state 0-mismatch; QA fresh-seed 30 games incl. 39×32 + mid-game passes, 0-mismatch.
+  AGPL = oracle only, no code copied.
+- **sunjang_baduk #305** — historical Korean Go: 16-stone pinwheel setup + prescribed Black
+  tengen (17 pre-placed), WHITE moves first, ordinary Go in play ("ko and seki as in Japan"),
+  **Korean REMOVAL counting** (genuinely a third scoring family: classify regions TT-style →
+  remove non-wall stones, no removal may leave a friendly group in atari, cutting points OK →
+  count TERRITORY ONLY, prisoners ignored). Anchor: Bill Spight's SL 9×9 worked example —
+  post-removal board reproduced EXACTLY, B29/W31=W+2 (Chinese gives W+1 on the same position —
+  pinned as the not-area-scoring proof) + both ko variations. Komi option 0(default)/4.5.
+  Play-inside-own-territory is FREE under this scoring ⇒ play-it-out sound, bots fine.
+- **tibetan_go #306** — Fairbairn/GoGoD 2005 "New In Go" ruleset (the Shotwell conflicts
+  DISSOLVE: proximity rule rejected by the primary source; Wikipedia's 40+10 pts = NIG's
+  20+5 zi, unit conversion). 17×17, 12 "Bo" stones on the 3rd line, White first, Chinese
+  scoring + bonuses (all four 1-1s in one area → +40 pts; +10 more if same player has tengen),
+  **vacated-point ban**: after ANY capture the opponent may not play on the vacated points for
+  one move (subsumes simple ko; kills instant snapbacks); positional superko kept as documented
+  backstop. Anchor: 2005 Jiang Zhujiu–Yue Liang pro SGF embedded — 217-move full replay legal,
+  14 ban-active plies. Disambiguated from the unrelated custodial "Ming Mang".
+- **go option pack** (no count bump) — `handicap [0,2–9]` (fixed Japanese hoshi placement,
+  SL diagrams cross-checked vs OGS GobanEngine.ts EXACT; White moves first; komi choices
+  gain 0.5), `topology [normal,torus]` (all adjacency through the `_neighbors` choke point
+  wraps; caption flags it), `mode [normal,killall]` — **my brief had kill-all INVERTED;
+  build agent corrected per Sensei's/Dinerchtein**: White wins iff any White stone survives.
+  Backward-compat: new state keys serialized only when non-default; old live-DB payloads
+  deserialize to normal; default-game trace pinned by sha256 from pre-change HEAD.
+- **redstone #307** — Mark Steere 2012 annihilation Go: own placements NEVER capture; red
+  (shared, permanent) stones legal ONLY where they bound ≥1 group; ALL boundless groups
+  removed simultaneously INCL. the mover's own (unlike Go); annihilate enemy = win,
+  both-annihilated = MOVER wins (sheet text), no draws; pie rule = ply-2 swap. Sizes 7/9/13.
+  Move encoding `"c,r=black|white|red"` (Yodd-style always-suffixed choice ⇒ one-click UX +
+  picker only where both colours legal); red = ZÈRTZ piece fill/stroke override. Anchors:
+  all 5 rulesheet figures coordinate-exact (build + QA independent re-transcription, 0
+  discrepancies); QA from-scratch legality oracle 300 games/53.5k plies 0 diffs; no-move
+  backstop PROVEN unreachable. NOTE: Steere PDF **does** have a text layer (unlike his older
+  vector sheets). BGG 120533.
+- **keil #308** — Luis Bolaños Mures 2019, Go on hexhex cells via the LINKING rule ("two
+  adjacent points link iff a common neighbour matches one of them in type") — restores
+  crosscuts/ko on 6-connectivity; liberties/territory over LINKS; restricted positional
+  superko over ONE'S OWN end-of-turn positions (button state distinguishes); komi-pie as
+  in-game moves (`komi=0..12` buttons → `black`/`white` side choice) + half-point button ⇒
+  no ties once taken. Sizes hexhex 4–7 (default 5). **SOURCE ARBITRATION: SL = BGG = MindSports
+  (designer-current) supersede the 2019 L19 thread, whose wording is a DIFFERENT predicate.**
+  Anchors: QA differential vs independent implementation of the SL sentence (115,200 link
+  checks, 0 mismatches); scoped-vs-full capture equivalence proven + fuzzed. BGG 295889.
+
+**Wave lessons:** (1) Traditional/regional variants (Sunjang, Tibetan) pinned down cleanly
+once the PRIMARY source chain was chased — the "contested reconstruction" fear pattern
+(maka_dai_dai) did NOT recur; a played-out pro game SGF is a superb full-ruleset anchor.
+(2) My briefs were wrong twice (kill-all winner inverted; kropki liberation overstated) —
+the sources-override-brief standing order caught both. (3) A komi-pie protocol models
+cleanly as discrete non-cell action moves (13 buttons render fine).
+
+**GO SEAM NOW DRAINED at the quality bar.** Shipped go-family total: go(+handicap/torus/
+killall), atari_go, nogo, gonnect, sygo, tanbo, rosette, lotus, irensei, renju, slither,
+blooms, kropki, sunjang_baduk, tibetan_go, redstone, keil. Scouted + REJECTED/DEFERRED:
+Phantom/One-Colour/Batoo/Lighthouse (hidden info — platform disqualified), Parallel/
+Fractional (simultaneous), Rengo/Pair (team), Environmental (auction), Medusa (Freeling —
+BUILDABLE w/ Dagaz oracle but compound place-and-move-all-groups turns + end-of-game
+dead-stone adjudication = both platform pain points, designer files it under "miscellany";
+LOW priority, brief exists in this session's scout report), Margo/Spargo (Cameron Browne,
+nestorgames PDF confirmed — needs a NEW square-pyramidal 3D-stacking render primitive,
+orchestrator-owned Board.jsx work), Tibetan bonus variants (Shotwell's rejected rules),
+Keima Go / TriGo / Alak / Stoical Go (thin; Stoical would be a `ko_rule` option on go if
+ever wanted), govariants.com experimentals (Drift/Freeze/Pyramid/Tetris/Thue-Morse/Rizoma —
+no pedigree). **NEXT WAVE NEEDS A FRESH THEME (Erik pick).** Possible directions surfaced
+in scouting: a "traditional/regional games" wave (Ming Mang custodial, more historical
+regionals), or the deferred render-primitive investments (Margo/Spargo 3D stacking; solo
+puzzle support for num_players=1, previously offered and declined).
 
 ### ✅ BLOKUS FAMILY COMPLETE (2026-07-15, `df96acc`) → **303 games**, #302–303
 Erik: "continue with 4-player Blokus or others you pick". Shipped **blokus #302** (4p,
