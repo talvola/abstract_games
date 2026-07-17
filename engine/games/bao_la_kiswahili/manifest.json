@@ -1,0 +1,26 @@
+{
+  "uid": "bao_la_kiswahili",
+  "name": "Bao la Kiswahili",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "AGP",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Mancala",
+  "tags": ["mancala", "sowing", "capture", "four-row", "square", "abstract",
+           "zanzibar", "tanzania", "east-africa", "traditional"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/14186/bao",
+  "options": {
+    "variant": {
+      "choices": ["kiswahili", "kujifunza"],
+      "default": "kiswahili",
+      "label": "Ruleset",
+      "labels": {
+        "kiswahili": "Bao la Kiswahili (master game)",
+        "kujifunza": "Bao la Kujifunza (beginners)"
+      }
+    }
+  },
+  "description": "Bao la Kiswahili, the Zanzibari / East-African four-row Mancala — widely held to be the deepest traditional mancala in the world. Introduce seeds one by one (namua), capture the opposite front-row pit and re-enter the loot at a head pit (kichwa), guard your house (nyumba) and unleash it at the right moment (safari). Empty your opponent's front row or leave them without a move to win. De Voogt master rules; a beginners' ruleset (kujifunza) is included as an option."
+}
