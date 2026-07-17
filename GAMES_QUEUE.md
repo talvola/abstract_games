@@ -6,9 +6,55 @@ universe map and capability gaps live in `GAME_BACKLOG.md`; this file is the
 
 ---
 
-## ⭐ SESSION HANDOFF (read this first) — updated 2026-07-17
+## ⭐ SESSION HANDOFF (read this first) — updated 2026-07-17 (wave tail shipped)
 
-### ▶▶ IN PROGRESS: TRADITIONAL/REGIONAL WAVE (2026-07-17) — Ming Mang + kin (Erik pick)
+### ✅ TRADITIONAL/REGIONAL WAVE COMPLETE (2026-07-17) → **319 games**, #309–319 + kolowis option
+**WAVE TAIL SHIPPED (batches 3+4, same day): 6 items → 319 games, all deep-QA'd +
+browser-verified + committed.** kolowis option on awithlaknannai (`8d6e468` — size
+[25,49]; Culin 49-pt serpent, 23 men/side, centre + BOTH middle-row end points empty
+[3 empties, not 1 — the brief undercounted]; geometry parameterized, default game
+trace-identical to HEAD over 10 seeded games) + **puluc #315** (`9f160bd`, QA MERGE
+0-fixes — Verbeeck/Wikipedia mapping [4 corn dice, blanks=5, ONE throw/turn],
+REVERSE-and-carry piles [brief's "continue forward" was wrong], free-run returns to
+hand, track 9/14/21; Sapper/Ludii divergences documented; BGG 13745) + **tab #316**
+(`8a99600`, QA MERGE 0-fixes — Lane 1836 pp.346-349 read VERBATIM as primary; banked
+throw chains spent any order, tâb-only conversion foremost-first, shared middle loop +
+once-only enemy-row detour w/ entry-requires-enemies + freeze/'eggeh exception, whole-
+pile capture, unite/tâb-split =ALL/=ONE via existing choiceNames, row-reduction; QA
+re-derived successor tables from Lane's letters for ALL 5 sizes both seats 0-mismatch;
+BGG 119436) + **hobak_gonu #317** (`1b548c1`, QA MERGE 0-fixes — 11-pt/14-edge pumpkin
+graph from Ludii .lud + nol2i figures; one-way home-row FUNNEL [nol2i's win diagram
+REFUTES Ludii's own free-slide encoding]; invasion option closed(default)/trap; FULL
+SOLVE both variants root=DRAW [2,278 / 15,972 states, max win 20/22] matching namu.wiki;
+QA reproduced the solve EXACTLY + 18,250-state full-graph differential 0-mismatch) +
+**dablot_prejjesne #318** (`bdcfbb3`, QA MERGE 0-fixes — Keyland-1921/Ludii 72-pt
+triangulated 6×7 lattice [42 vertices+30 centres, 191 segments, 316 jump triples] ALL
+independently re-derived 0-mismatch; equal-or-lower rank captures; captures option
+optional(Keyland default)/compulsory(modern); two-lone-kings draw + trapped-loses +
+forced single-combat; 96.8% optional-mode random draw rate PROVEN a random-agent
+artifact [71% decisive compulsory, 2/3 MCTS]; BGG 13777) + **bao_la_kiswahili #319**
+(`d2547a6`, flagship, QA MERGE-WITH-FIXES notation/doc-only — de Voogt master rules:
+namua/mtaji, kichwa/kimbi capture re-entry, first-lap-decides + 16-seed rule, takasa
+restrictions, nyumba tax/stop/safari, takasia w/ exceptions, never-ending-sowing CYCLE
+DETECTOR; anchors = ~12 Game Cabinet diagrams pit-for-pit [2 published typos found] +
+MW Puzzles 1-3 incl. de Voogt's 22-ply never-ending move — measured minimal period 228,
+MW's "218" caption PROVEN impossible under every state projection; QA fixed
+describe_move's classical notation against all 10 published notated moves + added
+Puzzle-1/2 anchors; 640-game sweep, rules engine 0 fixes; kujifunza option; BGG 14186).
+**Wave-tail lessons:** (1) browser check caught what QA can't — bao's =L/=R picker leaked
+Board.jsx's default chess CHOICE_NAMES ("Rook") until render() supplied choiceNames;
+option/=CHOICE games must ship choiceNames when letters collide with promo letters.
+(2) The kill-by-port one-liner can silently fail mid-chain — verify "port free" before
+trusting a restart, else the browser exercises STALE code. (3) A flagship's pre-written
+numeric claims (bao's "period 218" prose) can contradict its own selftest — QA's
+independent measurement, not the source's caption, is the authority. (4) 5 of 6 QA
+verdicts were 0-fix MERGEs — the build-brief + sources-override + adversarial-QA
+pipeline is mature. **CLONE-SKIP CORRECTION: "pat-gonu (=kono)" was a misID — BGG
+411418 "Pat Gonu" IS Hobak Gonu (now shipped #317).** Remaining tail: only **gala**
+(C+ hard — CVP Bodlaender bent moves + deflection lines; naming hazard: Ludii "Gala" is
+a different Sulawesi game) stays deferred. **NEXT WAVE NEEDS A FRESH THEME (Erik pick).**
+
+### ▸ Wave log: TRADITIONAL/REGIONAL WAVE batches 1–2 (2026-07-17) — Ming Mang + kin (Erik pick)
 Three scouts complete (Ming Mang / Latrunculi+Gonu / broad regional sweep). **BATCH 1
 SHIPPED → 311 games: ming_mang #309 (`e9ac8b7`, deep-QA MERGE 0-fixes, 5.83M-comparison
 differential 0-mismatch) + ludus_latrunculorum #310 (`4beff3c`, MERGE-WITH-FIXES doc-only,
@@ -97,8 +143,8 @@ full solve), gala German farmers' chess (C+ — CVP Bodlaender; NOT ChessLike, b
 deflection lines; naming hazard: Ludii "Gala" is a DIFFERENT Sulawesi game), kolowis
 size-option on awithlaknannai (cheap, Culin 1907: 49 pts, 23 pcs, centre empty).
 **CLONE-SKIP/DEFER (recorded so they aren't re-scouted):** petteia (every reconstruction ⊂
-latrunculi/hasami space), umul-gonu (=pong_hau_ki), gonjil-gonu (=12-morris), pat-gonu
-(=kono), boseog-gonu + ja-jeon-geo-gonu (Ludii "uncertain history", thin), terhüchü +
+latrunculi/hasami space), umul-gonu (=pong_hau_ki), gonjil-gonu (=12-morris), ~~pat-gonu
+(=kono)~~ [WRONG — Pat Gonu BGG 411418 = Hobak Gonu, shipped #317], boseog-gonu + ja-jeon-geo-gonu (Ludii "uncertain history", thin), terhüchü +
 sholo-guti (alquerque cluster), buga-shadara (bagh_chal family), zamma/kharbaga (draughts
 mechanics, lattice-only novelty), patolli (gambling economy, below faithfulness bar),
 main_chator (thin vs makruk/sittuyin). Note: cyningstan + mlwi.magix.net were DOWN during
