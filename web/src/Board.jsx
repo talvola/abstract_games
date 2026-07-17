@@ -833,7 +833,7 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
         <div className="actions-bar">
           {actions.map((a) => (
             <button key={a} className="action-btn" onClick={() => onMove(a)}>
-              {ACTION_LABELS[a] || a}
+              {(spec.actionNames || {})[a] || ACTION_LABELS[a] || a}
             </button>
           ))}
         </div>

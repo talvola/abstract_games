@@ -252,10 +252,16 @@ clash with `>`). The web UI derives click-to-move from this:
 - Multi-step paths (`"a>b>c"`) are supported too (e.g. chained captures).
 - **Non-cell action moves** (a legal move that isn't a cell path, e.g. `"swap"`
   for the pie rule, or `"pass"`) render as a labelled button below the board.
+  The button shows the raw move string unless the game supplies a friendly
+  label via `spec["actionNames"] = {"<move>": "<label>", …}` in `render()`
+  (e.g. Hostage Chess maps `"exchange:Q-N"` → "Exchange Q hostage → rescue N");
+  a handful of common strings (`pass`, `swap`, …) have built-in labels.
 - **Moves needing a choice** (e.g. pawn promotion): append `"=CHOICE"` to the
   move, e.g. `"2,4>2,5=Q"` / `"=R"` / `"=N"`. When a clicked destination matches
   several moves differing only by that suffix, the UI shows a small picker of
-  the choices. (`CHOICE` is shown via a friendly name for `Q/R/N/B/K/P`.)
+  the choices. (`CHOICE` is shown via a friendly name for `Q/R/N/B/K/P`;
+  override or extend with `spec["choiceNames"] = {"<letter>": "<label>", …}`
+  when a choice letter means something other than a promotion piece.)
 
 - **Polyomino placement** (a tile covering several cells at once): the move is
   `"KEY:o@c,r"` — see `palette` below.
