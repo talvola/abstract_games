@@ -1,0 +1,33 @@
+{
+  "uid": "kropki",
+  "name": "Kropki (Dots)",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Territory",
+  "tags": ["dots", "paper-and-pencil", "encirclement", "territory", "classic", "russian", "polish"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/26067/kropki",
+  "options": {
+    "size": {
+      "choices": ["13x13", "20x20", "25x25", "39x32"],
+      "default": "20x20",
+      "label": "Board size",
+      "labels": {
+        "13x13": "13×13",
+        "20x20": "20×20",
+        "25x25": "25×25",
+        "39x32": "39×32 (notebook page)"
+      }
+    },
+    "start": {
+      "choices": ["cross", "empty"],
+      "default": "cross",
+      "label": "Starting position",
+      "labels": { "cross": "Central cross", "empty": "Empty board" }
+    }
+  },
+  "description": "The traditional Russian/Polish paper-and-pencil game of Dots (Точки/Kropki). Place dots on grid intersections and capture the opponent's dots by enclosing them in an unbroken chain of your own (diagonals connect). Captured areas are painted and dead; encircling a captured area back frees your dots. Most captures wins."
+}

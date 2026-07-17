@@ -1,0 +1,14 @@
+{
+  "uid": "tibetan_go",
+  "name": "Tibetan Go (Mig-mang)",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Territory",
+  "tags": ["go", "territory", "capture", "traditional", "tibet", "variant"],
+  "bgg_url": "https://senseis.xmp.net/?TibetanGo",
+  "description": "The traditional Tibetan form of Go (mig-mang), per John Fairbairn's 2005 GoGoD account: 17x17 board, a fixed 12-stone third-line setup, White moves first, and one special rule — you may never play immediately on a point just vacated by a capture (kos, snapbacks and throw-ins must all wait one move). Chinese area scoring, komi 0, with a +20 zi bonus for controlling all four corner 1-1 points and +5 zi more for the centre."
+}

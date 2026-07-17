@@ -1,0 +1,22 @@
+{
+  "uid": "sunjang_baduk",
+  "name": "Sunjang Baduk",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Territory",
+  "tags": ["go", "baduk", "territory", "capture", "korean", "historic", "variant"],
+  "bgg_url": "https://senseis.xmp.net/?SunjangBaduk",
+  "options": {
+    "komi": {
+      "choices": [0, 4.5],
+      "default": 0,
+      "label": "Komi (White compensation)",
+      "labels": { "0": "none (traditional)", "4.5": "4.5 (mid-20th century)" }
+    }
+  },
+  "description": "The historical Korean form of Go, played until ~1950: a fixed 17-stone opening setup (8 White, 8 Black on the marked guard points, plus Black's prescribed tengen stone), White moves first, and Korean removal counting — interior stones are stripped down to the minimal boundary walls and only the empty territory points count (prisoners ignored, stones do not score). In-game rules are ordinary Go."
+}
