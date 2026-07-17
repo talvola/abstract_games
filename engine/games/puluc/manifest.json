@@ -1,0 +1,26 @@
+{
+  "uid": "puluc",
+  "name": "Puluc",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": true,
+  "hidden_info": false,
+  "category": "Race",
+  "tags": ["race", "dice", "running-fight", "traditional", "maya", "mesoamerican", "guatemala"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/13745/puluc",
+  "options": {
+    "track": {
+      "choices": [9, 14, 21],
+      "default": 9,
+      "label": "Track length",
+      "labels": {
+        "9": "9 spaces (Bell / Sapper 1906 — standard)",
+        "14": "14 spaces (fifteen-kernel boards)",
+        "21": "21 spaces (long board)"
+      }
+    }
+  },
+  "description": "Puluc (Bul, Boolik): the Maya / Q'eqchi' running-fight game of Guatemala, traditionally played the night before sowing maize. Both armies of 5 run in opposite directions along ONE shared track of corn-kernel gaps, moving by four binary corn dice (black faces up = 1-4, all plain = 5). Land exactly on an enemy to capture its whole pile: it stacks beneath you and you turn around, dragging your prisoners home — reach your end to kill them for good and re-enter. But land on a carrier and the entire pile changes hands, freeing your own captives to ride home with you. Kill all five enemy pieces to win."
+}
