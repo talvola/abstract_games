@@ -1,0 +1,27 @@
+{
+  "uid": "ludus_latrunculorum",
+  "name": "Ludus Latrunculorum",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Traditional (Roman); reconstruction Ulrich Schädler / Locus Ludi; module by Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Capture / annihilation",
+  "tags": ["latrunculi", "roman", "traditional", "custodial", "square", "placement", "petteia"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/21488",
+  "options": {
+    "variant": {
+      "choices": ["seneca", "piso"],
+      "default": "seneca",
+      "label": "Variant",
+      "labels": { "seneca": "Seneca (trap, then remove)", "piso": "Piso (immediate capture)" }
+    },
+    "pieces": {
+      "choices": [16, 20, 24],
+      "default": 20,
+      "label": "Counters per player"
+    }
+  },
+  "description": "The Roman 'game of little soldiers', as reconstructed by Ulrich Schädler and published in playable form by the Locus Ludi project. Players first drop all their counters on an empty 8×8 board, then step them orthogonally (Seneca variant: also draughts-style leaps over own counters), capturing by enclosing an enemy counter between two of their own. In the Seneca variant a surrounded counter is first immobilised ('incitus') and only removed at the start of the captor's next turn — and is set free if one of its two guards is itself trapped. Most captures wins."
+}
