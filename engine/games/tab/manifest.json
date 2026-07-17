@@ -1,0 +1,21 @@
+{
+  "uid": "tab",
+  "name": "Tâb",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": true,
+  "hidden_info": false,
+  "category": "Race",
+  "tags": ["race", "dice", "running-fight", "traditional", "egyptian", "arab", "roll-and-move"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/119436/tab",
+  "options": {
+    "size": {
+      "choices": [7, 9, 11, 13, 15],
+      "default": 9,
+      "label": "Columns per row"
+    }
+  },
+  "description": "Tâb, the Middle-Eastern 'running-fight' dice-war game — the root of the tâb/sîg family — in the ruleset Edward Lane recorded in 1820s Cairo. Four stick dice throw 1 ('tâb'), 2, 3, 4 or 6; a 1, 4 or 6 earns another throw, and the whole banked chain is then spent in any order. Each piece is a dead 'Christian' until a tâb converts it to a 'Muslim'; converted pieces run your home row, then loop the two middle rows forever, with a once-only raid through the enemy's home row. Land on enemy pieces to capture the whole pile; land on your own to build a stack that moves as one, splits only with a tâb, and is cut to a single piece if it doubles back. Capture ALL enemy pieces to win."
+}
