@@ -1,0 +1,34 @@
+{
+  "uid": "sahkku",
+  "name": "Sáhkku",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": true,
+  "hidden_info": false,
+  "category": "Race",
+  "tags": ["race", "dice", "running-fight", "traditional", "sami", "roll-and-move"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/401910/sahkku",
+  "options": {
+    "pattern": {
+      "choices": ["vuosttut", "miedut"],
+      "default": "vuosttut",
+      "label": "Movement pattern",
+      "labels": {
+        "vuosttut": "Vuosttut — armies meet head-on (standard)",
+        "miedut": "Mieđut — armies chase each other"
+      }
+    },
+    "blocking": {
+      "choices": ["on", "off"],
+      "default": "on",
+      "label": "Own-army blocking",
+      "labels": {
+        "on": "May not jump own soldiers (standard)",
+        "off": "Jumping own soldiers allowed (agreed variant)"
+      }
+    }
+  },
+  "description": "Sáhkku, the Sámi 'running-fight' dice game (the 'Devil's game'), in the Vuovdaguoika ruleset — the branch with unbroken living transmission. Three stick dice faced X('sáhkku')/II/III/blank (blank moves FOUR) drive 15 soldiers per side around mirrored tracks: your home row, the middle row, then the enemy's row — never home again. An X activates your frontmost sleeping soldier or nudges a piece one line. Land exactly on an enemy soldier — awake or asleep — to capture it. The shared KING starts on the central Castle: land on it to recruit it to your army (pushing it one line ahead, ramming any enemy standing there); it can never be captured, only recruited back. Remove ALL enemy soldiers to win."
+}
