@@ -1,0 +1,14 @@
+{
+  "uid": "glinski_chess",
+  "name": "Gliński's Hexagonal Chess",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Władysław Gliński (1936) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["hex", "chess", "variant"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/19432/hexagonal-chess",
+  "description": "The classic hexagonal chess variant, invented by Władysław Gliński in 1936 and once played by half a million people. 91 hexes, three bishops on the three cell colours, nine pawns, a 12-direction queen — and stalemate scores 3/4-1/4 instead of a draw."
+}
