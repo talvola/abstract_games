@@ -152,6 +152,10 @@ class GrantAcedrex(ChessLike):
         "U": ([], []),             # Unicorn -- knight-hop then diagonal slide
     }
     HEAVY = ("P", "R", "C", "A", "U", "L", "G")   # everything but the lone king
+    # The Giraffe MOVES as a (3,2) zebra, so the movement-derived icon would show
+    # a striped zebra; pin the giraffe image (and the unicorn's, whose compound
+    # geometry is invisible to the derivation).
+    ICONS = {"G": "giraffe", "U": "unicorn"}
     PAWN = StandardPawn(white_start=3, black_start=8, double=False)
     PROMOTION = FilePromotion()
     CASTLING = KingLeap()      # no castling; this only adds the king's first-move leap

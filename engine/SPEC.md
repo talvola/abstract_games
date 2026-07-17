@@ -185,6 +185,24 @@ also applied to reserve-tray chips); a variant that reuses a *standard* letter f
 a non-standard piece can set `PIECESET = None` to opt out. New families can register
 their own set in `web/src/Board.jsx` (`PIECE_GLYPHS`).
 
+**Piece-level `"icon": "<name>"`** — a *real piece image* (recolourable SVG from
+`web/src/pieceImages.js`, drawn in the seat colours) for fairy pieces that have no
+Unicode glyph. An icon takes precedence over the pieceset glyph, so don't emit one
+for a standard `K Q R B N P` label; an unknown icon name harmlessly falls back to
+the label. Available names: `chancellor, archbishop, amazon, centaur, mann, ferz,
+wazir, alfil, dabbaba, champion, wizard, zebra, giraffe, unicorn, dragon`.
+`ChessLike` derives icons automatically from MOVEMENT (letters collide across
+variants): rook+knight → chancellor, bishop+knight → archbishop, queen+knight →
+amazon, and exact leap-set matches for the pure leapers/steppers (ferz, wazir,
+non-royal king-mover → mann, alfil, dabbaba, zebra, giraffe, champion = WAD,
+wizard = ferz+camel, centaur = king+knight). A game can pin or suppress icons
+per letter with a class-level `ICONS = {"G": "giraffe", "X": None}` override —
+use it when a piece's *name* and its *movement* point at different images
+(grand_acedrex's Giraffe moves as a zebra) or for compound/custom generators the
+derivation can't see. Missing an image you need (camel, hawk, cannon, …)? That's
+an orchestrator-level addition to `pieceImages.js` — note it, don't hand-edit
+web/src from a game build.
+
 `board.extent: [minX, minY, w, h]` pins the SVG viewBox to a fixed window
 instead of fitting the current cells — use it for a **shrinking board** (ZÈRTZ:
 emit only the rings that still exist as `cells`; removed rings then leave a gap

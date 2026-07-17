@@ -34,6 +34,29 @@ WHITE, BLACK = 0, 1
 _ORTHO_DIRS = {(1, 0), (-1, 0), (0, 1), (0, -1)}
 _DIAG_DIRS = {(1, 1), (1, -1), (-1, 1), (-1, -1)}
 _KNIGHT_OFFS = {(1, 2), (2, 1), (-1, 2), (-2, 1), (1, -2), (2, -1), (-1, -2), (-2, -1)}
+_KING_OFFS = frozenset(_ORTHO_DIRS | _DIAG_DIRS)
+_FERZ_OFFS = frozenset(_DIAG_DIRS)
+_WAZIR_OFFS = frozenset(_ORTHO_DIRS)
+_ALFIL_OFFS = frozenset({(2, 2), (2, -2), (-2, 2), (-2, -2)})
+_DABBABA_OFFS = frozenset({(2, 0), (-2, 0), (0, 2), (0, -2)})
+_CAMEL_OFFS = frozenset({(1, 3), (3, 1), (-1, 3), (-3, 1), (1, -3), (3, -1), (-1, -3), (-3, -1)})
+_ZEBRA_OFFS = frozenset({(2, 3), (3, 2), (-2, 3), (-3, 2), (2, -3), (3, -2), (-2, -3), (-3, -2)})
+_GIRAFFE_OFFS = frozenset({(1, 4), (4, 1), (-1, 4), (-4, 1), (1, -4), (4, -1), (-1, -4), (-4, -1)})
+# Pure leapers/steppers, keyed by their EXACT leap set -> icon name in
+# web/src/pieceImages.js. Movement-keyed like the compound table in
+# ``_piece_icon`` so letters stay variant-local.
+_LEAPER_ICONS = {
+    _FERZ_OFFS: "ferz",
+    _WAZIR_OFFS: "wazir",
+    _KING_OFFS: "mann",                                # non-royal king-mover
+    _ALFIL_OFFS: "alfil",
+    _DABBABA_OFFS: "dabbaba",
+    _ZEBRA_OFFS: "zebra",
+    _GIRAFFE_OFFS: "giraffe",
+    frozenset(_WAZIR_OFFS | _ALFIL_OFFS | _DABBABA_OFFS): "champion",   # Omega Chess
+    frozenset(_FERZ_OFFS | _CAMEL_OFFS): "wizard",                      # Omega Chess
+    frozenset(_KING_OFFS | _KNIGHT_OFFS): "centaur",
+}
 
 ORTHO = [(1, 0), (-1, 0), (0, 1), (0, -1)]
 DIAG = [(1, 1), (1, -1), (-1, 1), (-1, -1)]
@@ -330,6 +353,11 @@ class ChessLike(Game):
     # other letters fall back to the letter. A variant that reuses a STANDARD
     # letter for a non-standard piece can set ``PIECESET = None`` to opt out.
     PIECESET = "chess"
+    # Per-letter icon overrides ({letter: icon-name-or-None}) checked before the
+    # movement-derived mapping in ``_piece_icon``. Icon names must exist in
+    # web/src/pieceImages.js (unknown names harmlessly fall back to the letter);
+    # map a letter to None to suppress a derived icon.
+    ICONS: dict = {}
     PAWN: PawnRules = None
     PROMOTION: PromotionRules = None
     CASTLING: Castling = NoCastling()
@@ -701,19 +729,27 @@ class ChessLike(Game):
         letter. Keyed on MOVEMENT (not the letter, which collides across variants:
         "M" is a Chancellor here but a Met/ferz in Makruk, an Amazon in Maharajah).
         chancellor = rook-rays+knight, archbishop = bishop-rays+knight,
-        amazon = queen-rays+knight."""
+        amazon = queen-rays+knight; pure leapers/steppers via ``_LEAPER_ICONS``.
+        ``ICONS`` overrides per letter; standard-glyph letters (KQRBNP) are left
+        to the Unicode pieceset (an icon would shadow the glyph in the UI)."""
+        if t in self.ICONS:
+            return self.ICONS[t]
+        if self.PIECESET and t in "KQRBNP":
+            return None
         slides, leaps = self.PIECES.get(t, ((), ()))
         sl, lp = set(slides), set(leaps)
-        if not _KNIGHT_OFFS <= lp:
+        if sl:
+            if not _KNIGHT_OFFS <= lp:
+                return None
+            ortho, diag = _ORTHO_DIRS <= sl, _DIAG_DIRS <= sl
+            if ortho and diag:
+                return "amazon"
+            if ortho:
+                return "chancellor"
+            if diag:
+                return "archbishop"
             return None
-        ortho, diag = _ORTHO_DIRS <= sl, _DIAG_DIRS <= sl
-        if ortho and diag:
-            return "amazon"
-        if ortho:
-            return "chancellor"
-        if diag:
-            return "archbishop"
-        return None
+        return _LEAPER_ICONS.get(frozenset(lp))
 
     def render(self, state, perspective=None) -> dict:
         pieces = []
