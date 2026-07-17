@@ -3,16 +3,21 @@
 There is no published perft for this game; the anchor is a set of baked rule
 assertions covering the serpent-lattice board, the 12v12 start with an empty
 centre, line-adjacency, a hand-built jump-capture and a multi-jump chain, and the
-two win conditions (annihilation / opponent stuck)."""
+two win conditions (annihilation / opponent stuck). The 49-point Kolowis
+Awithlaknannai size option is probed separately (Culin 1907: 17+16+16 points,
+23 men each, centre + both middle-row end points empty)."""
 import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from games.awithlaknannai.game import (  # noqa: E402
-    Awithlaknannai, AState, ADJ, POINTS, MID, TOP, BOT, CENTRE, WHITE, BLACK,
+    Awithlaknannai, AState, geom, WHITE, BLACK,
 )
 
 G = Awithlaknannai()
+G25 = geom(25)
+ADJ, POINTS, CENTRE = G25.adj, G25.points, G25.centre
+MID, TOP, BOT = G25.mid, G25.top, G25.bot
 
 
 def main():
@@ -30,6 +35,7 @@ def main():
 
     # ---- start: 12v12, only the centre empty -----------------------------
     s = G.initial_state()
+    assert s.size == 25
     assert sum(1 for v in s.board.values() if v == WHITE) == 12
     assert sum(1 for v in s.board.values() if v == BLACK) == 12
     assert CENTRE not in s.board, "centre starts empty"
@@ -81,6 +87,61 @@ def main():
 
     # ---- serialize round-trip --------------------------------------------
     assert G.serialize(G.deserialize(G.serialize(st2))) == G.serialize(st2)
+    # legacy payloads (no "size" key) must deserialize to the 25-point game,
+    # and default-size payloads must not gain a "size" key
+    d = G.serialize(st2)
+    assert "size" not in d
+    assert G.deserialize(d).size == 25
+
+    # ---- Kolowis Awithlaknannai (size 49) --------------------------------
+    g49 = geom(49)
+    assert len(g49.points) == 49
+    assert len(g49.mid) == 17 and len(g49.top) == 16 and len(g49.bot) == 16
+    for (x, y) in g49.top + g49.bot:
+        assert g49.adj[(x, y)] == {(x - 1, 1), (x + 1, 1)}, (x, y)
+    k = G.initial_state(options={"size": 49})
+    assert k.size == 49
+    # Culin setup: 23 men each; centre (16,1) and the two middle-row end
+    # points (0,1)/(32,1) empty; outer rows full.
+    assert sum(1 for v in k.board.values() if v == WHITE) == 23
+    assert sum(1 for v in k.board.values() if v == BLACK) == 23
+    assert len(k.board) == 46
+    for empty in [(0, 1), (16, 1), (32, 1)]:
+        assert empty not in k.board, empty
+    assert all(p in k.board for p in g49.top + g49.bot)
+    # halves: white on the low-x middle points, black on the high-x ones
+    assert all(k.board[(x, 1)] == WHITE for x in range(2, 16, 2))
+    assert all(k.board[(x, 1)] == BLACK for x in range(18, 32, 2))
+    # opening moves are steps along drawn lines only
+    ms = G.legal_moves(k)
+    assert ms and all(len(m.split(">")) == 2 for m in ms)
+    for m in ms:
+        a, b = m.split(">")
+        pa = tuple(map(int, a.split(",")))
+        pb = tuple(map(int, b.split(",")))
+        assert pb in g49.adj[pa], m
+    # a capture on the big board, and size survives apply_move + round-trip
+    st = AState(board={(0, 1): WHITE, (2, 1): BLACK}, to_move=WHITE, size=49)
+    assert G.legal_moves(st) == ["0,1>4,1"]
+    st2 = G.apply_move(st, "0,1>4,1")
+    assert st2.size == 49 and st2.winner == WHITE
+    rt = G.deserialize(G.serialize(st2))
+    assert rt.size == 49 and G.serialize(rt) == G.serialize(st2)
+    # render advertises the big lattice
+    spec = G.render(k)
+    assert len(spec["board"]["cells"]) == 49 and len(spec["pieces"]) == 46
+
+    # ---- random playouts terminate on both sizes -------------------------
+    import random
+    for size, n_games in ((25, 40), (49, 15)):
+        rng = random.Random(20260717 + size)
+        for _ in range(n_games):
+            st = G.initial_state(options={"size": size})
+            while not G.is_terminal(st):
+                st = G.apply_move(st, rng.choice(G.legal_moves(st)))
+            total = len(st.board)
+            assert total <= (24 if size == 25 else 46)
+            assert G.returns(st) in ([0.0, 0.0], [1.0, -1.0], [-1.0, 1.0])
 
     print("SELFTEST OK")
 

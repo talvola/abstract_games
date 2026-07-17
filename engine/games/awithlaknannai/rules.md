@@ -55,6 +55,21 @@ with no legal move** on their turn. To guarantee termination, the game is drawn
 after 50 plies with no capture, by threefold repetition of a position, or at a
 hard ply cap.
 
+## The 49-point board — Kolowis Awithlaknannai
+
+The **Board** option selects the long serpent, *Kolowis Awithlaknannai*
+("fighting serpents", after the mythical serpent Kolowis), described by Stewart
+Culin in *Games of the North American Indians* (1907):
+
+- **17 middle points, 16 outer points per row — 49 points** in total, the same
+  triangulated lattice as above, just longer.
+- Each player has **23 men**: the whole of their outer row (16) plus **seven**
+  points of their half of the middle row. **Three points start empty**: the
+  centre of the middle row **and both end points of the middle row** (unlike the
+  25-point game, where the ends are occupied and only the centre is empty).
+- All movement, capture, winning and draw rules are identical; the hard ply cap
+  is doubled for the bigger board.
+
 ## Notation
 
 A move is a `>`-separated path of points, shown as `a-b` for a step and
@@ -63,9 +78,10 @@ A move is a `>`-separated path of points, shown as `a-b` for a step and
 ## Ruleset notes / choices made
 
 - **Board size.** Awithlaknannai Mosona is the **12-piece, 25-point** member of
-  the serpent family (its larger sibling *Kolowis Awithlaknannai* uses 49 points
-  and 23 pieces). Sources agree on 9 middle + 8 + 8 = 25 points and 12 men a
-  side with only the centre empty; that is what is implemented.
+  the serpent family; its larger sibling *Kolowis Awithlaknannai* (49 points,
+  23 pieces) is available via the **Board** option. Sources agree on
+  9 middle + 8 + 8 = 25 points and 12 men a side with only the centre empty;
+  that is what is implemented.
 - **End "curve" lines.** Some diagrams draw a curved line wrapping each end of
   the board. In this triangulated topology the end middle point is already joined
   to both of its outer neighbours, so no extra adjacency is needed and none is

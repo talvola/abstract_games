@@ -1,14 +1,25 @@
 {
   "uid": "awithlaknannai",
   "name": "Awithlaknannai Mosona",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "engine_api": "1",
   "author": "Abstract Games factory",
   "players": { "min": 2, "max": 2 },
   "has_randomness": false,
   "hidden_info": false,
   "category": "Capture / annihilation",
-  "tags": ["awithlaknannai", "zuni", "alquerque", "fighting-serpents", "traditional"],
+  "tags": ["awithlaknannai", "kolowis", "zuni", "alquerque", "fighting-serpents", "traditional"],
+  "options": {
+    "size": {
+      "choices": [25, 49],
+      "default": 25,
+      "label": "Board",
+      "labels": {
+        "25": "25 points (Awithlaknannai Mosona)",
+        "49": "49 points (Kolowis Awithlaknannai)"
+      }
+    }
+  },
   "bgg_url": "https://en.wikipedia.org/wiki/Awithlaknannai_Mosona",
-  "description": "A Zuni 'fighting serpents' game in the Alquerque family, played on an elongated serpent lattice of 25 points (a strip of triangles). Step along a line, or jump an adjacent enemy draughts-style; captures are compulsory and chain. Capture all the enemy to win."
+  "description": "A Zuni 'fighting serpents' game in the Alquerque family, played on an elongated serpent lattice of 25 points (a strip of triangles). Step along a line, or jump an adjacent enemy draughts-style; captures are compulsory and chain. Capture all the enemy to win. The size option selects Kolowis Awithlaknannai, Culin's long 49-point board with 23 men per side."
 }
