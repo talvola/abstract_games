@@ -1,0 +1,14 @@
+{
+  "uid": "jul_gonu",
+  "name": "Jul-Gonu",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Traditional (Korea) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Capture / annihilation",
+  "tags": ["gonu", "korea", "korean", "traditional", "custodial", "capture"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/96254/jul-gonu",
+  "description": "Jul-Gonu (줄고누, 'line gonu'), a traditional Korean custodial-capture game on a 4x4 board. Four pieces each start on the players' back ranks; a piece steps one point orthogonally, and no move may recreate any earlier position. Capture is active custodial: after your move, one or two enemy pieces sandwiched in an unbroken row/column line between the moved piece and another friendly piece are removed (moving into a sandwich is safe; a row and a column capture can both fire at once). Win by reducing the opponent to a single piece or stalemating them. Exhaustively analysed: without the repetition ban the game is a draw — the anti-repetition rule is what forces a decision."
+}
