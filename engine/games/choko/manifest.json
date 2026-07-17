@@ -1,0 +1,14 @@
+{
+  "uid": "choko",
+  "name": "Choko",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Capture / annihilation",
+  "tags": ["square", "capture", "west-africa", "drops", "traditional"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/380039/choko",
+  "description": "Choko, a traditional stick game from the Gambia River valley (Mandinka/Fula). Drop 12 men on a 5x5 board or move them one step orthogonally; jump an adjacent enemy to capture it AND remove a second enemy man of your choice. Its signature is the drop initiative: whenever you place a man by choice, your opponent must answer with a placement. Capture all enemy men to win."
+}
