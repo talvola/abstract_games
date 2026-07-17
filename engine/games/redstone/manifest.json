@@ -1,0 +1,22 @@
+{
+  "uid": "redstone",
+  "name": "Redstone",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Mark Steere (2012); module by Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Capture / annihilation",
+  "tags": ["go", "square", "capture", "annihilation", "placement", "steere", "pie-rule"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/120533/redstone",
+  "options": {
+    "size": {
+      "choices": [7, 9, 13],
+      "default": 9,
+      "label": "Board size",
+      "labels": { "7": "7×7", "9": "9×9", "13": "13×13" }
+    }
+  },
+  "description": "Mark Steere's draw-free Go variant (2012): all captures are made with shared, permanent red stones. A red stone may only be placed if it bounds a group; every bounded group — yours included — is removed at once. No passing, no ko, no draws: annihilate the enemy army to win. Pie rule for balance."
+}
