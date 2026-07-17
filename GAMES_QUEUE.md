@@ -18,7 +18,29 @@ differential 0-mismatch) + ludus_latrunculorum #310 (`4beff3c`, MERGE-WITH-FIXES
 "Varieties of shax" passage). All three browser-verified (boards render, moves play).
 Batch-1 lessons: Shax's PDF author is Rick DAVIES 1988, not Jama (build corrected the
 brief); Locus Ludi leaflet ≠ Ludii encoding in 4 places (leaflet wins, divergences
-documented in rules.md).** NEXT = BATCH 2: jul_gonu + choko + sahkku (briefs below).
+documented in rules.md).** **BATCH 2 SHIPPED → 314 games: jul_gonu #312 (`126883a`,
+QA MERGE-WITH-FIXES doc-qualifier-only — FULL SOLVE anchor: 3,412,738 states/21.0M edges,
+ban-free ROOT = cycle-bound DRAW [the pre-solve draft claimed a 1st-player win — the
+orchestrator caught the contradiction when the solver finished after the agent stopped;
+honest scoping enforced: superko value path-dependent/open]; QA independently REPRODUCED
+every solver count + 3.4M-state fixpoint audit 0 violations + 700-game differential
+0-mismatch) + choko #313 (`b68cd01`, QA MERGE 0-fixes, 640-game differential
+byte-identical; DISTINCT from yote via the drop-initiative rule [voluntary drop forces
+opponent's next turn = drop], Parker∪Murray union documented, BGG 380039) + sahkku #314
+(`4849e8d`, QA MERGE-WITH-FIXES — QA caught a REAL bug: the king may JUMP own soldiers
+[Wikipedia Vuovdaguoika verbatim], build had blocked it; 300-game/69k-state differential
+0-errors; Vuovdaguoika attribution triple-checked — Ludii encodes a DIFFERENT Friis-style
+ruleset, not an oracle here; no-stacking correctly Vuovdaguoika). All browser-verified
+(sahkku sleepers = daldos dot-glyph convention, activation renders a disc).
+Batch-2 lessons: (1) a build agent's background solver can finish AFTER the agent stops —
+check disk + solve.log, SendMessage-resume the agent to reconcile pre-written claims vs
+actual results (rules.md had optimistic placeholders); (2) Wikipedia section placement
+(which regional ruleset a sentence sits in) is load-bearing — QA verified rule-by-rule
+against raw wikitext.** WAVE TAIL OPTIONS (Erik or next session): puluc + tab (both
+running-fights, would reuse daldos/sahkku dice patterns + piece.stack), dablot_prejjesne
+(board lattice needs pinning), hobak_gonu (nearly-free full solve), kolowis option on
+awithlaknannai (cheap), bao_la_kiswahili (flagship solo slot w/ BGA differential), gala
+(C+ hard render). Or call the wave complete at 6 games.
 
 **Batch-1 condensed briefs (full detail in scout reports; sources override):**
 - **ming_mang** (confidence B — consensus reconstruction; Shotwell shows only 2 period
