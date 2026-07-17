@@ -1,0 +1,25 @@
+{
+  "uid": "avalanche_chess",
+  "name": "Avalanche Chess",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "AGP",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "variant"],
+  "bgg_url": "https://www.chessvariants.com/mvopponent.dir/avalanche.html",
+  "options": {
+    "variant": {
+      "choices": ["standard", "balanced"],
+      "default": "standard",
+      "label": "Variant",
+      "labels": {
+        "standard": "Standard (White pushes from move 1)",
+        "balanced": "Balanced (no White push on move 1)"
+      }
+    }
+  },
+  "description": "Ralph Betza's 1977 classic, a top-5 favourite of the NOST postal chess-variant circuit and a chessvariants.com Recognized Variant. Orthodox chess with a twist: after your regular move you MUST also push one enemy pawn a square forward — toward you, and toward its promotion rank. Pushing a pawn that leaves your own king in check loses instantly, even if your move gave mate; a pawn you push to the last rank promotes to a piece of its OWNER's choosing. No en passant. Includes Castelli's Balanced variant (no White push on move 1)."
+}
