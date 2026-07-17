@@ -1,0 +1,14 @@
+{
+  "uid": "shax",
+  "name": "Shax",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Positional",
+  "tags": ["mill", "somali", "traditional", "morris", "placement", "movement"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/63875/shax",
+  "description": "The Somali national mill game (also jare/jar). Each player places 12 men until the 24-point board is completely full - mills formed while placing capture nothing, but the FIRST mill ('jare') wins priority: its owner removes an enemy man first, the opponent removes one too, and the jare-maker moves first. Then slide men to form mills and capture. No flying; a blocked player is never lost - the opponent must free them ('jid i sii aan jar aheyn'), capturing nothing even if the freeing move mills. Reduce the opponent to two men to win."
+}
