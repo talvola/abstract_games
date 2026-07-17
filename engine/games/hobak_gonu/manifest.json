@@ -1,0 +1,25 @@
+{
+  "uid": "hobak_gonu",
+  "name": "Hobak Gonu",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Traditional (Korea) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Positional",
+  "tags": ["gonu", "korea", "korean", "traditional", "blockade", "pumpkin", "hobak"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/411418/pat-gonu",
+  "options": {
+    "invasion": {
+      "choices": ["closed", "trap"],
+      "default": "closed",
+      "label": "Opponent's home row",
+      "labels": {
+        "closed": "Closed (cannot enter)",
+        "trap": "One-way trap (enter, never leave)"
+      }
+    }
+  },
+  "description": "Hobak Gonu (호박고누, 'pumpkin gonu'), a traditional Korean blockade game on an 11-point pumpkin-shaped board: a circle with an internal cross plus a three-point home row for each player. Three pieces each; a piece steps along a line to an empty point. Home rows are one-way funnels: endpoints feed the middle, the middle feeds the circle, and no piece may ever step back onto a home point (in the default ruleset the opponent's row is closed entirely; the 'trap' variant lets a piece enter the opponent's middle point and never leave). A player who cannot move loses; a repeated position is a draw. Fully solved: both rulesets are a draw under perfect play."
+}
