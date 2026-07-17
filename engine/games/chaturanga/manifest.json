@@ -1,0 +1,14 @@
+{
+  "uid": "chaturanga",
+  "name": "Chaturanga",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "AGP",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "historic"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/18011/chaturanga",
+  "description": "Chaturanga, the ancient Indian ancestor of chess (~6th-7th century A.D.), on an 8x8 board. The four arms of the Indian army: Ratha (chariot/rook), Ashva (horse/knight), Gaja (elephant, leaping exactly two squares diagonally) and Padati (foot-soldier: one square forward, no double step, promoting only to a Mantri), plus the Raja (king) and his Mantri (minister, one square diagonally). The Rajas do not face each other (White e1, Black d8). No castling, no en passant. Win by checkmate or by baring the enemy king outright; uniquely, a STALEMATED player WINS (per the Murray/Golombek reconstruction). White (player 0) moves first."
+}
