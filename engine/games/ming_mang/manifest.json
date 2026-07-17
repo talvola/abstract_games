@@ -1,0 +1,32 @@
+{
+  "uid": "ming_mang",
+  "name": "Ming Mang",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "AGP (traditional Tibetan; also Mig-mang, Gundru)",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Capture / annihilation",
+  "tags": ["square", "custodial", "conversion", "tibet", "traditional"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/40573/ming-mang",
+  "options": {
+    "size": {
+      "choices": [8, 9, 17],
+      "default": 8,
+      "label": "Board size",
+      "labels": {
+        "8": "8×8 (chessboard)",
+        "9": "9×9 (Gundru board)",
+        "17": "17×17 (traditional)"
+      }
+    },
+    "last_stone_leap": {
+      "choices": ["off", "on"],
+      "default": "off",
+      "label": "Last-stone leap (Lha-mo 1926)",
+      "labels": { "off": "Off", "on": "On" }
+    }
+  },
+  "description": "Ming Mang (Mig-mang; also called Gundru), the Tibetan custodial-CONVERSION game — not the Go variant that shares its name (see Tibetan Go). Each side starts with 2n-2 stones along two adjacent board edges and moves like a rook. Sandwich an unbroken enemy line between two of your stones and the whole line CONVERTS to your colour in place, Reversi-style — the board population never changes. Moving into a sandwich is safe; a move may not repeat any earlier position; a player who cannot move loses. Win by converting every enemy stone or blockading the opponent. Options: board size (8×8, 9×9 Gundru, 17×17 traditional) and the Rin-chen Lha-mo 1926 rule giving a player's LAST stone a draughts-style capture leap."
+}
