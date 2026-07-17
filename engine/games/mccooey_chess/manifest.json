@@ -1,0 +1,14 @@
+{
+  "uid": "mccooey_chess",
+  "name": "McCooey's Hexagonal Chess",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Dave McCooey & Richard Honeycutt (1978-79) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["hex", "chess", "variant"],
+  "bgg_url": "https://www.chessvariants.com/hexagonal.dir/hexchess2.html",
+  "description": "The 'closest hexagonal equivalent to real chess': the 91-hex board of Glinski's game, but pawns capture diagonally like orthodox pawns, each side has seven pawns all exactly seven hexes from promotion, the centre pawn is denied the double step, and stalemate is an honest draw."
+}
