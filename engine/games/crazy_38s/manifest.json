@@ -1,0 +1,14 @@
+{
+  "uid": "crazy_38s",
+  "name": "Crazy 38's",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Ben Good (1998) — AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "variant", "drops", "shogi"],
+  "bgg_url": "https://www.chessvariants.com/38.dir/crazy/crazy38s.html",
+  "description": "Crazy 38's (Ben Good, 1998), a Recognized Chess Variant entered in Hans Bodlaender's 38-square challenge. Standard-ish chess/shogi pieces (King, Rook, Bishop, Knight, plus custom Silver and Gold generals and short-range Pawns) battle on a knotted 38-diamond board whose curved 'tip' cells create a loop-effect for the sliding pieces. Captured pieces switch sides and may be dropped back like shogi. Win by checkmate or by marching your King onto the opponent's home square."
+}

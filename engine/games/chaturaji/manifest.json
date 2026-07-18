@@ -1,0 +1,22 @@
+{
+  "uid": "chaturaji",
+  "name": "Chaturaji",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 4, "max": 4 },
+  "has_randomness": true,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "historic", "4-player", "dice"],
+  "bgg_url": "https://www.chessvariants.com/historic.dir/chaturang4.html",
+  "options": {
+    "dice": {
+      "choices": ["on", "off"],
+      "default": "on",
+      "label": "Dice",
+      "labels": { "on": "With dice (historical)", "off": "Diceless (free move)" }
+    }
+  },
+  "description": "Chaturaji — Chaturanga for four players (medieval India, ~10th c.), the four-handed dice-chess reconstructed by Cox and Forbes and recorded by Murray. Four corner armies of King, Rook/Elephant, Knight/Horse, Boat (a 2-square diagonal leaper) and four Pawns move clockwise: Red, Green, Yellow, Black. Two long dice (2-5) pick which arm may move (2=Boat, 3=Knight, 4=Rook, 5=King/Pawn) for up to two moves a turn. No check or checkmate — kings are captured like any man and you score by the value of the pieces you take (King 5, Rook 4, Knight 3, Boat 2, Pawn 1); four boats in a 2x2 square capture the other three. Take all three enemy kings with your own alive to sweep the board. A diceless free-move variant is available."
+}
