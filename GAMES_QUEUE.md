@@ -6,7 +6,41 @@ universe map and capability gaps live in `GAME_BACKLOG.md`; this file is the
 
 ---
 
-## ⭐ SESSION HANDOFF (read this first) — updated 2026-07-17 (wave tail shipped)
+## ⭐ SESSION HANDOFF (read this first) — updated 2026-07-17b (Recognized-Chess-Variants wave IN PROGRESS)
+
+### 🔄 RECOGNIZED-CHESS-VARIANTS WAVE (2026-07-17, Erik pick) → 328 games so far, #320–328 committed
+Source list = chessvariants.com "Recognized Chess Variants" (~50 distinct; 27 were already in
+the library — dedup map in the session log). **Erik also asked for real piece IMAGES over bare
+letters** → shipped orchestrator capability `491afce`: pieceImages.js 2→15 recolourable
+cburnett-style icons (amazon/centaur/mann/ferz/wazir/alfil/dabbaba/champion/wizard/zebra/
+giraffe/unicorn/dragon, Wikimedia CC), ChessLike movement-derived leaper icons + per-game
+`ICONS` override (~15 existing variants gained images free; grand_acedrex pins G=giraffe),
+SPEC.md "Piece-level icon" section; + `5b433f8` spec.actionNames (generic action-button
+labels, mirrors choiceNames). SHIPPED: **chaturanga #320** (`fd43fc3`, crossed kings,
+stalemated-player WINS, baring outright, perft+shatranj differential) · **glinski_chess #321**
+(`8bc496f`, first hex chess; perft 51/2586/137858 created + @bedard/hexchess differential
+19,708 pos 0-mismatch; stalemate ¾–¼ → payoffs [±0.5]; BGG 19432 corrected) ·
+**avalanche_chess #322** (`160ec6a`, QA MERGE 0-fixes on independent python-chess oracle;
+4-cell compound move + owner's standalone push-promotion =Q; self-check push = instant loss) ·
+**mccooey_chess #323** (`6f20c2b`, 7 of McCooey's own games strict-replayed; centre pawn no
+double-step; stalemate draw) · **hostage_chess #324** (`c693f3e`, QA MERGE 0 bugs; two-ply
+exchange 'exchange:H-L' action + forced tray drop, actionNames labels; browser-verified full
+cycle) · **rococo #325** (`0b216b6`, QA MERGE doc-fix only; ZRF-anchored; edge ring, 25-move
+opening, uniqueness probe 5,689 pos clean) · **raumschach #326** (`7cb2a54`, 5×5×5 alice-style
+5-board polygons; Q+K triagonal verdicts sourced; unicorn icon; perft 61/3608/236510) ·
+**circular_chess #327** + **pocket_mutation_chess #328** (`ba21824`, annulus polygons w/
+double_step option + QA-MERGE 18-piece mutation table). IN FLIGHT (opus agents): smess,
+magnetic_chess, crazy_38s builds. REMAINING BUILDABLE: chess_different_armies (CwDA, big),
+flip_chess, dragonchess (3×8×12), chaturanga_4 (4-player+dice). DEFERRED: kriegspiel (hidden
+info), bughouse (2-board team), star-trek 3D (movable boards), chessapeak (obscure).
+OPS: Fable session cap killed 5 agents mid-flight at ~4:45pm → ALL relaunched clean on
+model:opus (no partials survived — killed builds had written nothing). Backend gotcha
+confirmed again: registry tolerates partial packages (server catches per-package).
+QA pattern this wave: ChessLike fast-path for perft-anchored simple variants; adversarial
+deep-QA agent (independent source fetch incl. ZRFs/engines) for every custom-logic game —
+verdicts so far 3× MERGE-0-fixes, 1× doc-only fix.
+
+## (prior handoff below) — updated 2026-07-17 (wave tail shipped)
 
 ### ✅ TRADITIONAL/REGIONAL WAVE COMPLETE (2026-07-17) → **319 games**, #309–319 + kolowis option
 **WAVE TAIL SHIPPED (batches 3+4, same day): 6 items → 319 games, all deep-QA'd +
