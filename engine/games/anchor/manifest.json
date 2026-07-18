@@ -1,0 +1,29 @@
+{
+  "uid": "anchor",
+  "name": "Anchor",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Steven Meyers (2000) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "pie": true,
+  "category": "Territory",
+  "tags": ["hex", "territory", "go-variant", "placement", "scoring", "pie-rule"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/23235/anchor",
+  "options": {
+    "size": {
+      "choices": [6, 7, 8],
+      "default": 8,
+      "label": "Board side length",
+      "labels": { "6": "Base-6 (91 hexes)", "7": "Base-7 (127 hexes)", "8": "Base-8 (169 hexes, standard)" }
+    },
+    "pie": {
+      "choices": [true, false],
+      "default": true,
+      "label": "Pie (swap) rule",
+      "labels": { "true": "On", "false": "Off" }
+    }
+  },
+  "description": "Steven Meyers' hexagonal territory game (Abstract Games magazine #5, 2001): Go-like scoring with life and death redefined. Place stones on the Havannah board; at the end a group lives only if it is an ANCHOR — connected to two sides of the board, where two adjacent sides count only if they meet at one of your three home corners. Dead stones are removed and score as prisoners; surround empty hexes for territory."
+}
