@@ -1,0 +1,14 @@
+{
+  "uid": "hexdame",
+  "name": "HexDame",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Christian Freeling (1979); AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Checkers & draughts",
+  "tags": ["hex", "draughts", "capture", "freeling"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/24697/hexdame",
+  "description": "International draughts on a hexagonal board (hexhex-5, 61 cells): 16 men each, men move forward in 3 directions but capture in all 6, flying kings, mandatory maximum capture, and a 9-cell promotion rank. By Christian Freeling (1979)."
+}
