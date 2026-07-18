@@ -1,0 +1,14 @@
+{
+  "uid": "smess",
+  "name": "Smess",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Reuben Klamer & Perry Grant (Parker Brothers, 1970)",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "commercial", "variant"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/1289/all-the-kings-men",
+  "description": "Smess: The Ninny's Chess (Reuben Klamer & Perry Grant, Parker Brothers 1970; republished as Take the Brain, and re-skinned in 1979 as All the King's Men). A 7x8 chess variant in which every square is printed with arrows: a piece may leave a square only in a direction that square's arrows point. Ninnies step one square, Numskulls ride any distance in a straight line, and the Brain steps one square. Capture the enemy Brain to win."
+}
