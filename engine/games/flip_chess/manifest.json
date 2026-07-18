@@ -1,0 +1,22 @@
+{
+  "uid": "flip_chess",
+  "name": "Flip Chess",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "John William Brown (1998) — AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "variant"],
+  "bgg_url": "https://www.chessvariants.com/38.dir/flip.html",
+  "options": {
+    "mode": {
+      "choices": ["chess", "shogi"],
+      "default": "chess",
+      "label": "Variant",
+      "labels": { "chess": "Flip Chess", "shogi": "Flip Shogi (drops)" }
+    }
+  },
+  "description": "Flip Chess (John William Brown, 1998; second prize in Hans Bodlaender's 38-square challenge). On a 7x6 board with its four corners removed (38 cells), every piece is a double-sided counter: a Pawn flips to a Berolina pawn, a Bishop to a Rook, a Ferz to a Knight, either at the close of its move or as a move in itself. Pawns promote to a non-royal Prince. Win by checkmate or by baring the enemy King. The 'Flip Shogi' option adds shogi-style drops (drop either side up; a drop must threaten an enemy piece; pawn drops stay in your first two ranks)."
+}
