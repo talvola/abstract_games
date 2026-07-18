@@ -1,0 +1,22 @@
+{
+  "uid": "onyx",
+  "name": "Onyx",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Larry Back (1995) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "pie": true,
+  "category": "Connection",
+  "tags": ["connection", "capture", "placement", "pie", "snub-square", "back"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/11375/onyx",
+  "options": {
+    "setup": {
+      "choices": ["official", "empty"],
+      "default": "official",
+      "label": "Setup"
+    }
+  },
+  "description": "Larry Back's connection game with a capture rule (1995), published in Abstract Games #4. On a 12x12 lattice of interlocking squares and triangles (204 points including the squares' midpoints), Black connects top-bottom and White left-right. A midpoint may only be taken while its square's four corners are all empty; completing a 2-vs-2 crosscut on a square whose midpoint is empty captures the two enemy stones (two squares at once = four). Official setup pre-places four stones per side; the second player may swap after the first move (pie rule)."
+}
