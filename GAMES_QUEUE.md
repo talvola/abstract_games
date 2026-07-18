@@ -6,9 +6,49 @@ universe map and capability gaps live in `GAME_BACKLOG.md`; this file is the
 
 ---
 
-## ⭐ SESSION HANDOFF (read this first) — updated 2026-07-18 (Abstract Games Magazine wave 1 COMPLETE → 339 games)
+## ⭐ SESSION HANDOFF (read this first) — updated 2026-07-18b (AG-magazine TIER-2 wave 2 COMPLETE → 343 games)
 
-### ✅ AG-MAGAZINE WAVE 1 COMPLETE (2026-07-18, Erik pick: "start with issue 1…") → **339 games**, #336–339
+### ✅ AG-MAGAZINE TIER-2 WAVE 2 COMPLETE (2026-07-18b) → **343 games**, #340–343
+Picked 4 from the pre-staged tier-2 list (rules printed in the magazine); all deep-QA'd +
+browser-verified + committed + pushed, one commit each:
+- **croda #340** (`31c4a26`) — Dedić 1995 orthogonal checkers (AG#9, Freeling's own article +
+  mindsports 508-croda); QA MERGE 0-fixes, 11,850-pos independent differential; BOTH magazine
+  problems anchored (QA found the official AG#10 p.12 solution to the AG#9 prize problem — added
+  to selftest). Designer corrected from brief (Dedić, not Freeling; BGG 19843).
+- **chase #341** (`dd11536`) — Kruszewski 1985 TSR dice-army 9×9 hex CYLINDER (AG#9 full rules);
+  ricochet/wrap/bump-chains/Chamber-splits/exchange + dist-phase for the owner-choice speed
+  redistribution; QA MERGE-WITH-FIXES (selftest diagram cell G3→G2; nestorgames CHASE_EN.pdf
+  2018, co-credited Kruszewski, settles bump-into-Chamber=illegal). 936 geometry checks +
+  38,598-ply full-reimplementation differential, 0 mismatches. Move encoding origin>step>dest.
+- **anchor #342** (`1e2ebd0`) — Meyers 2000 hexhex-8 territorial anchors (AG#5); home/away-corner
+  anchor rule, simultaneous dead-stone scoring; QA MERGE 0-fixes, 6,000-board/105,953-group
+  differential; **pie swap must recolour + CENTRALLY REFLECT** (home corners break plain-recolour
+  symmetry — proven automorphism). Documented: Fig 3's printed count overlooks a 3rd dead white
+  singleton (margin unchanged). BGG 23235.
+- **akron #343** (`018ffad`) — Browne 2002 3D marble stacking connection (AG#14 + Browne's
+  official v3.7 RTF + gamerz PBM via Wayback + igGC); over/under = edge-over-edge crossing
+  ownership (cut-of-cut RESTORES) + overhead column cuts; DELAYED win (v3.7 default supersedes
+  AG14's immediate); Pylos-style dynamic layered render. QA MERGE-WITH-FIXES (selftest-only):
+  2.85M+178k move-set comparisons 0 mismatches, Fig-6 level-2 white ball pixel-confirmed.
+  Ludii/Ai Ai do NOT have Akron. BGG 10889.
+**Wave-2 lessons:** (1) AG problem/solution pairs (often solved in the NEXT issue — check issue
+N+1) are gold anchors; (2) designer's later official rules supersede the magazine article
+(Akron v3.7 delayed win — same precedent as Rhode/Emulsion); (3) pie swap on colour-asymmetric
+boards needs the value-preserving automorphism, not recolour-in-place (anchor's central
+reflection joins rhode's transpose).
+**▶▶ NEXT (wave 3) — remaining tier-2 candidates (deduped, rules printed):** Take the Brain
+(i9 Klamer classic), Realm (i9 Mikulas — article says "complete rules", Orbanes/Sackson Gamut
+of Games), Lightning (i5 — 1890s Selchow tile-draw race, has_randomness, tile shapes need
+Fig-1 pixel-read), Hijara (i5), Chebache (i3 Pardee dice race), Octagons (i7), Pentagonia (i2),
+Strat (i4 15×30 Halma), MEM (i2 — "blocking" announce needs design decision), Phalanx (i11),
+Gle'x (i11), Orbit (i12), Domain (i12), Vai lung thlân (i12), Pagoda (i13), Layli Goobalay
+(i13), Ot-tjin (i14), Hi-Jack (i14), Sleeping Beauty Draughts (i14 Gering), Super Halma (i15
+variant), Mamba (i16), Selus/Sadéqa (i16). Larry Back Square/Head-Start Hex = possible hex
+options. Liubo defer (contested reconstruction). Issues 17–24 still unscouted (scout next if
+tier-2 thins). Magazine PDFs + per-issue .txt in the session scratchpad (re-extractable:
+abstractgames.org/uploads/1/1/6/4/116462923/abstract_games_issue_<N>.pdf, browser UA).
+
+### (prior handoff) ✅ AG-MAGAZINE WAVE 1 COMPLETE (2026-07-18, Erik pick: "start with issue 1…") → **339 games**, #336–339
 Source = Abstract Games magazine PDFs: `https://www.abstractgames.org/uploads/1/1/6/4/116462923/abstract_games_issue_<N>.pdf`
 (curl w/ browser UA; pdftotext works; diagrams via `pdftoppm -png -r 300`). Issues 1–16 scouted+deduped.
 **SHIPPED (all deep-QA'd + browser-verified, one commit each):**
