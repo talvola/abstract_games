@@ -6,7 +6,40 @@ universe map and capability gaps live in `GAME_BACKLOG.md`; this file is the
 
 ---
 
-## ⭐ SESSION HANDOFF (read this first) — updated 2026-07-17b (Recognized-Chess-Variants wave COMPLETE)
+## ⭐ SESSION HANDOFF (read this first) — updated 2026-07-18 (Abstract Games Magazine wave 1 COMPLETE → 339 games)
+
+### ✅ AG-MAGAZINE WAVE 1 COMPLETE (2026-07-18, Erik pick: "start with issue 1…") → **339 games**, #336–339
+Source = Abstract Games magazine PDFs: `https://www.abstractgames.org/uploads/1/1/6/4/116462923/abstract_games_issue_<N>.pdf`
+(curl w/ browser UA; pdftotext works; diagrams via `pdftoppm -png -r 300`). Issues 1–16 scouted+deduped.
+**SHIPPED (all deep-QA'd + browser-verified, one commit each):**
+- **jetan #336** (`2ad565b`) — ERB 1922 Martian chess, AG#6 "suggested standard" (Handscomb+Smith);
+  E@ escape via reserve chip; chief_rule option; QA MERGE 0-fixes (~700-position differential, mirror exact).
+- **salta #337** (`f115798`) — Büttgenbach 1899, AG#8 Gering; full 214-ply Krone–Grotewold 1901 replay,
+  A* re-derives the published "27 points"; QA MERGE doc-fix only (9,600-pos differential).
+- **hexdame #338** (`d92597c`) — Freeling 1979, mindsports; QA MERGE-WITH-FIXES — **REAL BUG: king
+  capture crossing its vacated origin mis-recorded the victim** (fixed+pinned); 15k-pos differential clean.
+- **onyx #339** (`b0312d0`) — Larry Back 1995, AG#4 = designer's own rules; 204-pt snub-square+midpoints
+  polygons board; QA MERGE 0-fixes (graph re-derived from diagram PIXELS; 60,501-pos differential).
+**Dedup map i1–16 (all others already existed):** i1 bashni/camelot/gipf/trax/lines_of_action/kyoto_shogi;
+i2 octi/twixt/congkak(=Congklak cover — clone-skip, 2×5 board = possible size option); i3 cathedral/
+phutball/epaminondas/grand_chess; i4 hostage/bao; i5 renju; i6 zertz/gonnect; i7 breakthrough/
+ludus_latrunculorum; i8 alice_chess/congo; i9 (none built yet — see tier 2); i10 raumschach/mahjong(4p—skip);
+i11 entropy/janggi/lasca/omweso; i12 unlur; i13 surakarta/emergo; i15 snort; i16 arimaa/amazons/tablut.
+**▶▶ NEXT WAVE PRE-STAGED — TIER 2 (rules printed in the magazine; pick ~4):** Chase (i9 FULL article —
+TSR 1986 cult classic, hex board, dice-value pieces, deterministic), Croda (i9, Freeling draughts variant,
+mindsports), MEM (i2, Hopfenberg pattern-matching — random full-board setup fine; "blocking" announce
+mechanic needs a design decision), Chebache (i3, Pardee dice race), Strat (i4, 15×30 Halma variant),
+Hijara (i5), Lightning (i5, 1890s pre-Hex connection game), Anchor (i5, Meyers hex-Go), Octagons (i7),
+Pentagonia (i2, nested-pentagon 15-man morris), Realm (i9 Mikulas), Take the Brain (i9), Phalanx (i11),
+Gle'x (i11), Orbit (i12), Domain (i12), Vai lung thlân (i12, Mizo traditional), Pagoda (i13),
+Layli Goobalay (i13, Somali), Akron (i14 Browne), Ot-tjin (i14), Hi-Jack (i14), Sleeping Beauty
+Draughts (i14 Gering), Super Halma (i15 variant), Mamba (i16), Selus/Sadéqa (i16 African warrior games).
+Also: Larry Back's Square Hex/Head Start Hex (i5 — possible options on hex). Liubo (i15) = contested
+reconstruction, likely defer. **STRUCTURALLY DEFERRED (hidden info):** Mentalis (i1), Plateau (i3),
+Bosworth (i2). Issues 17–24 not yet scouted. Scratchpad artifacts: ag_issue_{1..16}.txt + article_*.txt
+(re-extractable from the PDFs).
+
+## (prior handoff below) — updated 2026-07-17b (Recognized-Chess-Variants wave COMPLETE)
 
 ### ✅ RECOGNIZED-CHESS-VARIANTS WAVE COMPLETE (2026-07-17, Erik pick) → **335 games**, #320–335 (16 new)
 **Second half (#329–335, all deep-QA'd + browser-verified):** magnetic_chess #329 (`3236ee8`,
