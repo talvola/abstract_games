@@ -10,7 +10,12 @@ Anchors (official Parker Brothers rulebook + chessvariants.com board diagram):
   * arrow-direction enforcement (no move against the arrows);
   * Brain capture ends the game; two-Brains-only = draw; promotion on the
     opponent's Numskull squares only; deadlock generator returns no moves;
-  * serialize round-trip; random playouts terminate; heuristic shape.
+  * serialize round-trip; random playouts terminate; heuristic shape;
+  * the complete AG#9 Favel-Handscomb sample game (89 plies) + opening trap
+    replayed move-by-move (captures exactly on the ':' moves);
+  * a full 3,080-state Brain-vs-Brain retrograde solve asserting the exact
+    48 non-trivial forced-win classes (AG#9 puzzle p.29 prints 47 — see the
+    errata comment at test_brain_vs_brain_solver_anchor).
 """
 
 import os
@@ -38,7 +43,12 @@ def test_arrow_map_data():
     assert A(5, 3) == {"W"}, A(5, 3)                    # f4 = hand, left
     assert A(3, 3) == set(DIRS), A(3, 3)                # d4 = all 8
     assert A(3, 4) == set(DIRS), A(3, 4)                # d5 = all 8
-    assert A(1, 1) == {"N", "SE"}, A(1, 1)             # b2 (diagonal square)
+    # b2/f7 are right-angle ELBOWS, not diagonals — verified 2026-07-18 from
+    # AG#9 Diagram 1 at 600/1200 dpi AND chessvariants.com smess73.png: both
+    # sources draw b2 with a vertical N shaft + horizontal E shaft (compare
+    # b7/f2, whose NW/SE arrows have genuinely diagonal shafts).
+    assert A(1, 1) == {"N", "E"}, A(1, 1)              # b2 (elbow: up + right)
+    assert A(5, 6) == {"W", "S"}, A(5, 6)              # f7 (elbow: left + down)
     assert A(5, 1) == {"N", "W", "SE"}, A(5, 1)        # f2
     assert A(0, 7) == {"S", "E"}, A(0, 7)              # a8 corner
     assert A(2, 5) == {"NE", "NW", "SE", "SW"}, A(2, 5)  # c6 = 4 diagonals
@@ -222,6 +232,172 @@ def test_conformance_playouts():
         ret = g.returns(s)
         assert len(ret) == 2 and all(x in (-1.0, 0.0, 1.0) for x in ret)
         assert ret in ([1.0, -1.0], [-1.0, 1.0], [0.0, 0.0])
+
+
+# --------------------------------------------------------------------------
+# Anchor 1: full replay of the AG#9 sample game (Rob Favel vs Kerry
+# Handscomb, Abstract Games issue 9 p.8-9) plus the article's opening-trap
+# line. Every published move must be legal in the engine, and a capture must
+# occur exactly on the moves the article marks with ':' ('+' is annotation
+# only). The game ends 45.c6:e8 Resign — resignation, so the engine position
+# is NOT terminal; Blue still has his Brain (b8) plus two Ninnies. No move in
+# either line triggers the official Ninny promotion rule, so the magazine
+# score needs no reinterpretation under the full Parker Brothers rules.
+
+_AG9_GAME = (
+    "e2e3 a7a6 b2b3 a6b6 c2c3 c7c6 e3d4 e7e6 d2d3 c6d5 d3e3 g7g6 "
+    "f2f3 g6f6 c1c2 d7c7 e1e2 c7c6 e2d2 e8e7 d4:d5 c6:d5 e3d4 b6c6 "
+    "d4:d5 e6:d5 c3d4 f6e6 f1e1 c8c7 b1c1 c7d7 d4:d5 c6:d5 b3c3 b7c7 "
+    "f3e3 c7c6 g2g3 f8g8 c3d4 g8:g3 d4:d5 g3g4+ e1e2 e6:d5 e3d4 e7:e2 "
+    "d2:e2 d5:d4 d1e1 d7d5 c2:c6 b8c8 c6:d5 d4:d5 c1:c8 d8:c8 e2e8+ c8c7 "
+    "a2a3 g4f3 a3a4 d5d4 e8d8 d4c3 a4a5 f7f6 a5b6 f6e6 d8e8 e6d5 "
+    "e8e7+ c7c8 b6b7 f3f8 e7d7 d5d4 b7c7+ c8b8 d7d6 f8e8+ e1f1 d4e3 "
+    "d6b6+ b8a8 b6c6+ a8b8 c6:e8"
+)
+_AG9_TRAP = "g2g3 c7c6 g3f3 e7e6 f1g1 f8g8"
+
+
+def _replay(tokens):
+    g = Smess()
+    s = g.initial_state()
+    promos = 0
+    for i, tok in enumerate(tokens.split()):
+        t = tok.rstrip("+")
+        capture = ":" in t
+        frm, to = t.split(":") if capture else (t[:2], t[2:])
+        fc, fr = ord(frm[0]) - 97, int(frm[1]) - 1
+        tc, tr = ord(to[0]) - 97, int(to[1]) - 1
+        mv = f"{fc},{fr}>{tc},{tr}"
+        assert mv in g.legal_moves(s), (i + 1, tok, mv)
+        assert ((tc, tr) in s.board) == capture, (i + 1, tok, "capture flag")
+        ptype = s.board[(fc, fr)][1]
+        s = g.apply_move(s, mv)
+        if ptype == "ninny" and s.board[(tc, tr)][1] == "numskull":
+            promos += 1
+    return g, s, promos
+
+
+def test_ag9_sample_game_replay():
+    g, s, promos = _replay(_AG9_GAME)
+    assert promos == 0
+    assert not g.is_terminal(s)                    # ended by resignation
+    assert s.board[(1, 7)] == (1, "brain")         # Blue Brain on b8, doomed
+    blue = sorted(p for o, p in s.board.values() if o == 1)
+    assert blue == ["brain", "ninny", "ninny"], blue
+    g, s, promos = _replay(_AG9_TRAP)
+    assert promos == 0 and not g.is_terminal(s)
+    assert s.board[(6, 7)] == (1, "numskull")      # trapped Numskull on g8
+
+
+# --------------------------------------------------------------------------
+# Anchor 2: full Brain-vs-Brain retrograde solve at the raw arrow-table
+# level. Because BOTH Brains step one square along ABSOLUTE arrows, a
+# position is just (mover's square, opponent's square): 56*55 = 3080 ordered
+# states. Win = capture the enemy Brain; loopy/infinite play = not a win
+# (this deliberately ignores the package's two-Brains-tie terminal so the
+# anchor tests only the arrow table + one-step movement). Backward induction
+# to a fixed point yields 266 mover-win states, of which 96 are NON-TRIVIAL
+# (no immediate capture available); the board's only automorphism is 180 deg
+# rotation and no state is self-symmetric, so that is exactly 48 classes.
+#
+# The AG#9 puzzle solution (p.29) prints 47 positions, hunted-Brain square
+# first, then the winning mover's square. Solved here from scratch
+# (2026-07-18, corrected b2={N,E}/f7={W,S} board), the true answer is 48
+# classes and the printed list has three errata:
+#   * MISSING b1b2 (mover b2 beats a Brain on b1). Forced 9-ply win, only
+#     legal at all because b2's second arrow is E (not the misprinted SE):
+#     1.b2c2 b1a1 2.c2b2 a1a2 3.b2b3 a2a1 4.b3a3 a1a2 5.a3xa2.
+#   * MISSING b1d2 (also a 9-ply forced win).
+#   * WRONGLY INCLUDES f4e3: the mover on e3 (four diagonal arrows) can
+#     capture f4 immediately via NE, so the position is TRIVIAL by the
+#     puzzle's own definition ("without an immediate capture"); and read the
+#     other way round (mover f4, arrows {W} only) it is a dead draw.
+# We assert the EXACT canonical class list, not just the count: the count
+# alone is a weak anchor (the old misread-arrow board also yields a
+# 47/48-ish count), while the exact list is a function of every arrow on the
+# board. Canonical form: each class is written hunted-then-mover using the
+# lexicographically smaller of the pair and its 180 deg rotation, which maps
+# the printed f4* representatives to their b5* mirror images (f4c3=b5e6,
+# f4c5=b5e4, f4c6=b5e3, f4d4=b5d5, f4d5=b5d4, f4e4=b5c5, f4e6=b5c3).
+
+_BVB_CLASSES = (
+    "a1a3 a1a4 a1a5 a1a7 a1b2 a1b3 a1b4 a1b5 a1b6 a1c1 a1c2 a1c3 a1c4 "
+    "a1c5 a1c6 a1d2 a1d4 a1d5 a1e3 a1e4 a1e6 a2a4 a2a6 a2b2 a2b3 a2b4 "
+    "a2c2 a2c4 a2c5 a2d3 a2d4 a2d5 a3a5 a3c3 a3c4 b1b2 b1d2 b5c3 b5c5 "
+    "b5d4 b5d5 b5e3 b5e4 b5e6 d3c3 d3d5 d3e3 d3e4"
+).split()
+
+
+def test_brain_vs_brain_solver_anchor():
+    squares = sorted(ARROWS)
+
+    def on(c, r):
+        return 0 <= c < 7 and 0 <= r < 8
+
+    states = [(m, o) for m in squares for o in squares if m != o]
+    succ, cap = {}, {}
+    for m, o in states:
+        nxt, c = [], False
+        for d in ARROWS[m]:
+            dc, dr = DIRS[d]
+            mp = (m[0] + dc, m[1] + dr)
+            if not on(*mp):
+                continue
+            if mp == o:
+                c = True
+            else:
+                nxt.append((o, mp))
+        cap[(m, o)] = c
+        succ[(m, o)] = nxt
+
+    WIN, LOSS = 1, -1
+    val, dist = {}, {}
+    for s in states:
+        if cap[s]:
+            val[s], dist[s] = WIN, 1
+    changed = True
+    while changed:
+        changed = False
+        for s in states:
+            if cap[s] or not succ[s]:
+                continue
+            ns = succ[s]
+            if any(val.get(n) == LOSS for n in ns):
+                d = 1 + min(dist[n] for n in ns if val.get(n) == LOSS)
+                if (val.get(s), dist.get(s)) != (WIN, d):
+                    val[s], dist[s] = WIN, d
+                    changed = True
+            elif all(val.get(n) == WIN for n in ns):
+                d = 1 + max(dist[n] for n in ns)
+                if (val.get(s), dist.get(s)) != (LOSS, d):
+                    val[s], dist[s] = LOSS, d
+                    changed = True
+
+    wins = [s for s in states if val.get(s) == WIN]
+    nontriv = [s for s in states if val.get(s) == WIN and not cap[s]]
+    assert len(states) == 3080
+    assert len(wins) == 266, len(wins)
+    assert len(nontriv) == 96, len(nontriv)
+
+    def rot(sq):
+        return (6 - sq[0], 7 - sq[1])
+
+    def alg(sq):
+        return f"{chr(97 + sq[0])}{sq[1] + 1}"
+
+    classes = set()
+    for m, o in nontriv:
+        o2, m2 = min((o, m), (rot(o), rot(m)))
+        classes.add(alg(o2) + alg(m2))
+    assert sorted(classes) == _BVB_CLASSES, sorted(classes)
+
+    # The errata positions, explicitly.
+    b1, b2, d2 = (1, 0), (1, 1), (3, 1)
+    assert val.get((b2, b1)) == WIN and dist[(b2, b1)] == 9   # 5.a3xa2
+    assert val.get((d2, b1)) == WIN and dist[(d2, b1)] == 9
+    e3, f4 = (4, 2), (5, 3)
+    assert cap[(e3, f4)]                      # printed f4e3 is a TRIVIAL win
+    assert val.get((f4, e3)) is None          # ...and mover-f4 is a dead draw
 
 
 def run():

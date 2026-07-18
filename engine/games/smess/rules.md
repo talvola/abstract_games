@@ -92,6 +92,34 @@ to independently verify the transcription (the two halves were read separately
 and agree). The four central squares (d4, d5) carry all eight arrows; the single
 "pointing-hand" squares (a1, g8, b5, f4) carry exactly one direction.
 
+## Take the Brain / All the King's Men — identity & errata
+
+Smess, **Take the Brain** (the British release) and **All the King's Men**
+(the 1979 adult re-skin with Knights, Archers and a King) are the **same
+game** — identical board, arrows and rules (Kerry Handscomb, *Abstract Games*
+issue 9, Spring 2002, pp. 8–9).
+
+*Arrow correction (2026-07-18).* An earlier transcription of this package
+misread two squares as diagonals: b2 as {N, SE} and f7 as {NW, S}. Both are in
+fact **right-angle elbows** — **b2 = {N, E}** and **f7 = {W, S}** — confirmed
+independently from two primary sources: *Abstract Games* #9 Diagram 1 rendered
+at 600/1200 dpi (the elbow squares have purely vertical/horizontal shafts,
+unlike the genuinely diagonal arrows on b7/f2), and chessvariants.com's Smess
+board graphic (`play/pbm/backgrounds/smess73.png`), which draws the same
+elbows. The two misreads were 180°-symmetric partners, so the board's
+point-symmetry check alone could not catch them.
+
+*AG#9 puzzle errata.* The magazine's Brain-vs-Brain puzzle answer (p. 29)
+prints **47** non-trivial winning positions. A full 3,080-state retrograde
+solve over the corrected board (pinned in this package's selftest) shows the
+true answer is **48**: the printed list **misses b1b2** (Brain on b2 forces
+the win in 9 plies — a line that requires b2's E arrow: 1.b2c2 b1a1 2.c2b2
+a1a2 3.b2b3 a2a1 4.b3a3 a1a2 5.a3xa2) **and b1d2** (also 9 plies), and
+**wrongly includes f4e3**, which has an immediate capture (e3's NE arrow) and
+is therefore trivial by the puzzle's own definition. The selftest also replays
+the magazine's complete Favel–Handscomb sample game (89 plies) through the
+engine.
+
 ## Sources
 
 - Official Parker Brothers *Smess* rulebook (Hasbro PDF).
@@ -99,3 +127,6 @@ and agree). The four central squares (d4, d5) carry all eight arrows; the single
   and Game Courier preset by Fergus Duniho.
 - BoardGameGeek thing **1289** ("All the King's Men", 1970), which lists "Smess:
   The Ninny's Chess" and "Take the Brain" as alternate names.
+- Kerry Handscomb, "Take the Brain: A Silly Game with Serious Strategy",
+  *Abstract Games* issue 9 (Spring 2002), pp. 8–9 — board diagram, sample game
+  and the Brain-vs-Brain puzzle (solution p. 29).
