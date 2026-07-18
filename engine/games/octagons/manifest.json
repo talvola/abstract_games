@@ -1,0 +1,15 @@
+{
+  "uid": "octagons",
+  "name": "Octagons",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "R. Wayne Schmittberger (1992) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "pie": true,
+  "category": "Connection",
+  "tags": ["connection", "placement", "pie", "truncated-square", "double-move", "schmittberger"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/69697/octagons",
+  "description": "R. Wayne Schmittberger's Hex-like connection game from New Rules for Classic Games (1992). On an 8x8 board of halved octagons with 49 small squares in the interstices, a turn colours either ONE half-octagon or TWO squares. Red joins North to South, Blue West to East; spaces sharing a side connect, corner spaces serve both adjacent sides, and draws are impossible. Pie rule after Red's first move. The characteristic double move creates tactics (semi-squares, dog's legs) unlike any other connection game (Abstract Games #7)."
+}
