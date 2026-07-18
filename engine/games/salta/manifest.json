@@ -1,0 +1,14 @@
+{
+  "uid": "salta",
+  "name": "Salta",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Konrad Heinrich Büttgenbach (1899) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Race",
+  "tags": ["square", "race", "jump", "classic", "draughts-board", "10x10"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/18683/salta",
+  "description": "Salta (1899) -- the Belle Epoque race game on a 10x10 draughts board, once played by Sarah Bernhardt and Emanuel Lasker. Each side's 15 pieces (stars, moons and suns numbered 1-5) move one square diagonally in any direction; an enemy piece diagonally in front with an empty square beyond MUST be jumped, but nothing is ever captured. Be first to shift your whole opening formation seven rows forward, every numbered piece on its own exact target square. The first player gives one point of tempo compensation, and after 120 moves each the original point count decides the game."
+}
