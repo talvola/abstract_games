@@ -1,0 +1,14 @@
+{
+  "uid": "croda",
+  "name": "Croda",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Ljuban Dedić (1995); AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Checkers & draughts",
+  "tags": ["square", "draughts", "capture", "orthogonal", "8x8"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/19843/croda",
+  "description": "Ljuban Dedić's orthogonal draughts on all 64 squares of a chess board: 24 men each on the first three ranks. Men move one square straight or diagonally forward but capture orthogonally in all four directions by the short leap; kings move like rooks and capture by the long leap. Mandatory maximum capture with deferred removal (the Coup Turc). Leave the opponent without a legal move to win. Championed by Christian Freeling as the cure for draughts' draw margin."
+}
