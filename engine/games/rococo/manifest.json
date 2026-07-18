@@ -1,0 +1,14 @@
+{
+  "uid": "rococo",
+  "name": "Rococo",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Peter Aronson & David Howe (c. 2000); AGP implementation",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "ultima", "variant"],
+  "bgg_url": "https://www.chessvariants.com/other.dir/rococo.html",
+  "description": "Rococo, by Peter Aronson & David Howe (c. 2000) — a Recognized Chess Variant in the Ultima family, designed to make Abbott's Ultima sharper and more attacking. On a 10x10 board the 36 outer squares may only be entered when a capture requires it. Almost every piece moves like a chess queen but captures its own way: the Advancer by approach, the Withdrawer by retreat, the Long Leaper by jumping, the Swapper by exchanging places (or mutual destruction), the Immobilizer by freezing, the Chameleon by mimicking its victim, and Cannon Pawns by leaping over a mount. Capture the enemy King to win; a player unable to move, or who repeats a position for the third time, loses."
+}
