@@ -6,9 +6,37 @@ universe map and capability gaps live in `GAME_BACKLOG.md`; this file is the
 
 ---
 
-## ⭐ SESSION HANDOFF (read this first) — updated 2026-07-17b (Recognized-Chess-Variants wave IN PROGRESS)
+## ⭐ SESSION HANDOFF (read this first) — updated 2026-07-17b (Recognized-Chess-Variants wave COMPLETE)
 
-### 🔄 RECOGNIZED-CHESS-VARIANTS WAVE (2026-07-17, Erik pick) → 328 games so far, #320–328 committed
+### ✅ RECOGNIZED-CHESS-VARIANTS WAVE COMPLETE (2026-07-17, Erik pick) → **335 games**, #320–335 (16 new)
+**Second half (#329–335, all deep-QA'd + browser-verified):** magnetic_chess #329 (`3236ee8`,
+QA MERGE 0-fixes, perft(2)=437 independently re-derived; king-capture win, rook-sourced
+castling field) · smess #330 (`e982b87`, QA MERGE 0-fixes — 56/56 arrow-map pixel re-read,
+official Hasbro PDF vindicated opponent-square-only promotion; board.overlay chevrons; 7
+Ninnies not 8; BGG 1289 corrected from brief) · cwda #331 (`5042c38`, QA MERGE 0-fixes —
+4 Betza armies via white_army/black_army options, per-colour asymmetric Nutty Knights,
+compulsory Bede queenside 3-square castle-flip, promotion = union of both armies, per-army
+perft 20/28/24/26) · crazy_38s #332 (`802cd17` — **THE WAVE'S BIG CATCH: 3 QA rounds**;
+knight on the Celtic-knot board is NOT a lattice leaper — geometry-derived KNIGHT_TABLE
+(2 curved steps + 1 crossing, tip-intermediate rejected = distance-filtered geometric
+knight), diagram anchors a8→{b5,c6,d7} / f3→{...h1} verbatim; QA also caught a never-true
+perft freeze; final perft 16/256) · chaturaji #333 (same commit, QA MERGE 0-fixes —
+4-seat dice chess, al-Biruni scoring, 4-vector returns, dice state machine browser-
+verified) · dragonchess #334 (`a724a8a`, QA MERGE 0-fixes — Gygax 3-board, perft(1)=90
+re-derived piece-by-piece, Basilisk freeze/Dragon remote/Paladin 3-D knight all probed,
+attack scanner proven vs forward oracle) · flip_chess #335 (`d518a53`, QA MERGE 0-fixes —
+7x6-minus-corners (brief wrongly assumed the knot board — sources fixed), flip pairs
+P↔Berolina/B↔R/F↔N + flip-in-place (same-cell click, browser-verified), Flip Shogi as
+mode option, ZRF dead-code proof for no-double-step/no-ep). **DEFERRED (structural):**
+kriegspiel (hidden info — platform shows full state), bughouse (2-board team real-time),
+star-trek tri-D (movable attack boards, contested rules), chessapeak (obscure commercial).
+The Recognized list is now DRAINED: 27 pre-existing + 16 built + 4 deferred ≈ the full
+~50-entry list (dupes/junk rows excluded). **NEXT WAVE = fresh theme (Erik pick).**
+LESSONS: same-cell path + =CHOICE = established pocket/flip UI idiom (single choice
+auto-plays, no picker); QA re-verify rounds PAY (crazy_38s knight; 2 extra bugs found in
+round 2); briefs wrong on boards/BGG ids ~5× this wave — sources-override held.
+
+### (first half of the wave, #320–328, for reference)
 Source list = chessvariants.com "Recognized Chess Variants" (~50 distinct; 27 were already in
 the library — dedup map in the session log). **Erik also asked for real piece IMAGES over bare
 letters** → shipped orchestrator capability `491afce`: pieceImages.js 2→15 recolourable
