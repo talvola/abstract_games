@@ -1,0 +1,14 @@
+{
+  "uid": "dragonchess",
+  "name": "Dragonchess",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Gary Gygax (Dragon Magazine #100, 1985)",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["3d", "chess", "variant"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/12776/dragonchess",
+  "description": "Gary Gygax's three-dimensional fantasy chess (Dragon Magazine #100, 1985), played on three stacked 8x12 boards — Sky, Ground and Underworld — with fifteen kinds of D&D creatures: Sylphs, Griffins and a Dragon that captures from afar in the sky; the usual court plus Warriors, Heroes, Paladins and a Mage on the ground; and Basilisks that freeze the pieces above them, Elementals and Dwarves in the underworld. Checkmate the enemy King."
+}
