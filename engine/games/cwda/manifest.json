@@ -1,0 +1,38 @@
+{
+  "uid": "cwda",
+  "name": "Chess with Different Armies",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "AGP",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "variant", "asymmetric"],
+  "bgg_url": "https://www.chessvariants.com/unequal.dir/cwda.html",
+  "options": {
+    "white_army": {
+      "choices": ["fide", "clobberers", "rookies", "knights"],
+      "default": "fide",
+      "label": "White army",
+      "labels": {
+        "fide": "Fabulous FIDEs (orthodox)",
+        "clobberers": "Colorbound Clobberers",
+        "rookies": "Remarkable Rookies",
+        "knights": "Nutty Knights"
+      }
+    },
+    "black_army": {
+      "choices": ["fide", "clobberers", "rookies", "knights"],
+      "default": "clobberers",
+      "label": "Black army",
+      "labels": {
+        "fide": "Fabulous FIDEs (orthodox)",
+        "clobberers": "Colorbound Clobberers",
+        "rookies": "Remarkable Rookies",
+        "knights": "Nutty Knights"
+      }
+    }
+  },
+  "description": "Chess with Different Armies (Ralph Betza, ~1996) — a Recognized Chess Variant. Ordinary 8×8 chess, except each side may field a different, equal-strength army of pieces. The Kings and Pawns are always the orthodox FIDE ones; the other six pieces come from one of four balanced armies: the Fabulous FIDEs (orthodox Rook/Knight/Bishop/Queen), the Colorbound Clobberers (Bede, Waffle, FAD, Cardinal — a Bishop-themed army of colourbound pieces), the Remarkable Rookies (Short Rook, Woody Rook, Half-Duck, Chancellor — an orthogonal army), and the Nutty Knights (Charging Rook, Fibnif, Charging Knight, Colonel — Knight-themed pieces that move differently forwards and backwards). Choose the White and Black armies (default FIDEs vs Clobberers). Castling, en passant, checkmate and the usual draws all apply; a promoted Pawn may become any piece from either army in play, and when a side's corner piece is colourbound its queenside castling uses Betza's special three-square king hop."
+}
