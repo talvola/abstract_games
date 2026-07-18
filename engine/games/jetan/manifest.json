@@ -1,0 +1,25 @@
+{
+  "uid": "jetan",
+  "name": "Jetan (Martian Chess)",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Edgar Rice Burroughs (1922) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess-like", "fictional", "barsoom", "burroughs", "10x10"],
+  "bgg_url": "https://www.chessvariants.com/other.dir/jetan.html",
+  "options": {
+    "chief_rule": {
+      "choices": ["draw", "plays_on"],
+      "default": "draw",
+      "label": "Chief captured by a lesser piece",
+      "labels": {
+        "draw": "Game is drawn (Burroughs)",
+        "plays_on": "Chief is lost, play on (modern)"
+      }
+    }
+  },
+  "description": "The Martian chess from Edgar Rice Burroughs' The Chessmen of Mars (1922) - the only game of fiction whose complete rules the author published. Black (south) and Orange (north) armies of 20 fight on a 10x10 board; every piece moves an EXACT number of single-square steps and may turn at each step, Thoats, Fliers and the Princess leap over anything. Win by landing any piece on the enemy Princess, or Chief takes Chief; a Chief slain by a lesser piece ends the game in a draw (Burroughs) or is simply lost (option). The Princess cannot capture, may never end a move on a threatened square, and holds a one-time escape to any safe square. Ambiguities resolved per Abstract Games magazine's suggested standard."
+}
