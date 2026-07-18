@@ -6,9 +6,62 @@ universe map and capability gaps live in `GAME_BACKLOG.md`; this file is the
 
 ---
 
-## ⭐ SESSION HANDOFF (read this first) — updated 2026-07-18b (AG-magazine TIER-2 wave 2 COMPLETE → 343 games)
+## ⭐ SESSION HANDOFF (read this first) — updated 2026-07-18c (AG-magazine TIER-2 wave 3 COMPLETE → 346 games)
 
-### ✅ AG-MAGAZINE TIER-2 WAVE 2 COMPLETE (2026-07-18b) → **343 games**, #340–343
+### ✅ AG-MAGAZINE TIER-2 WAVE 3 COMPLETE (2026-07-18c) → **346 games**, #344–346 + a smess bug fix
+Picked 4 from the tier-2 list; TWO fell to the screen (the wave's big lesson: **"tier-2 = rules
+printed" claims need per-article verification** — read the article BEFORE assigning a build):
+- **Take the Brain (i9) = DUPLICATE**: it IS Smess #330 under its UK title (alt-title dedup — grep
+  by title missed it; the build agent caught it). The pivot paid off double: QA of the existing
+  package vs AG#9 Diagram 1 (600/1200dpi) + chessvariants smess73.png found a **REAL arrow-table
+  bug** (b2={N,E}, f7={W,S} — misread as diagonals; the two errors were 180°-symmetric partners =
+  invisible to the symmetry selftest). Fixed (`a8968a1`) + pinned: full 89-ply AG#9 sample-game
+  replay + a 3,080-state Brain-vs-Brain retrograde solve asserting the EXACT 48-class win list —
+  which exposed errata in AG#9's own printed page-29 solution (misses b1b2/b1d2, wrongly includes
+  f4e3; count-only would have been fooled, the old wrong table also yields ~47/48). Tags += "take
+  the brain"/"all the king's men". Two independent agents agreed square-by-square.
+- **Pentagonia (i2) = clone-skip** (Nine Men's Morris on nested pentagons). **Chebache (i3) =
+  review-only, NOT full rules** (would need Wayback chebache.com — left on the list, flagged).
+- **hijara #344** (`fa5ec46`) — Samuel 1995 fill-in-order alignment scoring (AG#5 review = complete
+  rules); ≡ 4×4×4 gravity Qubic w/ scoring, selftest PROVES the 76-line mapping; designer's corner
+  line = manifest option `corners` off-by-default (BGG designer text says "optional"); QA MERGE
+  (doc-fix only), 500-game differential clean at every ply; 15-pt sequence counts both directions
+  (forced by the Qubic equivalence).
+- **realm #345** (`cd779d8`) — Orbanes/Sackson 1973 realm-control wargame; AG#9 Mikulas article IS
+  the designer-maintained ruleset (he owns the rights). Compound Dispersal/Concentration/
+  Rearrangement turns via sub-moves + End-turn (Blooms pattern) + follow-up pickers (created-
+  enforcer cell+facing, immobilization choice). Full sample-game replay anchor (every annotated
+  Special Event fires exactly; Figures 3–7 pixel-matched; the worked example ≠ the sample game —
+  two different games). QA MERGE-WITH-FIXES: **real bug — pass didn't reset the rearrangement
+  3-in-a-row streak**; 88k-state independent differential clean; AbstractPlay corroboration (AP
+  itself has a capture-arithmetic bug we don't share). ~60% of RANDOM games hit the 1000-sub-move
+  cap = genuinely dead both-blocked positions (random players never double-pass); cap scores
+  identically to the agreement end, un-gameable.
+- **octagons #346** (`c5afe23`) — Schmittberger 1992 half-octagon connection (AG#7); 177 spaces
+  (128 halves checkerboard-cut + 49 tilted squares), turn = 1 half-octagon OR 2 squares; swap =
+  PROVEN 90°-rotation automorphism (recolour alone would be wrong — third entry in the
+  value-preserving-swap family after rhode/anchor); QA MERGE 0-fixes — its independent
+  combinatorial graph (the article's Onyx-dual points model) came out graph-IDENTICAL; 7k+
+  colouring oracles = exactly one winner always. Platform-class flag: ~2480-move branching makes
+  the 3s bot weak (Blokus class; AGP_BOT_MAX_TIME helps).
+**Wave-3 lessons:** (1) verify article completeness BEFORE assigning (2 of 4 picks fell to the
+screen); (2) dedup must include ALTERNATE TITLES, not uid/name grep (Take the Brain=Smess);
+(3) a "duplicate" pick can still pay: QA the existing package against the new source (found a
+real bug + errata in the magazine's own puzzle solution); (4) exact-list solver anchors beat
+count-only (the wrong board reproduced the right count).
+**▶▶ NEXT (wave 4) — remaining tier-2 candidates (NOT yet article-verified — screen each first!):**
+Lightning (i5 — 1890s Selchow tile-draw race, has_randomness, tile shapes need Fig-1 pixel-read),
+Chebache (i3 — review only; needs Wayback chebache.com rules recovery), Strat (i4 15×30 Halma),
+MEM (i2 — "blocking" announce needs design decision), Phalanx (i11), Gle'x (i11), Orbit (i12),
+Domain (i12), Vai lung thlân (i12), Pagoda (i13), Layli Goobalay (i13), Ot-tjin (i14), Hi-Jack
+(i14), Sleeping Beauty Draughts (i14 Gering), Super Halma (i15 variant), Mamba (i16),
+Selus/Sadéqa (i16). Larry Back Square/Head-Start Hex = possible hex options. Liubo defer
+(contested reconstruction). **Issues 17–24 still unscouted — scout them next if the verified
+tier-2 pool thins** (likely, given the wave-3 attrition rate). Magazine PDFs issues 2/3/5/7/9 +
+article slices in this session's scratchpad (re-extractable:
+abstractgames.org/uploads/1/1/6/4/116462923/abstract_games_issue_<N>.pdf, browser UA).
+
+### (prior handoff) ✅ AG-MAGAZINE TIER-2 WAVE 2 COMPLETE (2026-07-18b) → **343 games**, #340–343
 Picked 4 from the pre-staged tier-2 list (rules printed in the magazine); all deep-QA'd +
 browser-verified + committed + pushed, one commit each:
 - **croda #340** (`31c4a26`) — Dedić 1995 orthogonal checkers (AG#9, Freeling's own article +
