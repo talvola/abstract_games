@@ -1,0 +1,14 @@
+{
+  "uid": "raumschach",
+  "name": "Raumschach",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Dr. Ferdinand Maack (1907) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["3d", "chess", "historic", "variant"],
+  "bgg_url": "https://www.chessvariants.com/3d.dir/3d5.html",
+  "description": "Raumschach (German for \"Space Chess\") — invented by Dr. Ferdinand Maack in 1907 and the classic, oldest surviving three-dimensional chess variant (a Recognized Chess Variant). Played on five stacked 5×5 levels (A–E) forming a 5×5×5 cube. Rooks, bishops and knights move as in chess but extended through the third dimension; a new piece, the Unicorn, slides along the 3-D space-diagonals (corners of the cells); the Queen combines Rook + Bishop + Unicorn and the King moves the same, one step. Pawns advance forward or upward and capture diagonally. No castling, no two-step pawn move, no en passant. Win by checkmate."
+}
