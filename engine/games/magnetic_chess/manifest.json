@@ -1,0 +1,14 @@
+{
+  "uid": "magnetic_chess",
+  "name": "Magnetic Chess",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "João Pedro Neto & Claude Chaunier (1996) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "variant"],
+  "bgg_url": "https://www.chessvariants.com/other.dir/magnetic.html",
+  "description": "Standard chess plus a magnetism rule: after a piece moves, the closest piece along each rank and file is pulled toward it (opposite colour) or pushed away from it (same colour); the two kings are neutral and block the field. There is no check, checkmate or stalemate -- you win by capturing the enemy king. No en passant; a pawn on either of its two home ranks may still take a double step (magnetism can push pawns backward), and a pawn dragged onto the last rank by the field promotes to a Queen. A Recognized Variant by João Pedro Neto and Claude Chaunier (1996). White (player 0) moves first."
+}
