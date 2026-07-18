@@ -1,0 +1,25 @@
+{
+  "uid": "hijara",
+  "name": "Hijara",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Martin H. Samuel (1985/1995) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "N-in-a-row",
+  "tags": ["square", "alignment", "scoring", "placement", "3d", "qubic-family"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/824/hijara",
+  "options": {
+    "corners": {
+      "choices": [false, true],
+      "default": false,
+      "label": "4-corner formations",
+      "labels": {
+        "false": "Off (base rules)",
+        "true": "On (official optional rule)"
+      }
+    }
+  },
+  "description": "Martin H. Samuel's alignment-scoring game (first printed as Excel, 1985; published as Hijara by Great American Trading Company, 1995). A 4x4 array of large squares, each split into four small squares numbered 1-4 that must be filled in order — making it exactly 4x4x4 Qubic with gravity, plus scoring: 10 for four of the same number in a row, 15 for 1-2-3-4 in sequence, 20 for filling a whole square. All 64 stones are placed; the higher total wins."
+}
