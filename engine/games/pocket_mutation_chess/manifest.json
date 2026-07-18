@@ -1,0 +1,14 @@
+{
+  "uid": "pocket_mutation_chess",
+  "name": "Pocket Mutation Chess",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Michael Nelson (2003); implemented by the Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "drops", "variant"],
+  "bgg_url": "https://www.chessvariants.com/large.dir/pocketmutation.html",
+  "description": "Chess variant by Michael Nelson (2003). Instead of a normal move you may pull one of your own pieces into a one-slot pocket, where it may mutate into another piece of equivalent value (or promote a class if taken from your 8th rank); later you drop it back onto an empty square. A Recognized Chess Variant."
+}

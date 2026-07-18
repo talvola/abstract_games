@@ -1,0 +1,22 @@
+{
+  "uid": "circular_chess",
+  "name": "Circular Chess",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "AGP",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["circular", "chess", "historic", "variant"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/34856/circular-chess",
+  "options": {
+    "double_step": {
+      "choices": [true, false],
+      "default": true,
+      "label": "Pawn double first step",
+      "labels": { "true": "Allowed (Lincoln)", "false": "Off" }
+    }
+  },
+  "description": "The medieval round game (Byzantine 'shatranj al-muddawara'), revived by Dave Reynolds of Lincoln, England, in 1983 and played for the World Championship in Lincoln since 1996. A standard chess army on an annular board of 4 concentric rings x 16 sectors (64 cells), topologically a 16x4 cylinder: rooks, bishops, queens and knights slide or leap around the rings (the sector axis wraps) while the ring axis is bounded. Each army straddles a line, the two lines on opposite sides; each side's two pawn groups march in opposite directions round the board to promote on the opponent's back-piece squares. No castling, no en passant, and a rook or queen may not run the full circle back to its own square. White (player 1) moves first."
+}
