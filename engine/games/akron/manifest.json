@@ -1,0 +1,22 @@
+{
+  "uid": "akron",
+  "name": "Akron",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Connection",
+  "tags": ["square", "stacking", "3d", "connection", "marbles", "modern"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/10889/akron",
+  "options": {
+    "size": {
+      "choices": [8, 10],
+      "default": 8,
+      "label": "Board size",
+      "labels": { "8": "8×8 (official)", "10": "10×10 (advanced)" }
+    }
+  },
+  "description": "Akron (Cameron Browne 2002): a 3D connection game with marbles on a square grid. Connect your two edges at any level — stack balls into the interstitial pockets to step over enemy blocks, drop enemy support out from under bridges, and use the over/under rule: where connections cross, the uppermost prevails."
+}
