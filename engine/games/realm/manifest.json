@@ -1,0 +1,14 @@
+{
+  "uid": "realm",
+  "name": "Realm",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Phil Orbanes Sr. with Sid Sackson (Gamut of Games, 1973) / AGP port from the William L. Mikulas ruleset, Abstract Games #9",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Territory",
+  "tags": ["realm", "square", "territory", "immobilization", "orbanes", "sackson", "gamut-of-games", "forgotten-classic"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/3024/realm",
+  "description": "Orbanes' forgotten classic of creation vs destruction on a 12x12 board of 16 Realms. Rook-moving Powers create Bases on vacant Realm centres and spawn pointed Enforcers; Enforcers immobilize each other and capture Bases when your Powers outnumber the enemy's. Each turn is a Dispersal (pieces out of one Realm), a Concentration (pieces into one Realm) or a Rearrangement — sub-move order drives the Special Events. First to create all 12 Bases ends the game; most controlled Realms wins."
+}
