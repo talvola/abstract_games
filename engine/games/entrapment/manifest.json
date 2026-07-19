@@ -1,0 +1,19 @@
+{
+  "uid": "entrapment",
+  "name": "Entrapment",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Capture / annihilation",
+  "tags": ["square", "walls", "maze", "trapping", "boardspace"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/12533/entrapment",
+  "options": {
+    "board": { "choices": ["7x7", "6x7"], "default": "7x7", "label": "Board",
+               "labels": { "7x7": "7x7 (standard)", "6x7": "6x7 (designer's favourite)" } },
+    "roamers": { "choices": [3, 4], "default": 3, "label": "Roamers per player" }
+  },
+  "description": "Entrapment (Rich Gowell, 1999): each turn move your roamers and wall the board with barriers laid in the grooves between squares. Jumping your own flat barrier tips it upright — permanently impassable to everyone. Fully surround an enemy roamer so it cannot escape to capture it; capture all enemy roamers to win. Rules per Boardspace.net (also the venue where the designer's own archived games live)."
+}
