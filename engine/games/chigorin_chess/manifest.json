@@ -1,0 +1,14 @@
+{
+  "uid": "chigorin_chess",
+  "name": "Chigorin Chess",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "AGP",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "chess", "variant", "asymmetric"],
+  "bgg_url": "https://www.chessvariants.com/diffsetup.dir/chigorin.html",
+  "description": "Chigorin Chess (Ralph Betza, 2002) — a Knights army against a Bishops army on the standard 8×8 board, named for Mikhail Chigorin's supposed preference for Knights. White fields four Knights and a Chancellor (Rook+Knight) in place of the Bishops and Queen; Black plays four Bishops and an orthodox Queen in place of the Knights. All other FIDE rules apply — castling, en passant, checkmate, and the usual draws — and each side's Pawns promote only to pieces of its own army (White: Chancellor/Rook/Knight; Black: Queen/Rook/Bishop). Matches the Fairy-Stockfish 'chigorin' ruleset; covered in Abstract Games issue 24."
+}
