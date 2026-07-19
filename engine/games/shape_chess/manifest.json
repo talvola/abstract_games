@@ -1,0 +1,26 @@
+{
+  "uid": "shape_chess",
+  "name": "Shape Chess",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "日出 (Richu), Guangzhou 2022 / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Positional",
+  "tags": ["square", "go board", "pattern", "symmetry", "scoring", "push", "richu", "xingqi", "alignment"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/367618/shape-chess",
+  "options": {
+    "size": {
+      "choices": [12, 13, 15, 19],
+      "default": 12,
+      "label": "Board size"
+    },
+    "target": {
+      "choices": [2, 3, 4, 5, 6],
+      "default": 4,
+      "label": "Winning score"
+    }
+  },
+  "description": "Xingqi (形棋) by Richu of Guangzhou, 2022 — the pattern game where the pattern is a geometric property: mirror symmetry. On a Go-style board (12×12 or larger), a turn is a Drop (own stone on any empty point), a Jump (own stone to any empty point, anywhere) or a Push (shove any enemy stone to one of its adjacent empty points — your choice of the 8 directions — and place an own stone on the point it left). If after your turn any 8-connected group of ≥6 of your stones is preserved by some mirror line (grid line, half-grid line or diagonal — rotations do NOT count), each such shape is removed and scores its size minus five, and you immediately move again. First to four points wins. As featured in Abstract Games magazine #24."
+}
