@@ -1,0 +1,14 @@
+{
+  "uid": "boom_zoom",
+  "name": "Boom & Zoom",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory (game by Ty Bomba, 2012; 2nd ed. Hollandspiele 2018)",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Race",
+  "tags": ["square", "stacking", "wargame", "scoring", "ranged-capture", "8x8"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/243927/boom-and-zoom-second-edition",
+  "description": "Ty Bomba's abstract wargame (2012; definitive Hollandspiele 2nd edition 2018). Four 3-high laser-tower stacks per side on an 8x8 board: each turn one stack either ZOOMS (moves in a straight line, up to its height) or BOOMS (shoots one counter off an enemy stack it could reach). Bear stacks off beyond the enemy home row -- one point per counter, with diagonal escape through the corners. When one side has nothing left on the board, the higher score wins; equal scores draw. Shoot to cripple, not to kill: every counter you remove is a point your opponent can no longer score, but a dead stack no longer slows them down."
+}
