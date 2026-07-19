@@ -6,9 +6,57 @@ universe map and capability gaps live in `GAME_BACKLOG.md`; this file is the
 
 ---
 
-## ⭐ SESSION HANDOFF (read this first) — updated 2026-07-19b (AG-magazine wave 5 → 354 games)
+## ⭐ SESSION HANDOFF (read this first) — updated 2026-07-19c (AG-magazine wave 6 → 358 games)
 
-### ✅ AG-MAGAZINE WAVE 5 COMPLETE (2026-07-19b) → **354 games**, #351–354
+### ✅ AG-MAGAZINE WAVE 6 COMPLETE (2026-07-19c) → **358 games**, #355–358
+All 4 staged candidates built + adversarially deep-QA'd + browser-verified, one commit each.
+NOTE: old-session scratchpads did NOT survive this time (/tmp cleared) — all agmag sources
+re-downloaded to this session's scratchpad `agmag/` (issues 17/19/22/24 + sanqi_sdg.pdf +
+entrapment_boardspace.html). Re-fetch pattern unchanged (abstractgames.org uploads URL,
+browser UA).
+- **xyz_chess #355** (`f4cdf3a`) — Hewson 4×4×4 3D chess (AG#24 primary + AG#19 pawn blurb):
+  K ortho-only, B 12 planar diagonals, N pure triagonal, level-locked Legan pawns, edge-pawn
+  two-step. Gold anchor = 22-move Hewson–Mandoshkin annotated mate replayed exactly (the three
+  double-step CAPTURES in the record force the edge-pawn readings). QA MERGE 0 fixes: ~75k-
+  position from-scratch differential, 0 mismatches; perft 27/729/22651.
+- **sanqi #356** (`b024b00`) — L. Lynn Smith 2003 shared-type hexhex (SDG designer rules
+  primary + AG#17 reprint = same ruleset): place/majority-replace (+2 rule), one-turn immunity,
+  circle/line/triangle-6 wins with end-of-own-turn timing. QA MERGE 0 fixes: 11,309-pos
+  differential; §2.32 worked example discriminates +2 from bare majority; §5.2 Triangle Trap
+  replayed. Replacement-churn honest-draw backstops (documented as impl notes). BGG 37001.
+- **entrapment #357** (`22977d3`) — Gowell 1999 (Boardspace rules + Java impl mirrored
+  method-for-method): roamers/barriers/jump-flip/immediate-capture/mandatory-escape; no
+  voluntary flip (absent from play + reference — documented). 7×7|6×7 × 3|4 roamers options.
+  QA MERGE 0 code fixes: Java-transcribed oracle, 520 games / 180,453 positions lockstep, 0
+  mismatches; honest draws reachable post-exhaustion (cap load-bearing). Doubled-grid polygons
+  (grooves = clickable cells; Quoridor walls primitive NOT reusable — single-edge + owner +
+  flip state). BGG 12533.
+- **jed #358** (`50aeff4`) — Thompson/Handscomb 2021 (AG#22): Jade objectives + J-E-D cycle +
+  declare/swap pie. Colouring "JED"[(c−r)%3] pixel-proven; double-completion PROVEN impossible
+  (crossing lemma + 195k probes). **QA MERGE-WITH-FIXES — real bug: win gate at ≥18 stones per
+  printed "Cross needs 19", which is a magazine ERRATA (6th find): 11-cell short diagonal wins
+  via corner double-counting, anchored by the historical Jade pbmserv reference (Browne/van
+  Wamelen). Fixed to ≥11 + regressions.** ~110k-pos winner differential, 0 mismatches.
+**Wave-6 lessons:** (1) /tmp scratchpads are NOT durable across host restarts — treat re-fetch
+as the norm, keep the URL patterns logged here; (2) a reference implementation fetched by the
+BUILD agent into the scratchpad (entrapment Java) hands the QA agent its oracle for free —
+extend the accasta pre-fetch practice to reference CODE; (3) printed "minimum stones to win"
+claims are checkable and can be errata (Jed's Cross-19) — corner/edge double-counting is the
+thing to re-derive; (4) games whose rules pages list actions the reference implementation
+lacks (entrapment voluntary flip) → implement the PLAY section, document the discrepancy.
+**▶▶ NEXT (wave 7) — from the wave-5 scout's remaining slate (sources need re-fetching per
+the note above):**
+1. **Ley Lines** (i17, Solomon, pp.44-46 full rules) — complete but QA-expensive: no external
+   impl, random zone-quota setup (has_randomness), agreement ending needs design care.
+2. **Winkel-Advokat** (i23) — WEAKEST: needs the German Schmidt original; French translation
+   at regle.escaleajeux.fr/winke_rg.pdf; jump-geometry/turn-structure ambiguities + board
+   value layout only on the cover photo. Consider deferring again if ambiguities don't resolve.
+3. **Old tier-2 pool** (i2–i16, unscreened): Lightning, Strat, MEM, Phalanx, Gle'x, Orbit,
+   Domain, Vai lung thlân, Pagoda, Layli Goobalay, Ot-tjin, Hi-Jack, Sleeping Beauty Draughts,
+   Super Halma, Mamba, Selus/Sadéqa, Chebache[Wayback]. Screen with a scout agent first
+   (wave-5 lesson: AG index `*`/`†` markers are reliable).
+
+### (prior handoff) ✅ AG-MAGAZINE WAVE 5 COMPLETE (2026-07-19b) → **354 games**, #351–354
 Screened all 10 staged wave-5 candidates via a scout agent BEFORE assigning (wave-3 lesson; the
 AG game index's `*`=complete-rules / `†`=partial markers are reliable screening signal). Picked
 the 4 best-anchored; all deep-QA MERGE **0 fixes across the entire wave**, browser-verified,
