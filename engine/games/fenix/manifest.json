@@ -1,0 +1,25 @@
+{
+  "uid": "fenix",
+  "name": "Fenix",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Fred Horn (1975, as Strike; published by HUCH! 2019); AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Checkers & draughts",
+  "tags": ["square", "draughts", "strike", "stacking", "capture", "chess-hybrid", "9x9"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/244080/fenix",
+  "options": {
+    "rules": {
+      "choices": ["original", "published"],
+      "default": "original",
+      "label": "Ruleset",
+      "labels": {
+        "original": "Original (Strike): setup stacks must be adjacent",
+        "published": "Published (HUCH!): setup stacks anywhere"
+      }
+    }
+  },
+  "description": "Fenix (Fred Horn, conceived 1974 as Strike, published by HUCH! 2019): checkers-style forced jump captures meet chess-style piece values on a 9x9 board. In your first five turns you stack your own discs into 3 Generals and a King; captured Generals and even the King can rise from the ashes by re-stacking Soldiers. Capture the enemy King so it cannot be rebuilt to win."
+}
