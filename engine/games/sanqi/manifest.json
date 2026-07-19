@@ -1,0 +1,29 @@
+{
+  "uid": "sanqi",
+  "name": "SanQi",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "L. Lynn Smith (c. 2003); AGP module",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "N-in-a-row",
+  "tags": ["hex", "pattern", "shared-pieces", "placement"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/37001/sanqi",
+  "options": {
+    "size": {
+      "choices": [4, 5, 6, 7, 8, 10],
+      "default": 7,
+      "label": "Board size (cells per side)",
+      "labels": {
+        "4": "hex-4 (37 cells, learning size)",
+        "5": "hex-5 (61 cells)",
+        "6": "hex-6 (91 cells)",
+        "7": "hex-7 (127 cells)",
+        "8": "hex-8 (169 cells)",
+        "10": "hex-10 (271 cells, designer's optimal)"
+      }
+    }
+  },
+  "description": "The Game of Three: both players share three piece types (the Lingqijing characters Shang 上, Zhong 中, Xia 下), placing one anywhere or converting a surrounded piece by local majority. First wins with a circle of six alike, Second with a line of six, either with a triangle of six — at the end of their own turn. By L. Lynn Smith; Shared Pieces design-competition entry, featured in Abstract Games #17."
+}
