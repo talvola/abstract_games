@@ -1,0 +1,25 @@
+{
+  "uid": "accasta",
+  "name": "Accasta",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory (game by Dieter Stein, 1998)",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Stacking",
+  "tags": ["hex", "stacking", "stein", "hexhex4", "castle"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/9060/accasta",
+  "options": {
+    "variant": {
+      "choices": ["accasta", "pari"],
+      "default": "accasta",
+      "label": "Variant",
+      "labels": {
+        "accasta": "Accasta (Shields, Horses, Chariots)",
+        "pari": "Accasta Pari (one piece type)"
+      }
+    }
+  },
+  "description": "Accasta (Dieter Stein, 1998): a pure stacking game on a 37-point hex board. Shields, Horses, and Chariots move up to 1/2/3 spaces; the top piece leads any number of pieces below, stacks split at any point, and captured pieces stay buried until liberated. No stack may hold more than three pieces of one colour, so a stack with three prisoners becomes an invulnerable safe stack. Surface a friendly piece and it may move too, in the same turn; surface an enemy piece and your turn ends. Control three stacks in the enemy castle at the start of your turn to win."
+}
