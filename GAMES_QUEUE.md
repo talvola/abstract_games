@@ -6,9 +6,86 @@ universe map and capability gaps live in `GAME_BACKLOG.md`; this file is the
 
 ---
 
-## ⭐ SESSION HANDOFF (read this first) — updated 2026-07-19 (AG-magazine wave 4: issues 17–24 scouted → 350 games)
+## ⭐ SESSION HANDOFF (read this first) — updated 2026-07-19b (AG-magazine wave 5 → 354 games)
 
-### ✅ AG-MAGAZINE WAVE 4 COMPLETE (2026-07-19) → **350 games**, #347–350
+### ✅ AG-MAGAZINE WAVE 5 COMPLETE (2026-07-19b) → **354 games**, #351–354
+Screened all 10 staged wave-5 candidates via a scout agent BEFORE assigning (wave-3 lesson; the
+AG game index's `*`=complete-rules / `†`=partial markers are reliable screening signal). Picked
+the 4 best-anchored; all deep-QA MERGE **0 fixes across the entire wave**, browser-verified,
+one commit each:
+- **fenix #351** (`a27425b`) — Horn 2019 HUCH! chess-checkers hybrid (AG#20 designer original
+  rules + HUCH rulebook PDF): 9×9 corner triangles, 5 stack-building setup turns (3 Generals +
+  King), compulsory max-total-VALUE chain jumps (K3/G2/S1), one-shot General rebuild + mandatory
+  King rebuild overriding captures. Option: original (Strike) vs published HUCH — QA confirmed
+  EXACTLY two variant differences (setup adjacency, repetition rule). Figure 3 worked max-capture
+  example pinned exactly; 3000-position independent-generator differential, 0 mismatches.
+- **mattock #352** (`d3c08ef`) — Edwards 2020 hexhex-7/5 mining-collapse territory (AG#21 +
+  Mindsports Dagaz JS as semantics reference): mandatory mine w/ collapse rule + optional move +
+  automatic simultaneous removal; cannot-mine = loss, structurally always a winner. Magazine
+  setup diagram is PRIMARY (Mindsports' own hex-7 setup differs from the magazine — magazine
+  wins). p.14 starred legal-mine figure (11 cells exact) + p.20 puzzle/p.25 solution anchored;
+  ~13k full move-set differential comparisons over 290 games, 0 mismatches.
+- **shape_chess #353** (`52feba0`) — Richu 2022 Xingqi mirror-symmetry scorer (AG#24 Ploog):
+  drop/jump/push on 12×12+ points, own 8-connected mirror-symmetric shapes ≥6 score n−5 +
+  bonus turn, first to 4. Rotation ≠ symmetry; axes = grid/half-grid orthogonals +
+  integer-offset diagonals (half-integer diagonal mirrors provably off-lattice). All 6 article
+  puzzles + printed solutions asserted (coordinate frame proven unique); QA ran an EXHAUSTIVE
+  all-3832-fixed-6-polyplet symmetry sweep vs an any-angle exact-rational detector, 0
+  mismatches (new best-practice: exhaustive small-case enumeration beats sampling).
+- **mirador #354** (`f1a936a`) — Perkis 2010 LOS-connection w/ declare/challenge adjudication
+  (AG#22): 2×2 miradors, width-1 LOS corridors, declare → unlimited challenger placements →
+  broken = challenger wins outright. 18-move fritzd–pim annotated game replayed (printed
+  "16. O16" PROVEN a magazine typo for C16 — 5th AG-errata find; annotator = PAUL van Wamelen);
+  four-move-win position proven unassailable COMPLETELY (DFS over all 450,799 legal counter-
+  placement sets); 15,910-position differential vs an independent AbstractPlay-port oracle, 0
+  mismatches. UX note (rule-faithful, shipped as-is): declare window opens after nearly every
+  placement early (any lone mirador has LOS to two sides); premature declares must stay legal.
+**Wave-5 lessons:** (1) the AG index's `*`/`†` complete/partial-rules markers are reliable and
+make screening cheap — check the index FIRST; (2) a dedicated screening scout agent (one agent,
+all candidates, ranked recommendation) is token-efficient vs orchestrator-reading every article;
+(3) reference implementations keep having their own bugs/deviations (Mindsports hex-7 setup ≠
+magazine; AbstractPlay declare model differs) — magazine/designer sources stay primary, engines
+are semantics oracles; (4) exhaustive small-case enumeration (all size-6 polyplets vs OEIS
+count) is a stronger verifier than any sample; (5) scout metadata still needs build-agent
+verification (the "44-move" annotated game was 18 moves; "Marcel" was Paul; SanQi is 2-player
+not 3).
+**▶▶ NEXT (wave 6) — screened + ranked by the wave-5 scout (full per-game detail in that
+report; all sources verified fetchable):**
+1. **3D XYZ Chess** (i24 full article + i19 cover; Rick Hewson) — COMPLETE (index 24*): 4×4×4,
+   32 standard pieces, K=orthogonal-only, B=12 planar diagonals (no triagonal), N=triagonal
+   single-step, Legan-style level-locked pawns that capture as they move (i19 blurb is the
+   load-bearing clarification); ANCHOR = full annotated 22-move Hewson–Mandoshkin game ending
+   in mate + 10 diagrams. Layered-grid render precedent = qubic/raumschach. issue_24.txt lines
+   ~1889-2314, pdf pages 32-34; setup + movement diagrams need pixel-reads.
+2. **SanQi** (i17; L. Lynn Smith 2003) — COMPLETE (index 17*): TWO-player (scout corrected the
+   3-player brief — "game of three" = 3 shared piece TYPES), hexhex-4+ (10 optimal), placement/
+   majority-replacement, one-turn immunity, circle-6 (P1) / line-6 (P2) / triangle-6 (either)
+   goals. SDG rules PDF fetchable (superdupergames.org/rules/sanqi.pdf). Termination needs
+   design care (replacement churn on a full board → no-progress cap + honest draw).
+   issue_17.txt lines ~894-1200.
+3. **Entrapment** (i22; Gowell 1999) — COMPLETE-WITH-EXTERNAL: magazine editorial is partial
+   (no index `*`) but boardspace.net/entrapment/english/rules.html (fetchable, complete:
+   25 barriers/side, roamer 1-2 orthogonal steps, jump-flip barriers, entrapment timing,
+   mandatory-escape) + Boardspace Java source as differential oracle + archived games (some by
+   Gowell). 7×7 default, 6×7 designer-recommended option. board.walls primitive (Quoridor).
+4. **Jed** (i22; Thompson/Handscomb) — COMPLETE (index 22*): Jade (9×11 hex-parallelogram
+   shared-stones Cross-vs-Parallel Hex, full rules + drawless proof in-article) + hox protocol
+   J→E→D cycling pre-coloured spaces + modified pie. The J/E/D 3-colouring board figure is
+   LOAD-BEARING (pixel-read; pdf p.27); weakest anchors of the slate (win-condition examples,
+   chilling positions, Parallel-min-18/Cross-min-19 facts). issue_22.txt ~1704-1840 + 2384-2438.
+Then: **Ley Lines** (i17, complete but QA-expensive: no external impl, random zone-quota setup
+has_randomness, agreement ending) and **Winkel-Advokat** (i23, WEAKEST — needs the German
+Schmidt original; French translation regle.escaleajeux.fr/winke_rg.pdf fetched to scratchpad;
+jump-geometry/turn-structure ambiguities + board value layout only on the cover photo). Plus the
+old tier-2 pool (i2–i16: Lightning, Strat, MEM, Phalanx, Gle'x, Orbit, Domain, Vai lung thlân,
+Pagoda, Layli Goobalay, Ot-tjin, Hi-Jack, Sleeping Beauty Draughts, Super Halma, Mamba,
+Selus/Sadéqa, Chebache[Wayback]). Magazine PDFs 17–24 + all wave-5/6 source fetches live in
+scratchpad `agmag/` (re-extractable: abstractgames.org/uploads/1/1/6/4/116462923/
+abstract_games_issue_<N>.pdf, browser UA; scratchpad survives across sessions under
+/tmp/claude-1000/-home-erik-abstract-games/<session>/scratchpad — check old session dirs
+before re-downloading).
+
+### (prior handoff) ✅ AG-MAGAZINE WAVE 4 COMPLETE (2026-07-19) → **350 games**, #347–350
 Erik kicked off "issues 17–24" — scouted + deduped all 8 new-series issues (PDFs re-downloaded to
 this session's scratchpad `agmag/`; same URL pattern, browser UA). Most headliners already existed
 (keil, tumbleweed, redstone, meridians, murus_gallicus, symple, blooms, agon, toguz_kumalak,
