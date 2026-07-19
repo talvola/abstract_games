@@ -1,0 +1,15 @@
+{
+  "uid": "mirador",
+  "name": "Mirador",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Andrew Perkis (2010) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "pie": true,
+  "category": "Connection",
+  "tags": ["square", "connection", "placement", "line-of-sight", "pie-rule", "declaration"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/65822/mirador",
+  "description": "Connection game on a 27x27 grid (Abstract Games #22). Each turn fill an empty 2x2 block (a 'mirador'); miradors may never touch, except same-colour corner-to-corner. Same-colour miradors connect by corner contact or by an unobstructed one-square-wide line of sight along a shared row or column; sight to a board edge connects a mirador to that side. Link two opposite sides (either axis), then Declare - your opponent challenges with as many placements as they like: if they break the chain they win, if they cannot, you do. Pie rule."
+}
