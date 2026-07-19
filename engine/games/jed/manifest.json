@@ -1,0 +1,14 @@
+{
+  "uid": "jed",
+  "name": "Jed",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "J. Mark Thompson & Kerry Handscomb (2021; Jade: Thompson c. 2001) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "pie": true,
+  "category": "Connection",
+  "tags": ["hex", "connection", "placement", "shared-pieces", "asymmetric-objectives", "pie-rule"],
+  "description": "A revisioning of Hex with shared pieces, unequal objectives and unequal board spaces (Abstract Games #22). Both players place Black OR White stones on a 9x11 hex parallelogram whose cells are typed J/E/D; placements must cycle J-E-D. Cross wins when one like-coloured group touches all four sides; Parallel wins when a Black and a White group span the same pair of opposite sides — whoever's objective is completed wins, no matter who placed the stone. Modified pie rule: move 1 declares a role, which the second player may adopt. Draws are impossible."
+}
