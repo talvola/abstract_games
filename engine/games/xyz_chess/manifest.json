@@ -1,0 +1,13 @@
+{
+  "uid": "xyz_chess",
+  "name": "3D XYZ Chess",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Rick Hewson (1988-2016) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["3d", "chess", "variant"],
+  "description": "Rick Hewson's three-dimensional chess, developed and perfected over three decades (Abstract Games issue 24). A 4×4×4 cube of 64 spaces holds the standard 32 chess pieces: the armies fill 2×2×4 blocks at opposite vertical corners. Rook, Bishop and Queen make their regular chess moves extended through vertical as well as horizontal planes (no space-diagonals), the King steps one space orthogonally only, and the Knight steps one space triagonally — confined to a quarter of the board. Pawns can never change level: they step orthogonally on their level toward the opposite corner, capture exactly as they move (edge pawns may open with a two-space move), and promote to Queen at the far corner of their level. Win by checkmate; stalemate is a draw."
+}
