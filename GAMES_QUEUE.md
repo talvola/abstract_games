@@ -6,9 +6,72 @@ universe map and capability gaps live in `GAME_BACKLOG.md`; this file is the
 
 ---
 
-## ⭐ SESSION HANDOFF (read this first) — updated 2026-07-18c (AG-magazine TIER-2 wave 3 COMPLETE → 346 games)
+## ⭐ SESSION HANDOFF (read this first) — updated 2026-07-19 (AG-magazine wave 4: issues 17–24 scouted → 350 games)
 
-### ✅ AG-MAGAZINE TIER-2 WAVE 3 COMPLETE (2026-07-18c) → **346 games**, #344–346 + a smess bug fix
+### ✅ AG-MAGAZINE WAVE 4 COMPLETE (2026-07-19) → **350 games**, #347–350
+Erik kicked off "issues 17–24" — scouted + deduped all 8 new-series issues (PDFs re-downloaded to
+this session's scratchpad `agmag/`; same URL pattern, browser UA). Most headliners already existed
+(keil, tumbleweed, redstone, meridians, murus_gallicus, symple, blooms, agon, toguz_kumalak,
+urbino, glinski_chess, stigmergy, hostage_chess, dameo…). Picked 4, all article-verified BEFORE
+assigning (wave-3 lesson), all deep-QA'd + browser-verified + committed, one commit each:
+- **chigorin_chess #347** (`6b44c86`) — Betza 2002 (AG#24 Vehre): White 4 Knights + Chancellor vs
+  Black 4 Bishops + Queen; own-army promotion. FAST-PATH: three sources agree (CVP = FSF built-in
+  `chigorin` = AG#24); perft vs pyffish exact (26/416/11408/229973 + promo/castling positions),
+  60-game differential 0 mismatches (orchestrator re-ran it independently). Committed on the
+  anchor + render probe (standard square board).
+- **avalam #348** (`ca714ea`) — Deweys 1996 (AG#18 cover essay = complete rules): 49-cell shaved
+  9×9, move any whole stack 1 step onto occupied, cap 5, most tops, tie = honest DRAW. Geometry
+  triple-sourced (essay + publisher rulebook photo pixel-count + UCLouvain reference matrix). QA
+  MERGE 0-fixes: 400-game lockstep differential vs the actual UCLouvain avalam.py, 0 mismatches;
+  **the UCL 5-tower tiebreak is a COURSE convention, not official — 50/400 random games end tied,
+  honest-draw is load-bearing** (another entry in the honest-draw ledger).
+- **boom_zoom #349** (`34e0071`) — Bomba 2018 Hollandspiele (AG#21 Ploog article = full 2nd-ed
+  rules): whole-stack zoom/boom/bear-off, 10-square virtual goal rows incl. corner diagonals, no
+  splitting (brief said splits — sources overrode). QA MERGE 0-fixes: from-scratch oracle, 64,599
+  positions, 0 mismatches; **the magazine's two endgame-problem captions are SWAPPED** (both agents
+  proved it independently via pixel grids + counter accounting; solutions replay exactly under the
+  correct pairing — third "errata in the magazine itself" find after Smess/AG#9 and Croda/AG#10).
+- **accasta #350** (`bc1579e`) — Stein 1998 (spielstein.com official rules + Stein's own
+  never-published-AG17 article PDF, both saved in scratchpad `agmag/accasta_*`): hexhex-4 castles,
+  S/H/C up-to-1/2/3, compound split-K turns (realm/blooms sub-move pattern + End-turn), safe-stack
+  ≤3 of EACH colour, win = 3 stacks in enemy castle at turn START (2010 update: + no-move win;
+  article-only "no release at home" correctly omitted — later-official-supersedes precedent).
+  Pari variant option (rule-over-example on the official page's self-contradictory notation). Gold
+  anchor: full Stein–Williams 2004 sample-game replay. QA MERGE 0-fixes: independent re-impl,
+  61,110 positions / 320 games, 0 mismatches.
+**Wave-4 lessons:** (1) pre-fetching the designer's official rules INTO the scratchpad before
+launching the build (accasta) removes a whole failure mode; (2) an orchestrator gate run can catch
+a selftest mid-write — re-run before diagnosing (accasta "failure" was a half-written file);
+(3) magazine-printed problems keep paying as anchors AND keep containing errata (boom_zoom caption
+swap); (4) reference academic/course implementations are superb differential oracles but their
+CONVENTIONS aren't rules (UCLouvain tiebreak).
+**Dedup map i17–24 (everything else in those issues):** i17 zhadu(cover-brief only, no full
+rules)/agon/toguz_kumalak(culture article—screen for full rules if wanted)/quadlevel-3d-chess
+(archive)/katarenga(Parlett)/universe(Randolph)/SanQi(competition, full rules, 3-player)/ley-lines
+(Solomon, full rules pp.44-46); i18 avalam SHIPPED/keil/neue-dame(Gering)/traversi+sudden-death-
+grasshopper(Perkis)/marrakesh+wysiwyg(solitaire/cards—skip); i19 3d-xyz-chess(cover + FULL i24
+article)/super-chess(retrospective)/qua(3-player 3D connection—hard render)/labyrinth(Horn)/boxoff
+(solitaire—skip); i20 nxs(review only + i24 endgame articles—no full rules?)/schada(Horn)/fenix
+(Horn, full rules likely)/pagode(cover + i13/i15/i21-precursors—the old tier-2 Pagoda);
+i21 accasta+boom_zoom SHIPPED/mattock(Edwards, full article)/jersi(Borboleta, complex)/alfreds-
+wyke(Dekker)/rectangle-hex(i23 Back—possible hex option); i22 entrapment(cover, near-complete
+rules + Boardspace; 6x7 designer-recommended option)/jed(Thompson, full rules)/mirador(Perkis/van
+Wamelen)/chessboard-jetan(jetan option?)/kolcun-dice(screen); i23 winkel-advokat(cover, fairly
+complete)/cabale(cover, successor—endgame "broken" per editor)/meridians/domino-runners(draw
+randomness—screen); i24 chigorin SHIPPED/shape-chess(Ploog, full rules)/stymie(review)/evl
+(screen)/superschaak-fairy(screen)/nibelungenlied(simultaneous—defer w/ Mentalis)/pencil-paper-
+part-1(2 games—screen).
+**▶▶ NEXT (wave 5) — best-sourced candidates, screen article completeness first as always:**
+Entrapment (i22), Ley Lines (i17), 3D XYZ Chess (i19+i24 full article; 4×4×4 — qubic/raumschach
+layered-grid render precedent), Winkel-Advokat (i23), Shape Chess (i24), Jed (i22), Mirador
+(i22), Mattock (i21), SanQi (i17, 3-player), Fenix (i20). Plus the remaining OLD tier-2 pool
+(i2–i16: Lightning, Strat, MEM, Phalanx, Gle'x, Orbit, Domain, Vai lung thlân, Pagoda(+i21
+precursors article), Layli Goobalay, Ot-tjin, Hi-Jack, Sleeping Beauty Draughts, Super Halma,
+Mamba, Selus/Sadéqa, Chebache(Wayback needed)). Magazine PDFs 17–24 + accasta sources in this
+session's scratchpad (re-extractable: abstractgames.org/uploads/1/1/6/4/116462923/
+abstract_games_issue_<N>.pdf, browser UA).
+
+### (prior handoff) ✅ AG-MAGAZINE TIER-2 WAVE 3 COMPLETE (2026-07-18c) → **346 games**, #344–346 + a smess bug fix
 Picked 4 from the tier-2 list; TWO fell to the screen (the wave's big lesson: **"tier-2 = rules
 printed" claims need per-article verification** — read the article BEFORE assigning a build):
 - **Take the Brain (i9) = DUPLICATE**: it IS Smess #330 under its UK title (alt-title dedup — grep
