@@ -1,0 +1,14 @@
+{
+  "uid": "avalam",
+  "name": "Avalam",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Philippe Deweys (1996) — AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Stacking",
+  "tags": ["avalam", "avalam bitaka", "stacking", "towers", "belgium", "mensa select", "irregular board"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/9092/avalam",
+  "description": "Avalam Bitaka (Philippe Deweys, Belgium 1996; 1998 Mensa Select) — a pure stacking game on an irregular board of 49 depressions. 48 pieces start checkerboarded with the centre empty. Move ANY whole stack (either colour on top) one step in any direction onto an adjacent occupied cell; no stack may exceed 5. When no move remains, each stack scores for whoever tops it — most tops wins. Piece colours never matter until the final count."
+}
