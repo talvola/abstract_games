@@ -1,0 +1,34 @@
+{
+  "uid": "mattock",
+  "name": "Mattock",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Drew Edwards (2020); AGP module",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Territory",
+  "tags": ["hex", "territory", "connection", "tile-laying", "labyrinth"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/320505/las-medulas",
+  "options": {
+    "board": {
+      "choices": ["hex7", "hex5"],
+      "default": "hex7",
+      "label": "Board",
+      "labels": {
+        "hex7": "Full game (hex-7, 6 miners each)",
+        "hex5": "Short game (hex-5, 3 miners each)"
+      }
+    },
+    "setup": {
+      "choices": ["fixed", "freestyle"],
+      "default": "fixed",
+      "label": "Setup",
+      "labels": {
+        "fixed": "Fixed setup",
+        "freestyle": "Freestyle placement"
+      }
+    }
+  },
+  "description": "Mine a labyrinth of tiles through the rock — but no tile may ever touch more than three others, or the mine collapses. Miners walk the corridors, choke off territory, and evict lone enemy miners. If you cannot mine on your turn, you lose. By Drew Edwards (formerly 'Las Médulas'), featured in Abstract Games #21."
+}
