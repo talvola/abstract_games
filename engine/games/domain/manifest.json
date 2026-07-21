@@ -1,0 +1,26 @@
+{
+  "uid": "domain",
+  "name": "Domain",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Parker Brothers (1983); rules & analysis by Larry Back (Abstract Games #12) / AGP",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Territory",
+  "tags": ["polyomino", "tile-laying", "territory", "reversi", "othello", "flip", "square", "larry-back"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/754/domain",
+  "options": {
+    "variant": {
+      "choices": ["basic", "intermediate", "advanced"],
+      "default": "intermediate",
+      "label": "Rule version",
+      "labels": {
+        "basic": "First (common pool, no touch rule)",
+        "intermediate": "Second (own tiles, must touch — default)",
+        "advanced": "Third (flip ALL touched tiles)"
+      }
+    }
+  },
+  "description": "A tile version of Othello (Larry Back, Abstract Games #12; published in North America by Parker Brothers, 1983 — earlier Boomerang / Kiss / Chameleon in Europe). On a 9x9 board each player holds the same 26 reversible polyomino tiles (short/medium/long bars, angles, squares, small and large T's and crosses, covering 2 to 5 squares each). Place one of your tiles over empty squares; every opponent tile orthogonally touching it flips to your colour (diagonal touches never count). Except for the opening, a tile must touch at least one enemy tile. When neither player can move, whoever covers the most squares wins; an equal cover is an honest draw. Three rule versions: a common-pool basic game, the default intermediate game, and an advanced version where every touched tile — yours and your opponent's — flips."
+}
