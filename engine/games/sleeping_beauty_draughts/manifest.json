@@ -1,0 +1,14 @@
+{
+  "uid": "sleeping_beauty_draughts",
+  "name": "Sleeping Beauty Draughts",
+  "version": "1.0.0",
+  "author": "Ralf Gering (1986) / AGP port",
+  "engine_api": "1",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Checkers & draughts",
+  "tags": ["square", "draughts", "capture", "8x8", "checkers-variant", "promotion", "no-draw"],
+  "bgg_url": "https://www.abstractgames.org/",
+  "description": "Sleeping Beauty Draughts (Dornröschendame, Ralf Gering 1986): an 8x8 Checkers variant where you may never hold two ladies (kings) at once. A man reaching the back rank while you already have a lady becomes a frozen 'sleeping beauty' that cannot move or be captured — until you lose your lady, when a beauty wakes to replace her (and may make a two-square 'jump of joy'). Men capture enemy men forward and enemy ladies backward; ladies capture by Ferz-style replacement or by king-style jumping. There are no draws: leave the opponent with no legal move to win, scoring a point per piece left on the board."
+}
