@@ -1,0 +1,14 @@
+{
+  "uid": "vai_lung_thlan",
+  "name": "Vai lung thlân",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "AGP",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Mancala",
+  "tags": ["mancala", "sowing", "capture", "square", "traditional", "abstract"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/39620/vai-lung-thlan",
+  "description": "A Mizo (Mizoram, NE India) single-lap sowing game recorded by Shakespear (1912). Sow all stones from one of your six holes around the 12-hole board; land the last stone in an empty hole to capture it plus the unbroken chain of single stones behind it. Most stones wins; 30-30 is a draw."
+}
