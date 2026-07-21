@@ -6,9 +6,66 @@ universe map and capability gaps live in `GAME_BACKLOG.md`; this file is the
 
 ---
 
-## ⭐ SESSION HANDOFF (read this first) — updated 2026-07-19c (AG-magazine wave 6 → 358 games)
+## ⭐ SESSION HANDOFF (read this first) — updated 2026-07-21 (AG-magazine tier-2 wave 7 → 362 games)
 
-### ✅ AG-MAGAZINE WAVE 6 COMPLETE (2026-07-19c) → **358 games**, #355–358
+### ✅ AG-MAGAZINE WAVE 7 COMPLETE (2026-07-21) → **362 games**, #359–362
+Tier-2 pool screened by a scout agent (18 candidates from issues 2–16 + Winkel-Advokat i23) —
+**dedup came back CLEAN across all 18, none a clone.** Built the 4 best-anchored; all deep-QA'd,
+browser-verified, one commit each. NOTE: this session's scratchpad survived AND the prior
+session's `agmag/` was still on disk — re-fetched only the 11 missing issues (2–5,11–16,23).
+Session hit the **Fable 5 usage limit** early → Erik switched to **Opus 4.8**; all agents
+relaunched fine on Opus (co-author line = "Claude Opus 4.8 (1M context)").
+- **domain #359** (`a5f6c22`) — Larry Back / Parker Bros 1983 (AG#12): 9×9, 26 reversible
+  polyomino tiles/side, orthogonal touch-flip (NOT Reversi — no outflanking/lines), most-covered
+  wins, honest draw; basic/intermediate/advanced options. QA MERGE 0 fixes: independent tile-set
+  reconstruction cell-for-cell + from-scratch orbit oracle reproduced 1,149 raw / 171 symmetry
+  opening moves (sym-diff 0). palette + piece.shape:"fill". BGG 754.
+- **vai_lung_thlan #360** (`9f648b4`) — Mizo single-lap sowing (Shakespear 1912; AG#12): 2×6/5,
+  single-lap, origin-inclusive loop (12-seed always captures), backward chain-of-singles capture,
+  30-30 honest draw. QA MERGE 0 fixes: sowing orientation PINNED by brute-forcing the printed
+  endgame (only one loop replays 4/2/5/1/6 to the 30-30 terminal). oware render. BGG 39620.
+- **sleeping_beauty_draughts #361** (`6c87e8f`) — Dornröschendame (Gering 1986; AG#14): 8×8
+  draughts, forward-men/backward-lady capture, max-majority by count, one-lady rule w/ frozen
+  "sleeping beauty" (label-only piece), wake-on-lady-loss + jump-of-joy, Royal Privilege,
+  anti-loop, piece-count scoring. QA MERGE 0 fixes: all 5 composed problems pixel-read from
+  figures + replayed to printed results (incl. P3 "Gundi" 37-move + P4/P5 zugzwangs); beauty
+  owner-by-rank confirmed. draughts render. No BGG (magazine-only).
+- **ley_lines #362** (`7cac2ad`) — Eric Solomon 2019 hex route-finding (AG#17): 18×18 pointy-top
+  hex, random zone-quota deal (has_randomness), ring step/jump-chain, complete-line×2 bonus gated
+  on a preceding step, honest draw. QA MERGE-WITH-FIX: resolved 63-vs-64 stones — article says
+  63; phantom 64th (false blob from the "2" label at empty (10,8), off both ley-lines) removed
+  from selftest. polygons 324-hex + zone tints + ring-on-stone label. Non-blocking: "to or from
+  a vacant cell" step wording ambiguous, permissive reading documented. Magazine-only.
+**Wave-7 lessons:** (1) tier-2 dedup was clean — the traditionals (Vai lung/Sleeping Beauty)
+are genuinely distinct from our existing mancala/draughts families (verified vs closest rules.md);
+(2) a game whose sowing/geometry is view-ambiguous in prose can be PINNED by brute-forcing a
+printed problem against all orientations (Vai lung) — stronger than trusting the CW/CCW label;
+(3) figure-derived stone counts can carry false blobs from nearby numeric labels (Ley Lines
+64→63) — cross-check the printed count; (4) my pinchtab smoke helper must click QUICK PLAY
+before typing in the search box (else it types into the login email field → "no cards" false alarm).
+
+### ▶▶ NEXT (wave 8) — build-ready bench from the wave-7 scout (full report in
+### scratchpad/agmag/wave7_scout.md; all sources on disk or one fetch away):
+1. **Orbit** (i12 `12*`, Steven Meyers) — 16×16, 8-way groups, half-orbit=no-play zone / orbit=
+   capture-enclosed, territory scoring, pie rule. Build the Half-Prohibition variant. Moderate
+   (enclosure topology + prohibited-zone state; needs ply cap). Rules issue_12.txt L3184-3222;
+   diagrams+puzzle L3229-3339.
+2. **Winkel-Advokat** (i23, RESCUED from defer) — French Schmidt rules at scratchpad/winkel_fr.pdf
+   /.txt (+ figures winkelfr_pg-2.png). 2p rook-detour drop on a numbered board + orthogonal
+   checkers-jump capture. Residual gap: exact 8×8 value grid (concentric rings 2/4/8/16/32 —
+   pixel-read a straight-on board photo: eBay 386603904922, spiele-check.de/2839).
+3. **Hi-Jack** (i14 `14*`, Barrie Evans) — 8×8 stack-influence placement, piece.stack render,
+   two annotated sample games as anchors (issue_14.txt L2039-2117 rules; games L2121-2607).
+4. **Sadéqa** (i16 `16*`) + **Ot-tjin** (i14 `14*`) + **Super Halma** (i15 `15*`) + **Layli
+   Goobalay** (i13 `13*`) — the remaining bench (2 mancalas, a relay-fish mancala, a long-leap
+   Halma). All build-ready; details in wave7_scout.md.
+DEFER pool (need a fetch or new render primitive): Mamba (mambagame.com setup diagram), Selus
+(build Sadéqa instead), Lightning (needs a NEW arc-mark Board.jsx primitive), MEM (reactive
+"blocking announce" breaks move-in-legal_moves), Pagoda (heaviest, no anchor), Gle'x/Phalanx
+(new render + weak anchors), Strat (fort geometry diagram-only), Chebache (rules recovered to
+scratchpad/chebache_rules.html but proprietary zigzag board).
+
+### (prior handoff) ✅ AG-MAGAZINE WAVE 6 COMPLETE (2026-07-19c) → **358 games**, #355–358
 All 4 staged candidates built + adversarially deep-QA'd + browser-verified, one commit each.
 NOTE: old-session scratchpads did NOT survive this time (/tmp cleared) — all agmag sources
 re-downloaded to this session's scratchpad `agmag/` (issues 17/19/22/24 + sanqi_sdg.pdf +
