@@ -1,0 +1,20 @@
+{
+  "uid": "ley_lines",
+  "name": "Ley Lines",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Eric Solomon (2019); Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": true,
+  "hidden_info": false,
+  "category": "Capture / annihilation",
+  "tags": ["hex", "capture", "ring", "route-finding", "random-setup"],
+  "options": {
+    "num_stones": {
+      "choices": [54, 63, 72],
+      "default": 54,
+      "label": "White stones dealt"
+    }
+  },
+  "description": "Ley Lines (Eric Solomon, 2019): on an 18x18 field of hexagons, white stones are scattered at random (>=6 per zone). Your ring single-steps around the board, and when it surrounds a stone it jumps along a straight ley line to the next stone, capturing every white one it visits. Sweep an entire line in one turn (after a step) to score it double. Highest score wins."
+}
