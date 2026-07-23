@@ -1,0 +1,27 @@
+{
+  "uid": "ot_tjin",
+  "name": "Ot-tjin",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Mancala",
+  "tags": ["mancala", "sowing", "relay", "capture", "square", "traditional", "borneo", "abstract"],
+  "bgg_url": "https://mancala.fandom.com/wiki/Aw-li_On-nam_Ot-tjin",
+  "options": {
+    "seeds": {
+      "choices": ["2", "3", "4", "5"],
+      "default": "3",
+      "label": "Seeds per hole at start",
+      "labels": {
+        "2": "2 seeds",
+        "3": "3 seeds (most common)",
+        "4": "4 seeds",
+        "5": "5 seeds (make-fish variant)"
+      }
+    }
+  },
+  "description": "Ot-tjin (Aw-li On-nam Ot-tjin): a relay-sowing 'make fish' Mancala of the Penihing people of Central Borneo, recorded by Lumholtz (1920). Two rows of nine holes plus a store at each end; 2-5 seeds per hole (3 common, 5 the challenging make-fish variant). Pick up a hole and sow clockwise; if the last seed lands in an occupied hole, lift it and sow again, on and on, until it lands in an empty hole (nothing caught) or brings a hole up to the starting count (a 'fish' -> your store). Cannot move and your opponent scoops the rest. Most fish wins; an equal catch is a draw (a genuine impasse is 'no result')."
+}
