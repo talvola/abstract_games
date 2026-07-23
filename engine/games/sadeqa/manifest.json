@@ -1,0 +1,13 @@
+{
+  "uid": "sadeqa",
+  "name": "Sadéqa",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "AGP",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Mancala",
+  "tags": ["mancala", "sowing", "multi-lap", "capture", "traditional", "africa", "ethiopia", "abstract"],
+  "description": "Sadéqa -- a two-row Ethiopian mancala of the Selus family, played by the Jimma and written up by Ralf Gering (Abstract Games #16, 2003). Sow counter-clockwise in multi-lap fashion across 20 holes (four seeds each). Land the last seed on an opponent hole of three to spear a warana you own; land it in an opponent's warana to capture and earn a bonus move. Score = captured seeds plus seeds in your warana; most points wins, an equal split is a draw."
+}
