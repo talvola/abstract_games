@@ -1,0 +1,13 @@
+{
+  "uid": "super_halma",
+  "name": "Super Halma",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Stephen Perkis (2003) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Positional",
+  "tags": ["race", "jump", "leaping", "halma", "abstract-games-magazine"],
+  "description": "Super Halma (Stephen Perkis, Abstract Games issue 15, 2003) -- a 10x10 Halma with a long-range jump. Each player has 19 pieces packed into a staircase 'home camp'; White (player 0, top-left) and Black (player 1, bottom-right) sit in diagonally opposite corners. On your turn you either STEP one piece to an adjacent empty square, or JUMP: leap over ANY single piece (friend or foe -- nothing is captured) that lies k empty squares away in a straight line, landing the same k empty squares beyond it (k = 0 is the ordinary Halma jump), and you may chain further jumps, stopping where you choose. Pieces may enter and leave both camps freely. You win by occupying every square of the enemy camp, with a squatter guard so a parked enemy piece cannot spoil the win. A no-progress ply cap forces a draw, guaranteeing termination."
+}
