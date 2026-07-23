@@ -1,0 +1,21 @@
+{
+  "uid": "hijack",
+  "name": "Hi-Jack",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Barrie Evans (1998); Abstract Games issue 14, Summer 2003",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Territory",
+  "tags": ["square", "stacking", "territory", "placement"],
+  "bgg_url": "https://www.boardgamegeek.com/boardgame/17862/hi-jack",
+  "options": {
+    "size": {
+      "choices": [6, 8, 10],
+      "default": 8,
+      "label": "Board size"
+    }
+  },
+  "description": "Barrie Evans' territorial stacking game: place pieces (they never move) whose stacks project 'territorial strength' over the board. Out-strength a square to place there; out-strength an opponent stack (by its height) to hi-jack it. Score unoccupied territory plus hi-jacked stacks."
+}
