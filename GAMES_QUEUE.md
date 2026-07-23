@@ -6,7 +6,74 @@ universe map and capability gaps live in `GAME_BACKLOG.md`; this file is the
 
 ---
 
-## ⭐ SESSION HANDOFF (read this first) — updated 2026-07-21 (AG-magazine tier-2 wave 7 → 362 games)
+## ⭐ SESSION HANDOFF (read this first) — updated 2026-07-22 (AG-magazine tier-2 wave 8 → 366 games)
+
+### ✅ AG-MAGAZINE WAVE 8 COMPLETE (2026-07-22) → **366 games**, #363–366
+Built the 4 best-anchored games off the wave-7 scout bench; all deep-QA'd (independent adversarial
+agent + fresh source re-derivation), browser-verified, one commit each. NOTE: this session's
+scratchpad started empty but the wave-7 session's `agmag/` (issue texts 2–24 + PDFs 11–16,23 +
+figures) survived on disk at the prior session dir — copied forward, no re-fetch needed. Ran on
+**Opus 4.8** throughout (co-author line "Claude Opus 4.8 (1M context)"); no model caps hit.
+- **super_halma #363** (`012569d`) — Stephen Perkis 10×10 long-range-jump Halma (AG#15): 19/side
+  in 180°-symmetric staircase camps (5,5,4,3,2); step (8-way) or SUPER-JUMP (mirror-hop over any
+  one piece any distance, chainable, no capture); camps enterable/exitable; win = occupy enemy camp
+  (+squatter guard). Jump movegen = flood-fill of reachable landings (pure relocation) to avoid
+  chain blowup. QA MERGE 0 fixes: camps decoded from AG#15 p.12 fig (OCR "s" rejected); flood-fill
+  verified SOUND+COMPLETE vs an independent path enumerator over 12k positions (0 mismatch); frozen
+  initial 40 moves (21 step + 19 jump). Small-print anti-spoiling rules documented-simplified.
+- **hijack #364** (`a8b235f`) — Barrie Evans 1998 stack-influence territory (AG#14): 8×8 (size opt),
+  place-only stacks projecting strength (orth h / diag max(0,h-2), top-piece controls, far-ray
+  blocking); place on empty (out-strength) or attack an opp stack (≥height+def) = "hi-jack"; score
+  dominated empties + held hi-jacks; anti-mirror "switch" action. piece.stack render. QA
+  MERGE-WITH-FIX: geometry re-derived from p.18 dot diagrams; BOTH sample games replay (47+88
+  half-moves); FIX = "switch" now resets the pass counter (pass→switch→pass wrongly ended game).
+  BGG 17862.
+- **ot_tjin #365** (`3e2a232`) — Penihing/Borneo make-fish mancala (Lumholtz 1920 / Gering; AG#14):
+  2×9 + store/side, clockwise multi-lap relay, "gok"/empty ends, "fish" = hole reaching start-count
+  → store (1/move); no-move→scoop-all; impasse = no-result/replay (honest draw). seed opt 2/3/4/5
+  (dflt 3, 5=make-fish). QA MERGE 0 fixes: convention PINNED by brute force (1 of 16 replays the
+  printed 56-move endgame). **Build agent OVERRODE brief**: the solution's !/? are chess move-QUALITY
+  marks, NOT fish (endgame board = 10 seeds; 3 fish=15 impossible) → line is a capture-less draw;
+  confirmed 3 ways + 567,908-move differential. (QA caught the build agent's *report* overstating
+  "no fish reachable at all" — true only for South's optimal line — but the shipped code/rules are
+  correct.) BGG none.
+- **sadeqa #366** (`bd52fdb`) — Jimma/Ethiopia warana-ownership mancala (Pankhurst / Gering; AG#16):
+  2×10, 4 seeds each, CCW multi-lap; warana (owned hole) created only on opp side (opp 3→4; own
+  →4 relays per Sulus Nishtaw); last-seed-into-opp-warana captures seed+1 (or 1 if empty) + bonus
+  move; score = captured + own-warana seeds; warana tinted by owner. QA MERGE 0 fixes: rules
+  re-derived from AG#16 (3 rule layers) vs independent sower over 300 games (0 mismatch); seed
+  conservation=80; honest-draw verified. **Build agent OVERRODE brief**: the page's 2 capture
+  problems are 3×6 Selus/Sulus, NOT Sadéqa (no printed Sadéqa problem) → anchor = a constructed
+  3-warana turn capturing 6. BGG none.
+**Wave-8 lessons:** (1) two build agents OVERRODE the brief from the source (Ot-tjin !/?-as-quality,
+Sadéqa problems-are-Selus) — the "sources override the brief" backbone keeps earning its keep;
+(2) a QA agent flagged a build agent's SELF-REPORT overstatement that was NOT in the shipped files
+(Ot-tjin "no fish reachable at all") — worth checking report claims vs disk, but code was correct;
+(3) prior-session `agmag/` survived at the sibling session scratchpad dir — always check
+`/tmp/claude-1000/-home-erik-abstract-games/*/scratchpad/agmag` before re-fetching; (4) the flood-fill
+"reachable-landing set" trick makes long-range no-capture jump games (Super Halma) tractable and is
+provably complete since a capture-less jump is pure relocation over a static obstacle set.
+
+### ▶▶ NEXT (wave 9) — remaining build-ready bench (sources on disk in the wave-7 `agmag/`):
+1. **Orbit** (i12 `12*`, Steven Meyers) — 16×16, 8-way groups, half-orbit=no-play zone / orbit=
+   capture-enclosed, Go-like end (dead-stone removal) + shared-territory scoring, pie rule. Build
+   the Half-Prohibition variant. HEAVIER than a normal wave slot (enclosure topology + Go-style
+   scoring); give it a DEDICATED solo build, not a parallel slot. Rules issue_12.txt L3184-3222;
+   diagrams+puzzle L3229-3339 (puzzle = "White to play and win").
+2. **Winkel-Advokat** (i23, RESCUED) — French Schmidt rules at scratchpad/winkel_fr.pdf/.txt (+
+   figures winkelfr_pg-2.png). 2p rook-detour drop on a numbered board + orthogonal checkers-jump
+   capture. Residual gap: exact 8×8 value grid (concentric rings 2/4/8/16/32 — pixel-read a
+   straight-on board photo: eBay 386603904922, spiele-check.de/2839).
+3. **Layli Goobalay** (i13 `13*`) — Somali 2×12 (size opt), Uur owned-scoring-hole mancala. Weakest
+   mancala anchor (no printed problem) but complete rules; low effort. issue_13.txt L1127-1228.
+DEFER pool (need a fetch or new render primitive): Mamba (mambagame.com setup diagram), Selus
+(built Sadéqa instead — same design, 2 boards), Lightning (needs a NEW arc-mark Board.jsx
+primitive), MEM (reactive "blocking announce" breaks move-in-legal_moves), Pagoda (heaviest, no
+anchor), Gle'x/Phalanx (new render + weak anchors), Strat (fort geometry diagram-only), Chebache
+(proprietary zigzag board). After this bench the AG-magazine tier-2 vein is ~exhausted — next big
+seam is a fresh scout of a NEW source (BGG abstract top-N gaps, or issues not yet scouted).
+
+### (superseded) wave-7 NEXT bench — all 4 top picks now BUILT (#363–366); only items above remain.
 
 ### ✅ AG-MAGAZINE WAVE 7 COMPLETE (2026-07-21) → **362 games**, #359–362
 Tier-2 pool screened by a scout agent (18 candidates from issues 2–16 + Winkel-Advokat i23) —
@@ -43,27 +110,6 @@ printed problem against all orientations (Vai lung) — stronger than trusting t
 (3) figure-derived stone counts can carry false blobs from nearby numeric labels (Ley Lines
 64→63) — cross-check the printed count; (4) my pinchtab smoke helper must click QUICK PLAY
 before typing in the search box (else it types into the login email field → "no cards" false alarm).
-
-### ▶▶ NEXT (wave 8) — build-ready bench from the wave-7 scout (full report in
-### scratchpad/agmag/wave7_scout.md; all sources on disk or one fetch away):
-1. **Orbit** (i12 `12*`, Steven Meyers) — 16×16, 8-way groups, half-orbit=no-play zone / orbit=
-   capture-enclosed, territory scoring, pie rule. Build the Half-Prohibition variant. Moderate
-   (enclosure topology + prohibited-zone state; needs ply cap). Rules issue_12.txt L3184-3222;
-   diagrams+puzzle L3229-3339.
-2. **Winkel-Advokat** (i23, RESCUED from defer) — French Schmidt rules at scratchpad/winkel_fr.pdf
-   /.txt (+ figures winkelfr_pg-2.png). 2p rook-detour drop on a numbered board + orthogonal
-   checkers-jump capture. Residual gap: exact 8×8 value grid (concentric rings 2/4/8/16/32 —
-   pixel-read a straight-on board photo: eBay 386603904922, spiele-check.de/2839).
-3. **Hi-Jack** (i14 `14*`, Barrie Evans) — 8×8 stack-influence placement, piece.stack render,
-   two annotated sample games as anchors (issue_14.txt L2039-2117 rules; games L2121-2607).
-4. **Sadéqa** (i16 `16*`) + **Ot-tjin** (i14 `14*`) + **Super Halma** (i15 `15*`) + **Layli
-   Goobalay** (i13 `13*`) — the remaining bench (2 mancalas, a relay-fish mancala, a long-leap
-   Halma). All build-ready; details in wave7_scout.md.
-DEFER pool (need a fetch or new render primitive): Mamba (mambagame.com setup diagram), Selus
-(build Sadéqa instead), Lightning (needs a NEW arc-mark Board.jsx primitive), MEM (reactive
-"blocking announce" breaks move-in-legal_moves), Pagoda (heaviest, no anchor), Gle'x/Phalanx
-(new render + weak anchors), Strat (fort geometry diagram-only), Chebache (rules recovered to
-scratchpad/chebache_rules.html but proprietary zigzag board).
 
 ### (prior handoff) ✅ AG-MAGAZINE WAVE 6 COMPLETE (2026-07-19c) → **358 games**, #355–358
 All 4 staged candidates built + adversarially deep-QA'd + browser-verified, one commit each.
