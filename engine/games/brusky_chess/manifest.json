@@ -1,0 +1,14 @@
+{
+  "uid": "brusky_chess",
+  "name": "Brusky's Hexagonal Chess",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Yakov Brusky (1966) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["hex", "chess", "variant", "historic"],
+  "bgg_url": "https://www.chessvariants.com/rules/bruskyshexagonalchess",
+  "description": "Yakov Brusky's 1966 Soviet hexagonal chess: 84 hexes with horizontal ranks and slanting files, three bishops on the three cell colours, ten pawns, castling two or three cells, and the two kings on opposite wings. Its pawns are the variant's signature — each has TWO forward directions, an enemy blocker in one blocks the other, and a pawn on its home rank also captures straight up the board."
+}
