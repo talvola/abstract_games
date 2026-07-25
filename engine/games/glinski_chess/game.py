@@ -56,7 +56,14 @@ WHITE, BLACK = 0, 1
 NAMES = {WHITE: "White", BLACK: "Black"}
 FILES = "abcdefghikl"          # no "j", per Gliński's official notation
 N = 5                          # hexhex side 6 -> coordinates in [-5, 5]
-PLY_CAP = 1000                 # defensive backstop; 50-move rule ends games first
+# Defensive termination backstop -- it must NEVER decide a game, or a live
+# position becomes a bogus "move limit" draw (and here that also erases the
+# 3/4-1/4 stalemate score). The 50-move rule is the real terminator; the cap is
+# only a guard. Bound: <=34 captures + <=180 pawn advances (18 pawns, longest
+# file 11 cells) = <=214 irreversible plies, with <=99 reversible plies in each
+# of the 215 gaps => a game cannot exceed 21,499 plies, so this cap is dead code.
+# It was 1000, which random play HIT in ~0.7% of games (measured; longest 1000+).
+PLY_CAP = 25000
 
 # --- directions (axial q,r; cube s = -q-r) ---------------------------------
 # Orthogonal = through cell edges (rook); listed N, NE, SE, S, SW, NW where
