@@ -6,7 +6,83 @@ universe map and capability gaps live in `GAME_BACKLOG.md`; this file is the
 
 ---
 
-## ⭐ SESSION HANDOFF (read this first) — updated 2026-07-22 (AG-magazine tier-2 wave 8 → 366 games)
+## ⭐ SESSION HANDOFF (read this first) — updated 2026-07-25 (AG-magazine tier-2 wave 9 → 369 games)
+
+### ✅ AG-MAGAZINE WAVE 9 COMPLETE (2026-07-25) → **369 games**, #367–369
+The whole wave-8 bench, cleared. 3 build agents in parallel (Orbit solo-heavy as staged), then an
+independent adversarial deep-QA agent each; **all three came back MERGE-WITH-FIX — every one found a
+real defect**, the best QA yield of any wave so far. Browser-verified, one commit each. Ran on
+**Opus 5 (1M)**; no model caps. Prior-session `agmag/` again survived at sibling scratchpad dirs
+(3 of them) — consolidated, zero re-fetch.
+- **layli_goobalay #367** (`d977e45`) — Somali Uur multi-lap mancala (Gering/AG#13 after Marin 1931).
+  2×12 dflt (6/8 opts, CW/CCW opt), relay sowing, capture on own-side empty when the opposite hole
+  holds 1/2/4+, **exactly-3 → Uur** (frozen owned PAIR spanning both rows, ends any move landing in
+  it), abar, no-legal-move end. **Convention pinned 1-of-16 by brute force** (build agent swept 8, QA
+  swept 16 incl. per-player numbering origins + skip-own-hole) — same trick as Vai lung thlân.
+  Anchors: all 3 published lines exact incl. annotations; + Mancala World's 3 numeric claims.
+  **ERRATUM #7:** printed "South wins by one point" is arithmetically impossible (96 seeds conserved,
+  each scored once ⇒ every margin EVEN; true margin 2). QA FIX: endless relay chains DO occur
+  (~0.04% of moves at 2×6, periods to 27,036 > the old LAP_CAP 20,000) so the outcome depended on a
+  magic constant — now resolves by first repeated (hand, board) config ⇒ provably periodic ⇒ abar.
+  Mutation 23/23. BGG 39489.
+- **winkeladvokat #368** (`108f01e`) — Roland Siegers / Schmidt Spiele 1986 rook-detour scoring game,
+  2p subset of 2-4p. **RESEARCH GATE cleared:** the 64 printed values sourced from 3 photos of 3
+  physical copies (BGG pic4768412 + pic431977 + AG#23 cover) = concentric **2/4/8/16**
+  (`2**(1+min(c,r,7-c,7-r))`), blank colour-coded corners, total 288 — **the "32" repeated by German
+  review sites is REFUTED**. Build agent also found the **publisher's German sheet**
+  (spielanleitung.com id=2051, md5-confirmed by QA), which settles that a capture is a WHOLE TURN
+  ⇒ **AG#23's cover note is wrong** (Akron precedent). Octagonal cells separated by diamonds ⇒
+  orthogonal-only jumps (primary-source proof QA found, better than the derived-game argument).
+  QA FIX: `apply_move` accepted illegal moves (leg tunnelling through a piece; diagonal 2nd leg) —
+  fuzz-proven over ~16M strings post-fix. Mutation 12/12. Termination PROVED, cap dead code.
+  BGG 2473. Orchestrator swapped its red ring tints for a neutral gold ramp (collided with seat 0).
+- **orbit #369** (`02945a0`) — Steven Meyers 2000 Half-Prohibition Orbit (AG#12 + the designer's own
+  Wayback rules page, which POSTDATES the article and supersedes it). 16×16 (13/11/9 opts), 8-way
+  groups, orbit = captures + prohibits, half-orbit (group + ONE board side) = prohibits only, shared
+  territory scores for neither, honest draw, pie rule + the designer's refined B/W/B opening as an
+  option, anti-mirror rule. **The build agent OVERRODE my brief on the CORE algorithm and was right:**
+  enclosure = OR the region's edge memberships into a side mask — 0 bits = orbit, exactly 1 = half-
+  orbit, **≥2 = nothing** (a 2-side region is a "quarter-orbit", other family members only) ⇒ a bare
+  corner is never enclosed. Anchored on the designer's TWO FULLY SCORED positions, re-derived by QA
+  from the artwork with its own pixel reader + scorer: 58–38 w/ exactly the 9 named shared points and
+  the 14 orange dame (137+96+9+14=256), and 72–27–25. The lenient reading gets all of it wrong.
+  **ERRATUM candidate #8:** the puzzle solution's "12-stone White group along the right side" is a
+  slip for the LEFT. QA REFUTED one build-agent claim (Diagram 4's wall is ONE 13-stone group, not
+  two disjoint ones — rules.md corrected; code still right, diffed vs a per-group test over 8
+  diagrams + 12k positions, 0 divergences) and closed 4 selftest gaps (apply_move's capture path was
+  never asserted; render() never checked on a tint-bearing position). Mutation 26/27, both survivors
+  provably equivalent. **Known limitation:** ~97 MCTS iterations vs a 257-move root at 3s ⇒ bot is
+  near-random in the 16×16 opening (inherent; smaller boards are options, AGP_BOT_MAX_TIME can rise).
+  BGG 23234.
+**Platform:** new **`board.labels`** RenderSpec primitive (`f8c464e`) — text PRINTED ON a cell for
+numbered scoring boards; centred+faint when empty, shrinks to the bottom-right corner under a piece
+so value and disc both read. Documented in SPEC.md next to `board.tints`.
+**Wave-9 lessons:** (1) **3/3 QA verdicts were MERGE-WITH-FIX** — briefs and build agents are both
+fallible; the adversarial pass is where the value is; (2) an ORCHESTRATOR brief can be wrong about
+the core algorithm (Orbit's corner rule) — telling agents "sources override the brief" caught it;
+(3) two waves running, two defects of the same class: **an outcome silently depending on a magic
+constant** (Layli's LAP_CAP) — add "is any cap/limit outcome-load-bearing? measure how often it
+fires" to every QA brief; (4) a build agent can reach the right CODE via a wrong REASON (Orbit's
+two-disjoint-groups claim) — QA must check the justification, not just the behaviour; (5) a
+**research gate** ("stop and report rather than invent") turned the weakest-anchored candidate into
+the best-sourced one — reuse it whenever board data must be pixel-read from a photo.
+
+### ▶▶ NEXT (wave 10) — **the AG-magazine tier-2 vein is now EXHAUSTED. Scout a NEW source first.**
+Every build-ready AG candidate is shipped. What remains from AG needs a fetch or a new primitive
+(DEFER pool below). So wave 10 starts with a **scout agent**, not build agents. Candidate seams,
+best first: (a) **BGG abstract top-N gap analysis** — pull the BGG abstract-strategy ranking and diff
+it against `GAME_STATUS.md` (369 games; most famous abstracts are already in); (b) AG magazine
+**issues not yet scouted** — 1, 6-10, 18, 25+ (2-5, 11-17, 19-24 are done; issue texts+PDFs for
+2-24 are on disk in the wave-7/8/9 `agmag/`); (c) the **DEFER pool** below, several of which only
+need one fetch; (d) other traditional-games ethnography (Murray/Bell/Russ) for the mancala/tafl/
+morris families. Deliverable from the scout: a deduped, sourced, anchor-rated bench of ~6-8.
+DEFER pool (unchanged, needs a fetch or a new render primitive): Mamba (mambagame.com setup
+diagram), Selus (built Sadéqa instead — same design, 2 boards), Lightning (needs a NEW arc-mark
+Board.jsx primitive), MEM (reactive "blocking announce" breaks move-in-legal_moves), Pagoda
+(heaviest, no anchor), Gle'x/Phalanx (new render + weak anchors), Strat (fort geometry
+diagram-only), Chebache (proprietary zigzag board).
+
+### (superseded) wave-9 bench — all 3 BUILT (#367–369). Original staging kept below for provenance.
 
 ### ✅ AG-MAGAZINE WAVE 8 COMPLETE (2026-07-22) → **366 games**, #363–366
 Built the 4 best-anchored games off the wave-7 scout bench; all deep-QA'd (independent adversarial
@@ -54,7 +130,7 @@ Sadéqa problems-are-Selus) — the "sources override the brief" backbone keeps 
 "reachable-landing set" trick makes long-range no-capture jump games (Super Halma) tractable and is
 provably complete since a capture-less jump is pure relocation over a static obstacle set.
 
-### ▶▶ NEXT (wave 9) — remaining build-ready bench (sources on disk in the wave-7 `agmag/`):
+### (done) wave-9 bench as originally staged — remaining build-ready bench (sources in `agmag/`):
 1. **Orbit** (i12 `12*`, Steven Meyers) — 16×16, 8-way groups, half-orbit=no-play zone / orbit=
    capture-enclosed, Go-like end (dead-stone removal) + shared-territory scoring, pie rule. Build
    the Half-Prohibition variant. HEAVIER than a normal wave slot (enclosure topology + Go-style
