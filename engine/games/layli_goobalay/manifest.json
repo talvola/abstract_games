@@ -1,0 +1,28 @@
+{
+  "uid": "layli_goobalay",
+  "name": "Layli Goobalay",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "AGP",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Mancala",
+  "tags": ["mancala", "sowing", "multi-lap", "relay", "capture", "traditional", "africa", "somalia", "abstract"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/39489/layli-goobalay",
+  "options": {
+    "size": {
+      "choices": [12, 8, 6],
+      "default": 12,
+      "label": "Holes per side",
+      "labels": { "12": "12 (Marin's long board)", "8": "8", "6": "6 (the common modern board)" }
+    },
+    "direction": {
+      "choices": ["clockwise", "anticlockwise"],
+      "default": "clockwise",
+      "label": "Sowing direction",
+      "labels": { "clockwise": "Clockwise (Marin)", "anticlockwise": "Anti-clockwise" }
+    }
+  },
+  "description": "Layli Goobalay (\"exercise with circles\") -- the Somali multiple-lap mancala, played with balls of dry camel dung in holes dug in the ground; recorded by G. Marin in 1931 and written up by Ralf Gering (Abstract Games #13, 2003). Sow clockwise, relaying out of every occupied hole until a ball dies in an empty one; land it in an empty hole on your own side and you sweep the hole opposite -- unless that hole holds exactly three, when the pair becomes an Uur (\"pregnancy\"), a frozen two-hole trap that nobody may empty and whose every future ball belongs to you. Most balls wins; an equal split is a draw."
+}
