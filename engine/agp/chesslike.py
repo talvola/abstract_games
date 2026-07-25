@@ -508,9 +508,18 @@ class ChessLike(Game):
         return False
 
     def _draw(self, state) -> bool:
-        return (state.halfmove >= 100 or state.ply >= self.PLY_CAP
+        if not (state.halfmove >= 100 or state.ply >= self.PLY_CAP
                 or self._insufficient(state.board)
-                or state.reps.get(self._poskey_state(state), 0) >= 3)
+                or state.reps.get(self._poskey_state(state), 0) >= 3):
+            return False
+        # A draw counter has fired -- but CHECKMATE ENDS THE GAME IMMEDIATELY
+        # (FIDE 5.1.1), so a mating move is not nullified by the 50-move rule, a
+        # threefold repetition or the ply-cap backstop. Without this, a mate
+        # delivered on the 100th reversible half-move scores 0-0. Stalemate needs
+        # no special case (it draws either way), so the extra move generation is
+        # confined to positions that are BOTH counter-triggered and in check.
+        return not (self.in_check(state.board, state.to_move)
+                    and not self._legal(state) and not self._drop_moves(state))
 
     def is_terminal(self, state) -> bool:
         if self._draw(state):

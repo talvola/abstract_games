@@ -233,6 +233,35 @@ def test_full_chess_perft_and_special_moves():
     assert game.is_terminal(s) and game.returns(s) == [-1.0, 1.0]
 
 
+def test_checkmate_outranks_draw_counters():
+    """A mating move is not nullified by a draw counter (FIDE 5.1.1).
+
+    ``ChessLike._draw`` used to be consulted BEFORE mate in legal_moves /
+    is_terminal / returns, so a checkmate delivered on the 100th reversible
+    half-move -- or in a thrice-repeated position -- scored 0-0. Reachable in
+    real play (any long reversible sequence ending in mate) and it silently
+    affected all 63 ChessLike variants, so it is pinned here.
+    """
+    import dataclasses
+    manifest, game = _load("chess")
+    s = game.initial_state()
+    for mv in ["5,1>5,2", "4,6>4,4", "6,1>6,3", "3,7>7,3"]:   # 1.f3 e5 2.g4 Qh4#
+        s = game.apply_move(s, mv)
+    assert game.is_terminal(s) and game.returns(s) == [-1.0, 1.0]
+
+    # Same mate, but with each draw counter tripped: still a win for Black.
+    for kw in ({"halfmove": 100}, {"ply": game.PLY_CAP},
+               {"reps": {**s.reps, game._poskey_state(s): 3}}):
+        mated = dataclasses.replace(s, **kw)
+        assert game.is_terminal(mated), kw
+        assert game.returns(mated) == [-1.0, 1.0], kw
+
+    # ...while a genuine counter-draw in a NON-mate position still draws.
+    quiet = dataclasses.replace(game.initial_state(), halfmove=100)
+    assert game.is_terminal(quiet) and game.returns(quiet) == [0.0, 0.0]
+    assert game.legal_moves(quiet) == []
+
+
 def test_berolina_pawns():
     manifest, game = _load("berolina")
     assert check(game, manifest, games=6).ok
