@@ -251,6 +251,7 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
       ? (x, y) => [px(SQRT3 * (x + y / 2)), px(1.5 * y)]
       : (x, y) => [px(x), px(board.height - 1 - y)]
   const tints = board.tints || {}                  // {cellId: colour} terrain fills
+  const labels = board.labels || {}                // {cellId: text} faint text PRINTED ON the cell (numbered scoring boards)
   const levels = board.levels || {}                // {cellId: int 1..4} per-cell build height (Santorini)
   const tiles = board.tiles || {}                  // {cellId: [[a,b]×4]} Tsuro path-tiles (notch pairs 0..7)
   const tracks = board.tracks || {}                // {cellId: [[a,b,colour]]} Trax colour-track tiles (edge-mids 0..3)
@@ -732,6 +733,17 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
               onMouseLeave={isTarget ? () => setHover((h) => (h === s.id ? null : h)) : undefined}
               style={{ cursor: clickable ? 'pointer' : 'default' }}>
               <polygon points={s.poly} fill={fill} stroke={stroke} strokeWidth={sw} />
+              {/* Text PRINTED ON the board itself (a numbered scoring board, e.g.
+                  Winkeladvokat's cell values). Centred and faint while the cell is
+                  empty; once a piece sits there it shrinks into the bottom-right
+                  corner so both the value and the piece stay readable. */}
+              {labels[s.id] != null && (piece
+                ? <text x={s.cx + (s.hw || s.r) * 0.55} y={s.cy + (s.hh || s.r) * 0.6}
+                    textAnchor="middle" dominantBaseline="central" pointerEvents="none"
+                    fontSize={s.r * 0.4} fill="#cdbf9c" opacity="0.8">{labels[s.id]}</text>
+                : <text x={s.cx} y={s.cy} textAnchor="middle" dominantBaseline="central"
+                    pointerEvents="none" fontSize={s.r * 0.62} fontWeight="bold"
+                    fill="#8f8674" opacity="0.9">{labels[s.id]}</text>)}
               {/* Footprint of the armed polyomino at the hovered anchor: the whole
                   tile reads as one shape before you commit to it. */}
               {isGhost && <polygon points={s.poly} fill={colors(currentPlayer).fill} opacity="0.5"

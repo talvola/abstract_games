@@ -212,6 +212,11 @@ Board-level optional fields: `board.lines` (cosmetic connecting lines/arcs — 2
 line, 3pt quadratic-Bézier arc, or N-pt polyline, each `[[x,y],…,"#colour"?]`),
 `board.overlay` (same format, drawn *over* cells — TwixT bridges, Surakarta
 loops), `board.tints` (`{cellId: "#colour"}` terrain fills),
+`board.labels` (`{cellId: "32"}` — text **printed on the board itself**, e.g. the
+per-cell point values of a numbered scoring board [Winkeladvokat]. Drawn centred
+and faint while the cell is empty; once a piece occupies the cell it shrinks into
+the bottom-right corner so value *and* piece both stay readable. Board furniture,
+never a piece — for text ON a piece use `piece.label`/`piece.glyph`),
 `board.levels` (`{cellId: <int 1..4>}` per-cell **build height** — drawn as
 stacked "wedding-cake" tiers for levels 1-3 with a blue **dome** cap at level 4
 and a small height badge, *under* any worker piece on that cell; the
