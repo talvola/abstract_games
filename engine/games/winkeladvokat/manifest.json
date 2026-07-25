@@ -1,0 +1,14 @@
+{
+  "uid": "winkeladvokat",
+  "name": "Winkeladvokat",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Roland Siegers (Schmidt Spiele, 1986); implementation AGP",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Territory",
+  "tags": ["square", "scoring", "numbered-board", "draughts-jump", "capture", "roland-siegers", "schmidt-spiele", "abstract-games-magazine"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/2473/winkeladvokat",
+  "description": "Roland Siegers' 1986 Schmidt Spiele scoring game (also L'avocat du diable / Devil's Advocate; later reworked on hexes as Cabale). The 8x8 board is printed with concentric rings of points — 2 on the rim, then 4, 8 and 16 on the central four squares. Your Avocat makes a WINKELZUG: a rook move over empty squares, a 90-degree turn, then another rook move — and you must drop one of your 25 Article tokens on the square where it turned, banking that square's number. Instead of moving the Avocat you may capture: one of your Articles jumps an orthogonally adjacent enemy Article into the empty square beyond, draughts-style, chaining as far as you like. Avocats neither capture nor are captured. The moment a player cannot move their Avocat the game ends; each player scores the numbers under their Articles plus one point per Article captured, and an equal total is an honest draw."
+}
