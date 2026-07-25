@@ -1,0 +1,31 @@
+{
+  "uid": "orbit",
+  "name": "Orbit",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Steven Meyers (2000) — implementation: Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Territory",
+  "tags": ["go-like", "territory", "encirclement", "square", "pie-rule", "capture"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/23234/orbit",
+  "options": {
+    "size": {
+      "choices": [9, 11, 13, 16],
+      "default": 16,
+      "label": "Board size",
+      "labels": { "9": "9×9", "11": "11×11", "13": "13×13", "16": "16×16 (standard)" }
+    },
+    "opening": {
+      "choices": ["pie", "refined"],
+      "default": "pie",
+      "label": "Opening balance",
+      "labels": {
+        "pie": "Pie rule — White may swap after Black's first move",
+        "refined": "Refined pie rule — Player 1 plays B/W/B, then Player 2 picks a colour"
+      }
+    }
+  },
+  "description": "Steven Meyers' Go variant without liberties or ko. Stones connect orthogonally AND diagonally; a group that seals off points together with one side of the board forms a half-orbit (the opponent may never play inside), and a group that seals points off entirely forms an orbit (captures the enemy stones inside as well). Two passes end the game; you score the vacant points inside your own formations, and points inside both players' formations count for nobody."
+}
