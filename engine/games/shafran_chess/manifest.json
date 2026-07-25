@@ -1,0 +1,14 @@
+{
+  "uid": "shafran_chess",
+  "name": "Shafran's Hexagonal Chess",
+  "version": "1.0.0",
+  "author": "Isaak Grigorevich Shafran (1939) / AGP port",
+  "engine_api": "1",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["hex", "chess", "variant", "castling"],
+  "bgg_url": "https://www.chessvariants.com/rules/shafrans-hexagonal-chess",
+  "description": "The Soviet hexagonal chess: Isaak Shafran's 1939 game (registered 1956, shown at the 1960 Leipzig Olympiad) on an irregular 70-cell hexagon — far closer to chess's 64 squares than Gliński's 91. Nine files, ten obliquely descending ranks, three bishops on the three colours, bishop-wise pawn captures, a first pawn move that reaches the middle of its own file (three cells on the centre files) with en passant on every cell crossed, and — uniquely among the classical hex chesses — castling, long or short, toward either rook."
+}
