@@ -1,0 +1,14 @@
+{
+  "uid": "starchess",
+  "name": "Starchess",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "László Polgár (Polgár Superstar Chess) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["hex", "chess", "variant", "setup-phase"],
+  "bgg_url": "http://www.polgarstarchess.com/Rules/ENRules.html",
+  "description": "László Polgár's commercial hex chess on a 37-cell hexagram with cells numbered 1-37. Only the five pawns start on the board: the king, queen, rook, bishop and knight are placed alternately by the players on their own back rank first, giving 14,400 different openings. There is no hex-diagonal movement at all — the rook moves only vertically, the bishop on the four oblique orthogonals, the queen on all six — and no castling or en passant."
+}
