@@ -6,7 +6,7 @@ universe map and capability gaps live in `GAME_BACKLOG.md`; this file is the
 
 ---
 
-## ⭐ SESSION HANDOFF (read this first) — updated 2026-07-25 (AG-magazine tier-2 wave 9 → 369 games)
+## ⭐ SESSION HANDOFF (read this first) — updated 2026-07-25 (hexagonal-chess wave 10 → 372 games)
 
 ### ✅ AG-MAGAZINE WAVE 9 COMPLETE (2026-07-25) → **369 games**, #367–369
 The whole wave-8 bench, cleared. 3 build agents in parallel (Orbit solo-heavy as staged), then an
@@ -67,15 +67,117 @@ two-disjoint-groups claim) — QA must check the justification, not just the beh
 **research gate** ("stop and report rather than invent") turned the weakest-anchored candidate into
 the best-sourced one — reuse it whenever board data must be pixel-read from a photo.
 
-### ▶▶ NEXT (wave 10) — **the AG-magazine tier-2 vein is now EXHAUSTED. Scout a NEW source first.**
-Every build-ready AG candidate is shipped. What remains from AG needs a fetch or a new primitive
-(DEFER pool below). So wave 10 starts with a **scout agent**, not build agents. Candidate seams,
-best first: (a) **BGG abstract top-N gap analysis** — pull the BGG abstract-strategy ranking and diff
-it against `GAME_STATUS.md` (369 games; most famous abstracts are already in); (b) AG magazine
-**issues not yet scouted** — 1, 6-10, 18, 25+ (2-5, 11-17, 19-24 are done; issue texts+PDFs for
-2-24 are on disk in the wave-7/8/9 `agmag/`); (c) the **DEFER pool** below, several of which only
-need one fetch; (d) other traditional-games ethnography (Murray/Bell/Russ) for the mancala/tafl/
-morris families. Deliverable from the scout: a deduped, sourced, anchor-rated bench of ~6-8.
+### ✅ HEXAGONAL-CHESS WAVE 10 COMPLETE (2026-07-25) → **372 games**, #370–372
+**Erik-directed new vein** (he picked it: chessvariants.com's Hexagonal category index). A scout
+screened all 276 index entries → 155 game pages → an 8-game bench; then 3 build agents in parallel,
+an independent adversarial deep-QA agent each, browser-verified, one commit each. **All 3 QA
+verdicts MERGE-WITH-FIX again** (4th wave running). Ran on **Opus 5 (1M)**; no model caps.
+Sources all saved at `scratchpad/hexchess/` (+ `starchess_scratch/`, `brusky_scratch/`,
+`shafran_scratch/`, `qa_shafran/`) — `entries.tsv` is the parsed index, `scout_report.md` the bench.
+- **shafran_chess #370** (`d04832e`) — Shafran 1939/1956, 70-cell irregular hexagon, files a–i +
+  oblique ranks 1–10. Glinski moves + McCooey pawn captures; **variable first pawn move by file
+  length** (d/e/f 3, b/c/g/h 2, a/i 1) w/ e.p. on EVERY crossed cell; **castling long or short**
+  toward either rook (only classical hex chess with it); stalemate = honest draw.
+  Build agent PROVED "Bishop on f1" is a typo **structurally — f1 is not a cell of this board**.
+  QA found a **4th source: Derzhanski's write-up of the original *Junyj texnik* report** (linked
+  from Wikipedia) which reprints sample games/studies/problems and states short castling outright
+  ⇒ converted an "override" into a citation. 3 transcription errata on that page found by brute
+  force (engine right). Anchors: independent file/rank reimplementation, **93,938 positions
+  lockstep 0 mismatches** (1,376 e.p. + 2,406 castlings + 1,708 promotions played); perft
+  42/1,706/75,494; all sample games + Baum's 8 studies replay. Selftest 945 checks; mutation 39/39.
+- **brusky_chess #371** (`794d752`) — Brusky 1966, 84 cells, **first HORIZONTAL-rank hex chess**
+  (12 leaning files a–l, kings on opposite wings). Pawns = the signature: TWO forward directions,
+  double step can't change direction, **an adjacent ENEMY blocker in one direction blocks the
+  other**, vertical-diagonal capture only from the home cell. Castling 2/3.
+  Build agent found+fixed **3 real bugs in its own code** (phantom e.p. after the vertical capture;
+  wrong e.p. victim when both cells behind the target hold a pawn; draw counters outranking mate)
+  **and reported that 2 of them were invisible to its own Jocly differential** (that oracle consumes
+  `state.ep` from the engine under test). QA rebuilt an e.p. oracle from move history and swept all
+  228 e.p. configurations. QA found a **new chessvariants erratum** (Bishop+Queen diagrams stop the
+  f4-g3-h2 ray one cell short at i1) — pinned in the selftest so a regression can't hide behind it —
+  and **overturned the insufficient-material JUSTIFICATION while keeping the code** (a corner has 5
+  king-neighbours ⇒ K+N vs K and K+B vs K mates genuinely exist; Jocly's wider rule is an error).
+  Mutation 29/30. **In axial space the ortho/diag/knight tables are byte-identical to Glinski's** —
+  only pawn vectors differ. That is the key finding for the future shared core.
+- **starchess #372** (`86b5472`) — László Polgár, 37-cell hexagram, cells numbered 1–37.
+  **NO hex-diagonal movement at all** (rook VERTICAL only, bishop = 4 oblique orthogonals, queen =
+  6); K/Q/R/B/N **placed alternately by the players** pre-play = 14,400 openings; no castling/e.p.
+  Placement reuses the reserve-tray drop primitive (**no UI change**); official numbers via
+  `board.labels`. Build agent found the **official rules .doc** (Downloads page) the scout missed;
+  **could not source a year ⇒ manifest carries NONE** (my "c. 2004" was unsourced), no BGG id ⇒
+  bgg_url = official rules page. QA found a **2nd independent oracle: Árpád Rusz's Zillions file**
+  (168/168 ortho + 216/216 knight edges; movegen rebuilt from its tables alone = 0 mismatches over
+  17,461 positions) which also **RESOLVED the one unsourced rule** (White places first).
+  Anchor = **all 56 published problems** (12 M1 + 16 M2 + 16 M3 + the 12 "Moremovers" QA extracted),
+  each solved in exactly the published length. Mutation 46/47. Selftest 198 checks.
+
+**Platform work this wave (orchestrator-owned):**
+- **NEW primitive `board: {type:"hex", cells:["q,r",…]}`** (`01ea5b7`) — explicit axial cell list,
+  the 3rd hex cell set beside hexhex(`size`) and `rhombus`. Unlocks irregular hex boards WITHOUT
+  falling back to `polygons` (keeps tints/labels/lines + `toPx`). Dead code for all 34 pre-existing
+  hex games. `render_ascii.py` taught the shape too — places glyphs at their true axial column
+  (x ~ 2q+r) because irregular boards have GAPS in a row; hexhex/rhombus output byte-identical.
+- **REAL BUG, 63 games: `ChessLike._draw()` outranked checkmate** (`60d5254`). A mate on the 100th
+  reversible half-move / in a threefold position scored 0-0. Reproduced on standard chess with
+  Fool's mate. Found by the **Starchess** QA agent in its own standalone package, which then
+  correctly flagged the shared core rather than editing outside its package. Fixed + non-vacuous
+  regression test in `tests/test_games.py`; 58/58 ChessLike selftests + 5/5 validates green.
+- **REAL BUG: Glinski/McCooey `PLY_CAP=1000` was outcome-load-bearing** (`0eed3ee`). Measured:
+  Glinski HITS it in 0.7% of random games (McCooey reaches 816). True bounds 21,499 / 17,099 ⇒
+  raised to 25000, now provably dead. Found by the **Shafran** QA agent as a cross-package finding.
+
+### ▶▶ NEXT (wave 11) — hex chess has 5 more build-ready games; then extract the shared core
+The scout's bench is **not exhausted** — full detail in `scratchpad/hexchess/scout_report.md`.
+Best first:
+1. **Hex Shogi 91** (Duniho) — hexhex-6, **no renderer work**. The Game Courier preset carries FULL
+   rule-enforcing GAME code (`scratchpad/hexchess/gc/hexshogi91.gcsettings`) = the best
+   machine-readable anchor on the bench. Drops already supported by our reserve primitive. M–L.
+2. **Xiang Hex** (L. Lynn Smith, 79 cells) — hex xiangqi; GC preset again carries Duniho's full
+   enforcing code. Needs the new `cells` primitive + `board.tints` for river/palace. M.
+3. **De Vasa's Hexagonal Chess** (1953, 81-cell rhombus) — **maps onto the EXISTING
+   `shape:'rhombus'`, zero renderer work**. S–M. Distinctness vs Brusky only MEDIUM (same
+   orientation + first rank) — build it for historic completeness, not novelty.
+4. **Mini Hexchess** (McCooey, 37 = hexhex-4) — nearly free; inherits mccooey_chess's movement.
+   Distinctness LOW-MEDIUM (honest: differs mainly in board size + array). S.
+5. **Wellisch's Hexagonal Chess** (1912 — the FIRST hex chess, **3 players**, 91 cells) — no
+   bishops, 3 knights, pawns capture forward, and an **army-takeover rule** (capture a mated king
+   and inherit its pieces). Complete ONLY via John Beasley's *Chess for three*, saved at
+   `scratchpad/hexchess/ext/beasley_chess_for_three.pdf` p.334. Anchor is weakest on the bench
+   (prose + a compiled Java applet). L. Build LAST.
+**Then: extract `agp/hexchesslike.py`.** glinski/mccooey are already ~65% duplicated and Brusky
+proved the ortho/diag/knight tables are identical in axial space — only "forward" differs. Core =
+`CELLS` + `FORWARD` + a `PIECES` table + PAWN/PROMOTION/CASTLING strategies (the ChessLike pattern).
+Do it AFTER these builds; the 4 existing selftests (945 + 155 + 198 + 257 + 409 checks) are the
+regression harness. Do NOT fold in Wellisch (3 seats + takeover), Hex Shogi (drops) or Xiang Hex
+(palace/river) — let those reuse only the geometry layer.
+**Two platform follow-ups QA raised (both real, neither a blocker):**
+- `Markdown.jsx` has **no table support** and **67 shipped `rules.md` files contain a table** — they
+  render as a paragraph of pipe characters. ~15 lines to fix. Highest-value platform chore.
+- `Board.jsx`'s axial→pixel is **pointy-top**, which has no vertical neighbour, so all the
+  vertically-filed hex chesses (Glinski, McCooey, Shafran) draw **30° off** every published diagram.
+  A `board.orientation:"flat"` option (`x=1.5q, y=√3(r+q/2)`, hex vertices rotated 30°) would fix
+  the whole family in one change. QA also recommends `board.labels` with cell names for all the hex
+  chesses (the move log speaks a notation the player cannot map to the board).
+**REJECTED from this vein** (don't re-scout): ~40 Charles Gilman "analogue-of-X" variants; all
+3D/hex-prism/geodesic/4D boards (2D renderer); the low-distinctness Glinski re-arrays (Haynie's,
+Chexs, Echexs, Full-house, Fool's, Falcon, Heroes, "Glinski Symmetric"); and for UNRECOVERABLE
+rules — Snowflake Xiang Qi (dead tinyurl setup diagrams), Asteryx ("snaking" moves, GIFs only),
+Hexetera (self-contradictory King), Toccata (Long-Leaper listed, never described), HexCaïssa and
+King's Color (Freeling, but neither page states piece moves/board size/win condition).
+**DEFER from this vein:** Hexabeast/Liu4chu4 (plays on SHAFRAN's board ⇒ cheap now, but the pushing
+mechanic is diagram-only), Panal (Overby, 61 — complete + a published sample game, but the Gunne's
+"shoot" = remove an enemy WITHOUT moving has no move-string convention; needs an orchestrator call),
+Chexs/Echexs (6-player army takeover — cheap follow-ons IF Wellisch works), Hexiang Qi (Hancock, 91,
+complete prose but no enforcing preset — second-wave hex xiangqi).
+
+### (superseded) wave-10 AG guidance — the AG-magazine tier-2 vein remains EXHAUSTED
+Kept for provenance: every build-ready AG candidate is shipped; what remains needs a fetch or a new
+primitive (DEFER pool below). If returning to AG rather than hex chess, start with a **scout agent**:
+(a) **BGG abstract top-N gap analysis** — diff the BGG abstract-strategy ranking against
+`GAME_STATUS.md`; (b) AG magazine **issues not yet scouted** — 1, 6-10, 18, 25+ (2-5, 11-17, 19-24
+are done; issue texts+PDFs for 2-24 are on disk in the wave-7/8/9 `agmag/`); (c) the **DEFER pool**
+below, several of which only need one fetch; (d) other traditional-games ethnography
+(Murray/Bell/Russ) for the mancala/tafl/morris families.
 DEFER pool (unchanged, needs a fetch or a new render primitive): Mamba (mambagame.com setup
 diagram), Selus (built Sadéqa instead — same design, 2 boards), Lightning (needs a NEW arc-mark
 Board.jsx primitive), MEM (reactive "blocking announce" breaks move-in-legal_moves), Pagoda
