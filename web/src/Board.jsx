@@ -72,6 +72,19 @@ function squareCells(b) {
 const SQRT3 = Math.sqrt(3)
 function hexCells(b) {
   const cells = []
+  // `board.cells: ["q,r", ...]` — an EXPLICIT axial cell list, for hex boards that
+  // are neither a full hexhex nor a rhombus (Shafran's 70-cell hexagon, Brusky's
+  // 84, Starchess's hexagram). Same axial->pixel formula as the other two shapes,
+  // so decorations (`toPx`, lines/overlay) line up; the viewBox auto-fits, so the
+  // cell set need not be centred on the origin. NOTE: this is a cell LIST of id
+  // strings, unlike the `polygons` board type whose cells carry `points`.
+  if (Array.isArray(b.cells)) {
+    for (const id of b.cells) {
+      const [q, r] = id.split(',').map(Number)
+      cells.push({ id, x: SQRT3 * (q + r / 2), y: 1.5 * r })
+    }
+    return cells
+  }
   if (b.shape === 'rhombus') {
     for (let r = 0; r < b.height; r++) for (let c = 0; c < b.width; c++)
       cells.push({ id: `${c},${r}`, x: SQRT3 * (c + r / 2), y: 1.5 * r })

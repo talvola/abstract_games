@@ -43,7 +43,26 @@ def _square(board: dict, pieces: dict) -> str:
 
 
 def _hex(board: dict, pieces: dict) -> str:
-    """Indented rows of an axial hex board: a hexagon (size) or rhombus (w x h)."""
+    """Indented rows of an axial hex board.
+
+    Three cell sets, matching Board.jsx's ``hexCells``: an explicit axial cell
+    list (``cells``), a rhombus (``width`` x ``height``), or a hexagon (``size``).
+    """
+    if isinstance(board.get("cells"), list):
+        # An irregular board may have GAPS inside a row (a hexagram's waist), so
+        # place every glyph at its true axial column (x ~ 2q + r) instead of
+        # packing the row and staggering by r.
+        coords = [(int(a), int(b)) for a, b in (c.split(",") for c in board["cells"])]
+        x0 = min(2 * q + r for q, r in coords)
+        lines = []
+        for r in sorted({r for _, r in coords}):
+            row = ""
+            for q in sorted(q for q, rr in coords if rr == r):
+                cell = f"{q},{r}"
+                glyph = _glyph(pieces[cell]) if cell in pieces else "."
+                row += " " * (2 * q + r - x0 - len(row)) + glyph
+            lines.append(row)
+        return "\n".join(lines)
     if board.get("shape") == "rhombus":
         w, h = board["width"], board["height"]
         coords = [(c, r) for r in range(h) for c in range(w)]

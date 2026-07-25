@@ -203,6 +203,17 @@ derivation can't see. Missing an image you need (camel, hawk, cannon, …)? That
 an orchestrator-level addition to `pieceImages.js` — note it, don't hand-edit
 web/src from a game build.
 
+**Hex board shapes.** `{"type": "hex", ...}` accepts three cell sets: a full
+hexhex (`"shape": "hexagon", "size": <side>`, axial `|q|,|r|,|q+r| <= size-1`), a
+rhombus (`"shape": "rhombus", "width": W, "height": H`, ids `"c,r"`), or — opt-in —
+an **explicit axial cell list** `"cells": ["q,r", …]` for a hex board that is
+neither. Use it for the irregular hexagons of the historic hex chesses (Shafran's
+70 cells, Brusky's 84) and for star/asterisk boards, instead of falling back to
+`polygons`: you keep real hex geometry, `board.tints`/`labels`/`lines` and `toPx`
+all line up, and the viewBox auto-fits so the cell set need NOT be centred on the
+origin. Note the name collision: on a **`hex`** board `board.cells` is a flat list
+of id STRINGS; on a **`polygons`** board it is a list of `{id, points}` objects.
+
 `board.extent: [minX, minY, w, h]` pins the SVG viewBox to a fixed window
 instead of fitting the current cells — use it for a **shrinking board** (ZÈRTZ:
 emit only the rings that still exist as `cells`; removed rings then leave a gap
