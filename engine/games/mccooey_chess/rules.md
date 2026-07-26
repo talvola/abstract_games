@@ -19,10 +19,9 @@ Starting position (White / Black mirrored):
 - **Knights** e2, g2 / e9, g9 - **Rooks** d1, h1 / d9, h9
 - **Pawns** c1, d2, e3, f4, g3, h2, i1 / c8, d8, e8, f8, g8, h8, i8
 
-*(The generic renderer draws the hexagons point-up, so the whole board appears rotated
-~30° from the traditional vertical diagram. The three background shades are the three
-hex colours — the centre hex is the lightest, per McCooey's own convention — and each
-bishop is bound to one.)*
+*(The board is drawn flat-topped, so the files run VERTICALLY as in the published
+diagrams. The three background shades are the three hex colours — the centre hex is
+the lightest, per McCooey's own convention — and each bishop is bound to one.)*
 
 ## Moves
 
@@ -53,7 +52,13 @@ bishop is bound to one.)*
   rejecting Gliński's ¾–¼ stalemate rule.
 - **Draws**: 50-move rule (50 full moves without a pawn move or capture), threefold
   repetition (same position, side to move and en-passant rights), plus a defensive
-  1000-ply cap as a termination backstop.
+  25,000-ply cap as a termination backstop. The cap is DEAD CODE: at most 170
+  irreversible plies are possible (≤ 30 captures + ≤ 140 pawn advances), with at most 99
+  reversible plies between consecutive ones, so no game can exceed 17,099 plies
+  and the 50-move rule always ends it first. (It was 1000, which random play
+  actually reached — a cap that decides a game is a bug, not a backstop.)
+- **A finished game outranks the counters**: a checkmate delivered on the 100th
+  reversible ply is a WIN, not a 50-move draw.
 
 ## Interpretations documented (rules as implemented)
 

@@ -307,13 +307,23 @@ class GlinskiChess(Game):
 
     # ---- draws -------------------------------------------------------------
     def _draw_reason(self, s: GState) -> Optional[str]:
+        reason = None
         if s.halfmove >= 100:
-            return "50-move rule"
-        if s.reps and max(s.reps.values()) >= 3:
-            return "threefold repetition"
-        if s.ply >= PLY_CAP:
-            return "move limit"
-        return None
+            reason = "50-move rule"
+        elif s.reps and max(s.reps.values()) >= 3:
+            reason = "threefold repetition"
+        elif s.ply >= PLY_CAP:
+            reason = "move limit"
+        if reason is None:
+            return None
+        # A counter has fired -- but a position with NO legal move is already
+        # decided, and that outcome wins (chess ends the instant the king is
+        # mated). Without this, a mate delivered on the 100th reversible ply
+        # scored 0-0. Here it also erases a STALEMATE, which
+        # in Glinski's game is a scored 3/4-1/4 result rather than a draw, so
+        # both no-move outcomes must outrank the counters. `_legal` is memoised per state, and this only runs
+        # once a counter has fired, so the extra generation is not on the hot path.
+        return None if not self._legal(s) else reason
 
     # ---- Game interface ----------------------------------------------------
     def legal_moves(self, s: GState) -> list:
