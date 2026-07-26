@@ -1,0 +1,15 @@
+{
+  "uid": "xiang_hex",
+  "name": "Xiang Hex",
+  "version": "1.0.0",
+  "author": "L. Lynn Smith (2008) / AGP port",
+  "engine_api": "1",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "max_random_plies": 6000,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["hex", "xiangqi", "chess", "variant", "chessvariants"],
+  "bgg_url": "https://www.chessvariants.com/rules/xiang-hex",
+  "description": "The first hexagonal Chinese Chess: L. Lynn Smith's 2008 transplant of Xiangqi onto a 79-cell elongated hexagon (nine vertical files, the outer ones 7 cells and the centre 11). The seven-cell palace becomes a ring of hexes, the river becomes the board's horizontal mid-line of five cells, and every piece is re-cut for six directions - the Cannon still leaps a single screen, the Horse is still lamed by a piece on its leg, the Elephant still may not cross the river, and a Soldier that reaches the river gains two more forward directions and two sideways ones. Unusually, checkmate is only one way to win: a player who is stalemated, or who repeats a position, loses outright, and if neither side has a piece left that can cross the river the game is drawn."
+}
