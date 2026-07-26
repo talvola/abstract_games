@@ -150,14 +150,30 @@ proved the ortho/diag/knight tables are identical in axial space — only "forwa
 Do it AFTER these builds; the 4 existing selftests (945 + 155 + 198 + 257 + 409 checks) are the
 regression harness. Do NOT fold in Wellisch (3 seats + takeover), Hex Shogi (drops) or Xiang Hex
 (palace/river) — let those reuse only the geometry layer.
-**Two platform follow-ups QA raised (both real, neither a blocker):**
-- `Markdown.jsx` has **no table support** and **67 shipped `rules.md` files contain a table** — they
-  render as a paragraph of pipe characters. ~15 lines to fix. Highest-value platform chore.
-- `Board.jsx`'s axial→pixel is **pointy-top**, which has no vertical neighbour, so all the
-  vertically-filed hex chesses (Glinski, McCooey, Shafran) draw **30° off** every published diagram.
-  A `board.orientation:"flat"` option (`x=1.5q, y=√3(r+q/2)`, hex vertices rotated 30°) would fix
-  the whole family in one change. QA also recommends `board.labels` with cell names for all the hex
-  chesses (the move log speaks a notation the player cannot map to the board).
+**✅ Both platform follow-ups QA raised are now DONE (2026-07-26, Erik-directed "look at your QA
+items"), suite green, pushed:**
+- **`Markdown.jsx` (`189df30`)** — the reported issue was tables, but measuring all 372 packages
+  found **four** broken constructs and tables were the LEAST damaging:
+  **2,905 of 4,565 list items** (64% of every bullet in the library) were torn in half — a wrapped
+  bullet's continuation lines carry no marker so they fell through to the paragraph branch and
+  rendered as a separate paragraph OUTSIDE the list; **44 code fences in 42 files** had their ASCII
+  board diagrams FLATTENED (the paragraph branch joins lines with " "); **70 tables in 66 files**
+  rendered as pipe-soup; **228 blockquote lines in 47 files** showed a literal ">". All four fixed.
+  Fences handled first so list/table syntax inside them stays literal; table cells split by a
+  hand-rolled scanner so a cell can hold an escaped pipe (Trax names a tile `\|`); GFM alignment
+  colons honoured; tables and `pre` take their overflow in their OWN scroll container. Verified by
+  re-running the block loop over all 372 rules.md: no stuck/non-terminating input, and all 485 table
+  body rows match their header's cell count (0 ragged) — which is what proves the splitter right.
+- **`board.orientation` (`0c2102f`)** — the 12th RenderSpec primitive. `"flat"` gives
+  `x=1.5q, y=√3(r+q/2)` with the hex polygon rotated 30°, so a FILE (constant q) is vertical.
+  Opted in per game after checking each one's axial convention: Glinski/McCooey/Shafran/Starchess
+  all use `q` = the printed board's file ⇒ `"flat"`; **Brusky is the other family** (horizontal
+  ranks, q = its LEANING file) and stays pointy-top, render verified unchanged; the other 32
+  hex-board games never set the field. Glinski now shows its canonical tall central f-file and
+  **Starchess renders as an actual Star of David hexagram** — both match their published diagrams
+  for the first time. Regression-checked Havannah + Abalone (default orientation) unchanged.
+  *(Not done: QA's suggestion of `board.labels` with cell names on the hex chesses. Starchess
+  already prints its official 1-37 numbers; for the others this is cosmetic and still open.)*
 **REJECTED from this vein** (don't re-scout): ~40 Charles Gilman "analogue-of-X" variants; all
 3D/hex-prism/geodesic/4D boards (2D renderer); the low-distinctness Glinski re-arrays (Haynie's,
 Chexs, Echexs, Full-house, Fool's, Falcon, Heroes, "Glinski Symmetric"); and for UNRECOVERABLE
