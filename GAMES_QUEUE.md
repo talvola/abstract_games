@@ -6,7 +6,7 @@ universe map and capability gaps live in `GAME_BACKLOG.md`; this file is the
 
 ---
 
-## ⭐ SESSION HANDOFF (read this first) — updated 2026-07-25 (hexagonal-chess wave 10 → 372 games)
+## ⭐ SESSION HANDOFF (read this first) — updated 2026-07-26 (hex-chess wave 11 → 376 games)
 
 ### ✅ AG-MAGAZINE WAVE 9 COMPLETE (2026-07-25) → **369 games**, #367–369
 The whole wave-8 bench, cleared. 3 build agents in parallel (Orbit solo-heavy as staged), then an
@@ -126,7 +126,90 @@ Sources all saved at `scratchpad/hexchess/` (+ `starchess_scratch/`, `brusky_scr
   Glinski HITS it in 0.7% of random games (McCooey reaches 816). True bounds 21,499 / 17,099 ⇒
   raised to 25000, now provably dead. Found by the **Shafran** QA agent as a cross-package finding.
 
-### ▶▶ NEXT (wave 11) — hex chess has 5 more build-ready games; then extract the shared core
+### ✅ HEX-CHESS WAVE 11 COMPLETE (2026-07-26) → **376 games**, #373–376
+4 games from the wave-10 scout bench (3 build agents ∥, one taking the two small paired games), an
+independent adversarial deep-QA agent each. **All 4 verdicts MERGE-WITH-FIX — the 5th wave running.**
+Browser-verified, one commit each, suite green, Opus 5 (1M).
+- **de_vasa_chess #373** (`4bf470e`) — 1953, 81-cell 9×9 rhombus (EXISTING renderer shape, zero
+  renderer work). Kings on opposite wings, castling short 2 / long 3 (K and R both), promotion on
+  the back RANK. **The stalemate fork was SETTLED by a primary source**, not defaulted: CECV p.203,
+  the preamble to De Vasa's own chapter — *"Glinski's treatment of stalemate has not been followed
+  elsewhere"* ⇒ ordinary draw (load-bearing: 19 of 600 random games end in stalemate).
+  **The quadibloc "error" was really a DIFFERENT EDITION** — its board measures 8 ranks / 72 cells =
+  the ORIGINAL 1953 game (3 pawn captures); we built the revised 81-cell one (2 captures). CECV
+  documents both. Jocly is NOT an oracle here: its `castle:` block is byte-identical to Brusky's and
+  cannot fire. QA fixed `describe_move` emitting a phantom `0-0-0` for an ordinary king move (two of
+  the 12 hex king dirs are (±2,∓1), so `Ke2xc1` logged as a castle, erasing the capture).
+  Perft 55/2,992/168,335; 25,127-position differential; 44/44 mutants; selftest 112.
+- **mini_hexchess #374** (`cc4722d`) — McCooey 1997, 37-cell hexhex-4, K R B N + 5 pawns, no double
+  step ⇒ no e.p. (no `ep` field at all), promotion R/B/N ONLY on all 7 edge hexes. **Kept as its own
+  package, not an option on mccooey_chess** (4 orthogonal axes differ; own CV page/BGG/GC preset/
+  Ludii .lud; folding in would muddy McCooey's perft anchors). Setup pinned 4 ways incl. **Ludii's
+  `.lud`** (QA pinned Ludii's coord convention first by re-deriving Glinski's KNOWN array from it).
+  QA fixed the checkmate-precedence bug + 11 selftest gaps incl. **`deserialize` dropping `reps`**
+  (would silently disable threefold in async play). 46/46 mutants; selftest 3,990.
+- **hex_shogi_91 #375** (`e03aae5`) — Duniho's hex shogi WITH DROPS (reserve primitive, no UI change).
+  **Standalone, NOT ShogiLike**, and the reason is load-bearing: shogilike's colour flip is
+  `(dc, dr*fwd)` = a LINE reflection, the hex flip is the FULL NEGATION = a POINT reflection; not
+  conjugate, so no relabelling makes ShogiLike express it. (A future `ShogiCore` should be
+  parameterised on cell set / `on()` / colour transform / zone predicate / movement table / drop
+  strategy — the only 5 differences.) Designer's OWN sources conflict: rules page says stalemate =
+  draw, GC preset says win; QA showed the preset implements no repetition/no-capture rule at all and
+  still carries Shogi's pawn-drop-mate message ⇒ un-updated boilerplate. Armies are MIRROR images
+  through the middle rank, not 180° rotations. QA found the GC include the build agent called
+  missing (`/play/pbm/includes/hexshogi.txt`) and used it for a 15,244-position / 1.35M-move
+  differential. **QA also found the ply-cap selftest was VACUOUS** (see gotcha below).
+- **xiang_hex #376** (`ba4b5d8`) — L. Lynn Smith hex Xiangqi, 79 cells, 7-cell palace + river,
+  Horse AND Elephant both lamed. Unusual endings, all 4 reachable: mate wins, **stalemate LOSES**,
+  **repetition LOSES**, no-river-crossers = draw. **Flying general: the package deliberately deviates
+  from the enforcing GC code, and QA made that call sound** — the build agent described the asymmetry
+  BACKWARDS (it is Red who may not face) and argued only from prose symmetry; QA fetched the base
+  include (`includes/xiangqi.txt`, never retrieved during the build), found the original IS symmetric
+  and the hex preset's own helper stayed symmetric ⇒ demonstrable copy-paste slip, and proved
+  file-only is EXACTLY equivalent (the NE/SW line can never join the palaces). Build agent self-fixed
+  an inverted repetition winner. QA closed 6 selftest gaps incl. **check DETECTION** (`_attacked` is
+  a separate path from movegen — un-laming the Horse there survived until covered).
+  Oracle ships in-package as `_diff_gamecourier.py`. 45/46 mutants; 10,675-position differential.
+
+**Platform work this wave:**
+- **REAL BUG, 8 OCCURRENCES: a decisive result must outrank the draw counters.** Fixed in
+  `agp/chesslike.py` (63 variants, `60d5254`) and then swept the hex family (`624ccc9`):
+  glinski/mccooey/shafran were all shipping it. **Glinski needed the wider form** — its stalemate is
+  a SCORED 3/4-1/4 result, so both no-move outcomes must outrank. Random play does NOT find this;
+  the concrete constructed-position test is now in CLAUDE.md.
+- **`max_random_plies` manifest key** (`53e9799`) — conformance's 3000-move ceiling was shaping game
+  RULES (hex_shogi_91 had set PLY_CAP=2500 to fit, truncating ~5% of random games into fake draws).
+  Set it BELOW the game's own PLY_CAP on purpose, so a termination regression fails LOUDLY instead
+  of being absorbed into a silent cap draw.
+- **`Markdown.jsx` block support** (`189df30`) and **`board.orientation`** (`0c2102f`) — the two
+  QA-raised chores from wave 10, both done (detail in the wave-10 block above).
+
+### ▶▶ NEXT (wave 12) — Wellisch, then EXTRACT `agp/hexchesslike.py`
+1. **Wellisch's Hexagonal Chess (1912)** — the FIRST hex chess ever published and the last of the
+   historic set. **3 PLAYERS**, hexhex-6 (no renderer work), no bishops, 3 knights, 8 pawns, knight =
+   a one-hex-DIAGONAL step (colourbound), queen = R+N, pawns move AND capture forward, no double
+   step, promotion only to a piece previously lost. **Army-takeover ending**: a checkmated player may
+   be released OR have their king captured; the capturer INHERITS their pieces, and taken-over pawns
+   keep their original direction. Complete ONLY via John Beasley's *Chess for three*, saved at
+   `scratchpad/hexchess/ext/beasley_chess_for_three.pdf` p.334 (Pritchard's and the Oxford
+   Companion's diagrams disagree on one army's orientation; Beasley's "Qs always to left of Ks"
+   settles it ⇒ a true 120°-symmetric array). Anchor is the WEAKEST on the bench (prose + a compiled
+   Java applet) — brief the research gate hard. Effort **L** (3 seats, ownership transfer, per-piece
+   pawn direction, non-terminal checkmate).
+2. **Then extract `agp/hexchesslike.py`.** Now strongly evidenced: Brusky proved the ortho/diag/
+   knight tables are **byte-identical in axial space** across both orientations — only "forward"
+   differs. Core = `CELLS` + `FORWARD` + a `PIECES` table + PAWN/PROMOTION/CASTLING strategies (the
+   ChessLike pattern). **6 games would collapse onto it** (glinski, mccooey, shafran, brusky,
+   de_vasa, mini_hexchess) with a combined selftest harness of 945+155+198+112+3,990+257+409 checks
+   as the regression net. Do NOT fold in starchess (placement phase), hex_shogi_91 (drops, and its
+   point-vs-line reflection finding), xiang_hex (palace/river) — let those reuse only the geometry
+   layer. Extracting the shared `_draw_reason` shape would also make the 8-occurrence precedence bug
+   structurally impossible to reintroduce.
+3. **Then the vein is done.** Remaining hex candidates are all DEFER/REJECT (see the wave-10 block).
+   Wave 13 should scout a new source — the wave-10 seams (BGG abstract top-N gap diff; AG issues 1,
+   6-10, 18, 25+) are still unstarted.
+
+### (superseded) wave-11 staging — all 4 BUILT (#373–376). Kept for provenance.
 The scout's bench is **not exhausted** — full detail in `scratchpad/hexchess/scout_report.md`.
 Best first:
 1. **Hex Shogi 91** (Duniho) — hexhex-6, **no renderer work**. The Game Courier preset carries FULL
