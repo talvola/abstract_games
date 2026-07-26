@@ -77,6 +77,22 @@ main { display: flex; flex-direction: column; align-items: center; padding-top: 
 .markdown ul, .markdown ol { margin: 7px 0; padding-left: 22px; }
 .markdown li { font-size: 0.85rem; line-height: 1.55; margin: 3px 0; }
 .markdown code { background: rgba(255,255,255,0.06); padding: 1px 5px; border-radius: 4px; font-size: 0.85em; }
+/* Fenced blocks carry ASCII board diagrams -- preserve the whitespace exactly,
+   never wrap, and let the block itself scroll instead of stretching the modal. */
+.markdown pre { background: rgba(255,255,255,0.05); border: 1px solid var(--line); border-radius: 6px;
+  padding: 8px 10px; margin: 8px 0; overflow-x: auto; }
+.markdown pre code { background: none; padding: 0; border-radius: 0; font-size: 0.78rem;
+  line-height: 1.35; white-space: pre; display: block; }
+/* Same for tables -- the widest shipped rules table is 12 columns, so the
+   wrapper (not the page) takes the horizontal overflow. */
+.markdown blockquote { margin: 8px 0; padding: 2px 0 2px 11px; border-left: 3px solid var(--line);
+  color: var(--muted); font-size: 0.85rem; line-height: 1.6; }
+.markdown .table-wrap { overflow-x: auto; margin: 8px 0; }
+.markdown table { border-collapse: collapse; font-size: 0.8rem; }
+.markdown th, .markdown td { border: 1px solid var(--line); padding: 4px 9px; text-align: left;
+  vertical-align: top; white-space: nowrap; }
+.markdown th { background: rgba(255,255,255,0.05); color: var(--accent); font-weight: bold; }
+.markdown tbody tr:nth-child(even) { background: rgba(255,255,255,0.025); }
 .game-name { font-weight: bold; color: var(--accent); }
 .game-desc { font-size: 0.8rem; color: var(--text); margin: 4px 0; }
 .game-tags { font-size: 0.7rem; color: var(--muted); }
