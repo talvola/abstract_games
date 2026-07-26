@@ -70,8 +70,24 @@ function squareCells(b) {
   return cells
 }
 const SQRT3 = Math.sqrt(3)
+// Axial (q,r) -> board-space (x,y). Two hex orientations, and the choice decides
+// which lattice direction is VERTICAL:
+//   pointy-top (default) — neighbours E/W/NE/NW/SE/SW, so a ROW (constant r) is
+//     horizontal and there is no vertical neighbour at all.
+//   flat-top (`board.orientation: "flat"`) — neighbours N/S/NE/NW/SE/SW, so a
+//     FILE (constant q) is vertical.
+// The classical hex chesses are drawn with VERTICAL files (Glinski, McCooey,
+// Shafran, Starchess all use q = the printed board's file), so they need "flat";
+// pointy-top drew them 30 deg off every published diagram, and no relabelling of
+// the coordinates can fix that because 30 deg is not a symmetry of the lattice.
+// Brusky's board is the other family (horizontal ranks) and stays pointy-top.
+const isFlat = (b) => b.orientation === 'flat'
+const axialXY = (b) => (isFlat(b)
+  ? (q, r) => [1.5 * q, SQRT3 * (r + q / 2)]
+  : (q, r) => [SQRT3 * (q + r / 2), 1.5 * r])
 function hexCells(b) {
   const cells = []
+  const xy = axialXY(b)
   // `board.cells: ["q,r", ...]` — an EXPLICIT axial cell list, for hex boards that
   // are neither a full hexhex nor a rhombus (Shafran's 70-cell hexagon, Brusky's
   // 84, Starchess's hexagram). Same axial->pixel formula as the other two shapes,
@@ -81,23 +97,30 @@ function hexCells(b) {
   if (Array.isArray(b.cells)) {
     for (const id of b.cells) {
       const [q, r] = id.split(',').map(Number)
-      cells.push({ id, x: SQRT3 * (q + r / 2), y: 1.5 * r })
+      const [x, y] = xy(q, r)
+      cells.push({ id, x, y })
     }
     return cells
   }
   if (b.shape === 'rhombus') {
-    for (let r = 0; r < b.height; r++) for (let c = 0; c < b.width; c++)
-      cells.push({ id: `${c},${r}`, x: SQRT3 * (c + r / 2), y: 1.5 * r })
+    for (let r = 0; r < b.height; r++) for (let c = 0; c < b.width; c++) {
+      const [x, y] = xy(c, r)
+      cells.push({ id: `${c},${r}`, x, y })
+    }
     return cells
   }
   const s = b.size
   for (let q = -(s - 1); q <= s - 1; q++) for (let r = -(s - 1); r <= s - 1; r++)
-    if (Math.abs(q + r) <= s - 1) cells.push({ id: `${q},${r}`, x: SQRT3 * q + (SQRT3 / 2) * r, y: 1.5 * r })
+    if (Math.abs(q + r) <= s - 1) {
+      const [x, y] = xy(q, r)
+      cells.push({ id: `${q},${r}`, x, y })
+    }
   return cells
 }
-function hexPoly(cx, cy, s) {
+function hexPoly(cx, cy, s, flat) {
   return Array.from({ length: 6 }, (_, i) => {
-    const a = (Math.PI / 180) * (60 * i - 30)
+    // flat-top hexes have a vertex at 0 deg; pointy-top ones are rotated 30 deg.
+    const a = (Math.PI / 180) * (60 * i - (flat ? 0 : 30))
     return `${cx + s * Math.cos(a)},${cy + s * Math.sin(a)}`
   }).join(' ')
 }
@@ -250,7 +273,7 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
     px = (v) => v * (isHex ? R : R * 2.2)
     shapes = cells.map((c) => {
       const cx = px(c.x), cy = px(c.y)
-      const poly = isHex ? hexPoly(cx, cy, R)
+      const poly = isHex ? hexPoly(cx, cy, R, isFlat(board))
         : `${cx - R},${cy - R} ${cx + R},${cy - R} ${cx + R},${cy + R} ${cx - R},${cy + R}`
       return { id: c.id, cx, cy, poly, r: R, hw: R, hh: R, parity: (c.x + c.y) % 2 }
     })
@@ -261,7 +284,7 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
   const toPx = isPoly
     ? (x, y) => [x, y]
     : isHex
-      ? (x, y) => [px(SQRT3 * (x + y / 2)), px(1.5 * y)]
+      ? (x, y) => { const [ax, ay] = axialXY(board)(x, y); return [px(ax), px(ay)] }
       : (x, y) => [px(x), px(board.height - 1 - y)]
   const tints = board.tints || {}                  // {cellId: colour} terrain fills
   const labels = board.labels || {}                // {cellId: text} faint text PRINTED ON the cell (numbered scoring boards)

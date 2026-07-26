@@ -499,6 +499,9 @@ class Starchess(Game):
             "board": {
                 "type": "hex",
                 "cells": [f"{q},{r}" for (q, r) in CELLS],
+                # q IS the printed board's vertical file (heights 1,2,7,6,5,
+                # 6,7,2,1), so the hexagram needs flat-top hexes (SPEC.md).
+                "orientation": "flat",
                 "tints": tints,
                 "labels": {f"{q},{r}": str(NUM[(q, r)]) for (q, r) in CELLS},
             },

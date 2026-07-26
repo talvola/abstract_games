@@ -455,7 +455,10 @@ class McCooeyChess(Game):
             check = " (check)" if _in_check(s.board, s.to_move) else ""
             caption = f"{NAMES[s.to_move]} to move{check}"
         return {
-            "board": {"type": "hex", "shape": "hexagon", "size": N + 1, "tints": tints},
+            "board": {"type": "hex", "shape": "hexagon", "size": N + 1,
+                      # q IS the file letter, and McCooey's files are drawn VERTICAL,
+                      # so the board needs flat-top hexes (see SPEC.md).
+                      "orientation": "flat", "tints": tints},
             "pieces": pieces,
             "highlights": highlights,
             "caption": caption,

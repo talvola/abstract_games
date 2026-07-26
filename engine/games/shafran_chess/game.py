@@ -564,6 +564,9 @@ class ShafranChess(Game):
         return {
             "board": {"type": "hex",
                       "cells": [f"{q},{r}" for q, r in CELLS],
+                      # q IS the file index, and Shafran's files are drawn
+                      # VERTICAL, so use flat-top hexes (see SPEC.md).
+                      "orientation": "flat",
                       "tints": tints},
             "pieces": pieces,
             "highlights": highlights,

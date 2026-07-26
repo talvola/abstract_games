@@ -214,6 +214,21 @@ all line up, and the viewBox auto-fits so the cell set need NOT be centred on th
 origin. Note the name collision: on a **`hex`** board `board.cells` is a flat list
 of id STRINGS; on a **`polygons`** board it is a list of `{id, points}` objects.
 
+**Hex orientation** — `"orientation": "flat"` (any hex shape; default is
+pointy-top). This decides which lattice direction is VERTICAL, so it is a
+correctness question, not a cosmetic one:
+* **pointy-top (default)** — neighbours E/W/NE/NW/SE/SW. A *row* (constant `r`)
+  is horizontal; there is **no vertical neighbour at all**. Right for boards with
+  horizontal ranks (Brusky's hex chess, and the hexhex/rhombus abstracts).
+* **flat-top (`"flat"`)** — neighbours N/S/NE/NW/SE/SW. A *file* (constant `q`)
+  is vertical. Right for the classical hex chesses, which are all drawn with
+  vertical files and whose `q` IS the printed board's file (Gliński, McCooey,
+  Shafran, Starchess).
+Get this wrong and the board renders 30° off every published diagram — and **no
+relabelling of the coordinates can compensate, because 30° is not a symmetry of
+the hex lattice**. Cell ids, move generation and click-to-move are unaffected;
+`toPx` follows the orientation, so `board.lines`/`overlay` stay aligned.
+
 `board.extent: [minX, minY, w, h]` pins the SVG viewBox to a fixed window
 instead of fitting the current cells — use it for a **shrinking board** (ZÈRTZ:
 emit only the rings that still exist as `cells`; removed rings then leave a gap
