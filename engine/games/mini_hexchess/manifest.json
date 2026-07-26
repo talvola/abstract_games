@@ -1,0 +1,14 @@
+{
+  "uid": "mini_hexchess",
+  "name": "Mini Hexchess",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Dave McCooey (1997) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["hex", "chess", "variant", "small"],
+  "bgg_url": "https://www.chessvariants.com/hexagonal.dir/minihex.html",
+  "description": "McCooey's hexagonal chess shrunk onto 37 hexes — a 37th-birthday present for Hans Bodlaender in 1997. Each side has just a king, rook, bishop, knight and five pawns; there is no queen, no double step, no en passant and no castling, and a pawn may promote only to rook, bishop or knight."
+}
