@@ -49,8 +49,18 @@ def _is_freeform(game: Game, manifest: dict) -> bool:
 
 
 def check(game: Game, manifest: dict, games: int = 40, seed: int = 0,
-          max_moves: int = 3000) -> Report:
+          max_moves: int = None) -> Report:
     r = Report()
+    # How long a UNIFORM-RANDOM game may run before we call it non-terminating.
+    # 3000 suits almost everything, but a few families have a genuinely heavy
+    # random-play tail -- drop games recycle captured material, so a random Hex
+    # Shogi game can run past 10,000 plies while real play ends in a few hundred.
+    # Such a game declares `max_random_plies` in its manifest. This exists so a
+    # game sets its OWN termination backstop from its real bound instead of
+    # shrinking it to fit this harness, which would make the harness silently
+    # decide ~5% of its games.
+    if max_moves is None:
+        max_moves = int(manifest.get("max_random_plies", 3000))
 
     # --- static contract ---
     r.add(game.num_players == manifest["players"].get("max", game.num_players)

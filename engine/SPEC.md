@@ -214,6 +214,15 @@ all line up, and the viewBox auto-fits so the cell set need NOT be centred on th
 origin. Note the name collision: on a **`hex`** board `board.cells` is a flat list
 of id STRINGS; on a **`polygons`** board it is a list of `{id, points}` objects.
 
+**Manifest `max_random_plies`** (optional, default 3000) — how long a
+UNIFORM-RANDOM game may run in `validate` before conformance calls the game
+non-terminating. Raise it only for a family with a genuinely heavy random-play
+tail (drop games recycle captured material, so a random Hex Shogi game can pass
+10,000 plies while real play ends in a few hundred). **Set this rather than
+shrinking your game's own termination backstop to fit the harness** — a cap
+small enough to truncate random games is a cap that decides outcomes, which is
+the single most repeated defect in this codebase.
+
 **Hex orientation** — `"orientation": "flat"` (any hex shape; default is
 pointy-top). This decides which lattice direction is VERTICAL, so it is a
 correctness question, not a cosmetic one:
