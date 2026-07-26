@@ -1,0 +1,14 @@
+{
+  "uid": "de_vasa_chess",
+  "name": "De Vasa's Hexagonal Chess",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Helge E. de Vasa (1953) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["hex", "chess", "variant", "castling"],
+  "bgg_url": "https://en.wikipedia.org/wiki/Hexagonal_chess#De_Vasa's_hexagonal_chess",
+  "description": "Hexagonal chess turned 90 degrees: an 81-cell rhombus with orderly horizontal ranks, so a pawn has TWO forward moves and captures only on the two side diagonals. Gliński's piece moves, castling in two lengths (king 2 cells short, 3 long) — and the kings start on opposite wings."
+}
