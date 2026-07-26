@@ -1,0 +1,15 @@
+{
+  "uid": "hex_shogi_91",
+  "name": "Hex Shogi 91",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Fergus Duniho (2000) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "max_random_plies": 15000,
+  "category": "Chess & chess-like",
+  "tags": ["hex", "shogi", "chess", "drops", "variant"],
+  "bgg_url": "https://www.chessvariants.com/hexagonal.dir/hexshogi/hexshogi91.html",
+  "description": "Shogi on the 91-hex board of Gliński's Hexagonal Chess, turned 30° so the ranks run horizontally. Every piece is re-cut for six orthogonal and six diagonal directions — a 12-way king, a two-way lance, a four-way jumping knight — and captured pieces still come back as drops. There is no two-pawns-per-file rule (there are no vertical files); instead a pawn may not be dropped where a friendly pawn defends it, nor where it would give check at all. The promotion zone is four ranks deep."
+}
