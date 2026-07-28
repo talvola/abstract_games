@@ -20,14 +20,19 @@ Cells are axial hex coordinates ``"q,r"`` (cube ``s = -q-r``) with
     r = 5 - rank         (rank 1 = +4 ... rank 10 = -5)
 
 so the board is exactly ``-4 <= q <= 4``, ``-5 <= r <= 4``, ``-5 <= q+r <= 4``
-(70 cells). White moves in the ``-r`` direction ("north", up a file); the axial
-direction tables are byte-identical to ``glinski_chess`` / ``mccooey_chess`` so
-a shared hex-chess core can be factored out later.
+(70 cells). White moves in the ``-r`` direction ("north", up a file).
 
 Rules implemented (Derzhanski's write-up of the *Junyj texnik* report =
 closest to primary; Wikipedia "Hexagonal chess" § Shafran; Duniho's
 chessvariants.com page; the Jocly reference model; see rules.md)
 --------------------------------------------------------------------------
+Piece movement, attack detection, check/mate, the draw rules, serialisation,
+rendering and the MCTS heuristic come from ``agp.hexchesslike``, shared with the
+other five classical hex chesses — the axial direction tables are byte-identical
+for the whole family. This module supplies only what is Shafran-specific, which
+for Shafran is a lot: it is the only classical hex chess with castling, and its
+pawn rules are unique.
+
 * Setup (each side K Q R×2 B×3 N×2 P×9). White: R a1, N b1, B c1, Q d1, K e1,
   B f2, N g3, B h4, R i5; pawns a2 b2 c2 d2 e2 f3 g4 h5 i6. Black is the exact
   180° rotation (R i10, N h10, B g10, Q f10, K e10, B d9, N c8, B b7, R a6;
@@ -45,8 +50,9 @@ chessvariants.com page; the Jocly reference model; see rules.md)
   forward orthogonals. On its FIRST move it may advance as far as it can
   without leaving its own half of its file: 3 cells on the d/e/f files, 2 on
   b/c/g/h, 1 on a/i, over vacant cells only. Every cell CROSSED by such a
-  multi-step move is an en-passant target for one move. Promotion to Q/R/B/N
-  at the far end of any file (9 cells per side).
+  multi-step move is an en-passant target for one move — which is why the
+  shared core's ``ep`` carries a TUPLE of target cells (Shafran is the only
+  member of the family that can leave two).
 * Castling (unique among the classical hex chesses). Toward either rook, in
   two lengths: LONG (0-0-0) moves the king 3 cells, next to the rook, and the
   rook jumps over him to the far side; SHORT (0-0) is "the opposite procedure"
@@ -56,7 +62,8 @@ chessvariants.com page; the Jocly reference model; see rules.md)
   or land on an attacked cell. Notation is prefixed by the flank: ``Q-`` for
   the player's queen's flank, ``B-`` for his bishops' flank (the flanks are
   opposite for the two players).
-* STALEMATE IS A DRAW (Wikipedia, explicit) — unlike Gliński's 3/4-1/4 rule.
+* STALEMATE IS A DRAW (Wikipedia, explicit) — unlike Gliński's 3/4-1/4 rule,
+  so ``STALEMATE_SCORED`` keeps its default of False.
 * Draws: 50-move rule (100 plies with no pawn move or capture), threefold
   repetition (board + side + en-passant targets + castling rights), and a hard
   ply cap as a pure termination backstop that the 50-move rule provably always
@@ -68,12 +75,18 @@ Castling is written as the king's ordinary from>to (2 or 3 cells).
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from typing import Optional
+# The names re-exported / kept module-level here (GState, WHITE/BLACK,
+# ORTHO/DIAG/KNIGHT, CELLS, FILES, on_board, cell_name, _cell, _file_len,
+# _is_promo, _attacked, _in_check, PAWN_*, HOME, KING_START, ROOK_START,
+# CASTLE_BETWEEN, QUEEN_FLANK, PLY_CAP) are the module's PUBLIC SURFACE:
+# `selftest.py` imports them, and the selftests are the regression net for this
+# refactor, so they are deliberately not rewritten. Keep these names when
+# editing.
+from agp.hexchesslike import (BLACK, DIAG, KNIGHT, ORTHO, WHITE,  # noqa: F401
+                              HexChessLike, HState, cell_str, parse_cell)
 
-from agp.game import Game
+GState = HState                # historical name, used by selftest.py
 
-WHITE, BLACK = 0, 1
 NAMES = {WHITE: "White", BLACK: "Black"}
 FILES = "abcdefghi"            # nine vertical files
 # Defensive termination backstop. The 50-move rule provably fires first: at most
@@ -82,17 +95,6 @@ FILES = "abcdefghi"            # nine vertical files
 # in each of the 179 gaps around them cap any game at 178 + 179*99 = 17,899
 # plies. Observed longest random game: 723 plies. See rules.md.
 PLY_CAP = 20000
-
-# --- directions (axial q,r; cube s = -q-r) ---------------------------------
-# Orthogonal = through cell edges (rook); listed N, NE, SE, S, SW, NW where
-# "N" (0,-1) is White's forward direction (up a file).
-ORTHO = [(0, -1), (1, -1), (1, 0), (0, 1), (-1, 1), (-1, 0)]
-# Diagonal = through cell vertices (bishop): sums of adjacent orthogonals.
-# Listed NNE, E, SSE, SSW, W, NNW.
-DIAG = [(1, -2), (2, -1), (1, 1), (-1, 2), (-2, 1), (-1, -1)]
-# Knight: one orthogonal step then one outward diagonal = cube perms of (1,2,-3).
-KNIGHT = [(1, -3), (2, -3), (3, -2), (3, -1), (2, 1), (1, 2),
-          (-1, 3), (-2, 3), (-3, 2), (-3, 1), (-2, -1), (-1, -2)]
 
 PAWN_FWD = {WHITE: (0, -1), BLACK: (0, 1)}
 # Captures: the two FORWARD DIAGONAL (bishop) directions -- Shafran follows
@@ -190,9 +192,7 @@ def cell_name(cell) -> str:
     return f"{FILES[q - QMIN]}{5 - r}"
 
 
-def _cell(sstr: str):
-    q, r = sstr.split(",")
-    return int(q), int(r)
+_cell = parse_cell                 # historical name, used by selftest.py
 
 
 def _hex_dist(a, b) -> int:
@@ -200,168 +200,89 @@ def _hex_dist(a, b) -> int:
     return (abs(dq) + abs(dr) + abs(dq + dr)) // 2
 
 
-@dataclass
-class GState:
-    board: dict = field(default_factory=_setup_board)  # (q,r) -> (owner, letter)
-    to_move: int = WHITE
-    # en passant: (pawn_cell, (crossed_cell, ...)) set by the last multi-step
-    # pawn move -- EVERY cell it crossed is capturable -- or None.
-    ep: Optional[tuple] = None
-    castling: frozenset = field(default_factory=lambda: frozenset(ALL_CASTLES))
-    halfmove: int = 0     # plies since last pawn move / capture (50-move rule)
-    ply: int = 0
-    reps: dict = field(default_factory=dict)  # position key -> count (3-fold)
-    last: Optional[tuple] = None              # (from, to) for highlights
+class ShafranChess(HexChessLike):
+    CELLS = frozenset(CELLS)       # tuple above keeps render order; set = O(1)
+    FILES = FILES
+    PLY_CAP = PLY_CAP
+    # STALEMATE_SCORED stays False: Shafran's stalemate is an ordinary draw.
 
+    # ---- notation ---------------------------------------------------------
+    def cell_name(self, cell) -> str:
+        return cell_name(cell)
 
-def _poskey(board: dict, to_move: int, ep, castling) -> str:
-    items = sorted((q, r, o, t) for (q, r), (o, t) in board.items())
-    ep_s = "-" if not ep else "+".join(f"{q},{r}" for q, r in sorted(ep[1]))
-    cs = "".join(f"{p}{f}" for p, f in sorted(castling)) or "-"
-    return (f"{to_move}|{ep_s}|{cs}|"
-            + ";".join(f"{q},{r},{o},{t}" for q, r, o, t in items))
+    # ---- setup ------------------------------------------------------------
+    def setup_board(self) -> dict:
+        return _setup_board()
 
+    def initial_castling(self) -> frozenset:
+        return frozenset(ALL_CASTLES)
 
-def _attacked(board: dict, cell, by: int) -> bool:
-    """Is `cell` attacked by any piece of player `by`?"""
-    q, r = cell
-    # pawns (reverse of their capture directions)
-    for dq, dr in PAWN_CAPS[by]:
-        p = board.get((q - dq, r - dr))
-        if p is not None and p[0] == by and p[1] == "P":
-            return True
-    # knights
-    for dq, dr in KNIGHT:
-        p = board.get((q + dq, r + dr))
-        if p is not None and p[0] == by and p[1] == "N":
-            return True
-    # kings (adjacent in all 12 directions)
-    for dq, dr in ORTHO + DIAG:
-        p = board.get((q + dq, r + dr))
-        if p is not None and p[0] == by and p[1] == "K":
-            return True
-    # sliders
-    for dirs, letters in ((ORTHO, ("R", "Q")), (DIAG, ("B", "Q"))):
-        for dq, dr in dirs:
-            cq, cr = q + dq, r + dr
-            while on_board(cq, cr):
-                p = board.get((cq, cr))
-                if p is not None:
-                    if p[0] == by and p[1] in letters:
-                        return True
-                    break
-                cq += dq
-                cr += dr
-    return False
+    # ---- pawns ------------------------------------------------------------
+    def is_promo(self, player: int, cell) -> bool:
+        return _is_promo(player, cell)
 
+    def pawn_attackers(self, player: int, cell):
+        q, r = cell
+        return [(q - dq, r - dr) for dq, dr in PAWN_CAPS[player]]
 
-def _king_cell(board: dict, player: int):
-    for cell, (o, t) in board.items():
-        if o == player and t == "K":
-            return cell
-    return None
-
-
-def _in_check(board: dict, player: int) -> bool:
-    k = _king_cell(board, player)
-    return k is not None and _attacked(board, k, 1 - player)
-
-
-class ShafranChess(Game):
-
-    @property
-    def num_players(self) -> int:
-        return 2
-
-    def initial_state(self, options=None, rng=None) -> GState:
-        s = GState()
-        s.reps = {_poskey(s.board, s.to_move, s.ep, s.castling): 1}
-        return s
-
-    def current_player(self, s: GState) -> int:
-        return s.to_move
-
-    # ---- move generation ---------------------------------------------------
-    def _pseudo(self, s: GState) -> list:
-        """Pseudo-legal moves as (frm, to, promo, ep_capture_cell, castle).
-
-        `castle` is None or (rook_from, rook_to); castling is generated only
-        when its own (empty / not-through-check) conditions already hold, the
-        king's destination being validated by the shared in-check filter.
-        """
-        out = []
-        me = s.to_move
-        board = s.board
-        for (q, r), (owner, t) in board.items():
-            if owner != me:
-                continue
-            if t == "P":
-                fq, fr = PAWN_FWD[me]
-                steps = PAWN_START[me].get((q, r), 1)
-                cq, cr = q, r
-                for _ in range(steps):
-                    cq, cr = cq + fq, cr + fr
-                    if not on_board(cq, cr) or (cq, cr) in board:
-                        break               # may not leap over an occupied cell
-                    if _is_promo(me, (cq, cr)):
-                        for pc in ("Q", "R", "B", "N"):
-                            out.append(((q, r), (cq, cr), pc, None, None))
-                    else:
-                        out.append(((q, r), (cq, cr), None, None, None))
-                for dq, dr in PAWN_CAPS[me]:
-                    tgt = (q + dq, r + dr)
-                    if not on_board(*tgt):
-                        continue
-                    occ = board.get(tgt)
-                    if occ is not None:
-                        if occ[0] != me:
-                            if _is_promo(me, tgt):
-                                for pc in ("Q", "R", "B", "N"):
-                                    out.append(((q, r), tgt, pc, None, None))
-                            else:
-                                out.append(((q, r), tgt, None, None, None))
-                    elif s.ep is not None and tgt in s.ep[1]:
-                        out.append(((q, r), tgt, None, s.ep[0], None))
-            elif t == "N":
-                for dq, dr in KNIGHT:
-                    tgt = (q + dq, r + dr)
-                    if on_board(*tgt):
-                        occ = board.get(tgt)
-                        if occ is None or occ[0] != me:
-                            out.append(((q, r), tgt, None, None, None))
-            elif t == "K":
-                for dq, dr in ORTHO + DIAG:
-                    tgt = (q + dq, r + dr)
-                    if on_board(*tgt):
-                        occ = board.get(tgt)
-                        if occ is None or occ[0] != me:
-                            out.append(((q, r), tgt, None, None, None))
+    def pawn_moves(self, s, cell, out) -> None:
+        me, board = s.to_move, s.board
+        q, r = cell
+        fq, fr = PAWN_FWD[me]
+        # The variable-length first move: 3 cells on d/e/f, 2 on b/c/g/h, 1 on
+        # a/i, and only from the pawn's own starting cell (selftest proves that
+        # "on its first move" == "standing on its starting cell": no pawn can
+        # ever re-enter one).
+        steps = PAWN_START[me].get(cell, 1)
+        cq, cr = q, r
+        for _ in range(steps):
+            cq, cr = cq + fq, cr + fr
+            if (cq, cr) not in self.CELLS or (cq, cr) in board:
+                break                   # may not leap over an occupied cell
+            if _is_promo(me, (cq, cr)):
+                for pc in self.PROMO_CHOICES:
+                    out.append((cell, (cq, cr), pc, None, None))
             else:
-                dirs = ORTHO if t == "R" else DIAG if t == "B" else ORTHO + DIAG
-                for dq, dr in dirs:
-                    cq, cr = q + dq, r + dr
-                    while on_board(cq, cr):
-                        occ = board.get((cq, cr))
-                        if occ is None:
-                            out.append(((q, r), (cq, cr), None, None, None))
-                        else:
-                            if occ[0] != me:
-                                out.append(((q, r), (cq, cr), None, None, None))
-                            break
-                        cq += dq
-                        cr += dr
-        out.extend(self._castles(s))
-        return out
+                out.append((cell, (cq, cr), None, None, None))
+        for dq, dr in PAWN_CAPS[me]:
+            tgt = (q + dq, r + dr)
+            if tgt not in self.CELLS:
+                continue
+            occ = board.get(tgt)
+            if occ is not None:
+                if occ[0] != me:
+                    if _is_promo(me, tgt):
+                        for pc in self.PROMO_CHOICES:
+                            out.append((cell, tgt, pc, None, None))
+                    else:
+                        out.append((cell, tgt, None, None, None))
+            elif s.ep is not None and tgt in s.ep[1]:
+                out.append((cell, tgt, None, s.ep[0], None))
 
-    def _castles(self, s: GState) -> list:
+    def ep_after(self, s, frm, to, piece: str):
+        """EVERY cell crossed by a multi-step pawn move is an e.p. target.
+
+        A capture changes the file (both capture vectors have dq != 0), so
+        `to[0] == frm[0]` isolates the straight advances.
+        """
+        if piece != "P":
+            return None
+        n = _hex_dist(frm, to)
+        if n <= 1 or to[0] != frm[0]:
+            return None
+        fq, fr = PAWN_FWD[s.to_move]
+        crossed = tuple((frm[0] + i * fq, frm[1] + i * fr) for i in range(1, n))
+        return (to, crossed)
+
+    # ---- castling ---------------------------------------------------------
+    def castle_moves(self, s, out) -> None:
         me = s.to_move
         rights = [k for k in s.castling if k[0] == me]
         if not rights:
-            return []
+            return
         king = KING_START[me]
-        if s.board.get(king) != (me, "K") or _in_check(s.board, me):
-            return []
-        out = []
+        if s.board.get(king) != (me, "K") or self.in_check(s.board, me):
+            return
         for key in sorted(rights):
             between = CASTLE_BETWEEN[key]
             if s.board.get(ROOK_START[key]) != (me, "R"):
@@ -370,163 +291,80 @@ class ShafranChess(Game):
                 continue
             # long: K -> between[2], R -> between[1]; short: K -> between[1],
             # R -> between[0]. The king may not pass through an attacked cell;
-            # its destination is checked by the shared in-check filter.
-            if not _attacked(s.board, between[0], 1 - me):
+            # its destination is checked by the shared in-check filter. Transit
+            # cells are tested on the PRE-move board (the king and rook are
+            # never on them, so nothing shields them).
+            if not self.attacked(s.board, between[0], 1 - me):
                 out.append((king, between[1], None, None,
                             (ROOK_START[key], between[0])))
-                if not _attacked(s.board, between[1], 1 - me):
+                if not self.attacked(s.board, between[1], 1 - me):
                     out.append((king, between[2], None, None,
                                 (ROOK_START[key], between[1])))
-        return out
 
-    def _apply_board(self, board: dict, frm, to, promo, ep_cap, castle) -> dict:
-        nb = dict(board)
-        owner, t = nb.pop(frm)
-        if ep_cap is not None:
-            nb.pop(ep_cap, None)            # the multi-stepped pawn
-        nb[to] = (owner, promo if promo else t)
-        if castle is not None:
-            rf, rt = castle
-            nb[rt] = nb.pop(rf)
-        return nb
+    def update_castling(self, rights: frozenset, frm, to, board,
+                        new_board=None) -> frozenset:
+        """A right survives only while its king AND that flank's rook still
+        stand on their home cells.
 
-    def _legal(self, s: GState) -> list:
-        cached = getattr(s, "_legal_cache", None)
-        if cached is not None:
-            return cached
-        me = s.to_move
-        out = []
-        for mv in self._pseudo(s):
-            nb = self._apply_board(s.board, *mv)
-            if not _in_check(nb, me):
-                out.append(mv)
-        object.__setattr__(s, "_legal_cache", out)
-        return out
+        The pre-refactor code re-derived this from the POST-move board; the
+        core hands us the PRE-move one, so the two home cells are evaluated
+        through `after()`. That reproduces the old test exactly even though
+        `promo`, `ep_victim` and `castle` are not in the hook's signature:
 
-    @staticmethod
-    def _mstr(frm, to, promo) -> str:
-        base = f"{frm[0]},{frm[1]}>{to[0]},{to[1]}"
-        return base + (f"={promo}" if promo else "")
+        * promotion -- a promotion cell is never that same side's own king or
+          rook home (White promotes on a6/i10, Black on a1/i5, which are the
+          OPPONENT's rook homes), so a promoted piece can never satisfy a
+          right's `(player, "R"/"K")` test that the unpromoted pawn fails;
+        * the e.p. victim is a pawn, so the cell it vacates fails the test both
+          before and after its removal;
+        * the castling rook's own move only ever concerns the side that is
+          castling, whose king has just left KING_START -- both of its rights
+          are already dead by the king clause.
+        """
+        moved = board.get(frm)
 
-    # ---- draws -------------------------------------------------------------
-    def _draw_reason(self, s: GState) -> Optional[str]:
-        reason = None
-        if s.halfmove >= 100:
-            reason = "50-move rule"
-        elif s.reps and max(s.reps.values()) >= 3:
-            reason = "threefold repetition"
-        elif s.ply >= PLY_CAP:
-            reason = "move limit"
-        if reason is None:
+        def after(cell):
+            if cell == to:
+                return moved
+            if cell == frm:
+                return None
+            return board.get(cell)
+
+        return frozenset(k for k in rights
+                         if after(KING_START[k[0]]) == (k[0], "K")
+                         and after(ROOK_START[k]) == (k[0], "R"))
+
+    # ---- on-disk shapes (frozen: the server stores these in the DB) --------
+    def ep_to_json(self, ep):
+        """[pawn_cell, crossed..] -- Shafran's own encoding, NOT the family
+        default [target, victim], because there can be two targets."""
+        if not ep:
             return None
-        # A counter has fired -- but a position with NO legal move is already
-        # decided, and that outcome wins (chess ends the instant the king is
-        # mated). Without this, a mate delivered on the 100th reversible ply
-        # scored 0-0. `_legal` is memoised per state, and this only runs
-        # once a counter has fired, so the extra generation is not on the hot path.
-        return None if not self._legal(s) else reason
+        return [cell_str(ep[0])] + [cell_str(c) for c in ep[1]]
 
-    # ---- Game interface ----------------------------------------------------
-    def legal_moves(self, s: GState) -> list:
-        if self._draw_reason(s) is not None:
-            return []
-        return [self._mstr(frm, to, promo) for frm, to, promo, _, _ in self._legal(s)]
+    def ep_from_json(self, v):
+        if not v:
+            return None
+        return (parse_cell(v[0]), tuple(parse_cell(x) for x in v[1:]))
 
-    def apply_move(self, s: GState, move: str, rng=None) -> GState:
+    def castling_to_json(self, rights):
+        return sorted(f"{p}{f}" for p, f in rights)
+
+    def castling_from_json(self, v):
+        if v is None:                  # legacy states predate the key
+            return frozenset(ALL_CASTLES)
+        return frozenset((int(x[0]), x[1]) for x in v)
+
+    # ---- presentation -----------------------------------------------------
+    def describe_move(self, s, move: str) -> str:
+        """Shafran's own notation: flank-prefixed castling and an explicit
+        "e.p." tag, and no check/mate suffix (unlike the family default)."""
         promo = None
         body = move
         if "=" in move:
             body, promo = move.split("=")
         frm_s, to_s = body.split(">")
-        frm, to = _cell(frm_s), _cell(to_s)
-        match = [m for m in self._legal(s)
-                 if m[0] == frm and m[1] == to and (m[2] or None) == promo]
-        if not match or self._draw_reason(s) is not None:
-            raise ValueError(f"illegal move {move!r}")
-        frm, to, promo, ep_cap, castle = match[0]
-        me = s.to_move
-        moved = s.board[frm]
-        is_capture = ep_cap is not None or (to in s.board)
-        nb = self._apply_board(s.board, frm, to, promo, ep_cap, castle)
-        # en passant: EVERY cell crossed by a multi-step pawn move is a target
-        ep = None
-        if moved[1] == "P":
-            n = _hex_dist(frm, to)
-            if n > 1 and to[0] == frm[0]:
-                fq, fr = PAWN_FWD[me]
-                crossed = tuple((frm[0] + i * fq, frm[1] + i * fr)
-                                for i in range(1, n))
-                ep = (to, crossed)
-        # a rook or king that left home (or a rook captured at home) kills rights
-        castling = frozenset(
-            k for k in s.castling
-            if nb.get(KING_START[k[0]]) == (k[0], "K")
-            and nb.get(ROOK_START[k]) == (k[0], "R"))
-        irreversible = is_capture or moved[1] == "P"
-        halfmove = 0 if irreversible else s.halfmove + 1
-        # prior positions can never recur after an irreversible move; losing a
-        # castling right is likewise irreversible
-        reps = {} if (irreversible or castling != s.castling) else dict(s.reps)
-        key = _poskey(nb, 1 - me, ep, castling)
-        reps[key] = reps.get(key, 0) + 1
-        return GState(board=nb, to_move=1 - me, ep=ep, castling=castling,
-                      halfmove=halfmove, ply=s.ply + 1, reps=reps, last=(frm, to))
-
-    def is_terminal(self, s: GState) -> bool:
-        if self._draw_reason(s) is not None:
-            return True
-        return len(self._legal(s)) == 0
-
-    def returns(self, s: GState) -> list:
-        if self._draw_reason(s) is not None:
-            return [0.0, 0.0]
-        if len(self._legal(s)) == 0:
-            loser = s.to_move
-            if _in_check(s.board, loser):          # checkmate
-                return [-1.0, 1.0] if loser == WHITE else [1.0, -1.0]
-            return [0.0, 0.0]                      # stalemate IS a draw
-        return [0.0, 0.0]
-
-    # ---- serialization -----------------------------------------------------
-    def serialize(self, s: GState) -> dict:
-        return {
-            "board": {f"{q},{r}": [o, t] for (q, r), (o, t) in s.board.items()},
-            "to_move": s.to_move,
-            "ep": ([f"{s.ep[0][0]},{s.ep[0][1]}"]
-                   + [f"{q},{r}" for q, r in s.ep[1]]) if s.ep else None,
-            "castling": sorted(f"{p}{f}" for p, f in s.castling),
-            "halfmove": s.halfmove,
-            "ply": s.ply,
-            "reps": dict(s.reps),
-            "last": ([f"{s.last[0][0]},{s.last[0][1]}", f"{s.last[1][0]},{s.last[1][1]}"]
-                     if s.last else None),
-        }
-
-    def deserialize(self, d: dict) -> GState:
-        ep = d.get("ep")
-        last = d.get("last")
-        cast = d.get("castling")
-        if cast is None:
-            cast = [f"{p}{f}" for p, f in ALL_CASTLES]
-        return GState(
-            board={_cell(k): (v[0], v[1]) for k, v in d["board"].items()},
-            to_move=d["to_move"],
-            ep=(_cell(ep[0]), tuple(_cell(x) for x in ep[1:])) if ep else None,
-            castling=frozenset((int(x[0]), x[1]) for x in cast),
-            halfmove=d.get("halfmove", 0),
-            ply=d.get("ply", 0),
-            reps=dict(d.get("reps", {})),
-            last=(_cell(last[0]), _cell(last[1])) if last else None,
-        )
-
-    # ---- presentation ------------------------------------------------------
-    def describe_move(self, s: GState, move: str) -> str:
-        promo = None
-        body = move
-        if "=" in move:
-            body, promo = move.split("=")
-        frm_s, to_s = body.split(">")
-        frm, to = _cell(frm_s), _cell(to_s)
+        frm, to = parse_cell(frm_s), parse_cell(to_s)
         piece = s.board.get(frm)
         if piece is not None and piece[1] == "K" and _hex_dist(frm, to) > 1:
             for key, between in CASTLE_BETWEEN.items():
@@ -548,48 +386,26 @@ class ShafranChess(Game):
             out += " e.p."
         return out
 
-    def render(self, s: GState, perspective=None) -> dict:
-        pieces = [{"cell": f"{q},{r}", "owner": o, "label": t}
-                  for (q, r), (o, t) in s.board.items()]
-        highlights = []
-        if s.last is not None:
-            for c in s.last:
-                highlights.append({"cell": f"{c[0]},{c[1]}", "kind": "last-move"})
+    def board_spec(self, s) -> dict:
         # The three hex colours (bishop colour classes): colour = (q - r) mod 3.
         shades = {0: "#e8ab6f", 1: "#ffce9e", 2: "#d18b47"}  # mid, light, dark
-        tints = {f"{q},{r}": shades[(q - r) % 3] for q, r in CELLS}
-        if self.is_terminal(s):
-            reason = self._draw_reason(s)
-            if reason is not None:
-                caption = f"Draw ({reason})"
-            elif _in_check(s.board, s.to_move):
-                caption = f"{NAMES[1 - s.to_move]} wins (checkmate)"
-            else:
-                caption = f"Draw (stalemate — {NAMES[s.to_move]} has no move)"
-        else:
-            check = " (check)" if _in_check(s.board, s.to_move) else ""
-            caption = f"{NAMES[s.to_move]} to move{check}"
-        return {
-            "board": {"type": "hex",
-                      "cells": [f"{q},{r}" for q, r in CELLS],
-                      # q IS the file index, and Shafran's files are drawn
-                      # VERTICAL, so use flat-top hexes (see SPEC.md).
-                      "orientation": "flat",
-                      "tints": tints},
-            "pieces": pieces,
-            "highlights": highlights,
-            "caption": caption,
-            "pieceset": "chess",
-        }
+        return {"type": "hex",
+                # An irregular hexagon: an explicit cell list, not a shape.
+                "cells": [f"{q},{r}" for q, r in CELLS],
+                # q IS the file index, and Shafran's files are drawn VERTICAL,
+                # so use flat-top hexes (see SPEC.md).
+                "orientation": "flat",
+                "tints": {f"{q},{r}": shades[(q - r) % 3] for q, r in CELLS}}
 
-    # ---- bot eval ----------------------------------------------------------
-    VALUES = {"P": 1.0, "N": 3.0, "B": 3.0, "R": 5.0, "Q": 9.0, "K": 0.0}
 
-    def heuristic(self, s: GState) -> list:
-        import math
-        bal = 0.0
-        for (o, t) in s.board.values():
-            v = self.VALUES.get(t, 0.0)
-            bal += v if o == WHITE else -v
-        v = math.tanh(bal / 8.0)
-        return [v, -v]
+# `selftest.py` calls these as module-level functions; the implementations now
+# live on the shared core, so route through one throwaway instance.
+_REF = ShafranChess()
+
+
+def _attacked(board: dict, cell, by: int) -> bool:
+    return _REF.attacked(board, cell, by)
+
+
+def _in_check(board: dict, player: int) -> bool:
+    return _REF.in_check(board, player)

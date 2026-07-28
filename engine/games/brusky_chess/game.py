@@ -25,9 +25,10 @@ constant ``r`` is a horizontal row and rank 1 (r = -1) sits at the bottom for
 White -- the board's natural orientation.
 
 Because the axial frame is just Gliński's rotated, the direction TABLES are
-identical to ``glinski_chess``'s (6 orthogonals, 6 diagonals, 12 knight leaps);
-only which vector is "forward" for a pawn differs -- a Brusky pawn has TWO
-forward orthogonals.
+identical to the rest of the family's, so they (and the sliders, leapers,
+check/mate, the draw counters, serialisation, rendering and the MCTS heuristic)
+come from ``agp.hexchesslike``; only which vector is "forward" for a pawn
+differs -- a Brusky pawn has TWO forward orthogonals.
 
 Rules implemented (chessvariants.com/rules/bruskyshexagonalchess, which follows
 Pritchard's *Encyclopedia of Chess Variants*; see rules.md)
@@ -60,9 +61,14 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Optional
 
-from agp.game import Game
+# The names re-exported / defined here (BState, WHITE/BLACK, FILES, CELLS,
+# ORTHO/DIAG/KNIGHT, on_board, cell_name, name_to_cell, HOME_RANK, pawn_caps,
+# PLY_CAP, _cell, _poskey, _attacked, _king_cell, _in_check) are this module's
+# PUBLIC SURFACE: ``selftest.py`` imports them and the selftest is the
+# regression net for this refactor, so it is deliberately not rewritten.
+from agp.hexchesslike import (BLACK, DIAG, KNIGHT, ORTHO, WHITE,  # noqa: F401
+                              HexChessLike, HState, cell_str, parse_cell)
 
-WHITE, BLACK = 0, 1
 NAMES = {WHITE: "White", BLACK: "Black"}
 FILES = "abcdefghijkl"          # 12 left-leaning files; Brusky's notation uses "j"
 
@@ -74,16 +80,10 @@ FILES = "abcdefghijkl"          # 12 left-leaning files; Brusky's notation uses 
 # broken -- it is NEVER outcome-load-bearing.
 PLY_CAP = 20000
 
-# --- directions (axial q,r; cube s = -q-r) ---------------------------------
-# Orthogonal = through cell edges (rook), listed NW, NE, E, SE, SW, W.
-ORTHO = [(0, -1), (1, -1), (1, 0), (0, 1), (-1, 1), (-1, 0)]
-# Diagonal = through cell vertices (bishop): sums of adjacent orthogonals.
-# (1,-2) is "straight up the board", (-1,2) straight down.
-DIAG = [(1, -2), (2, -1), (1, 1), (-1, 2), (-2, 1), (-1, -1)]
-# Knight: one orthogonal step then one OUTWARD diagonal step = the 12 cells of
-# the fourth perimeter a queen cannot reach.
-KNIGHT = [(1, -3), (2, -3), (3, -2), (3, -1), (2, 1), (1, 2),
-          (-1, 3), (-2, 3), (-3, 2), (-3, 1), (-2, -1), (-1, -2)]
+# ORTHO / DIAG / KNIGHT come from the shared core (identical in axial space for
+# the whole hex-chess family).  Here the orthogonals read NW, NE, E, SE, SW, W;
+# the diagonals are the sums of adjacent orthogonals, with (1,-2) "straight up
+# the board" and (-1,2) straight down.
 
 # Pawns: two forward orthogonals, two slanted forward diagonals, and the fully
 # vertical forward diagonal (a capture direction only from the starting rank).
@@ -141,8 +141,7 @@ def name_to_cell(name: str):
 
 
 def _cell(sstr: str):
-    q, r = sstr.split(",")
-    return int(q), int(r)
+    return parse_cell(sstr)
 
 
 def _setup_board() -> dict:
@@ -171,57 +170,25 @@ def pawn_caps(player: int, cell) -> list:
 
 
 @dataclass
-class BState:
+class BState(HState):
+    """The shared hex-chess state with Brusky's own defaults.
+
+    ``castling`` is a set of "KQkq" flag characters and ``ep`` is
+    ``(target_cell, pawn_cell)`` -- the ORDER the shipped package used, kept
+    because ``selftest.py`` reads ``s.ep[0]``/``s.ep[1]`` and because the
+    serialized form goes to the production DB.
+    """
     board: dict = field(default_factory=_setup_board)  # (q,r) -> (owner, letter)
-    to_move: int = WHITE
     castling: frozenset = ALL_RIGHTS
-    # en passant: (target_cell, pawn_cell) set by the last double step, or None
-    ep: Optional[tuple] = None
-    halfmove: int = 0     # plies since last pawn move / capture (50-move rule)
-    ply: int = 0
-    reps: dict = field(default_factory=dict)   # position key -> count (threefold)
-    last: Optional[tuple] = None               # (from, to) for highlights
 
 
 def _poskey(board: dict, to_move: int, castling, ep) -> str:
+    """Repetition key.  Kept verbatim (rather than using the core's) so that a
+    match already stored in the DB keeps counting its own repetitions."""
     items = sorted((q, r, o, t) for (q, r), (o, t) in board.items())
     ep_s = f"{ep[0][0]},{ep[0][1]}" if ep else "-"
     return (f"{to_move}|{''.join(sorted(castling))}|{ep_s}|"
             + ";".join(f"{q},{r},{o},{t}" for q, r, o, t in items))
-
-
-def _attacked(board: dict, cell, by: int) -> bool:
-    """Is `cell` attacked by any piece of player `by`?  (Pawn attacks use the
-    same starting-rank rule as pawn captures.)"""
-    q, r = cell
-    for dq, dr in PAWN_SLANT[by]:
-        p = board.get((q - dq, r - dr))
-        if p is not None and p == (by, "P"):
-            return True
-    dq, dr = PAWN_VERT[by]
-    src = (q - dq, r - dr)
-    if src[1] == HOME_RANK[by] and board.get(src) == (by, "P"):
-        return True
-    for dq, dr in KNIGHT:
-        p = board.get((q + dq, r + dr))
-        if p is not None and p == (by, "N"):
-            return True
-    for dq, dr in ORTHO + DIAG:
-        p = board.get((q + dq, r + dr))
-        if p is not None and p == (by, "K"):
-            return True
-    for dirs, letters in ((ORTHO, ("R", "Q")), (DIAG, ("B", "Q"))):
-        for dq, dr in dirs:
-            cq, cr = q + dq, r + dr
-            while on_board(cq, cr):
-                p = board.get((cq, cr))
-                if p is not None:
-                    if p[0] == by and p[1] in letters:
-                        return True
-                    break
-                cq += dq
-                cr += dr
-    return False
 
 
 def _ep_right(letter: str, player: int, frm, to):
@@ -241,77 +208,60 @@ def _ep_right(letter: str, player: int, frm, to):
     return None
 
 
-def _king_cell(board: dict, player: int):
-    for cell, (o, t) in board.items():
-        if o == player and t == "K":
-            return cell
+def _castle_flag(board: dict, frm, to):
+    """If this king move is a castling, return its flag, else None."""
+    piece = board.get(frm)
+    if piece is None or piece[1] != "K":
+        return None
+    if frm[1] != to[1] or abs(to[0] - frm[0]) < 2:
+        return None
+    for flag in FLAGS_BY_COLOR[piece[0]]:
+        c = CASTLES[flag]
+        if c["kfrom"] == frm and c["kto"] == to:
+            return flag
     return None
 
 
-def _in_check(board: dict, player: int) -> bool:
-    k = _king_cell(board, player)
-    return k is not None and _attacked(board, k, 1 - player)
+class BruskyChess(HexChessLike):
+    CELLS = CELLS
+    FILES = FILES
+    NAME_OF = NAMES
+    PLY_CAP = PLY_CAP
+    STATE = BState
+    # STALEMATE_SCORED stays False: stalemate is an ordinary draw.
 
+    # ---- notation ---------------------------------------------------------
+    def cell_name(self, cell) -> str:
+        return cell_name(cell)
 
-class BruskyChess(Game):
+    # ---- setup ------------------------------------------------------------
+    def setup_board(self) -> dict:
+        return _setup_board()
 
-    @property
-    def num_players(self) -> int:
-        return 2
+    def initial_castling(self) -> frozenset:
+        return ALL_RIGHTS
 
-    def initial_state(self, options=None, rng=None) -> BState:
-        s = BState()
-        s.reps = {_poskey(s.board, s.to_move, s.castling, s.ep): 1}
-        return s
+    # ---- pawns ------------------------------------------------------------
+    def is_promo(self, player: int, cell) -> bool:
+        return cell[1] == PROMO_RANK[player]
 
-    def current_player(self, s: BState) -> int:
-        return s.to_move
-
-    # ---- move generation ---------------------------------------------------
-    def _pseudo(self, s: BState) -> list:
-        """Pseudo-legal moves as (frm, to, promo_or_None, ep_victim_or_None)."""
-        out = []
-        me = s.to_move
-        board = s.board
-        for (q, r), (owner, t) in board.items():
-            if owner != me:
-                continue
-            if t == "P":
-                self._pawn_moves(board, s.ep, me, (q, r), out)
-            elif t == "N":
-                for dq, dr in KNIGHT:
-                    tgt = (q + dq, r + dr)
-                    if tgt in CELLS:
-                        occ = board.get(tgt)
-                        if occ is None or occ[0] != me:
-                            out.append(((q, r), tgt, None, None))
-            elif t == "K":
-                for dq, dr in ORTHO + DIAG:
-                    tgt = (q + dq, r + dr)
-                    if tgt in CELLS:
-                        occ = board.get(tgt)
-                        if occ is None or occ[0] != me:
-                            out.append(((q, r), tgt, None, None))
-            else:
-                dirs = ORTHO if t == "R" else DIAG if t == "B" else ORTHO + DIAG
-                for dq, dr in dirs:
-                    cq, cr = q + dq, r + dr
-                    while on_board(cq, cr):
-                        occ = board.get((cq, cr))
-                        if occ is None:
-                            out.append(((q, r), (cq, cr), None, None))
-                        else:
-                            if occ[0] != me:
-                                out.append(((q, r), (cq, cr), None, None))
-                            break
-                        cq += dq
-                        cr += dr
-        out.extend(self._castles(s))
-        return out
-
-    def _pawn_moves(self, board: dict, ep, me: int, cell, out: list) -> None:
+    def pawn_attackers(self, player: int, cell):
+        """Reverse of ``pawn_caps``: the cells a pawn of `player` attacks `cell`
+        from.  The vertical diagonal counts only when the pawn would be standing
+        on its OWN starting rank, so the source cell -- not the target -- is what
+        gates it.  Getting this wrong changes check detection without changing
+        move generation."""
         q, r = cell
-        promo_r = PROMO_RANK[me]
+        srcs = [(q - dq, r - dr) for dq, dr in PAWN_SLANT[player]]
+        dq, dr = PAWN_VERT[player]
+        src = (q - dq, r - dr)
+        if src[1] == HOME_RANK[player]:
+            srcs.append(src)
+        return srcs
+
+    def pawn_moves(self, s, cell, out) -> None:
+        board, me = s.board, s.to_move
+        q, r = cell
         # --- non-capturing advances.  An ENEMY piece adjacent in EITHER forward
         # direction blocks BOTH; a friendly one blocks only its own direction.
         blocked = False
@@ -326,15 +276,15 @@ class BruskyChess(Game):
                 one = (q + dq, r + dr)
                 if one not in CELLS or one in board:
                     continue
-                if one[1] == promo_r:
+                if self.is_promo(me, one):
                     for pc in PROMO_PIECES:
-                        out.append((cell, one, pc, None))
+                        out.append((cell, one, pc, None, None))
                 else:
-                    out.append((cell, one, None, None))
+                    out.append((cell, one, None, None, None))
                 if home:                       # double step, same direction
                     two = (q + 2 * dq, r + 2 * dr)
                     if two in CELLS and two not in board:
-                        out.append((cell, two, None, None))
+                        out.append((cell, two, None, None, None))
         # --- captures (and en passant)
         for dq, dr in pawn_caps(me, cell):
             tgt = (q + dq, r + dr)
@@ -343,20 +293,26 @@ class BruskyChess(Game):
             occ = board.get(tgt)
             if occ is not None:
                 if occ[0] != me:
-                    if tgt[1] == promo_r:
+                    if self.is_promo(me, tgt):
                         for pc in PROMO_PIECES:
-                            out.append((cell, tgt, pc, None))
+                            out.append((cell, tgt, pc, None, None))
                     else:
-                        out.append((cell, tgt, None, None))
-            elif ep is not None and tgt == ep[0]:
-                out.append((cell, tgt, None, ep[1]))
+                        out.append((cell, tgt, None, None, None))
+            elif s.ep is not None and tgt == s.ep[0]:
+                # s.ep = (target, victim); the victim cell is carried explicitly
+                # because with two forward directions BOTH cells behind the
+                # target can hold an enemy pawn.
+                out.append((cell, tgt, None, s.ep[1], None))
 
-    def _castles(self, s: BState) -> list:
+    def ep_after(self, s, frm, to, piece: str):
+        return _ep_right(piece, s.to_move, frm, to)
+
+    # ---- castling ---------------------------------------------------------
+    def castle_moves(self, s, out) -> None:
         me = s.to_move
         board = s.board
-        out = []
-        if _in_check(board, me):
-            return out
+        if self.in_check(board, me):
+            return
         for flag in FLAGS_BY_COLOR[me]:
             if flag not in s.castling:
                 continue
@@ -365,61 +321,12 @@ class BruskyChess(Game):
                 continue
             if any(x in board for x in c["empty"]):
                 continue
-            if any(_attacked(board, x, 1 - me) for x in c["path"]):
+            if any(self.attacked(board, x, 1 - me) for x in c["path"]):
                 continue
-            out.append((c["kfrom"], c["kto"], None, None))
-        return out
+            out.append((c["kfrom"], c["kto"], None, None, (c["rfrom"], c["rto"])))
 
-    @staticmethod
-    def _castle_flag(board: dict, frm, to):
-        """If this king move is a castling, return its flag, else None."""
-        piece = board.get(frm)
-        if piece is None or piece[1] != "K":
-            return None
-        if frm[1] != to[1] or abs(to[0] - frm[0]) < 2:
-            return None
-        for flag in FLAGS_BY_COLOR[piece[0]]:
-            c = CASTLES[flag]
-            if c["kfrom"] == frm and c["kto"] == to:
-                return flag
-        return None
-
-    def _apply_board(self, board: dict, frm, to, promo, ep_victim, mover: int) -> dict:
-        """Apply a move to a bare board.  ``ep_victim`` is the EXACT cell of the
-        pawn removed by an en-passant capture (never inferred from ``to``: with
-        two forward directions, two different enemy pawns can sit on the two
-        cells behind the en-passant target)."""
-        flag = self._castle_flag(board, frm, to)
-        nb = dict(board)
-        owner, t = nb.pop(frm)
-        if ep_victim is not None:
-            nb.pop(ep_victim, None)
-        nb[to] = (owner, promo if promo else t)
-        if flag is not None:
-            c = CASTLES[flag]
-            nb.pop(c["rfrom"], None)
-            nb[c["rto"]] = (mover, "R")
-        return nb
-
-    def _legal(self, s: BState) -> list:
-        cached = getattr(s, "_legal_cache", None)
-        if cached is not None:
-            return cached
-        me = s.to_move
-        out = []
-        for frm, to, promo, victim in self._pseudo(s):
-            nb = self._apply_board(s.board, frm, to, promo, victim, me)
-            if not _in_check(nb, me):
-                out.append((frm, to, promo, victim))
-        object.__setattr__(s, "_legal_cache", out)
-        return out
-
-    @staticmethod
-    def _mstr(frm, to, promo) -> str:
-        base = f"{frm[0]},{frm[1]}>{to[0]},{to[1]}"
-        return base + (f"={promo}" if promo else "")
-
-    def _update_rights(self, rights, frm, to, board) -> frozenset:
+    def update_castling(self, rights: frozenset, frm, to, board,
+                        new_board=None) -> frozenset:
         pl, t = board[frm]
         out = set(rights)
         if t == "K" and frm in KING_HOME:
@@ -431,110 +338,77 @@ class BruskyChess(Game):
         return frozenset(out)
 
     # ---- draws -------------------------------------------------------------
-    def _draw_reason(self, s: BState) -> Optional[str]:
-        reason = None
-        if s.halfmove >= 100:
-            reason = "50-move rule"
-        elif s.reps and max(s.reps.values()) >= 3:
-            reason = "threefold repetition"
-        # Bare kings is the ONLY insufficient-material case: unlike orthodox
-        # chess, K+B vs K and K+N vs K are not dead positions here (a corner has
-        # just five king-neighbours, so a lone minor really can mate -- e.g.
-        # Kc5+Nb3 vs Ka5#), so auto-drawing them would be a rule error.
-        elif len(s.board) == 2:                  # bare kings: mate is impossible
-            reason = "insufficient material"
-        elif s.ply >= PLY_CAP:
-            reason = "move limit"
-        if reason is None:
-            return None
-        # As in orthodox chess, a move that delivers CHECKMATE ends the game
-        # there and then, even if it is also the 100th reversible ply or the
-        # third occurrence of the position.
-        if not self._legal(s) and _in_check(s.board, s.to_move):
-            return None
-        return reason
+    def _draw_reason(self, s) -> Optional[str]:
+        """The shared counters, plus Brusky's one material rule.
 
-    # ---- Game interface ----------------------------------------------------
-    def legal_moves(self, s: BState) -> list:
-        if self._draw_reason(s) is not None:
-            return []
-        return [self._mstr(frm, to, promo) for frm, to, promo, _ in self._legal(s)]
+        Bare kings is the ONLY insufficient-material case: unlike orthodox
+        chess, K+B vs K and K+N vs K are not dead positions here (a corner has
+        just five king-neighbours, so a lone minor really can mate -- e.g.
+        Kc5+Nb3 vs Ka5#), so auto-drawing them would be a rule error.
 
-    def apply_move(self, s: BState, move: str, rng=None) -> BState:
-        promo = None
-        body = move
-        if "=" in move:
-            body, promo = move.split("=")
-        frm_s, to_s = body.split(">")
-        frm, to = _cell(frm_s), _cell(to_s)
-        if self._draw_reason(s) is not None:
-            raise ValueError(f"illegal move {move!r} (game over)")
-        match = [m for m in self._legal(s)
-                 if m[0] == frm and m[1] == to and (m[2] or None) == promo]
-        if not match:
-            raise ValueError(f"illegal move {move!r}")
-        frm, to, promo, victim = match[0]
-        me = s.to_move
-        moved = s.board[frm]
-        is_capture = victim is not None or (to in s.board)
-        castling = self._update_rights(s.castling, frm, to, s.board)
-        nb = self._apply_board(s.board, frm, to, promo, victim, me)
-        ep = _ep_right(moved[1], me, frm, to)
-        irreversible = is_capture or moved[1] == "P"
-        halfmove = 0 if irreversible else s.halfmove + 1
-        # prior positions can never recur after an irreversible move
-        reps = {} if irreversible else dict(s.reps)
-        key = _poskey(nb, 1 - me, castling, ep)
-        reps[key] = reps.get(key, 0) + 1
-        return BState(board=nb, to_move=1 - me, castling=castling, ep=ep,
-                      halfmove=halfmove, ply=s.ply + 1, reps=reps, last=(frm, to))
+        It needs no "a decisive result outranks the draw" guard of its own (the
+        guard the core applies to the counters): with only the two kings left
+        neither checkmate nor stalemate is reachable.
+        """
+        reason = super()._draw_reason(s)
+        if reason is not None:
+            return reason
+        if len(s.board) == 2:                  # bare kings: mate is impossible
+            return "insufficient material"
+        return None
 
-    def is_terminal(self, s: BState) -> bool:
-        if self._draw_reason(s) is not None:
-            return True
-        return len(self._legal(s)) == 0
+    # ---- applying a move ----------------------------------------------------
+    def apply_move(self, s, move: str, rng=None):
+        """The core's move application, with Brusky's repetition-table policy.
 
-    def returns(self, s: BState) -> list:
-        if self._draw_reason(s) is not None:
-            return [0.0, 0.0]
-        if len(self._legal(s)) == 0:
-            loser = s.to_move
-            if _in_check(s.board, loser):        # checkmate
-                return [-1.0, 1.0] if loser == WHITE else [1.0, -1.0]
-            return [0.0, 0.0]                    # stalemate is a draw
-        return [0.0, 0.0]
+        The core clears ``reps`` when a castling RIGHT is lost as well as on an
+        irreversible move; this package never did, and the serialized ``reps``
+        goes to the production DB, so the stale entries are kept.  They are
+        inert either way: their positions carry the old rights, so they can
+        never recur and can never be the entry that reaches three.
+        """
+        ns = super().apply_move(s, move, rng)
+        if ns.halfmove and ns.castling != s.castling:
+            merged = dict(s.reps)
+            for k, v in ns.reps.items():
+                merged[k] = merged.get(k, 0) + v
+            ns.reps = merged
+        return ns
 
-    # ---- serialization -----------------------------------------------------
-    def serialize(self, s: BState) -> dict:
-        return {
-            "board": {f"{q},{r}": [o, t] for (q, r), (o, t) in s.board.items()},
-            "to_move": s.to_move,
-            "castling": "".join(sorted(s.castling)),
-            "ep": ([f"{s.ep[0][0]},{s.ep[0][1]}", f"{s.ep[1][0]},{s.ep[1][1]}"]
-                   if s.ep else None),
-            "halfmove": s.halfmove,
-            "ply": s.ply,
-            "reps": dict(s.reps),
-            "last": ([f"{s.last[0][0]},{s.last[0][1]}", f"{s.last[1][0]},{s.last[1][1]}"]
-                     if s.last else None),
-        }
+    def _apply_flagged(self, board: dict, frm, to, promo, ep_victim, mover: int) -> dict:
+        """Apply a move whose castling is INFERRED from the king's step (used by
+        ``describe_move``, which is handed a bare move string).  Tolerant of a
+        missing rook, as the shipped version was."""
+        flag = _castle_flag(board, frm, to)
+        nb = dict(board)
+        owner, t = nb.pop(frm)
+        if ep_victim is not None:
+            nb.pop(ep_victim, None)
+        nb[to] = (owner, promo if promo else t)
+        if flag is not None:
+            c = CASTLES[flag]
+            nb.pop(c["rfrom"], None)
+            nb[c["rto"]] = (mover, "R")
+        return nb
 
-    def deserialize(self, d: dict) -> BState:
-        ep = d.get("ep")
-        last = d.get("last")
-        return BState(
-            board={_cell(k): (v[0], v[1]) for k, v in d["board"].items()},
-            to_move=d["to_move"],
-            castling=frozenset(d.get("castling", "")),
-            ep=(_cell(ep[0]), _cell(ep[1])) if ep else None,
-            halfmove=d.get("halfmove", 0),
-            ply=d.get("ply", 0),
-            reps=dict(d.get("reps", {})),
-            last=(_cell(last[0]), _cell(last[1])) if last else None,
-        )
+    # ---- state encoding (DO NOT CHANGE: async matches are stored serialized) --
+    def poskey(self, board: dict, to_move: int, ep, castling) -> str:
+        return _poskey(board, to_move, castling, ep)
+
+    def ep_to_json(self, ep):
+        return None if ep is None else [cell_str(ep[0]), cell_str(ep[1])]
+
+    def ep_from_json(self, v):
+        return (parse_cell(v[0]), parse_cell(v[1])) if v else None
+
+    def castling_to_json(self, rights):
+        return "".join(sorted(rights))
+
+    def castling_from_json(self, v):
+        return frozenset(v or "")
 
     # ---- presentation ------------------------------------------------------
-    def describe_move(self, s: BState, move: str) -> str:
+    def describe_move(self, s, move: str) -> str:
         promo = None
         body = move
         if "=" in move:
@@ -542,7 +416,7 @@ class BruskyChess(Game):
         frm_s, to_s = body.split(">")
         frm, to = _cell(frm_s), _cell(to_s)
         piece = s.board.get(frm)
-        flag = self._castle_flag(s.board, frm, to)
+        flag = _castle_flag(s.board, frm, to)
         is_ep = (piece is not None and piece[1] == "P" and s.ep is not None
                  and to == s.ep[0] and to not in s.board)
         if flag is not None:
@@ -557,56 +431,40 @@ class BruskyChess(Game):
                 out += " e.p."
         if piece is not None:
             victim = s.ep[1] if is_ep else None
-            nb = self._apply_board(s.board, frm, to, promo, victim, piece[0])
+            nb = self._apply_flagged(s.board, frm, to, promo, victim, piece[0])
             foe = 1 - piece[0]
-            if _in_check(nb, foe):
+            if self.in_check(nb, foe):
                 nxt = BState(board=nb, to_move=foe,
                              ep=_ep_right(piece[1], piece[0], frm, to),
-                             castling=self._update_rights(s.castling, frm, to, s.board))
+                             castling=self.update_castling(s.castling, frm, to,
+                                                           s.board))
                 out += "#" if not self._legal(nxt) else "+"
         return out
 
-    def render(self, s: BState, perspective=None) -> dict:
-        pieces = [{"cell": f"{q},{r}", "owner": o, "label": t}
-                  for (q, r), (o, t) in s.board.items()]
-        highlights = []
-        if s.last is not None:
-            for c in s.last:
-                highlights.append({"cell": f"{c[0]},{c[1]}", "kind": "last-move"})
+    def board_spec(self, s) -> dict:
         # The three hex colours (the bishop colour classes): (q - r) mod 3.
         shades = {0: "#e8ab6f", 1: "#ffce9e", 2: "#d18b47"}   # mid, light, dark
         cells = sorted(CELLS, key=lambda c: (-c[1], c[0]))
-        if self.is_terminal(s):
-            reason = self._draw_reason(s)
-            if reason is not None:
-                caption = f"Draw ({reason})"
-            elif _in_check(s.board, s.to_move):
-                caption = f"{NAMES[1 - s.to_move]} wins (checkmate)"
-            else:
-                caption = f"Draw (stalemate — {NAMES[s.to_move]} has no move)"
-        else:
-            check = " (check)" if _in_check(s.board, s.to_move) else ""
-            caption = f"{NAMES[s.to_move]} to move{check}"
         return {
-            "board": {
-                "type": "hex",
-                "cells": [f"{q},{r}" for q, r in cells],
-                "tints": {f"{q},{r}": shades[(q - r) % 3] for q, r in cells},
-            },
-            "pieces": pieces,
-            "highlights": highlights,
-            "caption": caption,
-            "pieceset": "chess",
+            "type": "hex",
+            "cells": [f"{q},{r}" for q, r in cells],
+            "tints": {f"{q},{r}": shades[(q - r) % 3] for q, r in cells},
         }
 
-    # ---- bot eval ----------------------------------------------------------
-    VALUES = {"P": 1.0, "N": 3.0, "B": 3.0, "R": 5.0, "Q": 9.0, "K": 0.0}
 
-    def heuristic(self, s: BState) -> list:
-        import math
-        bal = 0.0
-        for (o, t) in s.board.values():
-            v = self.VALUES.get(t, 0.0)
-            bal += v if o == WHITE else -v
-        v = math.tanh(bal / 8.0)
-        return [v, -v]
+# --- module-level helpers kept for selftest.py / callers ---------------------
+_G = BruskyChess()
+
+
+def _attacked(board: dict, cell, by: int) -> bool:
+    """Is `cell` attacked by any piece of player `by`?  (Pawn attacks use the
+    same starting-rank rule as pawn captures.)"""
+    return _G.attacked(board, cell, by)
+
+
+def _king_cell(board: dict, player: int):
+    return _G.king_cell(board, player)
+
+
+def _in_check(board: dict, player: int) -> bool:
+    return _G.in_check(board, player)

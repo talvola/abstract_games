@@ -329,8 +329,18 @@ ok(g.initial_state().reps
 late = pos({"a3": (WHITE, "K"), "b5": (WHITE, "R"), "a1": (BLACK, "K")})
 late.halfmove = 99
 late_mate = g.apply_move(late, mstr("b5", "b2"))
-ok(late_mate.halfmove == 100 and g._draw_reason(late_mate) == "50-move rule",
-   "the mating move is also the 100th reversible ply")
+ok(late_mate.halfmove == 100, "the mating move is also the 100th reversible ply")
+# The counter really would fire here if the position were NOT already decided:
+# same board and same halfmove, but with the mated king given an escape square.
+_escapable = pos({"a3": (WHITE, "K"), "b2": (WHITE, "R"), "a1": (BLACK, "K"),
+                  "g1": (BLACK, "R")})
+_escapable.halfmove = 100
+# (probe `_legal`, not `legal_moves`: the latter returns [] once a draw fires)
+ok(g._legal(_escapable) and g._draw_reason(_escapable) == "50-move rule",
+   "a NON-decided position on the same boundary IS a 50-move draw")
+ok(g._draw_reason(late_mate) is None,
+   "but the counter yields to a decided position (the shared core gates "
+   "_draw_reason on 'the side to move has no legal move')")
 ok(g.is_terminal(late_mate) and g.returns(late_mate) == [1.0, -1.0],
    "checkmate on the 50-move boundary is a WIN, not a draw")
 ok("checkmate" in g.render(late_mate)["caption"],
