@@ -44,6 +44,11 @@ Rules implemented -- primary source first (see rules.md for the quotations):
     greenchess.net/rules.php?v=de-vasa (prose + pawn/castling diagrams);
     Wikibooks; Jocly's model as an array/pawn-graph/promotion oracle.
 --------------------------------------------------------------------------
+Piece movement, check/mate, the draw counters, serialisation, rendering and the
+MCTS heuristic come from ``agp.hexchesslike`` (shared with the other classical
+hex chesses -- the direction tables are identical in axial space for the whole
+family).  This module supplies only what is de Vasa-specific:
+
 * Setup. White: R a1, N b1, B c1, Q d1, B e1, K f1, B g1, N h1, R i1; pawns
   a3-i3. Black: R a9, N b9, B c9, K d9, B e9, Q f9, B g9, N h9, R i9; pawns
   a7-i7. The KINGS STAND ON OPPOSITE WINGS (Kf1 vs Kd9) — Black's array is
@@ -74,7 +79,9 @@ Rules implemented -- primary source first (see rules.md for the quotations):
   the preamble to the chapter that contains De Vasa. See rules.md.
 * Draws: 50-move rule (100 plies with no pawn move or capture), threefold
   repetition (board + side + en-passant + castling rights), and a hard ply cap
-  that is a pure termination backstop the 50-move rule provably beats.
+  that is a pure termination backstop the 50-move rule provably beats.  As in
+  orthodox chess a DECISIVE result outranks all three (``_draw_reason`` in the
+  shared core yields to "the side to move has no legal move").
 
 Move strings: ``"c1,r1>c2,r2"`` with an ``"=Q/=R/=B/=N"`` suffix on promotions.
 Castling is written as the king's ordinary from>to (2 or 3 cells).
@@ -83,11 +90,15 @@ Castling is written as the king's ordinary from>to (2 or 3 cells).
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Optional
 
-from agp.game import Game
+# The names re-exported / defined here (VState, WHITE/BLACK, FILES, CELLS,
+# ORTHO/DIAG/KNIGHT, on_board, cell_name, ALL_CASTLES, PLY_CAP, _cell, _poskey,
+# _attacked, _king_cell, _in_check) are this module's PUBLIC SURFACE:
+# ``selftest.py`` imports them and the selftest is the regression net for this
+# refactor, so it is deliberately not rewritten.  Keep these names when editing.
+from agp.hexchesslike import (BLACK, DIAG, KNIGHT, ORTHO, WHITE,  # noqa: F401
+                              HexChessLike, HState, cell_str, parse_cell)
 
-WHITE, BLACK = 0, 1
 NAMES = {WHITE: "White", BLACK: "Black"}
 FILES = "abcdefghi"
 W = H = 9                      # 9 files x 9 ranks = 81 cells
@@ -101,23 +112,16 @@ W = H = 9                      # 9 files x 9 ranks = 81 cells
 # is unreachable dead code; selftest.py also measures it over random games.
 PLY_CAP = 25000
 
-# --- directions (axial c,r on the rhombus; the same hex lattice as the other
-# hex chesses, only the ORIENTATION of "forward" differs) --------------------
-# Orthogonal = through cell edges (rook). Listed NW, NE, E, SE, SW, W where NW
-# and NE are White's two forward directions (both gain a rank).
-ORTHO = [(0, -1), (1, -1), (1, 0), (0, 1), (-1, 1), (-1, 0)]
-# Diagonal = through cell vertices (bishop): sums of adjacent orthogonals.
-# Listed N, NE-side, SE, S, SW-side, NW-side.
-DIAG = [(1, -2), (2, -1), (1, 1), (-1, 2), (-2, 1), (-1, -1)]
-# Knight: two hexes orthogonally then one at 60 deg = cube perms of (1,2,-3).
-KNIGHT = [(1, -3), (2, -3), (3, -2), (3, -1), (2, 1), (1, 2),
-          (-1, 3), (-2, 3), (-3, 2), (-3, 1), (-2, -1), (-1, -2)]
+# ORTHO / DIAG / KNIGHT come from the shared core: in axial space the tables are
+# byte-identical for every member of the hex-chess family, and only which vector
+# is "forward" for a pawn differs.  Here the orthogonals read NW, NE, E, SE, SW,
+# W, with NW and NE White's two forward directions.
 
 # A pawn has TWO forward moves (the two forward edge-neighbours) ...
 PAWN_FWD = {WHITE: [(0, -1), (1, -1)], BLACK: [(0, 1), (-1, 1)]}
 # ... and captures ONLY on the two SIDE diagonals (each is a forward move plus
-# one lateral step: NW+W and NE+E). The third forward diagonal (0,-2)+... i.e.
-# (1,-2) "straight ahead" is TWO ranks away and is NOT a capture.
+# one lateral step: NW+W and NE+E). The third forward diagonal (1,-2)
+# "straight ahead" is TWO ranks away and is NOT a capture.
 PAWN_CAPS = {WHITE: [(-1, -1), (2, -1)], BLACK: [(1, 1), (-2, 1)]}
 
 # Pawn home ranks: White rank 3 (r = 6), Black rank 7 (r = 2). A pawn can only
@@ -169,7 +173,7 @@ def on_board(c: int, r: int) -> bool:
     return 0 <= c < W and 0 <= r < H
 
 
-CELLS = tuple((c, r) for r in range(H) for c in range(W))
+CELLS = frozenset((c, r) for r in range(H) for c in range(W))
 
 
 def _is_promo(player: int, cell) -> bool:
@@ -183,24 +187,26 @@ def cell_name(cell) -> str:
 
 
 def _cell(sstr: str):
-    c, r = sstr.split(",")
-    return int(c), int(r)
+    return parse_cell(sstr)
 
 
 @dataclass
-class VState:
-    board: dict = field(default_factory=_setup_board)  # (c,r) -> (owner, letter)
-    to_move: int = WHITE
-    # en passant: (crossed_cell, double_stepped_pawn_cell) or None
-    ep: Optional[tuple] = None
-    castling: frozenset = field(default_factory=lambda: frozenset(ALL_CASTLES))
-    halfmove: int = 0     # plies since last pawn move / capture (50-move rule)
-    ply: int = 0
-    reps: dict = field(default_factory=dict)  # position key -> count (3-fold)
-    last: Optional[tuple] = None              # (from, to) for highlights
+class VState(HState):
+    """The shared hex-chess state with de Vasa's own defaults.
+
+    ``castling`` is a set of ``(player, rook_file)`` pairs and ``ep`` is
+    ``(crossed_cell, double_stepped_pawn_cell)`` -- the ORDER the shipped
+    package used, kept because ``selftest.py`` reads ``s.ep[0]``/``s.ep[1]``
+    and because the serialized form goes to the production DB.
+    """
+    board: dict = field(default_factory=_setup_board)   # (c,r) -> (owner, letter)
+    castling: frozenset = field(
+        default_factory=lambda: frozenset(ALL_CASTLES))
 
 
 def _poskey(board: dict, to_move: int, ep, castling) -> str:
+    """Repetition key.  Kept verbatim (rather than using the core's) so that a
+    match already stored in the DB keeps counting its own repetitions."""
     items = sorted((c, r, o, t) for (c, r), (o, t) in board.items())
     ep_s = f"{ep[0][0]},{ep[0][1]}" if ep else "-"
     cs = "".join(f"{p}{f}" for p, f in sorted(castling)) or "-"
@@ -208,139 +214,88 @@ def _poskey(board: dict, to_move: int, ep, castling) -> str:
             + ";".join(f"{c},{r},{o},{t}" for c, r, o, t in items))
 
 
-def _attacked(board: dict, cell, by: int) -> bool:
-    """Is `cell` attacked by any piece of player `by`?"""
-    c, r = cell
-    for dc, dr in PAWN_CAPS[by]:                     # pawns (reverse)
-        p = board.get((c - dc, r - dr))
-        if p is not None and p[0] == by and p[1] == "P":
-            return True
-    for dc, dr in KNIGHT:
-        p = board.get((c + dc, r + dr))
-        if p is not None and p[0] == by and p[1] == "N":
-            return True
-    for dc, dr in ORTHO + DIAG:                      # kings
-        p = board.get((c + dc, r + dr))
-        if p is not None and p[0] == by and p[1] == "K":
-            return True
-    for dirs, letters in ((ORTHO, ("R", "Q")), (DIAG, ("B", "Q"))):
-        for dc, dr in dirs:
-            xc, xr = c + dc, r + dr
-            while on_board(xc, xr):
-                p = board.get((xc, xr))
-                if p is not None:
-                    if p[0] == by and p[1] in letters:
-                        return True
-                    break
-                xc += dc
-                xr += dr
-    return False
+class DeVasaChess(HexChessLike):
+    CELLS = CELLS
+    FILES = FILES
+    NAME_OF = NAMES
+    PLY_CAP = PLY_CAP
+    STATE = VState
+    # STALEMATE_SCORED stays False: stalemate is an ordinary draw (CECV p. 203).
 
+    # ---- notation ---------------------------------------------------------
+    def cell_name(self, cell) -> str:
+        return cell_name(cell)
 
-def _king_cell(board: dict, player: int):
-    for cell, (o, t) in board.items():
-        if o == player and t == "K":
-            return cell
-    return None
+    # ---- setup ------------------------------------------------------------
+    def setup_board(self) -> dict:
+        return _setup_board()
 
+    def initial_castling(self) -> frozenset:
+        return frozenset(ALL_CASTLES)
 
-def _in_check(board: dict, player: int) -> bool:
-    k = _king_cell(board, player)
-    return k is not None and _attacked(board, k, 1 - player)
+    # ---- pawns ------------------------------------------------------------
+    def is_promo(self, player: int, cell) -> bool:
+        return cell[1] == PROMO_R[player]
 
+    def pawn_attackers(self, player: int, cell):
+        """Reverse of PAWN_CAPS: the cells a pawn of `player` attacks `cell` from."""
+        c, r = cell
+        return [(c - dc, r - dr) for dc, dr in PAWN_CAPS[player]]
 
-class DeVasaChess(Game):
-
-    @property
-    def num_players(self) -> int:
-        return 2
-
-    def initial_state(self, options=None, rng=None) -> VState:
-        s = VState()
-        s.reps = {_poskey(s.board, s.to_move, s.ep, s.castling): 1}
-        return s
-
-    def current_player(self, s: VState) -> int:
-        return s.to_move
-
-    # ---- move generation ---------------------------------------------------
-    def _pseudo(self, s: VState) -> list:
-        """Pseudo-legal moves as (frm, to, promo, ep_capture_cell, castle)."""
-        out = []
-        me = s.to_move
-        board = s.board
-        for (c, r), (owner, t) in board.items():
-            if owner != me:
+    def pawn_moves(self, s, cell, out) -> None:
+        me, board = s.to_move, s.board
+        c, r = cell
+        for dc, dr in PAWN_FWD[me]:
+            one = (c + dc, r + dr)
+            if one not in self.CELLS or one in board:
                 continue
-            if t == "P":
-                for dc, dr in PAWN_FWD[me]:
-                    one = (c + dc, r + dr)
-                    if not on_board(*one) or one in board:
-                        continue
-                    if _is_promo(me, one):
-                        for pc in ("Q", "R", "B", "N"):
-                            out.append(((c, r), one, pc, None, None))
-                    else:
-                        out.append(((c, r), one, None, None, None))
-                    # double step: same direction, from the pawn's home rank
-                    if r == PAWN_HOME_R[me]:
-                        two = (c + 2 * dc, r + 2 * dr)
-                        if on_board(*two) and two not in board:
-                            out.append(((c, r), two, None, None, None))
-                for dc, dr in PAWN_CAPS[me]:
-                    tgt = (c + dc, r + dr)
-                    if not on_board(*tgt):
-                        continue
-                    occ = board.get(tgt)
-                    if occ is not None:
-                        if occ[0] != me:
-                            if _is_promo(me, tgt):
-                                for pc in ("Q", "R", "B", "N"):
-                                    out.append(((c, r), tgt, pc, None, None))
-                            else:
-                                out.append(((c, r), tgt, None, None, None))
-                    elif s.ep is not None and tgt == s.ep[0]:
-                        out.append(((c, r), tgt, None, s.ep[1], None))
-            elif t == "N":
-                for dc, dr in KNIGHT:
-                    tgt = (c + dc, r + dr)
-                    if on_board(*tgt):
-                        occ = board.get(tgt)
-                        if occ is None or occ[0] != me:
-                            out.append(((c, r), tgt, None, None, None))
-            elif t == "K":
-                for dc, dr in ORTHO + DIAG:
-                    tgt = (c + dc, r + dr)
-                    if on_board(*tgt):
-                        occ = board.get(tgt)
-                        if occ is None or occ[0] != me:
-                            out.append(((c, r), tgt, None, None, None))
+            if self.is_promo(me, one):
+                for pc in self.PROMO_CHOICES:
+                    out.append((cell, one, pc, None, None))
             else:
-                dirs = ORTHO if t == "R" else DIAG if t == "B" else ORTHO + DIAG
-                for dc, dr in dirs:
-                    xc, xr = c + dc, r + dr
-                    while on_board(xc, xr):
-                        occ = board.get((xc, xr))
-                        if occ is None:
-                            out.append(((c, r), (xc, xr), None, None, None))
-                        else:
-                            if occ[0] != me:
-                                out.append(((c, r), (xc, xr), None, None, None))
-                            break
-                        xc += dc
-                        xr += dr
-        out.extend(self._castles(s))
-        return out
+                out.append((cell, one, None, None, None))
+            # double step: same direction, from the pawn's home rank
+            if r == PAWN_HOME_R[me]:
+                two = (c + 2 * dc, r + 2 * dr)
+                if two in self.CELLS and two not in board:
+                    out.append((cell, two, None, None, None))
+        for dc, dr in PAWN_CAPS[me]:
+            tgt = (c + dc, r + dr)
+            if tgt not in self.CELLS:
+                continue
+            occ = board.get(tgt)
+            if occ is not None:
+                if occ[0] != me:
+                    if self.is_promo(me, tgt):
+                        for pc in self.PROMO_CHOICES:
+                            out.append((cell, tgt, pc, None, None))
+                    else:
+                        out.append((cell, tgt, None, None, None))
+            elif s.ep is not None and tgt == s.ep[0]:
+                # s.ep = (crossed cell, victim); the victim is carried
+                # explicitly because with two forward directions it is not at a
+                # fixed offset from the crossed cell.
+                out.append((cell, tgt, None, s.ep[1], None))
 
-    def _castles(self, s: VState) -> list:
+    def ep_after(self, s, frm, to, piece: str):
+        """Only a double step (2 x one forward direction) creates the right."""
+        if piece != "P":
+            return None
+        d = (to[0] - frm[0], to[1] - frm[1])
+        for fc, fr in PAWN_FWD[s.to_move]:
+            if d == (2 * fc, 2 * fr):
+                return ((frm[0] + fc, frm[1] + fr), to)
+        return None
+
+    # ---- castling ---------------------------------------------------------
+    def castle_moves(self, s, out) -> None:
         me = s.to_move
         rights = [k for k in s.castling if k[0] == me]
         if not rights:
-            return []
+            return
         king = KING_START[me]
-        if s.board.get(king) != (me, "K") or _in_check(s.board, me):
-            return []
-        out = []
+        if s.board.get(king) != (me, "K") or self.in_check(s.board, me):
+            return
         for key in sorted(rights):
             if s.board.get(ROOK_START[key]) != (me, "R"):
                 continue
@@ -349,145 +304,51 @@ class DeVasaChess(Game):
                 continue
             # The king may not cross an attacked cell; its start is already
             # known safe and its destination is checked by the in-check filter.
-            if any(_attacked(s.board, x, 1 - me) for x in king_path[1:-1]):
+            if any(self.attacked(s.board, x, 1 - me) for x in king_path[1:-1]):
                 continue
             out.append((king, king_to, None, None, (ROOK_START[key], rook_to)))
-        return out
 
-    def _apply_board(self, board: dict, frm, to, promo, ep_cap, castle) -> dict:
-        nb = dict(board)
-        owner, t = nb.pop(frm)
-        if ep_cap is not None:
-            nb.pop(ep_cap, None)                    # the double-stepped pawn
-        nb[to] = (owner, promo if promo else t)
-        if castle is not None:
-            rf, rt = castle
-            nb[rt] = nb.pop(rf)
-        return nb
+    def update_castling(self, rights: frozenset, frm, to, board,
+                        new_board=None) -> frozenset:
+        """Keep a right only while its king AND its rook still stand at home.
 
-    def _legal(self, s: VState) -> list:
-        cached = getattr(s, "_legal_cache", None)
-        if cached is not None:
-            return cached
-        me = s.to_move
-        out = []
-        for mv in self._pseudo(s):
-            nb = self._apply_board(s.board, *mv)
-            if not _in_check(nb, me):
-                out.append(mv)
-        object.__setattr__(s, "_legal_cache", out)
-        return out
+        The core hands us the PRE-move board, so the two cells that matter are
+        resolved through the move: `frm` is vacated and `to` receives the mover
+        (a promotion piece is never a rook of the right colour on that cell,
+        and a castling move vacates KING_START, killing both of that side's
+        rights anyway).
+        """
+        def at(c):
+            if c == frm:
+                return None
+            if c == to:
+                return board[frm]
+            return board.get(c)
 
-    @staticmethod
-    def _mstr(frm, to, promo) -> str:
-        base = f"{frm[0]},{frm[1]}>{to[0]},{to[1]}"
-        return base + (f"={promo}" if promo else "")
+        return frozenset(k for k in rights
+                         if at(KING_START[k[0]]) == (k[0], "K")
+                         and at(ROOK_START[k]) == (k[0], "R"))
 
-    # ---- draws -------------------------------------------------------------
-    def _draw_reason(self, s: VState) -> Optional[str]:
-        if s.halfmove >= 100:
-            return "50-move rule"
-        if s.reps and max(s.reps.values()) >= 3:
-            return "threefold repetition"
-        if s.ply >= PLY_CAP:
-            return "move limit"
-        return None
+    # ---- state encoding (DO NOT CHANGE: async matches are stored serialized) --
+    def poskey(self, board: dict, to_move: int, ep, castling) -> str:
+        return _poskey(board, to_move, ep, castling)
 
-    # ---- Game interface ----------------------------------------------------
-    def legal_moves(self, s: VState) -> list:
-        if self._draw_reason(s) is not None:
-            return []
-        return [self._mstr(frm, to, promo)
-                for frm, to, promo, _, _ in self._legal(s)]
+    def ep_to_json(self, ep):
+        return None if ep is None else [cell_str(ep[0]), cell_str(ep[1])]
 
-    def apply_move(self, s: VState, move: str, rng=None) -> VState:
-        promo = None
-        body = move
-        if "=" in move:
-            body, promo = move.split("=")
-        frm_s, to_s = body.split(">")
-        frm, to = _cell(frm_s), _cell(to_s)
-        match = [m for m in self._legal(s)
-                 if m[0] == frm and m[1] == to and (m[2] or None) == promo]
-        if not match or self._draw_reason(s) is not None:
-            raise ValueError(f"illegal move {move!r}")
-        frm, to, promo, ep_cap, castle = match[0]
-        me = s.to_move
-        moved = s.board[frm]
-        is_capture = ep_cap is not None or (to in s.board)
-        nb = self._apply_board(s.board, frm, to, promo, ep_cap, castle)
-        # en passant right: only a double step (2 x one forward direction)
-        ep = None
-        if moved[1] == "P":
-            dc, dr = to[0] - frm[0], to[1] - frm[1]
-            for fc, fr in PAWN_FWD[me]:
-                if (dc, dr) == (2 * fc, 2 * fr):
-                    ep = ((frm[0] + fc, frm[1] + fr), to)
-                    break
-        castling = frozenset(
-            k for k in s.castling
-            if nb.get(KING_START[k[0]]) == (k[0], "K")
-            and nb.get(ROOK_START[k]) == (k[0], "R"))
-        irreversible = is_capture or moved[1] == "P"
-        halfmove = 0 if irreversible else s.halfmove + 1
-        # prior positions can never recur after an irreversible move; losing a
-        # castling right is likewise irreversible
-        reps = {} if (irreversible or castling != s.castling) else dict(s.reps)
-        key = _poskey(nb, 1 - me, ep, castling)
-        reps[key] = reps.get(key, 0) + 1
-        return VState(board=nb, to_move=1 - me, ep=ep, castling=castling,
-                      halfmove=halfmove, ply=s.ply + 1, reps=reps,
-                      last=(frm, to))
+    def ep_from_json(self, v):
+        return (parse_cell(v[0]), parse_cell(v[1])) if v else None
 
-    def is_terminal(self, s: VState) -> bool:
-        if self._draw_reason(s) is not None:
-            return True
-        return len(self._legal(s)) == 0
+    def castling_to_json(self, rights):
+        return sorted(f"{p}{f}" for p, f in rights)
 
-    def returns(self, s: VState) -> list:
-        if self._draw_reason(s) is not None:
-            return [0.0, 0.0]
-        if len(self._legal(s)) == 0:
-            loser = s.to_move
-            if _in_check(s.board, loser):          # checkmate
-                return [-1.0, 1.0] if loser == WHITE else [1.0, -1.0]
-            return [0.0, 0.0]                      # stalemate IS a draw
-        return [0.0, 0.0]
-
-    # ---- serialization -----------------------------------------------------
-    def serialize(self, s: VState) -> dict:
-        return {
-            "board": {f"{c},{r}": [o, t] for (c, r), (o, t) in s.board.items()},
-            "to_move": s.to_move,
-            "ep": ([f"{s.ep[0][0]},{s.ep[0][1]}", f"{s.ep[1][0]},{s.ep[1][1]}"]
-                   if s.ep else None),
-            "castling": sorted(f"{p}{f}" for p, f in s.castling),
-            "halfmove": s.halfmove,
-            "ply": s.ply,
-            "reps": dict(s.reps),
-            "last": ([f"{s.last[0][0]},{s.last[0][1]}",
-                      f"{s.last[1][0]},{s.last[1][1]}"] if s.last else None),
-        }
-
-    def deserialize(self, d: dict) -> VState:
-        ep = d.get("ep")
-        last = d.get("last")
-        cast = d.get("castling")
-        if cast is None:
-            cast = [f"{p}{f}" for p, f in ALL_CASTLES]
-        return VState(
-            board={_cell(k): (v[0], v[1]) for k, v in d["board"].items()},
-            to_move=d["to_move"],
-            ep=(_cell(ep[0]), _cell(ep[1])) if ep else None,
-            castling=frozenset((int(x[0]), x[1]) for x in cast),
-            halfmove=d.get("halfmove", 0),
-            ply=d.get("ply", 0),
-            reps=dict(d.get("reps", {})),
-            last=(_cell(last[0]), _cell(last[1])) if last else None,
-        )
+    def castling_from_json(self, v):
+        if v is None:                       # legacy states predate the field
+            v = [f"{p}{f}" for p, f in ALL_CASTLES]
+        return frozenset((int(x[0]), x[1]) for x in v)
 
     # ---- presentation ------------------------------------------------------
-    def describe_move(self, s: VState, move: str) -> str:
+    def describe_move(self, s, move: str) -> str:
         promo = None
         body = move
         if "=" in move:
@@ -517,51 +378,33 @@ class DeVasaChess(Game):
             out += " e.p."
         return out
 
-    def render(self, s: VState, perspective=None) -> dict:
-        pieces = [{"cell": f"{c},{r}", "owner": o, "label": t}
-                  for (c, r), (o, t) in s.board.items()]
-        highlights = []
-        if s.last is not None:
-            for x in s.last:
-                highlights.append({"cell": f"{x[0]},{x[1]}", "kind": "last-move"})
+    def board_spec(self, s) -> dict:
         # The three hex colours (bishop colour classes): colour = (c - r) mod 3.
         # Which class is light / mid / dark was read off the Wikipedia
         # diagram's pixels (0 light, 1 mid, 2 dark); the three hex codes are
         # the platform's shared hex-chess palette. This puts the three bishops
         # (c1/e1/g1) on the three colours.
         shades = {0: "#ffce9e", 1: "#e8ab6f", 2: "#d18b47"}
-        tints = {f"{c},{r}": shades[(c - r) % 3] for c, r in CELLS}
-        if self.is_terminal(s):
-            reason = self._draw_reason(s)
-            if reason is not None:
-                caption = f"Draw ({reason})"
-            elif _in_check(s.board, s.to_move):
-                caption = f"{NAMES[1 - s.to_move]} wins (checkmate)"
-            else:
-                caption = f"Draw (stalemate — {NAMES[s.to_move]} has no move)"
-        else:
-            check = " (check)" if _in_check(s.board, s.to_move) else ""
-            caption = f"{NAMES[s.to_move]} to move{check}"
-        return {
-            "board": {"type": "hex", "shape": "rhombus", "width": W, "height": H,
-                      # De Vasa's ranks are drawn HORIZONTAL, which is the
-                      # pointy-top default -- do NOT set "flat" here (that is
-                      # for the vertical-file hex chesses). See SPEC.md.
-                      "tints": tints},
-            "pieces": pieces,
-            "highlights": highlights,
-            "caption": caption,
-            "pieceset": "chess",
-        }
+        tints = {f"{c},{r}": shades[(c - r) % 3]
+                 for r in range(H) for c in range(W)}
+        return {"type": "hex", "shape": "rhombus", "width": W, "height": H,
+                # De Vasa's ranks are drawn HORIZONTAL, which is the pointy-top
+                # default -- do NOT set "flat" here (that is for the
+                # vertical-file hex chesses). See SPEC.md.
+                "tints": tints}
 
-    # ---- bot eval ----------------------------------------------------------
-    VALUES = {"P": 1.0, "N": 3.0, "B": 3.0, "R": 5.0, "Q": 9.0, "K": 0.0}
 
-    def heuristic(self, s: VState) -> list:
-        import math
-        bal = 0.0
-        for (o, t) in s.board.values():
-            v = self.VALUES.get(t, 0.0)
-            bal += v if o == WHITE else -v
-        v = math.tanh(bal / 8.0)
-        return [v, -v]
+# --- module-level helpers kept for selftest.py / callers ---------------------
+_G = DeVasaChess()
+
+
+def _attacked(board: dict, cell, by: int) -> bool:
+    return _G.attacked(board, cell, by)
+
+
+def _king_cell(board: dict, player: int):
+    return _G.king_cell(board, player)
+
+
+def _in_check(board: dict, player: int) -> bool:
+    return _G.in_check(board, player)
