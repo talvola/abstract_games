@@ -1,0 +1,16 @@
+{
+  "uid": "wellisch_chess",
+  "name": "Wellisch's Three-Handed Hexagonal Chess",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Siegmund Wellisch (1912) / AGP port",
+  "players": { "min": 3, "max": 3 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["hex", "chess", "variant", "historic", "three-player", "multiplayer"],
+  "max_random_plies": 3000,
+  "bgg_url": "https://anno.onb.ac.at/cgi-content/anno-plus?aid=sze&datum=1912",
+  "source":"Siegmund Wellisch, \"Das Dreischach\", Wiener Schach-Zeitung XV. Jahrgang 1912, Nr. 21/24, S. 322-330 (Wien und Leipzig: Wilhelm Braumüller).",
+  "description": "The first hexagonal chess ever published: Vienna engineer Siegmund Wellisch's 1912 three-handed Dreischach on a 91-cell, three-coloured hexagon. No bishops (there are no diagonals) — instead three colour-bound knights per player, each stepping one hex-diagonal to the nearest cell of its own colour, and a queen that is rook plus knight. Pawns step and capture in either of two forward directions 120 degrees apart, with no double step and no en passant, and promote only to a piece their army has already lost. A checkmated player is not out: the third player may free him, or anyone may capture his king and take command of his whole army."
+}
