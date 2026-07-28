@@ -184,7 +184,44 @@ Browser-verified, one commit each, suite green, Opus 5 (1M).
 - **`Markdown.jsx` block support** (`189df30`) and **`board.orientation`** (`0c2102f`) — the two
   QA-raised chores from wave 10, both done (detail in the wave-10 block above).
 
-### ▶▶ NEXT (wave 12) — Wellisch, then EXTRACT `agp/hexchesslike.py`
+### ✅ `agp/hexchesslike.py` EXTRACTED (2026-07-27) — item 2 of wave 12 done FIRST (Erik reordered)
+All six classical hex chesses now subclass it. Verified by an **old-vs-new differential**: the
+pre-refactor sources were snapshotted, then identical random games played through BOTH, comparing
+legal-move sets, **`describe_move` for every move**, terminality, returns, serialize output and
+render captions at every ply. Plus targeted castling/e.p. sweeps (random play rarely reaches them).
+`3,179 -> 2,030` lines of game code + a `527`-line core; diff is **+966 / −2,105**.
+| game | differential | selftest (UNMODIFIED) | lines |
+|---|---|---|---|
+| glinski | 20,690 pos · 0 diff | 634 | 475→201 |
+| mccooey | 1 diff = the bug below | 1,391 | 486→264 |
+| shafran | 49,302 pos · 0 diff (+23,539 targeted, 6,847 castlings, 90 two-target e.p. states) | 945 | 595→411 |
+| brusky | 26,080 pos · 0 diff (+3,958 castlings, 1,052 both-cells-occupied e.p.) | 155 | 612→470 |
+| de_vasa | 29,977 pos · 0 diff (+5,493 castlings, 3,190 e.p.) | 112 | 567→410 |
+| mini_hexchess | 9,324 pos · 0 diff | 3,992 | 444→274 |
+**THE REFACTOR FOUND TWO REAL BUGS:**
+- **mccooey PHANTOM EN PASSANT** — its pawns capture on the forward DIAGONALS and White's (+1,−2)
+  diagonal spans two ranks, but `apply_move` armed e.p. on `abs(Δrank)==2` (inherited from Glinski,
+  where pawns capture on the ORTHOGONALS). Every two-rank diagonal CAPTURE armed a phantom e.p. on a
+  hex no pawn crossed; and a phantom hex can be OCCUPIED, so a pawn could "capture e.p." onto its own
+  man while an unrelated piece vanished. Fix proved to be the SOLE change by patching the OLD snapshot
+  identically → 56,665 pos, 0 diff. **Brusky's code already documented this exact trap.**
+- **de_vasa had NO decisive-outranks-counters guard — the 9th instance.** Built in wave 11 AFTER the
+  624ccc9 sweep, and its QA missed it. Fixed automatically by inheriting the shared `_draw_reason`.
+**A core design flaw was found the same way:** `update_castling` originally got only the PRE-move
+board; two independent ports expressed the rule on it and both got it subtly wrong. One shipped a
+divergence that passed the random differential AND a 945-check selftest, caught only by an exhaustive
+sweep (a rook moving ONTO a rook-home cell whose right is live but whose rook has gone RE-GRANTED it).
+The hook now receives both boards. **Also: my first differential did not compare `describe_move`, so
+the core silently changed move-log notation family-wide until a build agent caught it — notation is
+now hooked (`CHECK_MARKS`, `castle_notation`, `stalemate_caption`), not unified.**
+**Core polish still owed (agents' feedback, all worked around correctly in-variant, none blocking):**
+no `extra_draw_reason` hook (Brusky's bare-kings rule appends via `super()`); `reps`-clearing on a
+rights change is hard-coded in `apply_move` (Brusky shims it back); `poskey` is not a hook, so
+glinski/mccooey/shafran/mini re-key `reps` and an in-flight async match restarts its repetition
+counter (brusky/de_vasa preserve theirs); `describe_move` is all-or-nothing for the two castling
+games. That is why shafran/brusky/de_vasa are 410–470 lines rather than Glinski's ~200.
+
+### ▶▶ NEXT (wave 12, remaining) — Wellisch 1912, then the vein is done
 1. **Wellisch's Hexagonal Chess (1912)** — the FIRST hex chess ever published and the last of the
    historic set. **3 PLAYERS**, hexhex-6 (no renderer work), no bishops, 3 knights, 8 pawns, knight =
    a one-hex-DIAGONAL step (colourbound), queen = R+N, pawns move AND capture forward, no double
