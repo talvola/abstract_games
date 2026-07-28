@@ -221,19 +221,59 @@ glinski/mccooey/shafran/mini re-key `reps` and an in-flight async match restarts
 counter (brusky/de_vasa preserve theirs); `describe_move` is all-or-nothing for the two castling
 games. That is why shafran/brusky/de_vasa are 410–470 lines rather than Glinski's ~200.
 
-### ▶▶ NEXT (wave 12, remaining) — Wellisch 1912, then the vein is done
-1. **Wellisch's Hexagonal Chess (1912)** — the FIRST hex chess ever published and the last of the
-   historic set. **3 PLAYERS**, hexhex-6 (no renderer work), no bishops, 3 knights, 8 pawns, knight =
-   a one-hex-DIAGONAL step (colourbound), queen = R+N, pawns move AND capture forward, no double
-   step, promotion only to a piece previously lost. **Army-takeover ending**: a checkmated player may
-   be released OR have their king captured; the capturer INHERITS their pieces, and taken-over pawns
-   keep their original direction. Complete ONLY via John Beasley's *Chess for three*, saved at
-   `scratchpad/hexchess/ext/beasley_chess_for_three.pdf` p.334 (Pritchard's and the Oxford
-   Companion's diagrams disagree on one army's orientation; Beasley's "Qs always to left of Ks"
-   settles it ⇒ a true 120°-symmetric array). Anchor is the WEAKEST on the bench (prose + a compiled
-   Java applet) — brief the research gate hard. Effort **L** (3 seats, ownership transfer, per-piece
-   pawn direction, non-terminal checkmate).
-2. **Then extract `agp/hexchesslike.py`.** Now strongly evidenced: Brusky proved the ortho/diag/
+### ✅ WAVE 12 COMPLETE (2026-07-28) → **377 games**, #377 `wellisch_chess` — THE HEX VEIN IS DONE
+**The gate inverted the expectation.** Wellisch was staged as the weakest-anchored candidate on the
+whole bench ("prose + a compiled Java applet"), with a pre-registered instruction to DEFER if the
+research came back shaky. It came back the strongest-anchored game in the vein: the gate found
+**Wellisch's OWN article** — *"Das Dreischach"*, **Wiener Schach-Zeitung XV. Jahrgang 1912,
+Nr. 21/24, S. 322–330**, nine illustrated pages, 300 dpi, free from the Austrian National Library.
+**The prior scratchpad did NOT survive** (the Beasley PDF was gone), so this was a genuine re-source.
+
+**Reusable source lessons (the most valuable output of this wave):**
+- **ANNO (`anno.onb.ac.at`) is the key to the whole ÖNB periodical corpus** — the *Wiener
+  Schachzeitung*'s acronym is **`sze`**; page images at
+  `…/annoshow-plus?call=sze|1912|0004|<PAGE>||jpg||O|`, no auth. Its search UI is an Angular SPA;
+  the real API prefix is **`/anno-suche/rest/search/{simple,complex,snippet}`**.
+- **Wellisch's own word is "Dreischach"** (he calls hexagonal chess *"Zellenschach"*). ANNO returns
+  ZERO hits for Sechseckschach / Hexagonalschach / Dreierschach. Searching the obvious German
+  compounds misses the article entirely — this is why it was believed lost.
+- **The ENTIRE Pritchard CECV is free at `jsbeasley.co.uk/encyc.htm`**, chapter by chapter. Worth
+  remembering for any future chess-variant wave.
+- **Three source conflicts settled against the primary:** the *Oxford Companion* DIAGRAM (and German
+  Wikipedia's redraw of it, which names it as its own model) mirrors the Red and Black armies and is
+  simply WRONG — the 1912 woodcut, Pritchard's ECV, CECV p.334 and the Ludii `.lud` agree on all 45
+  men. **Ludii is a correct oracle for array/movement/promotion zones but WRONG for the endgame (it
+  self-flags this) and for turn order (opposite rotation).** Our own prior note that pawns move
+  "straight forward" was wrong — there is no straight-forward step on this orientation.
+- **A saved verification script disagreed with its own report.** `compare_primary_ecv.py` printed
+  `False` for the 120° symmetry while the report claimed `True`. The report was right; the script
+  pairs the seats in the REVERSE cycle. Re-verified by the orchestrator: the cycle is **W→S→R→W**
+  under `rot120(q,r) = (−q−r, q)`. A build agent copying that script would have written the sharpest
+  anchor backwards and "proved" the array asymmetric. **Check a script's output against its prose.**
+
+**QA found a real hang whose termination proof was FALSE** — `_mated` iterates to a fixed point over
+the checked players and the step is **ANTI-monotone**, not monotone as documented (a larger capture
+set gives every player MORE escapes). Two players who check only each other, whose sole escape is the
+mutual king capture, oscillate `{p,q} → {} → {p,q}` forever inside an unbounded `while True`. Enabled
+by this game's own army takeover (capturing a mated king lifts your own check). Not reachable in 190
+random games, but not provably nil, and it hangs a server thread. **Also fixed: a stalemate in the
+two-handed endgame was played on as a pass, converting a book draw into a 2-0 conquest** — p.329
+hands the surviving pair back to two-handed chess and names *"Patt stellen"*, and Wellisch's own
+table has a "two finalists draw" row, so it is an honest 0/1½/1½ draw (scoped to two-alive only;
+with three alive a stalemated player still passes, and a checkmate is still non-terminal even here).
+**Verification-quality note:** the build agent mutation-tested its OWN anchors and found them one
+short (Wellisch's knight examples are hemmed in by friendly men, so "knight also steps orthogonally"
+survived); QA's own 15-mutation sweep then left exactly one survivor, the `to != rc` half of the
+castling-rights filter, now covered by a test the orchestrator verified fails under that mutation.
+2,335 checks, pure stdlib. Standalone — deliberately NOT on `hexchesslike` (2 seats / one royal /
+terminal mate all false); it reused only two IDEAS, precomputed ray tables and a reverse pawn-attack
+table. Zero renderer work, no `web/src` change.
+
+**Core-polish debt on `agp/hexchesslike.py` is still owed and still not blocking** (see the four
+seams above). Wellisch did not touch that family, so it was deliberately not done this wave — pick
+it up when something next brings you into that core.
+
+2. **~~Then extract `agp/hexchesslike.py`.~~ ✅ DONE in wave 12 (commit a096a9e).** Now strongly evidenced: Brusky proved the ortho/diag/
    knight tables are **byte-identical in axial space** across both orientations — only "forward"
    differs. Core = `CELLS` + `FORWARD` + a `PIECES` table + PAWN/PROMOTION/CASTLING strategies (the
    ChessLike pattern). **6 games would collapse onto it** (glinski, mccooey, shafran, brusky,
@@ -242,9 +282,102 @@ games. That is why shafran/brusky/de_vasa are 410–470 lines rather than Glinsk
    point-vs-line reflection finding), xiang_hex (palace/river) — let those reuse only the geometry
    layer. Extracting the shared `_draw_reason` shape would also make the 8-occurrence precedence bug
    structurally impossible to reintroduce.
-3. **Then the vein is done.** Remaining hex candidates are all DEFER/REJECT (see the wave-10 block).
-   Wave 13 should scout a new source — the wave-10 seams (BGG abstract top-N gap diff; AG issues 1,
-   6-10, 18, 25+) are still unstarted.
+3. **✅ The hex vein is DONE.** All six classical hex chesses shipped + starchess/hex_shogi_91/
+   xiang_hex; remaining hex candidates are all DEFER/REJECT (see the wave-10 block).
+
+### ▶▶ NEXT (wave 13) — the AbstractPlay `gameslib` seam. Erik: **full seam, quality-gated.**
+**A wave-13 scout ran 2026-07-28 and found a seam nobody had staged: `github.com/AbstractPlay/
+gameslib` — 277 games, 179 NOT in our library, each with a cited rules URL AND a runnable
+rule-ENFORCING implementation.** This is the first seam since the chess/shogi cores where the ANCHOR
+comes free with the candidate (tier-3, same class as pentobi/pyffish/python-chess). Full report:
+`scratchpad/wave13/scout_report.md`; clone + driver + `ap_meta.json` (metadata for all 277) under
+`scratchpad/wave13/ap_gameslib/`. **Erik's scope call: treat all 179 as candidates and let the usual
+dedup + anchor gate filter them** (not designer-cherry-picked).
+
+**Oracle recipe (verified by the orchestrator — reproduces opening counts fendo 212 / manalath 122 /
+abande 49 / attangle 36 and plays each to a terminal):** clone, then strip the two `@abstractplay/*`
+deps from `package.json` (they live on GitHub Packages and 401; they are TYPE-ONLY for game logic)
+and stub `node_modules/@abstractplay/{renderer/build/schemas/schema,recranks/src/index}.{js,d.ts}`
+as `export type X = any`; `rm .npmrc`; `npm install`; then
+`npx ts-node --transpileOnly --compilerOptions '{"module":"commonjs"}' apdrive2.ts <uid>…`.
+API: `GameFactory(uid)` → `.moves() .move(str) .gameover .winner .state() .render()`.
+**Compare covered-CELL-SETS / move-target-sets, NOT move strings** (AP notation differs from ours),
+exactly as `_diff_pentobi.py` does. **AGPL — oracle only, NEVER copy code.**
+Known quirks: `homeworlds` throws under the naive constructor (needs a variant/player arg); `bug`
+reports 0 opening moves (different entry API); the uid is `viruswar`, not `virusWar`.
+
+**Bench, ranked and build-ready** (all deduped by the scout AND spot-checked by the orchestrator —
+none exist; every "nearest existing game" cited is real):
+1. **Fendo** (Stein 2014) — 7×7 + fences ⇒ **reuses `board.walls`, ZERO renderer work**; official
+   rules at spielstein.com; oracle `fendo.ts`. Decision: encode the compound move-then-fence turn
+   (suggest a `=FENCE_*` `=CHOICE` suffix). M. **Build first.**
+2. **Manalath** (Stein & Romeral Andrés 2012) — hexhex-5; place EITHER colour, group of 5 wins /
+   group of 4 loses. S. **Dedup gate: read `engine/games/yavalath/rules.md` first** (groups vs lines,
+   either-colour placement) and justify distinctness in `rules.md`.
+3. **Abande** (Stein 2005) — hexhex-4, connectivity-constrained placement + score by stacks
+   controlled; reuses `piece.stack`. M.
+4. **Attangle** (Stein 2006) — hexhex-4, converge two stacks to capture, win on three triple stacks.
+   M. **⚠ CLONE GATE — HIGH RISK: `accasta` is also Stein, also hexhex-4, also stacking.** Read
+   `engine/games/accasta/rules.md` before writing a line; a distinctness paragraph in `rules.md` is
+   REQUIRED at merge.
+5. **Terrace** (Dresden & Siler 1992) — 8×8 in four L-shaped LEVELS ⇒ `board.tints`; prose sources
+   disagree on the fiddly capture edge cases and `terrace.ts` is the resolution. M.
+6. **Neue Dame** (Hildesheim 1904, AG#18) — column checkers with Dame-precedence + Dame-count
+   scoring; anchor = **4 composed problems with full solution lines**. NOT in gameslib. M.
+   Dedup gate: `bashni`/`lasca` — the article itself calls these all "column checkers".
+7. **Taiji** (Romeral Andrés 2008) — place a black+white domino; largest-N-groups scoring. S.
+8. **Panal** — DEFER-pool item now **UNBLOCKED**; hex chess with a "shoot" cannon, and the article's
+   own notation answers the move-string question (`g1>m7` vs `g1>m7=SHOOT`). Cheap now that
+   `hexchesslike` exists. M.
+9. **Lielow** (Amundsen & Erickson 2021) — 8×8, height-based movement. S.
+10. **Push Fight** (Picotte ~1990) — **strongly solved, published value = the standard setups are
+    DRAWS**; 86 GB tablebase so we cite + spot-check rather than re-derive. Loops ⇒ hard ply cap +
+    repetition mandatory, and the draw path is outcome-load-bearing. M.
+
+**B-tier (one fetch short):** Slyde · Exxit · Onager · Quax · heXentafl · AlmaTafl · Carnac · Amoeba ·
+Cairo Corridor · Yonmoque · Hey That's My Fish! · Kulami · Six · **Ploy** (rules in AG#6 cover essay;
+reuses the Octi prong primitive).
+**The Mark Steere sub-seam = a whole future wave, pre-verified:** ~20 games absent from our library
+(Atoll, Bamboo, Blast Radius, Bounce, Churn, Clusterfuss, Conect, Diffusion, Dipole, Flume, Halfcut,
+Invector, King & Courtesan, Minefield, Monkey Queen, Nakatta, Narrows, Necklace, Take, Unane …),
+official PDF each, 12 already in gameslib for a DOUBLE anchor, and **Steere publishes termination
+proofs** (abstractgames.org/finitude.html) — an unusually good fit for our guarantee-termination
+rule. Cleanest "3 agents in parallel, S effort each" wave available. URLs in `ap_meta.json`.
+
+**Erik also greenlit all four optional items** (2026-07-28) — none blocking, pick them up as they fit:
+- **Khet** — laser-beam trace; the existing `board.overlay` primitive can probably express it, so
+  cheap-ish. Famous.
+- **LYNGK** — completes the GIPF series (we ship the other six). The scout could NOT source it:
+  gipf.com dropped its section, Rio Grande + BGG filepages 403, no BGA help page. **Needs a
+  dedicated Wayback hunt of gipf.com c. 2017-2019 or a rulebook mirror.**
+- **Homeworlds** — highest-profile abstract we lack. Needs a NEW "system graph" render primitive
+  (nodes = star systems, no fixed board). **The ORCHESTRATOR owns Board.jsx primitives** (a render
+  bug white-screens EVERY game): write + regression-check the primitive first, document it in
+  SPEC.md, THEN let a build agent emit it. Also needs a non-default gameslib constructor. L.
+- **Push Fight** — benched at #10 above.
+
+**Seam verdicts from the wave-13 scout (so wave 14 doesn't re-scout):**
+- **(a) BGG abstract top-400 — THIN.** Full ranked list pulled via
+  `api.geekdo.com/api/geekitem/linkeditems?...&objectid=4666&subtype=boardgamesubdomain` (the
+  `/abstracts/browse/` HTML 403s and the plain `geekitems` endpoint 404s — this is the one that
+  works; saved at `scratchpad/wave13/bgg_ranked.txt`). 306 absent, but after removing hidden-info,
+  real-time, 3-D-render, card and euro-drafting entries only ~15-20 survive. **BGG's "abstract"
+  subdomain is poorly aligned with our scope.** Not worth a dedicated wave.
+- **(b) AG magazine issues 1, 6-10, 18 — now DRAINED.** All seven PDFs downloaded + text-extracted
+  (`scratchpad/wave13/agmag/`). The 2000-02 issues are overwhelmingly strategy articles about games
+  we already ship. Yield: 1 benched (Neue Dame), 1 B-tier (Ploy), 1 marginal (Trippples, ~`smess`),
+  1 reject ("77", press-your-luck). **Issues 25-26 are subscriber-gated; 27+ do not exist.** Issues
+  1-19 PDFs live at `abstractgames.org/uploads/1/1/6/4/116462923/abstract_games_issue_N.pdf`.
+  Two unscreened design-competition sections remain: **AG#8 p.25, AG#10 p.7**.
+- **(c) DEFER pool — 1 win, rest dead.** Panal UNBLOCKED (benched). **Mamba is DEAD — strike it
+  permanently:** mambagame.com is now a squatted portal and the Wayback CDX shows the real 2002-13
+  site was a French FLASH portal with the setup diagram inside the `.swf`. Hexiang Qi's
+  chessvariants URL now 404s (and `xiang_hex` may already clone it). Hexabeast/Strat unchanged.
+- **(d) Murray/Bell/Russ ethnography — DRAINED AT OUR QUALITY BAR, do not spend a wave.** Argued
+  from what we already ship (11 mancala, 7 tafl, ~9 morris/alignment, all already sourced from
+  Murray/Bell/Ludii in waves 5-6, with the tail explicitly clone-skipped). The remaining material is
+  dominated by fragmentary field notes that fail the complete-ruleset gate by construction. If
+  revisited, do it as a targeted single-game hunt, never as a wave.
 
 ### (superseded) wave-11 staging — all 4 BUILT (#373–376). Kept for provenance.
 The scout's bench is **not exhausted** — full detail in `scratchpad/hexchess/scout_report.md`.
