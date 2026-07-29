@@ -1,0 +1,26 @@
+{
+  "uid": "abande",
+  "name": "Abande",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory (game by Dieter Stein, 2005)",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Stacking",
+  "tags": ["stacking", "stein", "connection", "placement", "square", "hex", "scoring"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/21324/abande",
+  "max_random_plies": 150,
+  "options": {
+    "board": {
+      "choices": ["square", "hex"],
+      "default": "square",
+      "label": "Board",
+      "labels": {
+        "square": "Square (7×7, 49 points)",
+        "hex": "Hexagonal (37 points)"
+      }
+    }
+  },
+  "description": "Abande (Dieter Stein, 2005) — connection and stacking on an empty board. Each turn, enter one of your 18 pieces next to the single connected 'band' of pieces, or move a stack you control one step ONTO an adjacent enemy stack (never onto an empty or friendly space, never above height 3, never splitting the band). You may pass only with an empty hand; two passes end the game. A stack that touches no enemy stack is 'sleeping' and scores nothing — every other stack scores its height. Highest score wins; equal scores draw."
+}
