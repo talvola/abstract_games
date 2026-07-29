@@ -1,0 +1,26 @@
+{
+  "uid": "push_fight",
+  "name": "Push Fight",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Capture / annihilation",
+  "tags": ["square", "pushing", "solved", "abstract", "rails"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/54221/push-fight",
+  "max_random_plies": 400,
+  "options": {
+    "setup": {
+      "choices": ["free", "standard"],
+      "default": "free",
+      "label": "Opening setup",
+      "labels": {
+        "free": "Free placement (official)",
+        "standard": "Standard opening (skip placement)"
+      }
+    }
+  },
+  "description": "Push Fight (Brett Picotte, ~1990): a 26-square board with side rails. Each turn take up to two free moves, then you MUST shove a line of pieces one square with one of your squares. The pushing piece is anchored and cannot be pushed back. Push any piece off an open edge and its owner loses. Solved in 2022: the standard opening is a draw."
+}
