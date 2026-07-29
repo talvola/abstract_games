@@ -99,6 +99,10 @@ ANCHOR = {
  "y": "selftest (three-edge connection win, the can-never-draw property verified over random full boards, swap/pie); shares the connection family with Hex",
  "yodd": "parity win; never-draws; conformance",
  "yote": "selftest (drop/step/jump, the bonus-removal double-capture, optional capture, annihilation/stuck win) + independent adversarial rule review",
+ "abande": "AbstractPlay gameslib differential (~8,467 positions, both boards, 0 mismatches) + FOUR published diagrams pixel-reconstructed, incl. two fully scored finals (W13-B15, W12-B15) matching their printed captions; 36 mutants",
+ "attangle": "AbstractPlay gameslib differential (17,453 positions ours-driving + 82,041 in-package, 0 mismatches) + the designer's figures pixel-verified; 48/48 mutants; termination proved (76/110 plies, no cap)",
+ "fendo": "AbstractPlay gameslib differential (17,263 positions, 3 policies, 0 mismatches) + two designer diagrams pixel-transcribed (21/21 marked entry cells); 38 mutants; termination structural (193-ply bound, no cap)",
+ "manalath": "AbstractPlay gameslib differential BOTH directions (10,289 positions, 0 mismatches, mapping proved bijective 61 cells/156 edges) + both designer diagrams executed + 2,400-case constructed sweep; 26 mutants",
 }
 # Browser / UX eyeball status (default: rendered by the generic renderer, never
 # individually eyeballed -- logic is conformance-tested either way).
@@ -126,6 +130,10 @@ BROWSER = {
  "janggi": "✅ verified (UI review: legible, palace pieces correct)",
  "y": "✅ verified (NEW triangular-hex polygon board renders cleanly)",
  "yote": "✅ verified (5×6 board, drops with hand count, capture flow)",
+ "abande": "✅ verified (drops on both boards, stack move recomputes the score caption, 2-stack tower + height badge)",
+ "attangle": "✅ verified (central void as dark 'x', one-click placement, counter-only tray falls through, 3-click capture logged b1+d7xb5)",
+ "fendo": "✅ verified (NEW board.fences primitive — the fence bar lands on the edge the move log names; two-click move-then-fence flow + 'Place a fence' picker)",
+ "manalath": "✅ verified (NEW reserveOwners — both trays show R red / B blue; a stone from seat 0's B chip lands blue)",
 }
 DEFAULT_BROWSER = "— generic renderer (logic tested; not individually eyeballed)"
 
