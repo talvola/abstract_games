@@ -1,0 +1,22 @@
+{
+  "uid": "dipole",
+  "name": "Dipole",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Stacking",
+  "tags": ["stacking", "checkers", "bear-off", "capture", "steere", "square"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/29491/dipole",
+  "options": {
+    "size": {
+      "choices": [8, 10],
+      "default": 8,
+      "label": "Board",
+      "labels": { "8": "Standard 8x8 (12 checkers)", "10": "Large 10x10 (20 checkers)" }
+    }
+  },
+  "description": "Dipole (Mark Steere, 2007): a checkers-set stacking duel on the 32 dark squares. Each player starts with a single 12-high pole. Split any number of checkers off the top of a stack and move them exactly that many squares -- forward or diagonally forward to move or merge, in any of the eight directions to capture a whole enemy stack no taller than the movers. Nothing blocks a move, and a stack driven off the edge is removed from play. Win by clearing every enemy checker from the board; run yourself off the edge and you lose. Draws cannot occur."
+}
