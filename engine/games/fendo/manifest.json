@@ -1,0 +1,14 @@
+{
+  "uid": "fendo",
+  "name": "Fendo",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Dieter Stein (2014)",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Territory",
+  "tags": ["square", "territory", "enclosure", "movement", "placement", "abstract"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/159333/fendo",
+  "description": "Dieter Stein's 7x7 partition game: slide a piece (one right-angle turn allowed), then wall off one side of its square. Every fence must leave exactly one piece in each enclosed area. When the last open area is carved up, the largest enclosed territory wins."
+}
