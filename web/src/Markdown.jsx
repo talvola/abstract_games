@@ -3,19 +3,30 @@
 // tables, and inline **bold**, *italic*, `code`, [links](url). No raw HTML is
 // ever injected.
 
+// Inline spans. Two things beyond the obvious, both of which shipped broken and
+// showed the reader raw asterisks in 44 of the library's rules.md files:
+//   * NESTED emphasis — "**a quint of *your* colour**". The old pattern used
+//     [^*]+ inside **…**, so any inner "*" made the whole span fail to match.
+//     Bold now accepts single (non-"**") asterisks and re-parses its content,
+//     which terminates because the inner text is strictly shorter.
+//   * BACKSLASH ESCAPES — "\*Star" (a real game name) and "f8\*D". Consumed
+//     FIRST, so an escaped asterisk can never act as a delimiter.
+// Code spans are matched but NOT re-parsed, so their contents stay literal.
 function inline(text) {
   const out = []
-  const re = /(\*\*([^*]+)\*\*)|(\*([^*]+)\*)|(`([^`]+)`)|(\[([^\]]+)\]\(([^)]+)\))/g
+  const re = /\\([\\*_`[\]|])|(\*\*\*([^*]+)\*\*\*)|(\*\*((?:[^*]|\*(?!\*))+?)\*\*)|(\*([^*]+?)\*)|(`([^`]+)`)|(\[([^\]]+)\]\(([^)]+)\))/g
   let last = 0, m, k = 0
   while ((m = re.exec(text))) {
     if (m.index > last) out.push(text.slice(last, m.index))
-    if (m[1]) out.push(<strong key={k++}>{m[2]}</strong>)
-    else if (m[3]) out.push(<em key={k++}>{m[4]}</em>)
-    else if (m[5]) out.push(<code key={k++}>{m[6]}</code>)
-    else if (m[7]) {
-      const url = m[9].trim()
+    if (m[1]) out.push(m[1])                                    // escaped literal char
+    else if (m[2]) out.push(<strong key={k++}><em>{m[3]}</em></strong>)   // ***both***
+    else if (m[4]) out.push(<strong key={k++}>{inline(m[5])}</strong>)
+    else if (m[6]) out.push(<em key={k++}>{inline(m[7])}</em>)
+    else if (m[8]) out.push(<code key={k++}>{m[9]}</code>)
+    else if (m[10]) {
+      const url = m[12].trim()
       const href = /^(https?:|mailto:|\/|#)/i.test(url) ? url : '#'  // block javascript:/data:/etc.
-      out.push(<a key={k++} href={href} target="_blank" rel="noopener noreferrer">{m[8]}</a>)
+      out.push(<a key={k++} href={href} target="_blank" rel="noopener noreferrer">{inline(m[11])}</a>)
     }
     last = re.lastIndex
   }
