@@ -6,7 +6,7 @@ universe map and capability gaps live in `GAME_BACKLOG.md`; this file is the
 
 ---
 
-## ⭐ SESSION HANDOFF (read this first) — updated 2026-07-26 (hex-chess wave 11 → 376 games)
+## ⭐ SESSION HANDOFF (read this first) — updated 2026-07-28 (gameslib wave 13 → 381 games)
 
 ### ✅ AG-MAGAZINE WAVE 9 COMPLETE (2026-07-25) → **369 games**, #367–369
 The whole wave-8 bench, cleared. 3 build agents in parallel (Orbit solo-heavy as staged), then an
@@ -285,7 +285,98 @@ it up when something next brings you into that core.
 3. **✅ The hex vein is DONE.** All six classical hex chesses shipped + starchess/hex_shogi_91/
    xiang_hex; remaining hex candidates are all DEFER/REJECT (see the wave-10 block).
 
-### ▶▶ NEXT (wave 13) — the AbstractPlay `gameslib` seam. Erik: **full seam, quality-gated.**
+### ✅ WAVE 13 COMPLETE (2026-07-28) → **381 games**, #378–381 — the gameslib seam OPENED
+4 games from the wave-13 bench, 4 build agents in parallel, an independent adversarial deep-QA agent
+each. **All 4 verdicts MERGE-WITH-FIX — the 6th wave running.** Browser-verified, one commit each,
+Opus 5 (1M). The scout's scratchpad survived on disk (621 MB clone + `ap_meta.json`), so **zero
+re-fetch**: the oracle reproduced fendo 212 / manalath 122 / abande 49 / attangle 36 first try.
+- **fendo #378** (`11f2b43`) — Stein 2014, 7×7 + fences. 17,263 positions / 3 policies / 0 mismatches;
+  two designer diagrams pixel-transcribed (`placement.png` = 21/21 marked entry cells, which alone
+  pins that entry uses the full slide INCLUDING the turn and counts only open-area pieces).
+  Termination structural (193-ply bound, no cap).
+- **manalath #379** (`2fc912d`) — Stein & Romeral Andrés 2012, hexhex-5, place EITHER colour.
+  10,289 positions differentialled in BOTH directions, 0 mismatches.
+- **abande #380** (`5cc71b1`) — Stein 2005, connectivity-constrained placement + stack scoring.
+  ~8,467 positions over both boards; FOUR published diagrams reconstructed incl. two fully scored
+  finals (W13-B15 and, found by QA, W12-B15). Square 7×7 default + hexhex-4 option.
+- **attangle #381** (`bf3e41b`) — Stein 2006, converge-two-to-capture, three triples win. 17,453
+  positions ours-driving + 82,041 in-package, 0 mismatches; 48/48 mutants. Grand variant as an
+  option. **Accasta clone gate cleared** with a comparison table in `rules.md`.
+
+**THE BRIEFS WERE THE WEAK LINK — build agents overrode 3 of 4 from the sources, twice on a rule
+that would have shipped a materially wrong game:**
+- **manalath: precedence is TEMPORAL, not size-based.** "An end condition is effective when it
+  occurred first" ⇒ a friendly quart your OPPONENT built for you last turn beats a quint you
+  complete now (you LOSE), and a quart CAN be averted by absorbing it into a quint. My brief said
+  the opposite and said it could not be averted.
+- **abande: scoring is stack HEIGHT with "sleeping" stacks (not adjacent to an opponent-controlled
+  stack) worth ZERO** — not "number of stacks controlled" as the scout's summary said. The adjacency
+  reading (not band-connected) is what reproduces the designer's own scored diagrams.
+- **attangle: Grand's stock is 24, not the oracle's 27** (27 total − 3 pre-placed). 27+27 = 54 =
+  non-void spaces is exactly what makes "a player holding a piece always has a placement" a theorem;
+  gameslib's reading puts 60 pieces on 54 spaces and breaks it. **gameslib has the bug, not us.**
+- **fendo: MY move encoding was unplayable.** I specified a 1-cell `"c,r=FENCE_D"` stay-put move;
+  `Board.jsx` `click()` matches a complete 1-cell path (L237/239) BEFORE the prefix branch (L242),
+  so clicking your own piece fired the fence picker and move-then-fence was unreachable. Fixed
+  engine-side as `"c,r>c,r=FENCE_D"` rather than touching the click router (which would change
+  behaviour for all 381 games).
+
+**A THIRD ORACLE BUG FOUND** (after gameslib's grand-stock error): `manalath.ts:143` `moves()` omits
+`.length === 0` on the player-2 term ⇒ over-reports placements building an oversized BLUE group
+(1,772 over-reports / 10,289 positions, 100% `b`). `validateMove`/`move` reject them so gameslib
+PLAYS correctly, but a bot trusting `moves()` sees illegal moves. **Filter the oracle's `moves()`
+through `validateMove` in every future gameslib differential.**
+
+**Platform work this wave (orchestrator-owned):**
+- **NEW `board.fences`** (`151b824`) — single-edge barriers, the 13th RenderSpec primitive. The
+  scout's "Fendo reuses `board.walls`, zero renderer work" was WRONG: a Quoridor wall spans TWO
+  cells. Implemented as a `len` param defaulting to 2 ⇒ Quoridor byte-identical by construction
+  (browser-checked: wall still 126px on a 60px cell, fence 60px).
+- **NEW `reserveOwners`** — tints a tray chip by what it PUTS ON THE BOARD, for a tray that is a
+  colour picker (Manalath's seat-0 "B" chip was rendering red).
+- **SPEC.md** also now documents `board.walls`' geometry (it had only a bare mention) and that
+  `reserve` may legitimately be counter-only (Attangle).
+
+**⚠ THE LESSON OF THE WAVE — `serialize`/`deserialize` round-trips were VACUOUS in THREE of the four
+packages** (attangle dropping `stock`/`variant`, abande `passes`, fendo any of six). `assert
+serialize(deserialize(d)) == d` cannot see a dropped field: `deserialize`'s `.get(key, default)`
+makes it re-default and re-omit. **Compare STATES.** Every instance was caught only by mutation
+testing, and the failure is the worst kind — hotseat and vs-bot keep state in memory and look
+perfect, while async matches (which round-trip `Match.state` every turn) silently break; abande's
+dropped `passes` would have made an async game literally unendable. Now in CLAUDE.md.
+Second recurring find: **`GamePicker` groups by EXACT category string**, so fendo's
+"Territory / area control" would have made a singleton lobby group. Audit a new manifest's category.
+
+**Wave-13 process notes:** QA earned its keep again — it REFUTED the build agents' own mutation
+claims twice (attangle "19/19" → 5 of 41 survived; fendo's equivalence claims), PROVED reachable a
+path a build agent said it could not construct (manalath's double-pass draw), and found **two new
+primary sources** for abande (Stein's own 2005 PDF at `superdupergames.org/rules/abande.pdf` and
+`nestorgames.com/rulebooks/ABANDE_EN.pdf`) carrying the first published anchors for its DEFAULT
+board. Also: a rules page's HTML can carry a **stale board array that disagrees with its own
+rendered PNG** (abande's enter figure) — trust the image.
+
+**Manalath source fork, decided and documented, NOT escalated:** nestorgames' 2018 edition uses a
+70-cell 5-5-6 board AND "if both conditions are present you lose"; Ludii's code checks the quart
+first. We follow the designer's living page (dated 2014 revision of this very wording) + gameslib.
+Deliberately NOT offered as a manifest option — the alternate precedence comes with a different
+BOARD, so grafting it onto 61 cells would be a hybrid no publisher ever printed. Table in `rules.md`.
+
+### ▶▶ NEXT (wave 14) — CONTINUE the gameslib seam; the bench below is still 6 deep
+**Remaining from the wave-13 bench, in order:** Terrace (levels ⇒ `board.tints`; `terrace.ts` is the
+resolution for the fiddly capture cases the prose sources disagree on) · Neue Dame (AG#18, 4 composed
+problems with full solution lines; NOT in gameslib; dedup gate = `bashni`/`lasca`) · Taiji (place a
+black+white domino; largest-N-groups scoring) · Panal (hex chess + a "shoot" cannon; cheap now that
+`hexchesslike` exists; `=SHOOT` suffix) · Lielow (8×8 height-based movement) · Push Fight (strongly
+solved, published value = the standard setups are DRAWS; loops ⇒ hard cap + repetition mandatory).
+**B-tier (one fetch short):** Slyde · Exxit · Onager · Quax · heXentafl · AlmaTafl · Carnac · Amoeba ·
+Cairo Corridor · Yonmoque · Hey That's My Fish! · Kulami · Six · Ploy.
+**The Mark Steere sub-seam remains the cleanest parallel wave available** (~20 games, official PDF
+each, 12 also in gameslib for a DOUBLE anchor, and Steere publishes termination proofs).
+**Oracle recipe is unchanged and the clone is still on disk** — see the block below; add the
+`validateMove` filter noted above. Erik's four greenlit optional items (Khet, LYNGK, Homeworlds,
+Push Fight) are still open; Homeworlds still needs an orchestrator-owned "system graph" primitive.
+
+### (superseded by the block above) wave-13 staging — all 4 top picks BUILT (#378–381)
 **A wave-13 scout ran 2026-07-28 and found a seam nobody had staged: `github.com/AbstractPlay/
 gameslib` — 277 games, 179 NOT in our library, each with a cited rules URL AND a runnable
 rule-ENFORCING implementation.** This is the first seam since the chess/shogi cores where the ANCHOR
