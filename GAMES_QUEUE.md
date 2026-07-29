@@ -6,7 +6,7 @@ universe map and capability gaps live in `GAME_BACKLOG.md`; this file is the
 
 ---
 
-## ⭐ SESSION HANDOFF (read this first) — updated 2026-07-28 (gameslib wave 13 → 381 games)
+## ⭐ SESSION HANDOFF (read this first) — updated 2026-07-29 (gameslib wave 14 → 385 games)
 
 ### ✅ AG-MAGAZINE WAVE 9 COMPLETE (2026-07-25) → **369 games**, #367–369
 The whole wave-8 bench, cleared. 3 build agents in parallel (Orbit solo-heavy as staged), then an
@@ -361,7 +361,82 @@ first. We follow the designer's living page (dated 2014 revision of this very wo
 Deliberately NOT offered as a manifest option — the alternate precedence comes with a different
 BOARD, so grafting it onto 61 cells would be a hybrid no publisher ever printed. Table in `rules.md`.
 
-### ▶▶ NEXT (wave 14) — CONTINUE the gameslib seam; the bench below is still 6 deep
+### ✅ WAVE 14 COMPLETE (2026-07-29) → **385 games**, #382–385 — the seam keeps delivering
+4 games, 4 build agents ∥, an independent adversarial deep-QA agent each. **All 4 verdicts
+MERGE-WITH-FIX — the 7th wave running.** Browser-verified, one commit each, Opus 5 (1M).
+- **taiji #382** (`afe3d25`) — Romeral Andrés 2007, place a Light+Dark domino, score largest N groups.
+  81,116 + 52,391 independent positions, 0 mismatches. The rulebook's page-1 figure transcribed by
+  BOTH agents independently (identical) and replayed to its printed 13-10.
+- **lielow #383** (`8e89afc`) — Amundsen & Erickson 2021, move exactly your height, capture the CROWN.
+  ~95k positions across 3 implementations.
+- **terrace #384** (`123c33c`) — Dresden & Siler 1992, 8 stepped levels, downhill capture, race the T.
+  125k positions over all 8 option combinations, 0 mismatches.
+- **neue_dame #385** (`92c73ef`) — Hildesheim 1904 column checkers. **The only game with NO oracle**;
+  anchored on 4 composed problems + TWO independent re-implementations (429k positions).
+
+**THE BRIEFS ARE THE WEAK LINK — 3 of 4 build agents overrode theirs on a SUBSTANTIVE rule again**
+(matching wave 13's 3 of 4). Assume the brief is wrong; the instruction "sources override the brief"
+is now the single highest-yield line in the whole process:
+- **lielow: the WIN CONDITION was wrong in my brief.** Not "capture the tallest piece" — capture the
+  CROWN, which sits on the last stack that was ever UNIQUELY tallest, and a tie does NOT move it. The
+  crowned stack is strictly shorter than another of that player's stacks 2,656× per 81k plies.
+- **terrace: EIGHT levels, not four**; pieces move ANY distance and jump their OWN pieces; the
+  "17-move opening" I quoted is AP's 6x6 SHORT default, not 8x8.
+- **taiji: the official rules SPECIFY a tie-break** ("In case of a tie, the 'Dark' player wins",
+  verbatim in both rulebooks) — so our house "a tie is an honest draw" rule had to yield to a
+  PUBLISHED one. Shipped as the default with the oracle's draw reading as an option.
+- **neue_dame: 5 magazine ERRATA proved** (7th-11th such find). QA settled the load-bearing one the
+  right way: rather than accept "the printed move is illegal", it looked for a rule reading that would
+  make it LEGAL, found 3 candidates, ran each as a full ruleset over all 4 problems, and refuted all.
+
+**Platform work this wave (orchestrator-owned):**
+- **`tools/sweep_render_bounds.py`** (`23cdf49`) — a game with a board-SIZE option can declare a board
+  smaller than its own pieces, and `Board.jsx` then SILENTLY DROPS them (no crash). Found as a
+  surviving mutant in taiji. **Library sweep: 0 failures over 721 (uid, options) combos / 385 games**,
+  and the sweep is proven non-vacuous. Re-run after touching any `render()`.
+- **`Markdown.jsx` nested emphasis + backslash escapes** (`1d738da`) — `inline()` used `[^*]+` inside
+  both emphasis forms, so `**a quint of *your* colour**` showed RAW ASTERISKS. Measured over all 385
+  rules.md by replaying the real regex on blocks as the renderer assembles them: **79 bad blocks in 44
+  files → 29 in 8**, 39 files fixed. (The remaining 29 are correct: literal `*` inside code spans.)
+- Confirmed the platform contract holds: both `/move` endpoints reject a move not in `legal_moves`
+  before applying, so terrace's `apply_move` accepting a forged win was defence-in-depth, not an
+  exploit.
+
+**Wave-14 QA lessons (all four verdicts found something the build agent's own sweep missed):**
+1. **A test can pass for the wrong reason in a way mutation testing catches and review does not** —
+   lielow's crown-transfer test would have passed with the transfer DELETED (it moved a stack that
+   then became uniquely tallest, so accession re-derived the same answer). Failure mode: a crown
+   pointing at an EMPTY square, i.e. an uncapturable king.
+2. **neue_dame's render test used a PALINDROMIC owner list** (`[G,B,G]`), so a reversed `piece.stack`
+   passed and every tower would have drawn upside-down. Use asymmetric fixtures.
+3. **A contrast collision is invisible to every test** — terrace's tint ramp hit `Board.jsx`'s faint
+   label colour (ratio ~1.05) and the elevation number vanished on exactly the highest terraces.
+   Only the browser check found it.
+4. **`reps` aliasing** (neue_dame): a shared dict would let the bot's rollouts poison the LIVE game's
+   repetition counter.
+5. A **third implementation** can settle what two cannot — QA found O'Dwyer's own JS engine for
+   lielow, which resolved the "whose crown re-computes?" ambiguity that AP alone left open.
+
+### ▶▶ NEXT (wave 15) — the bench is 2 deep; the Mark Steere sub-seam is the obvious next wave
+**Remaining from the wave-13 bench:** Panal (hex chess + a "shoot" cannon; cheap now that
+`hexchesslike` exists; `=SHOOT` suffix) · Push Fight (strongly solved, published value = the standard
+setups are DRAWS; loops ⇒ hard cap + repetition mandatory; needs rail geometry).
+**Then the Mark Steere sub-seam — ~20 games, and the best-prepared wave available:** official PDF
+each at `marksteeregames.com/<Name>_rules.pdf`, 12 also in gameslib for a DOUBLE anchor, and **Steere
+publishes his own termination proofs** (abstractgames.org/finitude.html), which is an unusually good
+fit for our guarantee-termination rule. Absent: Atoll, Bamboo, Blast Radius, Bounce, Churn,
+Clusterfuss, Conect, Diffusion, Dipole, Flume, Halfcut, Invector, King & Courtesan, Minefield, Monkey
+Queen, Nakatta, Narrows, Necklace, Take, Unane. URLs in `scratchpad/wave13/ap_meta.json`.
+**B-tier (one fetch short):** Slyde · Exxit · Onager · Quax · heXentafl · AlmaTafl · Carnac · Amoeba ·
+Cairo Corridor · Yonmoque · Hey That's My Fish! · Kulami · Six · Ploy.
+**Erik's four greenlit optional items remain open:** Khet, LYNGK (still unsourced — needs a Wayback
+hunt of gipf.com c. 2017-19), Homeworlds (needs an orchestrator-owned "system graph" primitive),
+Push Fight.
+**Deferred cosmetic (not a defect):** the ♚/label glyph on a `piece.stack` tower renders ~12px dark on
+the seat-coloured top band. It is already ~95% of the band height so it cannot grow without
+overflowing, and re-colouring it touches every stacking game — revisit only if it annoys in real play.
+
+### (superseded) wave-14 staging — all 4 BUILT (#382–385)
 **Remaining from the wave-13 bench, in order:** Terrace (levels ⇒ `board.tints`; `terrace.ts` is the
 resolution for the fiddly capture cases the prose sources disagree on) · Neue Dame (AG#18, 4 composed
 problems with full solution lines; NOT in gameslib; dedup gate = `bashni`/`lasca`) · Taiji (place a

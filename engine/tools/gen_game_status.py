@@ -103,6 +103,10 @@ ANCHOR = {
  "attangle": "AbstractPlay gameslib differential (17,453 positions ours-driving + 82,041 in-package, 0 mismatches) + the designer's figures pixel-verified; 48/48 mutants; termination proved (76/110 plies, no cap)",
  "fendo": "AbstractPlay gameslib differential (17,263 positions, 3 policies, 0 mismatches) + two designer diagrams pixel-transcribed (21/21 marked entry cells); 38 mutants; termination structural (193-ply bound, no cap)",
  "manalath": "AbstractPlay gameslib differential BOTH directions (10,289 positions, 0 mismatches, mapping proved bijective 61 cells/156 edges) + both designer diagrams executed + 2,400-case constructed sweep; 26 mutants",
+ "lielow": "AbstractPlay gameslib + O'Dwyer's JS engine (3 implementations agree) — 61,103 + ~34,600 independent positions, 0 mismatches, incl. 21,146 exhaustive per-move crown edge cases; 62 mutants; termination proved (352-ply potential bound, no cap)",
+ "neue_dame": "NO reference engine — anchored on all 4 composed problems from Abstract Games #18 replaying exactly (5 magazine errata proved, incl. an illegal printed move refuted against 3 rival rulesets) + TWO independent re-implementations (311,872 + 117,347 positions, 0 mismatches); 44 mutants",
+ "taiji": "AbstractPlay gameslib differential (81,116 + 52,391 independent positions, 9 configs, 0 mismatches) + the rulebook's page-1 figure transcribed by TWO agents independently and replayed to its printed 13-10 score; 50 mutants",
+ "terrace": "AbstractPlay gameslib differential (110,208 + 14,943 independent positions across all 8 option combinations in two modes, 0 mismatches) + the publisher's worked-example GIFs pinning branching factor; 57 mutants",
 }
 # Browser / UX eyeball status (default: rendered by the generic renderer, never
 # individually eyeballed -- logic is conformance-tested either way).
@@ -134,6 +138,10 @@ BROWSER = {
  "attangle": "✅ verified (central void as dark 'x', one-click placement, counter-only tray falls through, 3-click capture logged b1+d7xb5)",
  "fendo": "✅ verified (NEW board.fences primitive — the fence bar lands on the edge the move log names; two-click move-then-fence flow + 'Place a fence' picker)",
  "manalath": "✅ verified (NEW reserveOwners — both trays show R red / B blue; a stone from seat 0's B chip lands blue)",
+ "lielow": "✅ verified (walk-off as labelled buttons — the crowned stack's reads 'RESIGNS (your king)'; a second click on a selected stack is inert; ♚ + height badge)",
+ "neue_dame": "✅ verified (12+12 on the dark squares, bashni-identical tower render, move log 'c3-d4')",
+ "taiji": "✅ verified (three option dropdowns; 121 cells at 11x11 with no phantom column; two-click domino; log 'k11(L)-k10(D)')",
+ "terrace": "✅ verified (8 levels legible on every square incl. the highest after the contrast fix; size-scaled piece discs 1-4; goal corners tinted per seat)",
 }
 DEFAULT_BROWSER = "— generic renderer (logic tested; not individually eyeballed)"
 
