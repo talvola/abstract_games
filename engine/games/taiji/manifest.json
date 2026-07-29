@@ -1,0 +1,45 @@
+{
+  "uid": "taiji",
+  "name": "Taiji",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory (game by Néstor Romeral Andrés, 2007)",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Territory",
+  "tags": ["square", "placement", "territory", "groups", "scoring", "nestorgames", "romeral-andres"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/31926/taiji",
+  "options": {
+    "size": {
+      "choices": [7, 9, 11],
+      "default": 9,
+      "label": "Board size",
+      "labels": {
+        "7": "7×7 (designer recommends 1 group)",
+        "9": "9×9 (designer recommends 2 groups)",
+        "11": "11×11 (designer recommends 3 groups)"
+      }
+    },
+    "groups": {
+      "choices": [1, 2, 3],
+      "default": 2,
+      "label": "Scoring type (groups counted)",
+      "labels": {
+        "1": "1 group",
+        "2": "2 groups",
+        "3": "3 groups"
+      }
+    },
+    "tie": {
+      "choices": ["dark", "draw"],
+      "default": "dark",
+      "label": "Equal scores",
+      "labels": {
+        "dark": "Dark wins the tie (official rulebook)",
+        "draw": "Draw"
+      }
+    }
+  },
+  "description": "Taiji (Néstor Romeral Andrés, 2007): every turn you place one TAIJITU — a domino with one light half and one dark half — on two empty orthogonally adjacent squares, choosing which square gets which colour. You are always playing BOTH colours, so every placement also helps your opponent. Seat 1 is Light and starts; seat 2 is Dark. When no domino fits any longer, each player sums the sizes of their N largest same-coloured orthogonal groups (N = 1, 2 or 3; 2 on the standard 9x9 board) and the higher total wins."
+}
