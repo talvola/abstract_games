@@ -39,7 +39,7 @@ from .auth import (
     verify_password,
 )
 from .db import get_db, init_db
-from .games import registry
+from .games import registry, sanitize_options
 from .models import Match, Seek, User
 
 app = FastAPI(title="Abstract Games Platform", version="0.2.0")
@@ -180,11 +180,13 @@ def notify_turn(db: Session, match: Match, actor_id: int | None, background: Bac
 
 def create_match(db: Session, game_uid: str, options: dict, players: list[dict]) -> Match:
     _, game = registry.get(game_uid)
-    state = game.initial_state(options=options or {}, rng=_rng)
+    # Clamp to the manifest before the options are baked into a PERSISTED state.
+    options = sanitize_options(game_uid, options)
+    state = game.initial_state(options=options, rng=_rng)
     match = Match(
         id=G.new_id(),
         game_uid=game_uid,
-        options=options or {},
+        options=options,
         players=players,
         state=game.serialize(state),
         current_player=game.current_player(state),
@@ -811,7 +813,7 @@ def user_profile(user_id: int, db: Session = Depends(get_db)):
 @app.post("/api/games/{uid}/new")
 def stateless_new(uid: str, body: NewBody):
     _, game = registry.get(uid)
-    state = game.initial_state(options=body.options or {}, rng=_rng)
+    state = game.initial_state(options=sanitize_options(uid, body.options), rng=_rng)
     return {"state": game.serialize(state), "view": G.position_view(game, state)}
 
 

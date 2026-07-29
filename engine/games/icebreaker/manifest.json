@@ -7,7 +7,7 @@
   "players": { "min": 2, "max": 2 },
   "has_randomness": false,
   "hidden_info": false,
-  "category": "Capture",
+  "category": "Capture / annihilation",
   "tags": ["icebreaker", "hex", "hexhex", "capture", "steere", "gradient", "race"],
   "bgg_url": "https://www.marksteeregames.com/Icebreaker_rules.pdf",
   "options": {

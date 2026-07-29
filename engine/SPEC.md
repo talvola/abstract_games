@@ -321,7 +321,12 @@ clash with `>`). The web UI derives click-to-move from this:
   several moves differing only by that suffix, the UI shows a small picker of
   the choices. (`CHOICE` is shown via a friendly name for `Q/R/N/B/K/P`;
   override or extend with `spec["choiceNames"] = {"<letter>": "<label>", …}`
-  when a choice letter means something other than a promotion piece.)
+  when a choice letter means something other than a promotion piece.
+  When the SUFFIXLESS move is one of the options, it is labelled
+  "No promotion" by default; games where that reads wrong give the label
+  under the EMPTY-STRING key, `spec["choiceNames"][""] = "Capture by moving in"`
+  (Panal's Gunne chooses between moving in and shooting from a distance).
+  `spec["choiceTitle"]` replaces the picker's heading.)
 
 - **Polyomino placement** (a tile covering several cells at once): the move is
   `"KEY:o@c,r"` — see `palette` below.

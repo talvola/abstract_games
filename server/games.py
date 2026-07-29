@@ -121,6 +121,33 @@ def _read_meta(pkg: Path) -> dict:
 registry = Registry()
 
 
+def sanitize_options(uid: str, options: dict | None) -> dict:
+    """Clamp caller-supplied options to what the manifest actually declares.
+
+    Every endpoint that starts a game feeds `options` straight into
+    `initial_state`, and a game whose `initial_state` doesn't clamp its own
+    inputs could otherwise be driven into a nonsense state that is then
+    PERSISTED to `Match.state`. Manifest options are uniformly
+    `{name: {"choices": [...], "default": x, ...}}`, so validation is central:
+    unknown keys are dropped and a value outside `choices` falls back to the
+    declared default. Coercing rather than rejecting keeps in-progress matches
+    (whose stored options predate this check) loadable.
+    """
+    entry = registry.entries.get(uid)
+    if entry is None:
+        return {}
+    spec = (entry["manifest"].get("options") or {})
+    out = {}
+    for name, decl in spec.items():
+        choices = decl.get("choices") or []
+        val = (options or {}).get(name, decl.get("default"))
+        # JSON round-trips can turn an int choice into a string ("8" vs 8).
+        if val not in choices:
+            val = next((c for c in choices if str(c) == str(val)), decl.get("default"))
+        out[name] = val
+    return out
+
+
 # ===========================================================================
 #  upload pipeline
 # ===========================================================================

@@ -126,6 +126,24 @@ function hexPoly(cx, cy, s, flat) {
 }
 const eqPrefix = (path, sel) => sel.every((c, i) => path[i] === c)
 
+// WCAG relative luminance of a "#rgb"/"#rrggbb" fill. Markers drawn ON a cell
+// pick their ink from this, because NO fixed colour works against arbitrary
+// game-supplied `tints`: the last-move dash tuned for the default dark board
+// measured 1.02:1 on the hex-chess family's tan ramp (invisible in 9 games),
+// and the corner label tuned for the same dark board washes out the same way.
+// Unparseable / absent colours fall through to the dark-board defaults.
+function lum(hex) {
+  const m = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(hex || '')
+  if (!m) return 0
+  const h = m[1].length === 3 ? m[1].replace(/./g, (c) => c + c) : m[1]
+  const [r, g, b] = [0, 2, 4]
+    .map((i) => parseInt(h.slice(i, i + 2), 16) / 255)
+    .map((c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4))
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b
+}
+// True when a cell is light enough that light-on-dark ink stops reading.
+const isLightCell = (hex) => lum(hex) > 0.18
+
 export default function Board({ spec, legalMoves, onMove, disabled, freeform, currentPlayer }) {
   const [sel, setSel] = useState([])
   const [promo, setPromo] = useState(null) // { cells, options: [{choice, move}] }
@@ -777,18 +795,28 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
           const freeTarget = freeMode && sel.length === 1 && !selected
           const clickable = selected || isTarget || isSource || freeTarget
           const isGoal = hl[s.id] === 'goal'
+          const isLast = hl[s.id] === 'last-move'
           const baseFill = tints[s.id] || (s.parity ? '#332e27' : '#2a2620')
+          // The last-move marker is carried by a DASHED STROKE, not by fill
+          // alone: a fill-only marker is ~1.1:1 against the board and vanishes
+          // outright when a game tints the very squares moves land on (found in
+          // Dipole, where the tint and the old #3a3228 were the same colour).
+          // A game's own `tints` therefore survive the highlight untouched.
           const fill = selected ? '#6b5520' : isTarget ? '#2f4030'
-            : hl[s.id] === 'last-move' ? '#3a3228' : baseFill
+            : isLast && !tints[s.id] ? '#3a3228' : baseFill
           const stroke = selected ? '#e7c87a' : isTarget ? '#5cba6b'
-            : isGoal ? '#c9a96e' : isSource && piece ? '#7a6a3a' : '#4a4238'
-          const sw = (selected || isTarget || isGoal ? 0.14 : 0.07) * s.r
+            : isLast ? (isLightCell(fill) ? '#3d2a05' : '#d0b06a') : isGoal ? '#c9a96e'
+            : isSource && piece ? '#7a6a3a' : '#4a4238'
+          const sw = (selected || isTarget || isGoal || isLast ? 0.14 : 0.07) * s.r
+          const dash = isLast && !selected && !isTarget
+            ? `${0.5 * s.r} ${0.35 * s.r}` : undefined
           return (
             <g key={s.id} data-cell={s.id} onClick={clickable ? () => click(s.id) : undefined}
               onMouseEnter={isTarget ? () => setHover(s.id) : undefined}
               onMouseLeave={isTarget ? () => setHover((h) => (h === s.id ? null : h)) : undefined}
               style={{ cursor: clickable ? 'pointer' : 'default' }}>
-              <polygon points={s.poly} fill={fill} stroke={stroke} strokeWidth={sw} />
+              <polygon points={s.poly} fill={fill} stroke={stroke} strokeWidth={sw}
+                strokeDasharray={dash} />
               {/* Text PRINTED ON the board itself (a numbered scoring board, e.g.
                   Winkeladvokat's cell values). Centred and faint while the cell is
                   empty; once a piece sits there it shrinks into the bottom-right
@@ -796,10 +824,12 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
               {labels[s.id] != null && (piece
                 ? <text x={s.cx + (s.hw || s.r) * 0.55} y={s.cy + (s.hh || s.r) * 0.6}
                     textAnchor="middle" dominantBaseline="central" pointerEvents="none"
-                    fontSize={s.r * 0.4} fill="#cdbf9c" opacity="0.8">{labels[s.id]}</text>
+                    fontSize={s.r * 0.4} fill={isLightCell(fill) ? '#463a1c' : '#cdbf9c'}
+                    opacity="0.8">{labels[s.id]}</text>
                 : <text x={s.cx} y={s.cy} textAnchor="middle" dominantBaseline="central"
                     pointerEvents="none" fontSize={s.r * 0.62} fontWeight="bold"
-                    fill="#8f8674" opacity="0.9">{labels[s.id]}</text>)}
+                    fill={isLightCell(fill) ? '#5a4a24' : '#8f8674'}
+                    opacity="0.9">{labels[s.id]}</text>)}
               {/* Footprint of the armed polyomino at the hovered anchor: the whole
                   tile reads as one shape before you commit to it. */}
               {isGhost && <polygon points={s.poly} fill={colors(currentPlayer).fill} opacity="0.5"
@@ -914,7 +944,7 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
           <div className="promo-options">
             {promo.options.map((o) => (
               <button key={o.choice ?? 'none'} onClick={() => { onMove(o.move); setPromo(null); setSel([]) }}>
-                {o.choice == null ? 'No promotion' : (choiceNames[o.choice] || o.choice)}
+                {o.choice == null ? (choiceNames[''] || 'No promotion') : (choiceNames[o.choice] || o.choice)}
               </button>
             ))}
             <button className="promo-cancel" onClick={() => { setPromo(null); setSel([]) }}>Cancel</button>
