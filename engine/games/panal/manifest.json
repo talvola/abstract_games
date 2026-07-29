@@ -1,0 +1,14 @@
+{
+  "uid": "panal",
+  "name": "Panal",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Glenn Overby II (2003) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["hex", "chess", "variant", "cannon"],
+  "bgg_url": "https://www.chessvariants.com/hexagonal.dir/panal.html",
+  "description": "Glenn Overby's honeycomb chess on 61 hexes, with the two armies facing each other across opposed SIDES. There is no hex diagonal at all — only the six directions of travel — so the four non-royal pieces are one of each classical move family: the stepping Soldier (two forward directions, not three), the leaping Horseman (any hex exactly two away), the riding Princess and the hopping Gunne, a cannon that may either capture by moving in or stay put and SHOOT. Two royals, two ways to lose: the Princess may be left en prise but her capture ends the game, while the Monarch may not move at all unless he is in check — and then only by swapping places with an unthreatened friend."
+}
