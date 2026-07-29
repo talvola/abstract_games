@@ -1,0 +1,15 @@
+{
+  "uid": "neue_dame",
+  "name": "Neue Dame",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Heinrich Adolf Schmidt (Hildesheim, 1904)",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Checkers & draughts",
+  "tags": ["square", "draughts", "stacking", "towers", "capture", "historic"],
+  "bgg_url": "https://www.abstractgames.org/",
+  "max_random_plies": 900,
+  "description": "Neue Dame ('New Draughts', Hildesheim 1904): one of the first stacking games. On the 32 dark squares of an 8x8 board a captured piece is not removed but tucked UNDER the jumper, building towers owned by whoever is on top. Men leap forward as in Anglo-American draughts; a promoted Dame flies like an International king, but her capture outranks a man's, she must take the NEAREST piece first, and she must stop on the square immediately behind the last piece taken. The winner scores one point per Dame on the board."
+}
