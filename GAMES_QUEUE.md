@@ -6,7 +6,109 @@ universe map and capability gaps live in `GAME_BACKLOG.md`; this file is the
 
 ---
 
-## ⭐ SESSION HANDOFF (read this first) — updated 2026-07-29 (gameslib wave 14 → 385 games)
+## ⭐ SESSION HANDOFF (read this first) — updated 2026-07-29 (wave 15 → 389 games)
+
+### ✅ WAVE 15 COMPLETE (2026-07-29) → **389 games**, #386–389
+Closed the wave-13 bench (Panal, Push Fight) and **opened the Mark Steere sub-seam** (Dipole,
+King & Courtesan). 4 build agents, then an independent adversarial deep-QA agent each.
+**All 4 verdicts MERGE-WITH-FIX — the 7th consecutive wave in which every package had a real
+defect.** Browser-verified, one commit each, Opus 5 (1M), no model caps.
+- **panal #386** (`fca86d2`) — Overby's 61-hex chess: six directions only, NO hex diagonal, a
+  Gunne that captures by hopping a screen **or shoots without moving** (`from>to=SHOOT`), a
+  Princess whose capture loses, and a Monarch who may not move unless in check, when he SWAPS
+  with an unthreatened friend. Standalone, not `hexchesslike` (the canonical
+  `(frm,to,promo,ep,castle)` tuple cannot express SHOOT or SWAP). **The article's printed setup
+  table is WRONG** (Soldiers on ranks 1/9, colliding with the Gunnes/Princess/Monarch) — the
+  author's own **Zillions ZRF** + setup GIF + every sample-game move put them on ranks **3/7**.
+  Board is **POINTY-top** (horizontal ranks, armies on opposed sides) — the opposite of the
+  classical hex chesses. `Gh9xh6` in the sample game is a misprint (h9 is not a cell).
+  Stalemate IS possible despite the author's claim ⇒ honest draw. Anchors: sample game 17/17,
+  final diagram 19/19, published double pin exact, perft 46/2,069/96,352/4,452,894 (perft(1)
+  hand-derived off the diagram). **QA rebuilt a second implementation from the ZRF alone** —
+  6,160 positions / 626,692 attack comparisons / 0 mismatches. QA fixed a mis-derived ply bound
+  (8,483 not 8,399) and 3 selftest holes.
+- **push_fight #387** (`caf59c4`) — **RESEARCH GATE cleared**: pushfightgame.com's DNS is dead;
+  geometry + rails pinned from **three** sources (maksverver/pushfight's `FIELD_INDEX` and
+  `canPush`, arXiv 1803.03708 Fig 2.1 read as an image, official Brettco rules via Wayback).
+  Rails ONLY on the outer top of rank 4 / outer bottom of rank 1 ⇒ a piece CAN be shoved off the
+  top of b3. Cross-check: our 8 degree-2 cells = the 8 cells Verver proves can never hold the
+  anchor. **BGG is 54221; 107977 is Point Final, a different game.** Strongly solved, so the
+  anchor is the solution: 1.3M-turn legality+resolution differential (driven with an ALGEBRAIC
+  piece list so the oracle is not handed our field ordering) + live tablebase queries confirming
+  the standard opening scores T. Turn = separate plies; move ends empty, push ends occupied, so
+  they never collide. Existing primitives only (tints for the 6 voids, overlay for the rails,
+  reserve trays for placement).
+- **dipole #388** (`03a80f3`) — one **12-high pole** each (e1/d8); split k off the top and move
+  exactly k squares, so size is implied by the destination. Forward-only move/merge/bear-off,
+  capture in all 8, and a capture **destroys** the whole enemy stack. Win = remove every enemy
+  checker, so bearing off your own last checker LOSES. **The brief was wrong 3 ways** (two 6-high
+  stacks; distance from the source stack; captures absorb) — rulebook won each. QA found an
+  **older rulebook revision on superdupergames.org with a different asymmetric setup**.
+  Steere's finitude page does NOT cover it ⇒ our own proof: advancement rises, material never
+  grows ⇒ **no repetition rule needed at all**, cap provably dead. QA closed the open question:
+  **double stalemate is impossible** (the owner of a maximal stack can always move it diagonally
+  forward). Differential vs gameslib 4,862 pos / 75,368 moves, 0 mismatches.
+- **king_and_courtesan #389** (`029e526`) — 45°-rotated grid, triangular armies (Manhattan
+  ≤ size−2), one king + all-else courtesans, **3 forward directions to step but 8 to capture**,
+  plus the **exchange** (the king hands its crown to an adjacent forward courtesan; the board is
+  unchanged except which piece is royal). Sizes 6/7/8. Year is **2022**, not 2024. Hard-finitude
+  proof (`(−n, A, K)` increases lexicographically on EVERY move ⇒ no position can EVER repeat)
+  and a proof that stalemate is impossible ⇒ no pass, no repetition rule. QA found a **third
+  implementation, Michael Amundsen's Ludii `.lud`**, corroborating the 3 sizes and the setup rule.
+
+**Wave-15 lessons (all four QA passes found something the build agent's own sweep missed):**
+1. **A whole SEAT can be untested.** king_and_courtesan's frozen move counts were all measured
+   with Red to move, so seat 1's courtesans had ZERO assertions — 4 mutants that froze Blue's
+   army, moved it backwards, or removed its captures all passed. Fix is structural: assert the
+   engine **conjugates under the seat-swapping symmetry** at every ply, which also proves a
+   balance skew is noise rather than merely failing to observe one.
+2. **A differential must not inherit geometry from the oracle it tests.** Push Fight's QA drove
+   the oracle with an ALGEBRAIC piece list rather than our perm string, so the board encoding
+   under test was not handed to the judge. (Same trap as the old Jocly `state.ep` case.)
+3. **Check-DETECTION is a separate path from movegen, again** — panal's `attacked()` was blind to
+   the Soldier's sideways threat and survived 14,524 checks because `in_check` goes blind the
+   same way. Test the reverse lookup per piece, positively.
+4. **A published rulebook can have silent REVISIONS.** Dipole's older sheet has a different
+   asymmetric setup; K&C has two revisions differing only in figure artwork. Check Wayback's CDX
+   digests before calling a ruleset settled.
+5. **A "provably dead" cap still needs its arithmetic checked** — panal's bound was off by 84
+   plies (a 100-ply reversible run, not 99), leaving 17 plies of margin instead of 101.
+6. **An orchestrator's own platform fix needs the same adversarial pass**: my first last-move
+   marker was a fixed colour and measured 1.02:1 on the hex-chess tan ramp — Panal's QA caught it.
+
+**Platform work this wave (orchestrator-owned, `5bdd57b`):**
+- **`Board.jsx` last-move marker rebuilt.** It was fill-only at ~1.1:1 AND it overwrote a game's
+  `board.tints`, so a game tinting the squares moves land on lost the marker outright (Dipole's
+  tint was the same colour; Push Fight's anchor cell IS always the push destination). Now a
+  dashed stroke that leaves tints intact, with the ink chosen from the cell's own **WCAG
+  luminance** (`lum`/`isLightCell`) — 9 hex-chess games go 1.02:1 → 6.7:1 while every dark-board
+  cell stays byte-identical. **`board.labels` picks its ink the same way** (corner label was
+  1.03:1 on light tints).
+- **`choiceNames[""]`** labels the suffixless option in the `=CHOICE` picker (was hard-coded
+  "No promotion"); Panal's Gunne uses it, and it fixes Seirawan Chess too. In SPEC.md.
+- **`server.sanitize_options()`** clamps caller options to the manifest's `choices` before they
+  are baked into a PERSISTED `Match.state`; unknown keys dropped, out-of-range → declared
+  default, `"8"` → `8`. Coerces rather than rejects so in-progress matches stay loadable.
+- **icebreaker** category `"Capture"` → `"Capture / annihilation"` (was a singleton lobby group).
+
+### ▶▶ NEXT (wave 16) — the Mark Steere sub-seam, now open and proven
+Dipole and King & Courtesan were the first two; **~18 remain**, each with an official PDF at
+`marksteeregames.com/<Name>_rules.pdf`, 10 of them also in gameslib for a DOUBLE anchor:
+Atoll, Bamboo, Blast Radius, Bounce, Churn, Clusterfuss, Conect, Diffusion, Flume, Halfcut,
+Invector, Minefield, Monkey Queen, Nakatta, Narrows, Necklace, Take, Unane. URLs in
+`scratchpad/wave13/ap_meta.json`. **Two wave-15 findings that carry over to every one of them:**
+(a) **`abstractgames.org/finitude.html` is a general design essay, NOT a per-game proof index** —
+it covered neither Dipole nor K&C, so budget for writing the termination proof yourself (both
+turned out to be clean lexicographic-monovariant proofs, and both eliminated the repetition rule
+entirely); (b) **check Wayback CDX digests for rulebook revisions** before trusting a sheet.
+**B-tier (one fetch short):** Slyde · Exxit · Onager · Quax · heXentafl · AlmaTafl · Carnac ·
+Amoeba · Cairo Corridor · Yonmoque · Hey That's My Fish! · Kulami · Six · Ploy.
+**Erik's greenlit optional items — 1 of 4 now done** (Push Fight ✅): Khet (laser trace; the
+`board.overlay` primitive can probably express it), LYNGK (still unsourced — needs a Wayback hunt
+of gipf.com c. 2017-19), Homeworlds (needs an orchestrator-owned "system graph" primitive).
+**Deferred cosmetic (not a defect):** the ♚/label glyph on a `piece.stack` tower renders ~12px
+dark on the seat-coloured top band; already ~95% of the band height, and re-colouring touches
+every stacking game.
 
 ### ✅ AG-MAGAZINE WAVE 9 COMPLETE (2026-07-25) → **369 games**, #367–369
 The whole wave-8 bench, cleared. 3 build agents in parallel (Orbit solo-heavy as staged), then an
@@ -417,7 +519,7 @@ is now the single highest-yield line in the whole process:
 5. A **third implementation** can settle what two cannot — QA found O'Dwyer's own JS engine for
    lielow, which resolved the "whose crown re-computes?" ambiguity that AP alone left open.
 
-### ▶▶ NEXT (wave 15) — the bench is 2 deep; the Mark Steere sub-seam is the obvious next wave
+### (superseded) wave-15 staging — both bench items BUILT (#386-387) + Steere seam opened
 **Remaining from the wave-13 bench:** Panal (hex chess + a "shoot" cannon; cheap now that
 `hexchesslike` exists; `=SHOOT` suffix) · Push Fight (strongly solved, published value = the standard
 setups are DRAWS; loops ⇒ hard cap + repetition mandatory; needs rail geometry).
