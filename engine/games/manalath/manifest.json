@@ -1,0 +1,14 @@
+{
+  "uid": "manalath",
+  "name": "Manalath",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Dieter Stein & Néstor Romeral Andrés (2012) — AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "N-in-a-row",
+  "tags": ["manalath", "hex", "hexhex", "placement", "shared-pieces", "misere", "stein", "romeral-andres", "nestorgames"],
+  "bgg_url": "https://spielstein.com/games/manalath/rules",
+  "description": "Dieter Stein & Néstor Romeral Andrés's \"simply difficult\" game on a hexagon of hexagons (side 5, 61 cells). Each turn you place a stone of EITHER colour, and no placement may build a group of more than five. Finish your turn with a group of exactly five of your own colour and you win; finish it with a group of exactly four of your own colour and you lose — so both players are constantly building for and against both colours."
+}
