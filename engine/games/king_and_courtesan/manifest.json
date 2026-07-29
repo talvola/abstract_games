@@ -1,0 +1,23 @@
+{
+  "uid": "king_and_courtesan",
+  "name": "King & Courtesan",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Mark Steere (2022) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Capture / annihilation",
+  "tags": ["square", "race", "movement", "capture", "steere"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/413118/king-and-courtesan",
+  "max_random_plies": 500,
+  "options": {
+    "size": {
+      "choices": [6, 7, 8],
+      "default": 6,
+      "label": "Board size",
+      "labels": { "6": "6x6 (rulebook)", "7": "7x7", "8": "8x8" }
+    }
+  },
+  "description": "King & Courtesan (Mark Steere, 2022) on a checkerboard turned 45 degrees, so the first 'row' is a single square: the home square. Each side fills the triangle around its own corner with a king (a stack of two checkers) and courtesans. Any piece steps one square forward to an empty square, or captures by replacement in any of the eight directions; the king may instead swap places with an adjacent forward courtesan. Win by landing your king on the enemy home square, or by capturing the enemy king. Hard-finite: no cycle is possible and there are no draws."
+}
