@@ -1,0 +1,35 @@
+{
+  "uid": "terrace",
+  "name": "Terrace",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Anton Dresden & Buzz Siler (1992)",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Chess & chess-like",
+  "tags": ["square", "movement", "capture", "elevation", "royal", "abstract"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/2872/terrace",
+  "max_random_plies": 2000,
+  "options": {
+    "board": {
+      "choices": [8, 6],
+      "default": 8,
+      "label": "Board",
+      "labels": { "8": "8x8 (original, 8 levels)", "6": "6x6 (1997 revision, 6 levels)" }
+    },
+    "setup": {
+      "choices": ["long", "short"],
+      "default": "long",
+      "label": "Setup",
+      "labels": { "long": "Long game (two ranks)", "short": "Short game (one rank)" }
+    },
+    "capture": {
+      "choices": ["standard", "rank"],
+      "default": "standard",
+      "label": "Capturing",
+      "labels": { "standard": "Standard", "rank": "Rank Capture (Hawkins variant)" }
+    }
+  },
+  "description": "The terraced board: squares sit at eight different heights, rising in L-shaped steps from the two lowest corners to the two highest. Pieces come in four sizes and capture only by moving diagonally DOWN onto a piece of the same size or smaller — including, famously, one of your own. Walk your marked 'T' to the lowest square across the board, or capture your opponent's."
+}
