@@ -256,8 +256,28 @@ never a piece — for text ON a piece use `piece.label`/`piece.glyph`),
 stacked "wedding-cake" tiers for levels 1-3 with a blue **dome** cap at level 4
 and a small height badge, *under* any worker piece on that cell; the
 two-things-per-cell primitive for **Santorini** [building level + worker]; omit
-ground/level-0 cells), `board.walls`,
-`reserve` (off-board drop trays), `board.cards`,
+ground/level-0 cells),
+`board.walls` (`{"h": [[c,r],…], "v": [[c,r],…]}` — **two-cell** barriers laid in
+the grooves between cells, square boards only [Quoridor]. `h:[c,r]` runs along the
+top edge of cells `(c,r)` and `(c+1,r)`; `v:[c,r]` runs along the right edge of
+`(c,r)` and `(c,r+1)`. Legal wall placements are the move strings `"H<c>,<r>"` /
+`"V<c>,<r>"`, which the UI renders as faint clickable ghost slots),
+`board.fences` (**same `{h,v}` + `(c,r)` anchor, but ONE cell long** — the single
+edge between two orthogonally adjacent cells [Fendo]: `h:[c,r]` is the edge
+between `(c,r)` and `(c,r+1)`, `v:[c,r]` the edge between `(c,r)` and `(c+1,r)`.
+**Display-only** — unlike `walls` there are no clickable ghosts, because a fence
+is picked as part of its move's `"=CHOICE"` suffix. The two keys are independent
+and may coexist),
+`reserve` (off-board drop trays — `{"<seat>": {"<letter>": <count>}}`, drop move
+`"<letter>@c,r"`. A tray may also be **counter-only**: a game whose placement is a
+plain one-click cell move can still emit `reserve` purely to show each seat's
+remaining stock [Attangle]. Arming such a chip is inert — `dropTargets` is empty,
+so the next cell click cancels the arm and falls through to the placement — which
+is harmless, but prefer real drop moves when the tray is meant to be clicked; the optional sibling **`reserveOwners`** = `{"<letter>":
+<seatIndex>}` tints a chip by what it PUTS ON THE BOARD rather than by whose tray
+it sits in, for a tray that is a **colour picker** rather than a piece rack
+[Manalath: on your turn you may place a stone of either colour]. Absent ⇒ the
+owning seat's colour, as for every other drop game), `board.cards`,
 `board.tiles` + `board.tokens` (the **path-tile** primitive for **Tsuro**: a
 square board where each placed tile shows painted paths joining its 8 edge-notches,
 and player markers sit on those notches). `board.tiles` = `{cellId: [[a,b]×4]}` —

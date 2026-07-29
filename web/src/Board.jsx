@@ -331,17 +331,28 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
   // Walls (Quoridor): two-cell segments in the grooves between cells. Placed
   // walls (spec.board.walls) draw solid; legal placements draw as faint clickable
   // "ghost" slots that brighten on hover. Square boards only.
+  // Fences (spec.board.fences) share the SAME {h,v} + (c,r) anchor but are ONE
+  // cell long — the single edge between two orthogonally adjacent cells (Fendo):
+  // h:[c,r] is the edge between (c,r) and (c,r+1); v:[c,r] between (c,r) and
+  // (c+1,r). Display-only — a fence is picked via its move's "=CHOICE" suffix,
+  // so there is no ghost to click.
   let wallEls = null
-  if (!isHex && !isPoly && (board.walls || wallMoves.length)) {
+  if (!isHex && !isPoly && (board.walls || board.fences || wallMoves.length)) {
     const H = board.height
-    const seg = (kind, c, r) => kind === 'H'
-      ? { x1: px(c) - R, y1: px(H - 1 - r) - R, x2: px(c + 1) + R, y2: px(H - 1 - r) - R }
-      : { x1: px(c) + R, y1: px(H - 1 - r) + R, x2: px(c) + R, y2: px(H - 2 - r) - R }
+    // `len` = length in cells: 2 for a Quoridor wall, 1 for a Fendo fence.
+    const seg = (kind, c, r, len = 2) => kind === 'H'
+      ? { x1: px(c) - R, y1: px(H - 1 - r) - R, x2: px(c + len - 1) + R, y2: px(H - 1 - r) - R }
+      : { x1: px(c) + R, y1: px(H - 1 - r) + R, x2: px(c) + R, y2: px(H - len - r) - R }
     const placed = []
     const w = board.walls || { h: [], v: [] }
     ;(w.h || []).forEach(([c, r], i) => placed.push(<line key={`wh${i}`} {...seg('H', c, r)}
       stroke="#c9a96e" strokeWidth={R * 0.3} strokeLinecap="round" />))
     ;(w.v || []).forEach(([c, r], i) => placed.push(<line key={`wv${i}`} {...seg('V', c, r)}
+      stroke="#c9a96e" strokeWidth={R * 0.3} strokeLinecap="round" />))
+    const f = board.fences || { h: [], v: [] }
+    ;(f.h || []).forEach(([c, r], i) => placed.push(<line key={`fh${i}`} {...seg('H', c, r, 1)}
+      stroke="#c9a96e" strokeWidth={R * 0.3} strokeLinecap="round" />))
+    ;(f.v || []).forEach(([c, r], i) => placed.push(<line key={`fv${i}`} {...seg('V', c, r, 1)}
       stroke="#c9a96e" strokeWidth={R * 0.3} strokeLinecap="round" />))
     const ghosts = (disabled ? [] : wallMoves).map((m) => {
       const x = m.match(WALL_RE)
@@ -415,6 +426,15 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
     const entries = Object.entries(hand).filter(([, n]) => n > 0)
     const active = !disabled && currentPlayer === seat
     const c = colors(seat)
+    // A tray that is a COLOUR PICKER rather than a piece rack (Manalath: on your
+    // turn you may place a stone of either colour) tints a chip by what it will
+    // put on the board, not by whose tray it sits in:
+    //   spec.reserveOwners = {"<letter>": <seatIndex>}
+    // Absent (every other drop game) ⇒ the owning seat's colour, as before.
+    const chipColor = (letter) => {
+      const o = (spec.reserveOwners || {})[letter]
+      return (o === undefined ? c : colors(o)).fill
+    }
     return (
       <div className={`reserve-tray ${where}`}>
         <span className="reserve-label">P{seat + 1}</span>
@@ -423,7 +443,7 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
           <button key={letter} disabled={!active}
             className={`reserve-chip${active ? ' active' : ''}${drop === letter && active ? ' selected' : ''}`}
             onClick={active ? () => { setDrop(drop === letter ? null : letter); setSel([]); setPromo(null) } : undefined}>
-            <span style={{ color: c.fill }}>{glyphFor(spec, letter) || letter}</span>
+            <span style={{ color: chipColor(letter) }}>{glyphFor(spec, letter) || letter}</span>
             {n > 1 && <span className="reserve-count">×{n}</span>}
           </button>
         ))}
