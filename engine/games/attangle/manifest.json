@@ -1,0 +1,25 @@
+{
+  "uid": "attangle",
+  "name": "Attangle",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory (game by Dieter Stein, 2006)",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Stacking",
+  "tags": ["hex", "stacking", "stein", "hexhex4", "placement", "capture"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/24525/attangle",
+  "options": {
+    "variant": {
+      "choices": ["attangle", "grand"],
+      "default": "attangle",
+      "label": "Variant",
+      "labels": {
+        "attangle": "Attangle (37 spaces, 1 void, 3 triples to win)",
+        "grand": "Grand Attangle (61 spaces, 7 voids, 5 triples to win)"
+      }
+    }
+  },
+  "description": "Attangle (Dieter Stein, 2006): the last game of Stein's stacking trilogy. The 37-space hex board starts empty except for the untouchable centre void, and each player holds 18 pieces. Each turn you either drop a piece on an empty space or capture: two of your stacks slide in from two different directions onto an enemy stack, the three piles merge, and you take the topmost piece back into stock. The survivor may be at most three high, so triple stacks can never move and never be captured. Build your third triple stack to win; run out of pieces with no capture available and you must resign."
+}
