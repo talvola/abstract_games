@@ -1,0 +1,26 @@
+{
+  "uid": "monkey_queen",
+  "name": "Monkey Queen",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Stacking",
+  "tags": ["stacking", "steere", "regicide", "capture", "queen", "pie-rule", "square"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/95757/monkey-queen",
+  "options": {
+    "height": {
+      "choices": [20, 30, 40],
+      "default": 20,
+      "label": "Starting stack height",
+      "labels": {
+        "20": "Standard 20 checkers",
+        "30": "Advanced 30 checkers",
+        "40": "Advanced 40 checkers"
+      }
+    }
+  },
+  "description": "Monkey Queen (Mark Steere, 2011): a 12x12 regicide duel between two monkey queens. Each player owns one queen -- a 20-high stack of their own checkers -- which moves and captures exactly like a chess queen, except that a NON-capturing queen move leaves its bottom checker behind as a baby monkey, so every step the queen takes costs it a checker and populates the board. Babies capture like queens too, but when not capturing they may only move to a square strictly closer, in straight-line distance, to the enemy queen. Kill the enemy queen, or leave your opponent with no legal move at all. A draw cannot occur, and the pie rule applies."
+}
