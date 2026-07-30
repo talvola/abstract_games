@@ -1,0 +1,22 @@
+{
+  "uid": "atoll",
+  "name": "Atoll",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Mark Steere (2008) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Connection",
+  "tags": ["hex", "connection", "placement", "steere"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/34221/atoll",
+  "options": {
+    "size": {
+      "choices": [11, 15, 19],
+      "default": 11,
+      "label": "Board size",
+      "labels": { "11": "11 (standard, 104 cells)", "15": "15 (202 cells)", "19": "19 (332 cells)" }
+    }
+  },
+  "description": "Mark Steere's connection game: eight alternating 'islands' of stones ring an empty hex grid. Add one stone per turn and link two of your islands that lie exactly opposite each other — your island stones count as part of the chain. Draws are impossible."
+}
