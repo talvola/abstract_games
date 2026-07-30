@@ -1,0 +1,25 @@
+{
+  "uid": "diffusion",
+  "name": "Diffusion",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Mark Steere (2006) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Mancala",
+  "tags": ["mancala", "sowing", "diffusion", "steere", "square", "abstract"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/22326/diffusion",
+  "options": {
+    "variant": {
+      "choices": ["v1", "v2"],
+      "default": "v1",
+      "label": "Blocks",
+      "labels": {
+        "v1": "Diffusion - two 2x3 blocks (left / right)",
+        "v2": "Diffusion v2 - two 1x6 blocks (lower / upper)"
+      }
+    }
+  },
+  "description": "Diffusion (Mark Steere, 2006): a Mancala with no capturing, no laps and no scoring. Scoop any one of the twelve pits and diffuse its stones one by one into the ring of pits AROUND it -- counterclockwise from the most clockwise neighbour, with each end-of-board store counting as two slots. A pit holds at most five stones; a sixth is banked in a store and leaves the game forever. The twelve pits are split into two blocks, and you win the instant YOUR OWN block is completely vacant -- no matter which player emptied it. Provably finite in at most 5944 plies, and draws really cannot occur."
+}
