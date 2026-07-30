@@ -6,7 +6,109 @@ universe map and capability gaps live in `GAME_BACKLOG.md`; this file is the
 
 ---
 
-## ⭐ SESSION HANDOFF (read this first) — updated 2026-07-29 (wave 15 → 389 games)
+## ⭐ SESSION HANDOFF (read this first) — updated 2026-07-29 (wave 16 → 393 games)
+
+### ✅ WAVE 16 COMPLETE (2026-07-29) → **393 games**, #390–393
+The **Mark Steere seam, second wave** — the four oldest and most established of the remaining games
+(2006–2011), each mechanically distinct. 4 build agents, then an independent adversarial deep-QA
+agent each. **All 4 verdicts MERGE-WITH-FIX — the 8th consecutive wave in which every package had a
+real defect.** Browser-verified, one commit each, Opus 5 (1M), no model caps. Every game is
+double-anchored: official rule sheet + AbstractPlay `gameslib` differential.
+- **atoll #390** — 2008 hex connection game: eight alternating "islands" of stones ring an empty
+  hexhex; link two islands **exactly opposite** each other. Board reverse-engineered from the PDF's
+  **vector art** (`pdftocairo -svg`, 140 circles = 104 playable + 18 + 18), which yields a structural
+  constraint the sheet never states: the middle column must be even ⇒ **N ≡ 3 (mod 4)**, which is
+  exactly why the sizes are 11/15/19 and not 13/17. Proved the 8-island rule **equals** the sheet's
+  generalized perimeter-path rule (arc ≥ 5 of 8 ⟺ contains an opposite pair). QA re-derived the
+  geometry independently and found a real error: **only SIX of the eight perimeter seams are
+  notched** — at the two side-centre seams the islands are in direct contact (unbroken 8-stone
+  columns), where `rules.md` claimed four. Differential 116 games / 15,561 plies + QA's own
+  23,701 plies, 0 mismatches. No-draw went from *sampled* to *proved* (mechanised: 4 chords ⇒ 5
+  faces ⇒ all 14 admissible arc-partitions connect an opposite pair for exactly one player).
+- **flume #391** — 2010 Go-board majority game: a neutral green ring surrounds the playable area, a
+  placement touching **3 or 4** neighbours (ring included) forces another placement, board fills,
+  most stones wins. Pie rule + a centre-point ban on Red's first turn. **The sheet was silently
+  revised in Oct 2022 to ADD the whole anti-mirroring paragraph** (digest `J53PIG5E…` → `AOG363RN…`;
+  text diff is exactly those 3 lines, figures identical cell-for-cell). Cascade modelled as
+  **one placement per ply with a same-seat `cont` flag** — whole-cascade move strings are not merely
+  exponential in theory, gameslib's own recursive enumeration *hangs* on a crowded board.
+  QA found a **reachable off-by-one in the termination bound** (`swap` costs a ply without placing a
+  stone ⇒ `n²+1`, witnessed at n=5 seed 6) and a **surviving mutant** where the last-move `marks`
+  accumulated instead of resetting (whole board stays lit). Default is 7×7 playable, not Figure 1's
+  5×5 — the sheet names no size and is the *Go set* edition, and Fig 1's 7×7 grid isn't even a Go
+  board size, so it is schematic; 5×5 ships as an option.
+- **diffusion #392** — 2006 mancala unlike any of our other 11: scoop any of the 12 pits and
+  distribute into the **king-ring around it** (never a lap, never the source), 5-stone pit cap with
+  the 6th banked in a scrap store, and you win when **your own** block is vacant. The brief flagged
+  termination as the open risk and expected a conceded cap; the build **proved it instead** with an
+  LP-derived linear potential (weights over the 46 stone-conserving cases; every conserving move
+  drops Φ ≥ 1, no move raises it > 96 ⇒ Ψ = 97·S + Φ strictly decreases, Ψ(open) = **5944**) ⇒
+  **no position can ever repeat**, no repetition rule, cap provably unreachable, and Steere's
+  "draws cannot occur" is true as implemented. QA recomputed the whole proof from scratch, agreed
+  exactly, and strengthened it to **all 588 move shapes**. Differential 70,510 plies + QA's own
+  43,082, 0 mismatches, coordinate map **data-pinned** by a mirror control that fails within 4 plies.
+- **monkey_queen #393** — 2011 12×12 regicide: one mono-colour 20-stack per side moving as a chess
+  queen, but a **non-capturing queen move sheds its bottom checker as a baby** (height −1, so a
+  height-2 queen cannot move non-capturing), and a non-capturing **baby may only land strictly
+  nearer the enemy queen in EUCLIDEAN distance**. Win by killing the queen or leaving the opponent
+  with no move. Rules are **HTML, not PDF**, with 9 separate figure JPEGs whose letters are *not* in
+  figure order (`A`–`F` = 1–6, then **`I`=7, `K`=8, `J`=9**). Termination = lexicographic
+  `(H, Q, D)`; QA found the bound was **one ply short of airtight** (the game-ending capture is the
+  one where "H ≥ 4 while play continues" fails), which at the 40-high option put the "provably dead"
+  cap exactly one ply *below* the worst case. Differential 6.4M moves + QA's own 5.3M, 0 mismatches.
+
+**Wave-16 lessons (all four QA passes again found something the build agent's own sweep missed):**
+1. **A predicate that is not on the legality path is still a code path, and is the one nobody
+   tests.** Atoll shipped a *public* `connected_islands()` that nothing called, carrying **the exact
+   order-sorting trap the build agent had already been bitten by once** during its own no-draw sweep
+   (a helper returns pairs alphabetically, so comparing against a literal `("0W","0E")` silently
+   matched nothing). When an agent reports fixing a bug of some shape, **audit for that shape
+   everywhere** — it does not appear alone.
+2. **A heuristic's DIRECTION is a separate assertion from its shape.** Diffusion's sign-flipped
+   heuristic — a bot that plays to lose — passed shape, range, zero-sum *and* seat-symmetry checks;
+   so did a constant-zero one. Atoll's eval had the same hole (`_link_cost` walking through enemy
+   stones survived). Every `heuristic` needs "the better position must score higher", pinned to
+   measured values.
+3. **"Provably unreachable" bounds keep being off by exactly one.** Wave 15 found panal's bound 84
+   plies short; this wave found flume's `n²` (missing the swap ply, and REACHABLE) and monkey_queen's
+   cap one ply *below* its own worst case. Derive the bound from named factors in code, not as a
+   pinned constant, so the arithmetic is visible.
+4. **A whole rulebook can be missing from the live site.** Diffusion's **2006 revision is a
+   different, far more explicit document** than what marksteeregames.com serves today, and it settles
+   by name three things logged as open interpretations (win checked "at the conclusion of a turn";
+   stores are "two empty small pits" ⇒ uncapped; only non-empty pits scoopable) — its figures even
+   print store totals, giving extra anchors. Third consecutive wave with an unadvertised Steere
+   revision: **the Wayback CDX check has now paid for itself three times, and "fetch the OLD
+   revision, not just its digest" is the part that pays.**
+5. **Mutation harnesses produce WRONG verdicts in at least three distinct ways** — all three bit an
+   agent this wave: (a) two mutants of identical byte length let a stale `__pycache__` re-run the
+   *previous* mutant (purge it + `PYTHONDONTWRITEBYTECODE=1`); (b) a whitespace-no-op mutant reads as
+   a false SURVIVOR (fingerprint each mutant); (c) **two concurrent harness runs sharing one
+   mutation root** make verdicts flip between runs (per-PID root). And **classify "selftest failed ⇒
+   died" BEFORE consulting any canary**, or genuine kills on paths unreachable in normal play get
+   mislabelled as no-ops (mislabelled 4 and 10 respectively for two agents).
+6. **Position-level move-set differentials cannot pin a symmetric board's coordinate mapping.**
+   Monkey Queen's board is rank-flip symmetric, so a deliberately rank-flipped mapping passes all
+   79,171 position comparisons and only fails once whole games are replayed from the asymmetric
+   g1/f12 start. A mirror/flip **control that must FAIL** is the only way to know a mapping is
+   data-pinned rather than assumed.
+7. **Random play can leave half a ruleset untested.** 6,000/6,000 random Monkey Queen games end with
+   a killed queen — never a stuck-loss — so the differential, `validate` and conformance all skip
+   the entire "deprive your opponent of moves" win condition; `selftest.py` is its only coverage.
+   Check the *reachability* of each win condition under random play before trusting sweep coverage.
+8. **The untested-seat bug recurred** (wave-15 lesson #1, now confirmed as a recurring class):
+   every Monkey Queen stuck-loss assertion had Ivory as the stuck player, so three mutants survived
+   — including one awarding the win to the **wrong player** whenever Cigar was stuck.
+
+**Ops lesson (orchestrator):** CLAUDE.md's "QA as soon as the files exist" is right, but I armed a
+Monitor treating *files present + 45 s quiet + `validate` passes* as "build finished" and it fired on
+**intermediate** states twice — once catching a hard `AssertionError` in a `selftest.py` that had been
+written **2 seconds** earlier. A build agent pauses far longer than 45 s while thinking or running a
+background job, so a quiet-file heuristic cannot distinguish "done" from "mid-thought". Use it only as
+a soft hint to launch QA with an explicit *"the builder may still be writing — analysis first, defer
+edits, re-read before editing"* instruction (that worked well), and **never run/trust the selftest or
+report a defect before the completion notification**. Next wave: have build agents write a `DONE`
+sentinel as their last action.
 
 ### ✅ WAVE 15 COMPLETE (2026-07-29) → **389 games**, #386–389
 Closed the wave-13 bench (Panal, Push Fight) and **opened the Mark Steere sub-seam** (Dipole,
@@ -91,16 +193,44 @@ defect.** Browser-verified, one commit each, Opus 5 (1M), no model caps.
   default, `"8"` → `8`. Coerces rather than rejects so in-progress matches stay loadable.
 - **icebreaker** category `"Capture"` → `"Capture / annihilation"` (was a singleton lobby group).
 
-### ▶▶ NEXT (wave 16) — the Mark Steere sub-seam, now open and proven
-Dipole and King & Courtesan were the first two; **~18 remain**, each with an official PDF at
-`marksteeregames.com/<Name>_rules.pdf`, 10 of them also in gameslib for a DOUBLE anchor:
-Atoll, Bamboo, Blast Radius, Bounce, Churn, Clusterfuss, Conect, Diffusion, Flume, Halfcut,
-Invector, Minefield, Monkey Queen, Nakatta, Narrows, Necklace, Take, Unane. URLs in
-`scratchpad/wave13/ap_meta.json`. **Two wave-15 findings that carry over to every one of them:**
-(a) **`abstractgames.org/finitude.html` is a general design essay, NOT a per-game proof index** —
-it covered neither Dipole nor K&C, so budget for writing the termination proof yourself (both
-turned out to be clean lexicographic-monovariant proofs, and both eliminated the repetition rule
-entirely); (b) **check Wayback CDX digests for rulebook revisions** before trusting a sheet.
+### ▶▶ NEXT (wave 17) — finish the Mark Steere seam: **14 remain**, all pre-scouted
+Every one has an official PDF at `marksteeregames.com/<Name>_rules.pdf` — **all 14 probed live this
+wave and all return 200** — and every one is in gameslib for a DOUBLE anchor. With gameslib uid and
+BGG id, ready to brief:
+
+| game | PDF stem | gameslib uid | BGG | gameslib variants |
+|---|---|---|---|---|
+| Bamboo | `Bamboo` | `bamboo` | 472439 | 2 |
+| Blast Radius | `Blast_Radius` | `blastradius` | 434293 | 4 |
+| Bounce | `Bounce` | `bounce` | 435089 | 1 |
+| Churn | `Churn` | `churn` | 437052 | 5 |
+| Clusterfuss | `Clusterfuss` | `clusterfuss` | 413919 | 1 |
+| Conect | `Conect` | `conect` | 432207 | 4 |
+| Halfcut | `Halfcut` | **`clearcut`** | 399723 | 3 |
+| Invector | `Invector` | `invector` | 472199 | 6 |
+| Minefield | `Minefield` | `minefield` | 420797 | 9 |
+| Nakatta | `Nakatta` | `nakatta` | 420467 | 4 |
+| Narrows | `Narrows` | `narrows` | 471923 | 6 |
+| Necklace | `Necklace` | `necklace` | 419473 | 0 |
+| Take | `Take` | `take` | 432220 | 2 |
+| Unane | `Unane` | `unane` | 472126 | 6 |
+
+**Plus one discovery this wave: Hexagonal Y** (Steere, gameslib `hexy`, BGG 432211, 3 variants,
+`Hexagonal_Y_rules.pdf`) — it was missing from the wave-15 list of 18. **Dedup gate first**: we
+already ship `y`, `poly_y` and `yvy`, so read `engine/games/y/rules.md` before briefing it.
+
+**Carry-over findings that apply to every one of them:** (a) `abstractgames.org/finitude.html` is a
+general design essay, **NOT** a per-game proof index — budget for writing the termination proof
+yourself; all four Steere games proved so far (dipole, K&C, diffusion, monkey_queen) turned out to
+have clean monovariant proofs that **eliminated the repetition rule entirely**, so try for a proof
+before conceding a cap, and derive the bound from named factors so its arithmetic is auditable
+(two of the four bounds were off by one). (b) **Check the Wayback CDX AND fetch the old revisions** —
+three consecutive waves found unadvertised Steere revisions, and Diffusion's superseded 2006 sheet
+was *the single most valuable source in the wave*. (c) Steere PDFs have a real text layer
+(`pdftotext`) but the figures are images — the geometry and the worked examples live only there, and
+`pdftocairo -svg` + parsing the vector circles beats reading a raster. (d) Note the sheets sometimes
+**contradict themselves** (Monkey Queen's "players will always have a move" vs its own worked
+examples of running out) — adjudicate with the figures and say so.
 **B-tier (one fetch short):** Slyde · Exxit · Onager · Quax · heXentafl · AlmaTafl · Carnac ·
 Amoeba · Cairo Corridor · Yonmoque · Hey That's My Fish! · Kulami · Six · Ploy.
 **Erik's greenlit optional items — 1 of 4 now done** (Push Fight ✅): Khet (laser trace; the
