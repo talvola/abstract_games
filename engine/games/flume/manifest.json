@@ -1,0 +1,28 @@
+{
+  "uid": "flume",
+  "name": "Flume",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Mark Steere (January 2010) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Territory",
+  "tags": ["square", "go", "placement", "majority", "steere", "pie-rule", "multi-placement"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/67080/flume",
+  "options": {
+    "size": {
+      "choices": [5, 7, 9, 11, 17],
+      "default": 7,
+      "label": "Board size",
+      "labels": {
+        "5": "5x5 (7x7 grid, Fig. 1)",
+        "7": "7x7 (9x9 Go board)",
+        "9": "9x9 (11x11 grid)",
+        "11": "11x11 (13x13 Go board)",
+        "17": "17x17 (19x19 Go board)"
+      }
+    }
+  },
+  "description": "Flume (Mark Steere, 2010) is played on the intersections of a Go board whose outermost ring is filled with permanent green stones. Red and Blue take turns adding a stone to any empty point - but a stone that touches 3 or 4 neighbours (green ring included) forces you to place again immediately, so a single turn can cascade into a run of points. The board fills completely and the larger army wins; the playable side is odd, so a draw is arithmetically impossible. Red may not open on the centre point, and Blue gets the pie rule."
+}
