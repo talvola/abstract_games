@@ -1,0 +1,29 @@
+{
+  "uid": "hexagonal_y",
+  "name": "Hexagonal Y",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Mark Steere (2023) / AGP port",
+  "designer": "Mark Steere",
+  "year": 2023,
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Connection",
+  "tags": ["hex", "connection", "placement", "steere", "drawless"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/432211/hexagonal-y",
+  "options": {
+    "size": {
+      "choices": [4, 5, 6, 7, 8, 9, 11],
+      "default": 7,
+      "label": "Board side length"
+    },
+    "pie": {
+      "choices": [false, true],
+      "default": false,
+      "label": "Pie (swap) rule",
+      "labels": { "false": "Off", "true": "On" }
+    }
+  },
+  "description": "Mark Steere's adaptation of Y to a regular hexagon. Place a stone on any empty cell — but a placement on the perimeter obliges you to place a second stone on the diametrically opposite perimeter cell. Win by forming one group whose perimeter stones span more than half of the perimeter."
+}
