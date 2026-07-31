@@ -1,0 +1,27 @@
+{
+  "uid": "blast_radius",
+  "name": "Blast Radius",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Mark Steere (November 2024) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Capture / annihilation",
+  "tags": ["hex", "placement", "stacking", "capture", "annihilation", "steere"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/434293/blast-radius",
+  "options": {
+    "size": {
+      "choices": [4, 5, 6, 7],
+      "default": 6,
+      "label": "Board size (hexagon side)",
+      "labels": {
+        "4": "side 4 (37 cells, the rule sheet's figures)",
+        "5": "side 5 (61 cells)",
+        "6": "side 6 (91 cells, standard)",
+        "7": "side 7 (127 cells)"
+      }
+    }
+  },
+  "description": "Mark Steere's 2024 war game on an empty hexagonal board. Every stack of checkers radiates a radiation exclusion zone whose radius equals its height, and you may never place inside one - except on top of your own stack at ground zero. You must always form the smallest stack you can, so the board fills with height-1 checkers until nothing is left but to build, and building detonates: forming a stack of height 2 or more blows away every other stack, friendly or enemy, inside its new blast radius. Clear the board of enemy checkers to win."
+}
