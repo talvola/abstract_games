@@ -1,0 +1,31 @@
+{
+  "uid": "clusterfuss",
+  "name": "Clusterfuss",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Mark Steere (July 2023) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Capture / annihilation",
+  "tags": ["square", "capture", "connection", "annihilation", "steere", "shrinking-board"],
+  "designer": "Mark Steere",
+  "year": 2023,
+  "bgg_url": "https://boardgamegeek.com/boardgame/413919/clusterfuss",
+  "max_random_plies": 200,
+  "options": {
+    "size": {
+      "choices": [4, 5, 6, 8, 10],
+      "default": 8,
+      "label": "Board size",
+      "labels": {
+        "4": "4x4 (tiny)",
+        "5": "5x5 (odd — Red starts +1)",
+        "6": "6x6",
+        "8": "8x8 (standard)",
+        "10": "10x10"
+      }
+    }
+  },
+  "description": "Clusterfuss (Mark Steere, 2023). The board starts completely FULL of checkers in a checkerboard pattern. Every move is an orthogonal king capture — you step one of your checkers onto an adjacent occupied cell and capture what stood there, and you may capture your OWN checker as well as an enemy one. Groups are orthogonally connected and colour-blind: they may mix red and blue. You may only play a move that leaves exactly one group containing your checkers; any group that ends up holding only enemy checkers is detached and removed at once. Remove all enemy checkers to win. The board loses at least one checker every move, so the game shrinks relentlessly to a single cluster."
+}
