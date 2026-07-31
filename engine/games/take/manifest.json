@@ -1,0 +1,39 @@
+{
+  "uid": "take",
+  "name": "Take",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Mark Steere (February 2024) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Capture / annihilation",
+  "tags": ["hex", "placement", "annihilation", "growth", "steere", "tanbo"],
+  "designer": "Mark Steere",
+  "year": 2024,
+  "bgg_url": "https://boardgamegeek.com/boardgame/432220/take",
+  "options": {
+    "size": {
+      "choices": [2, 3, 4, 5, 6],
+      "default": 5,
+      "label": "Board size",
+      "labels": {
+        "2": "Side 2 (7 cells — toy)",
+        "3": "Side 3 (19 cells — the rule sheet's figures)",
+        "4": "Side 4 (37 cells)",
+        "5": "Side 5 (61 cells — standard)",
+        "6": "Side 6 (91 cells)"
+      }
+    },
+    "churn": {
+      "choices": ["standard", "high"],
+      "default": "standard",
+      "label": "Variant",
+      "labels": {
+        "standard": "Take — clods (a stone always removes the clod)",
+        "high": "High Churn — tiles (only a seed removes the tile)"
+      }
+    }
+  },
+  "description": "Take (Mark Steere, 2024) — a free-form Tanbo on a hexagonal board that starts completely filled with neutral brown clods. Place a stone of your colour: a seed (no friendly neighbour) may only go on a clod cell, replacing it; any other stone lands on a clod or bare cell and must touch exactly one friendly stone, so groups grow one cell at a time and never merge. A group that can no longer be grown is bounded — and after every placement EVERY bounded group of either colour, including the one you just played into, is swept off the board at once. Remove all enemy stones to win; wipe out your own while theirs survive and you lose. The High Churn variant covers the board in tiles instead: only seeds consume a tile, so fresh seeds keep coming and the board turns over and over."
+}
