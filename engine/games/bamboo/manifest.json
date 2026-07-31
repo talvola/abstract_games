@@ -1,0 +1,27 @@
+{
+  "uid": "bamboo",
+  "name": "Bamboo",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Mark Steere (March 2021) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Positional",
+  "tags": ["hex", "hexhex", "placement", "group", "steere", "drawless", "last-move-wins"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/472439/bamboo",
+  "options": {
+    "size": {
+      "choices": [4, 5, 6, 7],
+      "default": 5,
+      "label": "Board side length",
+      "labels": {
+        "4": "Small (37 cells)",
+        "5": "Standard (61 cells)",
+        "6": "Large (91 cells)",
+        "7": "Huge (127 cells)"
+      }
+    }
+  },
+  "description": "Mark Steere's four-sentence placement game on a hexagon of hexagons. Drop one stone of your colour on any empty cell — but you may never end up with a group holding more stones than the number of groups you have, so every stone you add to a group has to be paid for with another group somewhere else. Merging groups is legal and often necessary, yet it cuts your group count and can lock you out. Passing is forbidden and the last player able to place wins."
+}
