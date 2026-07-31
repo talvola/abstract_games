@@ -6,7 +6,154 @@ universe map and capability gaps live in `GAME_BACKLOG.md`; this file is the
 
 ---
 
-## ⭐ SESSION HANDOFF (read this first) — updated 2026-07-29 (wave 16 → 393 games)
+## ⭐ SESSION HANDOFF (read this first) — updated 2026-07-30 (wave 17 → 397 games)
+
+### ✅ WAVE 17 COMPLETE (2026-07-30) → **397 games**, #394–397
+The **Mark Steere seam, third wave** — picked for mechanical and board diversity rather than taking
+the list in order. 4 build agents, then an independent adversarial deep-QA agent each.
+**All 4 verdicts MERGE-WITH-FIX — the 9th consecutive wave in which every package had a real
+defect.** Suite green (`all tests passed`), browser-verified, one commit each, Opus 5 (1M), no model
+caps. Every game double-anchored: official PDF + AbstractPlay `gameslib` differential.
+
+| # | game | board | mechanic | win type | commit |
+|---|---|---|---|---|---|
+| 394 | hexagonal_y | hexhex 4–11 | placement + forced antipodal 2nd stone | connection (>½ perimeter) | `e758c68` |
+| 395 | blast_radius | hexhex 4–7 | stacking, REZ radius = height | annihilation | `95cd2a2` |
+| 396 | bounce | square 6/8/10 | teleport, must join a larger group | unification | `b94893f` |
+| 397 | clusterfuss | square 4–10 | orthogonal king capture (friendly legal) | annihilation | `744ba33` |
+
+**ALL FOUR PROVED TERMINATION AND SHIP NO PLY CAP AND NO REPETITION RULE** — nothing in this wave is
+outcome-load-bearing. That is now 8 straight Steere games with clean monovariant proofs; **try for
+the proof before conceding a cap** is fully vindicated. The one bound that WAS off by one
+(hexagonal_y with the pie on: the swap ply places no stone, so random pie play reaches 50 plies
+against a stated bound of 49) was caught by QA — 4th consecutive wave with an off-by-one bound, and
+the first where the shipped code had no cap for it to corrupt.
+
+**⚠ 4th consecutive wave with an unadvertised Steere revision — and this one changed a WIN
+CONDITION.** `Blast_Radius_rules.pdf` between 2024-12-02 and 2025-05-28 gained
+*"(except at the conclusion of Red's first turn)"*. Without it Red trivially wins on ply 1, since
+the board starts empty. Both revisions were diffed in text **and** by re-parsing all 194 figure
+shapes (identical). Hexagonal Y also has two digests but the diff is one grammar fix
+("on an regular" → "on a regular") and all 327 SVG paths are identical — an artwork-size delta is
+NOT evidence of a rule change, so check the paths, not the byte count.
+
+**The four defects were different in kind, which is the value of the adversarial pass:**
+1. **hexagonal_y — a REACHABLE win-detection gap.** A rim turn places two stones and the win can
+   live in *either* group, but the selftest only ever checked the clicked stone's group. Mutants
+   restricted to `starts[:1]` **and** `starts[-1:]` both survived, and **5 of 1,380** random
+   decisive games end with the win visible only from the mandatory companion stone — shipped, play
+   would have continued past a legal win and could have awarded the wrong player. Random play
+   reaches the non-obvious order ~0.4% of the time, so no sweep would have found it.
+2. **blast_radius — a mis-transcribed figure** (printed stack height **2**, read as 3). It survived
+   because every assertion built on that figure was **self-consistent with the wrong number**. QA
+   decoded the digit glyphs two independent ways and added the assertions the TRUE position makes
+   available — that Fig 4 must be **saturated** (else restriction 2 makes the sheet's own worked
+   example illegal) and that Blue is **forced onto one cell**, which is exactly what the wrong
+   height destroyed.
+3. **clusterfuss — the RENDER CAPTION's winner attribution was untested.** One swapped comparison
+   makes a finished board announce `"Draw (2-0)"` when Red has won and credit **Red** when Blue won,
+   while the entire selftest, `validate`, conformance **and** the render-bounds sweep all still
+   pass. Textbook "predicate off the legality path".
+4. **bounce — only a falsified measurement** in `rules.md` (builder's own sample said 28–66 plies;
+   a 2,000-game sample gives 23–73). **The first package in nine waves QA could not break on the
+   ruleset itself.**
+
+**Wave-17 lessons (transferable):**
+1. **Assert the PREMISE a figure relies on, not only the outcome it illustrates.** A figure-derived
+   test constant is a *source transcription*, and a wrong one passes every assertion built on it
+   (blast_radius). The discriminators that catch it are the figure's preconditions — saturation,
+   the other side's forced reply — because a mis-transcription breaks those first.
+2. **Do the SYMMETRY-GROUP ANALYSIS before treating a passing differential control as a gap.**
+   All three geometric games hit this. On an even square board with a checkerboard setup the four
+   parity-PRESERVING elements of D4 are genuine automorphisms of both setup and (geometry-free)
+   rules, so a passing transpose control is *expected*; only the parity-flipping half is a valid
+   must-fail control. On a hexhex the whole dihedral group is a symmetry of an empty-start,
+   distance-only game. **A control INSIDE the automorphism group cannot fail and proves nothing.**
+   Two valid substitutes: an **adjacency-isomorphism check against the oracle's own graph** (never
+   touches move-gen), and pinning orientation from an **asymmetric printed figure**.
+3. **Exhaustively solving the SMALLEST legal board is the cheapest strong termination anchor there
+   is.** Bounce's 4×4 (29,602 positions, seconds) simultaneously proved cycle-freedom, drawlessness
+   and yielded a game value — strictly better than any number of random games, and available to
+   every game with a board-size option. Clusterfuss did the same for 2×2/3×3/4×4.
+4. **A FOURTH way a mutation harness gives wrong verdicts** (added to the three from wave 16):
+   a package selftest does `sys.path.insert(0, parents[2])` + `from games.<uid>.game import …`, so
+   staging a mutant in a FLAT scratch dir lets the import fall through to `PYTHONPATH=engine` and
+   execute the **real, unmutated file** — every mutant reads as surviving. Stage each mutant as
+   `<root>/games/<uid>/` and **assert `g.__file__` lies inside the mutant root** before trusting any
+   verdict.
+5. **When ONE TURN places several stones, the win check must consider EVERY placed stone's group,
+   and the selftest must cover each stone being the decisive one, in each click order.** New
+   defect class, and it generalises to any multi-placement/cascade turn.
+6. **Prove a rule vacuous rather than implementing it defensively — then test it directly.** Three
+   sheet clauses dissolved this wave: hexagonal_y's "antipode occupied" case *cannot arise* (rim
+   cell and antipode always change together), blast_radius's ground-zero exception is unreachable
+   (a separation invariant means no stack is ever in another's REZ), and clusterfuss's turn-skip
+   clause never fires. **Because random play can never reach a vacuous clause, it must be tested on
+   synthetic/constructed inputs** — clusterfuss's QA did 590,812 board×player pairs exhaustively.
+7. **A heuristic can be directionally correct and still worthless.** Blast Radius's builder caught
+   its own sign flip by measurement (good — that is wave-16 lesson #2 working), but QA re-measured
+   through the **actual MCTS consumer** rather than 1-ply greedy and found it statistically
+   indistinguishable from no eval (0.500 head-to-head vs constant-zero). **Measure a heuristic with
+   the consumer that will use it**, and don't let greedy numbers in `rules.md` read as bot strength.
+   Clusterfuss shipping **no** heuristic, with the measurement justifying it, is the honest form.
+8. **Ops: the `DONE` sentinel worked.** Requiring build agents to write `DONE` as their last action
+   fixed wave 16's false-completion problem completely — QA agents launched early in read-only mode
+   ("the builder may still be writing; analysis first, defer edits, re-read before editing") and
+   were released on the sentinel **plus** the completion notification. Remember to **`rm` the
+   sentinels before `git add`** — no shipped package has one. Also: build agents twice dropped a
+   scratch `.log` in the **repo root** (from running a script with a repo-root cwd) — `git status`
+   and clean before committing.
+
+**Environment note:** port **8000** is currently held by a Windows-side listener with no
+`users:(...)` (unkillable from WSL; `curl /api/games` 404s, so it is not ours). The Vite dev proxy
+on 5173 therefore cannot reach our API — use `npm run build` + `.venv/bin/python -m uvicorn
+server.app:app --port 8130` (prod-parity) for browser checks.
+
+### ▶▶ NEXT (wave 18) — the Steere seam, 10 games left, all pre-scouted
+All PDFs downloaded, text-extracted and read this wave; **all 10 are in `gameslib`** for a double
+anchor. The gameslib clone (patched + `npm install`ed + the two `@abstractplay/*` type-only deps
+stubbed, plus a working `driver.ts`) survives at this session's scratchpad — **re-clone per the
+`gameslib-abstractplay-oracle` memory if it has been reaped.**
+
+| game | PDF stem | gameslib uid | BGG | notes from my read of the sheet |
+|---|---|---|---|---|
+| Bamboo | `Bamboo` | `bamboo` | 472439 | 2021, hexhex, placement; a group may not exceed your NUMBER of groups; last to place wins. Tiny ruleset. |
+| Churn | `Churn` | `churn` | 437052 | 2024, hexhex, place isolated if you can else smallest friendly group, then remove all smaller friendly groups; board fills, majority wins. **Designer says size 5 takes ~7,400 turns and size 7 ~950,000 — ship size 3 (19 cells) as default and think hard before offering big boards** (async playability + move-log length). Odd cell counts only, to prevent ties. |
+| Halfcut | `Halfcut` | **`clearcut`** | 399723 | 2023, square connection + crosscut rule keyed on GROUP SIZES, with removal. Note the uid mismatch. |
+| Minefield | `Minefield` | `minefield` | 420797 | 2024, square connection, prohibited glyphs (hard corner / short + long switch) — **Figure 2 is the whole ruleset and must be decoded**. Credits Luis Bolaños Mures. |
+| Nakatta | `Nakatta` | `nakatta` | 420467 | 2024, Bolaños Mures **and** Steere; square connection, no hard corners + no naked attachments; pie rule. |
+| Necklace | `Necklace` | `necklace` | 419473 | 2024, Steere + Bolaños Mures; square connection, no crosscut + every empty region must touch an edge. Lowest-possible PDI. |
+| Take | `Take` | `take` | 432220 | 2024, hexhex filled with neutral "clods"; free-form Tanbo (seeds allowed); bounded groups removed; **read `engine/games/tanbo/rules.md` first and document the distinction** (Take = hex + clods + seeds + no current-root precedence). Ships a High Churn tile variant. |
+| Invector | `Invector` | `invector` | 472199 | **2026**, Kōnane board (one even + one odd dimension), orthogonal adjacent captures + non-capturing moves strictly closer to centre (Manhattan); pie rule; annihilation. |
+| Narrows | `Narrows` | `narrows` | 471923 | **2026**, Kōnane board, ROOK captures (any distance through empties), win = all your groups linked by empty regions; you can win on either player's turn. |
+| Unane | `Unane` | `unane` | 472126 | **2026**, Kōnane board, move OR remove a friendly stone with no enemy orthogonal neighbours; win = one friendly group AND one enemy group; either player's turn. |
+
+**Suggested wave 18 (4, keeping the diversity discipline):** `take` (hexhex, clod/seed removal —
+most distinct from the library), `minefield` (square connection, figure-decode heavy),
+`invector` **or** `narrows` (opens the 3-game Kōnane sub-family; Narrows' rook captures are more
+distinct from our existing `konane`), and `bamboo` (tiny ruleset, fast win). **Leave Churn for a
+wave where its board-size/playability question can get proper attention.** Note **4 of the 10 are
+square connection games in the crosscut/glyph-restriction family** — we already ship crossway,
+cation, konobi, rhode, akimbo, okimba, so **spread them across waves and screen each for mechanical
+cloning** (read the closest existing `rules.md`), do not batch them.
+
+**Carry-over that applies to every one:** (a) `abstractgames.org/finitude.html` is a general essay,
+NOT a per-game proof index — budget for writing the termination proof yourself, and expect it to
+exist (8 for 8 so far); (b) **check the Wayback CDX AND fetch the old revisions** — 4 consecutive
+waves, and this wave's changed a win condition; (c) `pdftocairo -svg` + parsing the vector paths
+beats reading a raster, and the figures carry the geometry and the worked examples; (d) sheets
+contradict themselves — adjudicate with the figures and say so.
+
+**B-tier (one fetch short):** Conect (Steere, `conect`, BGG 432207 — **deferred deliberately**: it is
+played on the curved surface of a CONE and needs either a bespoke conic-projection board or a
+wrapped-rhombus adjacency; a genuine new-board-shape project, worth doing but not as one of four) ·
+Slyde · Exxit · Onager · Quax · heXentafl · AlmaTafl · Carnac · Amoeba · Cairo Corridor · Yonmoque ·
+Hey That's My Fish! · Kulami · Six · Ploy.
+**Erik's greenlit optional items — 1 of 4 done** (Push Fight ✅): Khet (laser trace; `board.overlay`
+can probably express it), LYNGK (still unsourced — needs a Wayback hunt of gipf.com c. 2017-19),
+Homeworlds (needs an orchestrator-owned "system graph" primitive).
+**Trivial, not worth churn:** 4 of 397 manifests carry inert `designer`/`year` keys (3 of them from
+wave 17) that nothing reads and SPEC.md does not define; `author` is the real convention (397/397).
 
 ### ✅ WAVE 16 COMPLETE (2026-07-29) → **393 games**, #390–393
 The **Mark Steere seam, second wave** — the four oldest and most established of the remaining games
@@ -193,7 +340,7 @@ defect.** Browser-verified, one commit each, Opus 5 (1M), no model caps.
   default, `"8"` → `8`. Coerces rather than rejects so in-progress matches stay loadable.
 - **icebreaker** category `"Capture"` → `"Capture / annihilation"` (was a singleton lobby group).
 
-### ▶▶ NEXT (wave 17) — finish the Mark Steere seam: **14 remain**, all pre-scouted
+### ~~▶▶ NEXT (wave 17)~~ — SUPERSEDED, see the wave-18 block above (4 of these 14 shipped as wave 17; 10 remain)
 Every one has an official PDF at `marksteeregames.com/<Name>_rules.pdf` — **all 14 probed live this
 wave and all return 200** — and every one is in gameslib for a DOUBLE anchor. With gameslib uid and
 BGG id, ready to brief:

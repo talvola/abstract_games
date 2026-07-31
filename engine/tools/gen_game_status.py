@@ -107,6 +107,10 @@ ANCHOR = {
  "neue_dame": "NO reference engine — anchored on all 4 composed problems from Abstract Games #18 replaying exactly (5 magazine errata proved, incl. an illegal printed move refuted against 3 rival rulesets) + TWO independent re-implementations (311,872 + 117,347 positions, 0 mismatches); 44 mutants",
  "taiji": "AbstractPlay gameslib differential (81,116 + 52,391 independent positions, 9 configs, 0 mismatches) + the rulebook's page-1 figure transcribed by TWO agents independently and replayed to its printed 13-10 score; 50 mutants",
  "terrace": "AbstractPlay gameslib differential (110,208 + 14,943 independent positions across all 8 option combinations in two modes, 0 mismatches) + the publisher's worked-example GIFs pinning branching factor; 57 mutants",
+ "hexagonal_y": "AbstractPlay gameslib differential (74 games/8,409 plies + 18 games/1,103 positions, sizes 4-11, 0 mismatches; the oracle chains the arc greedily where we use a max-gap formula, so agreement is structural) + all four rule-sheet figures vector-decoded TWICE independently, incl. Figs 2/3 whose printed dots pin the arc itself (12/18 win, 8/18 non-win); win predicate swept over 675,456 rim subsets vs an independent minimal-window computation; drawlessness exhaustive (8,192/8,192 at n=3, vs 54,480/524,288 draws without the pairing invariant); termination proved, no cap",
+ "blast_radius": "AbstractPlay gameslib differential (1,028 positions, both directions, 0 mismatches) + an independent from-scratch reference model (800 games/53,037 plies) + adversarial search under 3 hostile policies (1,260 games/36,646 plies, 0 stuck, 0 invariant leaks); all four figures vector-decoded (QA corrected a mis-read printed stack height); separation invariant proved ⇒ the ground-zero exception is vacuous; termination proved (lexicographic height vector, bound tight at the game-ending move), no cap; 28/28 + 26/26 mutants",
+ "bounce": "EXHAUSTIVE 4×4 solve (29,602 positions, on-line repetition assertion never fired ⇒ cycle-freedom + drawlessness + a game value) + gameslib differential (523 plies, 439/440 forced rejections) + an independent brute-force movegen over 102 games/4,000 arbitrary/1,200 articulation-point boards, 0 mismatches; all three figures decoded twice by unrelated methods (vector paths vs raster sampling), incl. the sheet's own 11→20; termination proved (lexicographic group-size multiset), NO cap and no repetition rule; 25/25 + 28/28 mutants",
+ "clusterfuss": "Steere's Figures 5 and 6 SOLVED EXHAUSTIVELY (both published puzzle claims confirmed move for move, by two independent engines) + gameslib differential (658 positions + 502 on the shipped code, 0 mismatches, 4 injected bugs each diverging 25/25) + an independent model over 270 games/9,333 positions across 5 sizes; turn-skipping proved vacuous exhaustively (590,812 board×player pairs + 523,175 reachable states, 0 immobile); full solves of 2×2/3×3/4×4; 29/29 + 35 mutants",
 }
 # Browser / UX eyeball status (default: rendered by the generic renderer, never
 # individually eyeballed -- logic is conformance-tested either way).
@@ -142,6 +146,10 @@ BROWSER = {
  "neue_dame": "✅ verified (12+12 on the dark squares, bashni-identical tower render, move log 'c3-d4')",
  "taiji": "✅ verified (three option dropdowns; 121 cells at 11x11 with no phantom column; two-click domino; log 'k11(L)-k10(D)')",
  "terrace": "✅ verified (8 levels legible on every square incl. the highest after the contrast fix; size-scaled piece discs 1-4; goal corners tinted per seat)",
+ "hexagonal_y": "✅ verified (127 cells at side 7; ONE click on a rim cell places TWO stones and logs 'g1+g13'; rim tints; rules modal 3 tables, 0 raw markdown)",
+ "blast_radius": "✅ verified (91 cells at side 6; one placement tints exactly 7 cells = ground zero + 6 neighbours, i.e. radius 1 incl. ground zero; stack towers with height badges; caption tracks stacks/checkers)",
+ "bounce": "✅ verified (64 cells, 30/30 with the four corners empty exactly as Figure 1; teleport move accepted, log 'b1-a1 (1→2)' showing the group-size change)",
+ "clusterfuss": "✅ verified (64 cells, full 32/32 checkerboard; capture by replacement 'R 1,0x0,0' takes Blue to 31; rules modal 4 fenced blocks + 1 table, 0 raw markdown)",
 }
 DEFAULT_BROWSER = "— generic renderer (logic tested; not individually eyeballed)"
 
