@@ -1,0 +1,16 @@
+{
+  "uid": "minefield",
+  "name": "Minefield",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Mark Steere (2024) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "pie": true,
+  "category": "Connection",
+  "tags": ["square", "connection", "placement", "pattern-restriction", "pie-rule", "steere"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/420797/minefield",
+  "options": { "size": { "choices": [9, 11, 13, 15, 19], "default": 11, "label": "Board size" } },
+  "description": "Square-board connection game (Mark Steere, 2024) in which a filled board always has a winner. Black joins the top and bottom edges, White the left and right, with ORTHOGONAL chains only. Every point is a mine: you may never form a 'hard corner' (three stones in a 2x2 whose diagonal pair matches) or a 'switch' (four stones on the corners of an otherwise empty 2x3 or 2x4 area, one colour on each diagonal) — in any reflection, rotation or colour reversal. Pie rule."
+}
