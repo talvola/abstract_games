@@ -1,0 +1,19 @@
+{
+  "uid": "bounce",
+  "name": "Bounce",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Mark Steere (2023) / AGP port",
+  "designer": "Mark Steere",
+  "year": 2023,
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Positional",
+  "tags": ["square", "movement", "unification", "steere", "no-capture"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/435089/bounce",
+  "options": {
+    "size": { "choices": [6, 8, 10], "default": 8, "label": "Board size" }
+  },
+  "description": "Mark Steere's unification game. The board starts as a full checkerboard of red and blue checkers with only the four corners empty. Each turn you teleport one of your checkers to any empty square, but it must land in a strictly larger group than the one it left; with no legal move you must remove one of your own checkers instead. Get all your checkers into a single orthogonally connected group and you win."
+}
