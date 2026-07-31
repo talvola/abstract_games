@@ -6,7 +6,144 @@ universe map and capability gaps live in `GAME_BACKLOG.md`; this file is the
 
 ---
 
-## ⭐ SESSION HANDOFF (read this first) — updated 2026-07-30 (wave 17 → 397 games)
+## ⭐ SESSION HANDOFF (read this first) — updated 2026-07-31 (wave 18 → 401 games)
+
+### ✅ WAVE 18 COMPLETE (2026-07-31) → **401 games**, #398–401
+The **Mark Steere seam, fourth wave** — four games spanning four mechanics and three board models.
+4 build agents, then an independent adversarial deep-QA agent each. **3 of 4 MERGE-WITH-FIX; Minefield
+is only the SECOND package in ten waves QA could not break.** Suite green (`all tests passed`),
+render-bounds sweep clean (784 combos / 401 games), all 4 browser-verified, one commit each, Opus 5
+(1M), no model caps.
+
+| # | game | board | mechanic | win type | commit |
+|---|---|---|---|---|---|
+| 398 | bamboo | hexhex 4–7 | placement, group size ≤ group count | last to place | `53a8eb9` |
+| 399 | take | hexhex 2–6 + clods | seed/grow, simultaneous bounded-group removal | annihilation | `37765ef` |
+| 400 | minefield | square 9–19 | orthogonal connection, 2 prohibited glyphs | connection | `fc5d648` |
+| 401 | narrows | Kōnane 4×3–16×15 | rook capture by replacement | linkage by empty regions | `b2bf67b` |
+
+**ALL FOUR SHIP WITH NO PLY CAP AND NO REPETITION RULE** — 12 straight Steere games with clean
+monovariant proofs. Nothing in this wave is outcome-load-bearing.
+
+**⚠ THE HEADLINE: FOUR REAL BUGS IN THE `gameslib` ORACLE, ACROSS THREE OF THE FOUR GAMES.** Every
+one was caught by a build agent going back to the rule sheet, and independently confirmed by QA:
+- **`take.ts`** — `checkEOG` tests `reds.length === 0` before `blues.length === 0`, so a placement
+  wiping out BOTH colours awards the win to the **non-mover**. Symmetrically wrong for both seats,
+  reachable in ~3% of random games. Sheet: *"If your placement eliminates all red and blue stones,
+  **you** win."*
+- **`bamboo.ts`** — `canPlaceAt` returns `found.length <= conn.length`, testing only the group the
+  new stone joins. Figure 2 prints 4 legal placements; that code yields 8. **15.1% of plies.**
+- **`minefield.ts`** — win detection uses **8-adjacency**, awarding wins on purely DIAGONAL chains,
+  contradicting the sheet and the game's own SPO **OO**SCG design note (51/150 games). Proven, not
+  inferred: in every divergent game the crowned player was 8-connected but not orthogonally
+  connected. Also `validateMove("pass")` always throws ⇒ its skip rule and double-pass draw are dead
+  code.
+- Only **`narrows.ts`** was clean (0 divergences over 3,392 plies).
+**Lesson: `gameslib` is an oracle, not an authority. A differential "mismatch" is a hypothesis about
+which side is wrong — adjudicate with the PDF figures every time.** All four are upstream-worthy;
+none affect our packages.
+
+**⚠ 5th consecutive wave with an unadvertised Steere revision — and the WORST archival case yet.**
+`Minefield_rules.pdf` was silently revised **2026-05-17** and the revision **ADDS THE PIE RULE**
+outright (plus "or color reversals" in the glyph clause; four figures → three). **Wayback's most
+recent capture (2026-04-13) still holds the OLD sheet, so the current rules have never been archived
+anywhere** — anyone re-deriving Minefield from Wayback implements the pre-pie ruleset. Narrows was
+also revised (ModDate 2026-06-11, after its only capture) but cosmetically — three flavour sentences,
+all three figures byte-identical by parsed geometry. Take and Bamboo have **no revision ever** (one
+digest across 5 and 7 captures; live PDFs byte-identical). So: 3 of 4 sheets moved, 1 changed a rule.
+
+**The three defects were each a different kind:**
+1. **take — the strongest anchor was STRUCTURALLY BLIND to the bug.** A `before_other > 1` mutant
+   survived the whole selftest, and it is a real reachable bug: taking the opponent's LAST stone
+   would not end the game, and on a clod-free board `legal_moves` would then be empty on a
+   non-terminal state, breaking the engine's no-stuck invariant (15 hits in 2,500 side-3 games). It
+   hid because the case is **provably unreachable on the side-2 board the package solves
+   exhaustively** — the best evidence in the package could not see the one case that was wrong.
+2. **narrows — the pie swap inverted every colour name in the caption.** The swap flips stone
+   ownership, so afterwards seat 0 holds the white army, but `render()` named seats from a fixed
+   `("Black","White")` tuple and never consulted the `swapped` field the state carries for exactly
+   this purpose. Any match where the pie was taken — offered EVERY game — named the wrong colour to
+   move and **announced the wrong colour as the winner** for the rest of the game. **The selftest's
+   only caption assertion baked in the same wrong mapping, so it could never fail**, and gameslib has
+   no pie implementation, so the oracle gave zero coverage. Fixed by pinning the post-swap colour to
+   **board ground truth** (the owner of Figure 1's top-left pit), not to the engine's own naming.
+3. **bamboo — a docstring that overclaimed bot strength.** `game.py`'s `heuristic` docstring said it
+   "is worth a lot" while the freshly-corrected `rules.md` says it is indistinguishable from no eval
+   at the shipped settings on the default board. QA proved its edit docstring-only by comparing ASTs
+   with docstrings stripped, so the full behavioural verification carried over.
+
+**Wave-18 lessons (transferable):**
+1. **MEASURE AN ANCHOR'S DISCRIMINATING POWER — don't assume it.** Minefield's QA found Figure 3
+   kills 9 of 12 wrong glyph-set variants but is **blind to three**, including tall-orientation-only
+   switches — and Figure 2 prints only the tall orientations, so a literal transcription of the
+   artwork would pass the figure check. It then verified the selftest kills all three. This is the
+   sharp form of wave 17's "assert the premise": quantify what your anchor *cannot* catch.
+2. **A vacuous assertion and the bug it hides are often the SAME mistake written twice.** Narrows'
+   caption assertion `caption.startswith(("Black","White")[s.winner])` encoded the identical wrong
+   mapping as the code. Pin an assertion to **ground truth outside the engine** (a figure's printed
+   position), never to the engine's own derived naming.
+3. **When a build agent diverges from the oracle, that is a RESULT, not a risk — but demand the
+   adjudication.** Three of four builders did this correctly and all three were right. Tell QA
+   explicitly to adjudicate from the PDF rather than assume either side.
+4. **Prove a clause VACUOUS, then test it on constructed inputs** (wave 17's lesson, now routine and
+   paying out again): Narrows' no-capture branch cannot fire — every row and column monochromatic
+   implies both players were already linked, so the game ended a move earlier. Verified on 551,853 +
+   4,553,496 constructed boards, with a mutation control where deleting the clause correctly
+   SURVIVES.
+5. **Exhaustively solving the smallest board keeps earning its keep** — but note take's caution: the
+   smallest board can be *structurally unable* to exhibit the bug. Pair it with a directed search on
+   a real size.
+6. **The `DONE` sentinel worked again, and its one failure mode showed up:** Bamboo's QA reported
+   before the sentinel appeared, pinning its verdict to four file hashes. The builder then changed
+   `rules.md` only — caught by comparing hashes, and QA was re-pinged for the delta, finding the
+   docstring defect. **Requiring QA to pin file hashes to its verdict is now part of the protocol.**
+7. **Ops:** `npx ts-node` fails the whole gameslib clone on an unrelated `TS2578` in `_base.ts` —
+   use **`npx ts-node -T`** (transpile-only). Agents' finished background watchers re-fire stale
+   completion notifications for a long time; `TaskStop` the agent to silence them.
+
+### ▶▶ NEXT (wave 19) — the Steere seam, **6 games left**, all pre-scouted
+All PDFs already downloaded and text-extracted; **all 6 are in `gameslib`** for a double anchor.
+The gameslib clone (patched + `npm install`ed, drivers written) is at wave 17's scratchpad
+`/tmp/claude-1000/-home-erik-abstract-games/28bd6301-.../scratchpad/gameslib`, and the PDFs are in
+its sibling `steere/` — **re-clone per the `gameslib-abstractplay-oracle` memory if reaped.**
+**Run drivers with `npx ts-node -T`.** And after this wave: **expect gameslib to be wrong about at
+least one of them.**
+
+| game | PDF stem | gameslib uid | BGG | notes |
+|---|---|---|---|---|
+| Invector | `Invector` | `invector` | 472199 | **2026**, Kōnane board, orthogonal adjacent captures + non-capturing moves strictly closer to centre (Manhattan); pie rule; annihilation. Sibling of narrows — read `narrows/rules.md` and clone-screen. |
+| Unane | `Unane` | `unane` | 472126 | **2026**, Kōnane board, move OR remove a friendly stone with no enemy orthogonal neighbours; win = one friendly group AND one enemy group; either player's turn. |
+| Halfcut | `Halfcut` | **`clearcut`** | 399723 | 2023, square connection + crosscut rule keyed on GROUP SIZES, with removal. **Note the uid mismatch.** |
+| Nakatta | `Nakatta` | `nakatta` | 420467 | 2024, Bolaños Mures **and** Steere; square connection, no hard corners + no naked attachments; pie rule. **Screen against minefield — the hard-corner ban is shared.** |
+| Necklace | `Necklace` | `necklace` | 419473 | 2024, Steere + Bolaños Mures; square connection, no crosscut + every empty region must touch an edge. Lowest-possible PDI. |
+| Churn | `Churn` | `churn` | 437052 | 2024, hexhex, place isolated if you can else smallest friendly group, then remove all smaller friendly groups; board fills, majority wins. **Designer says size 5 takes ~7,400 turns and size 7 ~950,000 — ship size 3 (19 cells) as default and think hard before offering big boards** (async playability + move-log length). Odd cell counts only, to prevent ties. |
+
+**Suggested wave 19 (4, keeping the diversity discipline):** `invector` + `unane` (finish the Kōnane
+sub-family now that narrows has established the board model and its rules.md is a template),
+`necklace` **or** `halfcut` (one square connection game, clone-screened against minefield/crossway/
+konobi/rhode/akimbo/okimba), and `churn` **only if** its board-size/playability question gets proper
+attention — otherwise a 4th from the square-connection group. **3 of the 6 remaining are square
+connection games in the crosscut/glyph family; do NOT batch them**, spread them and read the closest
+existing `rules.md` for each.
+
+**Carry-over that applies to every one:** (a) budget for writing the termination proof yourself —
+`abstractgames.org/finitude.html` is a general essay, not a per-game index — and expect one to exist
+(12 for 12); (b) **check the Wayback CDX AND fetch the old revisions** — 5 consecutive waves, and
+note Minefield proves the newest capture can still predate the current sheet, so **compare the live
+PDF's md5/ModDate against the newest archived copy**, never assume Wayback is current; (c)
+`pdftocairo -svg` + parsing vector paths beats reading a raster; (d) sheets contradict themselves —
+adjudicate with the figures and say so.
+
+**B-tier (one fetch short):** Conect (Steere, `conect`, BGG 432207 — **deferred deliberately**: it is
+played on the curved surface of a CONE and needs either a bespoke conic-projection board or a
+wrapped-rhombus adjacency; a genuine new-board-shape project, worth doing but not as one of four) ·
+Slyde · Exxit · Onager · Quax · heXentafl · AlmaTafl · Carnac · Amoeba · Cairo Corridor · Yonmoque ·
+Hey That's My Fish! · Kulami · Six · Ploy.
+**Erik's greenlit optional items — 1 of 4 done** (Push Fight ✅): Khet (laser trace; `board.overlay`
+can probably express it), LYNGK (still unsourced — needs a Wayback hunt of gipf.com c. 2017-19),
+Homeworlds (needs an orchestrator-owned "system graph" primitive).
+**Trivial, not worth churn:** 4 of 401 manifests carry inert `designer`/`year` keys that nothing
+reads and SPEC.md does not define; `author` is the real convention.
 
 ### ✅ WAVE 17 COMPLETE (2026-07-30) → **397 games**, #394–397
 The **Mark Steere seam, third wave** — picked for mechanical and board diversity rather than taking
@@ -109,51 +246,8 @@ NOT evidence of a rule change, so check the paths, not the byte count.
 on 5173 therefore cannot reach our API — use `npm run build` + `.venv/bin/python -m uvicorn
 server.app:app --port 8130` (prod-parity) for browser checks.
 
-### ▶▶ NEXT (wave 18) — the Steere seam, 10 games left, all pre-scouted
-All PDFs downloaded, text-extracted and read this wave; **all 10 are in `gameslib`** for a double
-anchor. The gameslib clone (patched + `npm install`ed + the two `@abstractplay/*` type-only deps
-stubbed, plus a working `driver.ts`) survives at this session's scratchpad — **re-clone per the
-`gameslib-abstractplay-oracle` memory if it has been reaped.**
-
-| game | PDF stem | gameslib uid | BGG | notes from my read of the sheet |
-|---|---|---|---|---|
-| Bamboo | `Bamboo` | `bamboo` | 472439 | 2021, hexhex, placement; a group may not exceed your NUMBER of groups; last to place wins. Tiny ruleset. |
-| Churn | `Churn` | `churn` | 437052 | 2024, hexhex, place isolated if you can else smallest friendly group, then remove all smaller friendly groups; board fills, majority wins. **Designer says size 5 takes ~7,400 turns and size 7 ~950,000 — ship size 3 (19 cells) as default and think hard before offering big boards** (async playability + move-log length). Odd cell counts only, to prevent ties. |
-| Halfcut | `Halfcut` | **`clearcut`** | 399723 | 2023, square connection + crosscut rule keyed on GROUP SIZES, with removal. Note the uid mismatch. |
-| Minefield | `Minefield` | `minefield` | 420797 | 2024, square connection, prohibited glyphs (hard corner / short + long switch) — **Figure 2 is the whole ruleset and must be decoded**. Credits Luis Bolaños Mures. |
-| Nakatta | `Nakatta` | `nakatta` | 420467 | 2024, Bolaños Mures **and** Steere; square connection, no hard corners + no naked attachments; pie rule. |
-| Necklace | `Necklace` | `necklace` | 419473 | 2024, Steere + Bolaños Mures; square connection, no crosscut + every empty region must touch an edge. Lowest-possible PDI. |
-| Take | `Take` | `take` | 432220 | 2024, hexhex filled with neutral "clods"; free-form Tanbo (seeds allowed); bounded groups removed; **read `engine/games/tanbo/rules.md` first and document the distinction** (Take = hex + clods + seeds + no current-root precedence). Ships a High Churn tile variant. |
-| Invector | `Invector` | `invector` | 472199 | **2026**, Kōnane board (one even + one odd dimension), orthogonal adjacent captures + non-capturing moves strictly closer to centre (Manhattan); pie rule; annihilation. |
-| Narrows | `Narrows` | `narrows` | 471923 | **2026**, Kōnane board, ROOK captures (any distance through empties), win = all your groups linked by empty regions; you can win on either player's turn. |
-| Unane | `Unane` | `unane` | 472126 | **2026**, Kōnane board, move OR remove a friendly stone with no enemy orthogonal neighbours; win = one friendly group AND one enemy group; either player's turn. |
-
-**Suggested wave 18 (4, keeping the diversity discipline):** `take` (hexhex, clod/seed removal —
-most distinct from the library), `minefield` (square connection, figure-decode heavy),
-`invector` **or** `narrows` (opens the 3-game Kōnane sub-family; Narrows' rook captures are more
-distinct from our existing `konane`), and `bamboo` (tiny ruleset, fast win). **Leave Churn for a
-wave where its board-size/playability question can get proper attention.** Note **4 of the 10 are
-square connection games in the crosscut/glyph-restriction family** — we already ship crossway,
-cation, konobi, rhode, akimbo, okimba, so **spread them across waves and screen each for mechanical
-cloning** (read the closest existing `rules.md`), do not batch them.
-
-**Carry-over that applies to every one:** (a) `abstractgames.org/finitude.html` is a general essay,
-NOT a per-game proof index — budget for writing the termination proof yourself, and expect it to
-exist (8 for 8 so far); (b) **check the Wayback CDX AND fetch the old revisions** — 4 consecutive
-waves, and this wave's changed a win condition; (c) `pdftocairo -svg` + parsing the vector paths
-beats reading a raster, and the figures carry the geometry and the worked examples; (d) sheets
-contradict themselves — adjudicate with the figures and say so.
-
-**B-tier (one fetch short):** Conect (Steere, `conect`, BGG 432207 — **deferred deliberately**: it is
-played on the curved surface of a CONE and needs either a bespoke conic-projection board or a
-wrapped-rhombus adjacency; a genuine new-board-shape project, worth doing but not as one of four) ·
-Slyde · Exxit · Onager · Quax · heXentafl · AlmaTafl · Carnac · Amoeba · Cairo Corridor · Yonmoque ·
-Hey That's My Fish! · Kulami · Six · Ploy.
-**Erik's greenlit optional items — 1 of 4 done** (Push Fight ✅): Khet (laser trace; `board.overlay`
-can probably express it), LYNGK (still unsourced — needs a Wayback hunt of gipf.com c. 2017-19),
-Homeworlds (needs an orchestrator-owned "system graph" primitive).
-**Trivial, not worth churn:** 4 of 397 manifests carry inert `designer`/`year` keys (3 of them from
-wave 17) that nothing reads and SPEC.md does not define; `author` is the real convention (397/397).
+### ▶▶ NEXT (wave 18) — *(superseded; wave 18 shipped bamboo/take/minefield/narrows —
+see the WAVE 18 block at the top of this file, and the wave-19 queue there for the 6 games left)*
 
 ### ✅ WAVE 16 COMPLETE (2026-07-29) → **393 games**, #390–393
 The **Mark Steere seam, second wave** — the four oldest and most established of the remaining games
