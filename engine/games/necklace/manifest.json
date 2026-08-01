@@ -1,0 +1,16 @@
+{
+  "uid": "necklace",
+  "name": "Necklace",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Mark Steere and Luis Bolaños Mures (2024) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "pie": false,
+  "category": "Connection",
+  "tags": ["square", "connection", "placement", "crosscut", "steere", "bolanos-mures"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/419473/necklace",
+  "options": { "size": { "choices": [7, 9, 11, 13, 19], "default": 11, "label": "Board size" } },
+  "description": "Square-board connection game (Mark Steere and Luis Bolaños Mures, 2024). Red joins the top and bottom edges, Blue the left and right, with ORTHOGONAL chains only. Just place one stone per turn, under two restrictions: your placement may not create a crosscut (a filled 2x2 whose diagonals are two red and two blue), and it may never strand a group of empty points with no point on the board edge - the no-loop rule that gives the game its name."
+}
