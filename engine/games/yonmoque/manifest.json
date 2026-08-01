@@ -1,0 +1,15 @@
+{
+  "uid": "yonmoque",
+  "name": "Yonmoque",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Mitsuo Yamamoto (Logy Games, 1997)",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "N-in-a-row",
+  "tags": ["square", "placement", "movement", "conversion", "asymmetric", "5x5"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/86170/yonmoque",
+  "max_random_plies": 300,
+  "description": "Mitsuo Yamamoto's 5x5 duel on a three-coloured board. Place or move a piece each turn; a piece slides like a bishop only along squares of its own colour, and moving so as to sandwich enemy pieces flips them to your side. Making four in a row with a move wins - but making five in a row, ever, loses."
+}
