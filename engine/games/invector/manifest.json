@@ -1,0 +1,50 @@
+{
+  "uid": "invector",
+  "name": "Invector",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Mark Steere (2026) / AGP port",
+  "designer": "Mark Steere",
+  "year": 2026,
+  "players": {
+    "min": 2,
+    "max": 2
+  },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Capture / annihilation",
+  "tags": [
+    "square",
+    "capture",
+    "annihilation",
+    "pie rule",
+    "steere",
+    "konane"
+  ],
+  "bgg_url": "https://boardgamegeek.com/boardgame/472199/invector",
+  "options": {
+    "size": {
+      "choices": [
+        4,
+        6,
+        8,
+        10,
+        12,
+        14,
+        16
+      ],
+      "default": 8,
+      "label": "Board size",
+      "labels": {
+        "4": "4×3 (tiny — solved)",
+        "6": "6×5",
+        "8": "8×7 (standard)",
+        "10": "10×9",
+        "12": "12×11",
+        "14": "14×13",
+        "16": "16×15"
+      }
+    }
+  },
+  "description": "Mark Steere's 2026 annihilation game on a Kōnane board — a rectangular grid filled with a checkerboard of black and white stones. One stone per turn moves to an orthogonally adjacent pit: either onto an enemy stone, capturing it by replacement in any direction, or onto an empty pit that is strictly closer to one of the board's two centre pits. Wipe out every enemy stone to win. Passing is not allowed, but a player with no legal move has his turn skipped, and the pie rule applies."
+}
