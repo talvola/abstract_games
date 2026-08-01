@@ -1,0 +1,16 @@
+{
+  "uid": "halfcut",
+  "name": "Halfcut",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Mark Steere (2023) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "pie": false,
+  "category": "Connection",
+  "tags": ["square", "connection", "placement", "crosscut", "capture", "steere"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/399723/halfcut",
+  "options": { "size": { "choices": [5, 7, 9, 11, 13, 19], "default": 11, "label": "Board size" } },
+  "description": "Square-board connection game (Mark Steere, 2023). Red joins the top and bottom edges, Blue the left and right, with ORTHOGONAL chains only. Unlike its cousins, Halfcut lets you make a crosscut - a filled 2x2 whose diagonals are two red and two blue - but only if the group you just built is bigger than at least one of that crosscut's enemy groups, and you then immediately kill every enemy crosscut checker whose group is smaller than yours. Half the crosscut always dies, so no crosscut ever survives the turn and a filled board always has a winner."
+}
