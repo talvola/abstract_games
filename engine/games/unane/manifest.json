@@ -1,0 +1,50 @@
+{
+  "uid": "unane",
+  "name": "Ūnane",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Mark Steere (2026) / AGP port",
+  "designer": "Mark Steere",
+  "year": 2026,
+  "players": {
+    "min": 2,
+    "max": 2
+  },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Connection",
+  "tags": [
+    "square",
+    "capture",
+    "connection",
+    "pie rule",
+    "steere",
+    "konane"
+  ],
+  "bgg_url": "https://boardgamegeek.com/boardgame/472126/unane",
+  "options": {
+    "size": {
+      "choices": [
+        4,
+        6,
+        8,
+        10,
+        12,
+        14,
+        16
+      ],
+      "default": 8,
+      "label": "Board size",
+      "labels": {
+        "4": "4×3 (tiny — solved)",
+        "6": "6×5",
+        "8": "8×7 (standard)",
+        "10": "10×9",
+        "12": "12×11",
+        "14": "14×13",
+        "16": "16×15"
+      }
+    }
+  },
+  "description": "Mark Steere's April 2026 game on a Kōnane board — a rectangular grid filled with a checkerboard of black and white stones. Each turn you either capture an orthogonally adjacent enemy stone by replacement, or take one of your own stones off the board (allowed only if it touches no enemy stone). One stone leaves the board every turn. You win the moment all of your stones form a single orthogonally connected group — and you can win on your opponent's turn as well as your own. The pie rule applies."
+}
