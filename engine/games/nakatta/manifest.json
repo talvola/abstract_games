@@ -1,0 +1,16 @@
+{
+  "uid": "nakatta",
+  "name": "Nakatta",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Luis Bolanos Mures & Mark Steere (2024) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "pie": true,
+  "category": "Connection",
+  "tags": ["square", "connection", "placement", "pattern-restriction", "pie-rule", "steere", "bolanos-mures"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/420467/nakatta",
+  "options": { "size": { "choices": [9, 11, 13, 15, 19, 22, 25], "default": 13, "label": "Board size" } },
+  "description": "Square-board connection game (Luis Bolanos Mures & Mark Steere, 2024). Black joins the top and bottom edges, White the left and right, with ORTHOGONAL chains only. After your placement the board must contain no 'hard corner' (two diagonally adjacent stones of one colour, one stone of the other, one empty point in a 2x2) and no 'naked attachment' (two orthogonally adjacent empty points, one black stone and one white stone in a 2x2). Pie rule."
+}
