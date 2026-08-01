@@ -1,0 +1,28 @@
+{
+  "uid": "churn",
+  "name": "Churn",
+  "version": "1.0.0",
+  "author": "Mark Steere (December 2024) / AGP port",
+  "designer": "Mark Steere",
+  "year": 2024,
+  "engine_api": "1",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Territory",
+  "tags": ["hex", "hexhex", "placement", "group", "majority", "pie", "steere", "drawless"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/437052/churn",
+  "options": {
+    "board": {
+      "choices": ["hex2", "hex3", "limping34"],
+      "default": "hex3",
+      "label": "Board",
+      "labels": {
+        "hex2": "Side 2 — 7 cells (toy, ~8 turns)",
+        "hex3": "Side 3 — 19 cells (recommended, ~70 turns)",
+        "limping34": "Limping 3,4 — 27 cells (~204 turns)"
+      }
+    }
+  },
+  "description": "Mark Steere's churning majority game on a hexagon of hexagons. Drop one stone per turn, but you are never free to put it where you like: if any cell is isolated from your own stones you MUST use one, and otherwise you must form the smallest group you possibly can. The moment your stone joins a group, every smaller group you own is swept off the board — so growing costs you stones, and the position turns over and over. When the board finally fills at the end of a turn, whoever owns the majority wins; the board has an odd number of cells, so there are no ties. Uses the pie rule."
+}
