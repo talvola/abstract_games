@@ -6,7 +6,7 @@ universe map and capability gaps live in `GAME_BACKLOG.md`; this file is the
 
 ---
 
-## ⭐ SESSION HANDOFF (read this first) — updated 2026-07-31 (wave 19 → 405 games)
+## ⭐ SESSION HANDOFF (read this first) — updated 2026-08-01 (wave 20 → 410 games)
 
 ### ✅ WAVE 18 COMPLETE (2026-07-31) → **401 games**, #398–401
 The **Mark Steere seam, fourth wave** — four games spanning four mechanics and three board models.
@@ -177,41 +177,124 @@ illegal-placement sets identical) — only a local-vs-whole-board cross-check ca
    before `git add`. `DONE` sentinels can be **re-created by a re-invoked builder** after you delete
    them; re-check immediately before committing.
 
-### ▶▶ NEXT (wave 20) — the Steere seam has **2 games left**, then the seam is closed
-The gameslib clone and all 6 PDFs were re-staged this wave (the wave-17 scratchpad had been reaped);
-re-clone per the `gameslib-abstractplay-oracle` memory if gone. **Run drivers with `npx ts-node -T`,
-and COPY the clone per agent.** These sheets have a **text layer** (`pdftotext -layout`) unlike the
-older Steere PDFs — but the figures are still load-bearing.
+### ✅ WAVE 20 COMPLETE (2026-08-01) → **410 games**, #406–410
+The **Mark Steere seam, sixth wave — and the seam did NOT close**. Planned as 2 Steere games + 2
+non-Steere B-tier games; became **five**, because Halfcut's QA fetched the sibling `Clearcut_rules.pdf`
+purely as an *adjudicator* and it turned out to be **its own published game, not in the library**. 5
+build agents, then an independent adversarial deep-QA agent each. **1 MERGE with zero edits (halfcut)
++ 4 MERGE-WITH-FIX**, of which only **onager** had defects in shipped code. Suite green, render-bounds
+sweep clean (830 combos / 410 games), all 5 browser-verified, one commit each, Opus 5 (1M), no caps.
 
-| game | PDF stem | gameslib uid | BGG | notes |
-|---|---|---|---|---|
-| Halfcut | `Halfcut` | **`clearcut`** | 399723 | 2023, square connection + crosscut rule keyed on GROUP SIZES, with removal. **Note the uid mismatch.** Oracle opens 361 ⇒ 19×19 default. |
-| Nakatta | `Nakatta` | `nakatta` | 420467 | 2024, Bolaños Mures **and** Steere; square connection, no hard corners + no naked attachments; pie rule. **Screen against minefield (shared hard-corner ban) AND necklace.** Oracle opens 484 ⇒ 22×22. |
+| # | game | board | mechanic | win type | commit |
+|---|---|---|---|---|---|
+| 406 | halfcut | square 5–19 | crosscut LEGAL under a size contest + removal | connection | `630f6d3` |
+| 407 | clearcut | square 5–19 | crosscut must beat EVERY enemy group; both enemy checkers die | connection | `9e2b21f` |
+| 408 | nakatta | square 9–25 | no hard corners, no naked attachments; pie rule | connection | `c6bc558` |
+| 409 | onager | hexhex 4–7 | mirror jumps + stacking + a 3-lake placement phase | breakthrough (back-rank count) | `ff51463` |
+| 410 | yonmoque | 5×5 tinted | bishop slide on your own colour + custodian flip | exactly four (five LOSES) | `716672e` |
 
-**Both remaining are square connection games in the crosscut/glyph family, which now has TEN members**
-(crossway, cation, konobi, rhode, akimbo, okimba, minefield, flipway, keil, necklace). **Do not batch
-them** — clone-screen each individually and read the closest existing `rules.md`. Necklace's screen is
-the template: it earned its place as *the only game whose placement restriction is a global
-topological condition*. Consider pairing them with 2 non-Steere games from the B-tier for diversity.
+**THE HEADLINE: THREE REAL `gameslib` RULE BUGS, IN THREE DIFFERENT GAMES, TWO OF THEM THE SAME
+SHAPE.** Wave 18 found four, wave 19 found zero, this wave found three — the oracle is neither
+trustworthy nor untrustworthy in general, only per game.
+- **`clearcut.ts` (and its Halfcut default) cannot execute Steere's skip rule.** `moves()` offers
+  `"pass"`, `validateMove("pass")` always rejects it, `move("pass")` throws, and
+  `move("pass",{trusted:true})` throws *inside* `getCrosscuts("pass")`. A stuck position is a **hard
+  deadlock** — no move playable, `gameover:false` forever. Measured reachable at **~1 in 460 plies,
+  ≥1 skip in 6.7% of games**.
+- **`nakatta.ts` — byte-identical shape** (the `m === "pass"` branch has no `return`, so it falls
+  through to `algebraic2coords("pass")`). Its skip rule is dead code. Same coder as `minefield.ts`,
+  where wave 18 found the same bug. **This is now a systemic pattern worth grepping the whole clone
+  for before the next wave.**
+- **`onager.ts` generates jump chains against the un-updated board**, so the mover's own **vacated
+  start square** still acts as a jump partner: **56 forbidden destinations offered and 18 legal ones
+  missed over 12,997 plies**. Isolated decisively — changing *exactly one thing* in the oracle's own
+  algorithm (refreshing the board between hops) drops disagreements **67 → 0**. Adjudicated from the
+  rulebook: the 2018 "cannot end where it started" clause would be **entirely vacuous** if the jumper
+  were still standing there, so the square must be vacated.
 
-**Carry-over that applies to every one:** (a) budget for writing the termination proof yourself —
+**⚠ 7th consecutive wave with unadvertised revisions — and the provenance techniques kept generalising:**
+- **Clearcut: the 2023-07-18 capture is a COMPLETELY DIFFERENT RULESET** — an "extended crosscut"
+  (the crosscut plus all four checkers' groups) of which *"more than half of the checkers are yours"*,
+  with "two **or more**" simultaneous crosscuts and a Figure 7 forming **four**. The builder therefore
+  *derived* the ≤2-crosscut bound instead of assuming it.
+- **Onager: the English rulebook has NEVER been captured by Wayback at all** — but the **Spanish
+  (2012) and Japanese (2018) editions have.** Diffing the three exposed a 2018 revision that **ADDED**
+  the "a jumping piece cannot end where it started" rule, while the superseded 2012 Spanish sheet is
+  the **more explicit** document on the victory count (*"más piezas (no discos)"*). **Cross-LANGUAGE
+  editions are a substitute for Wayback when a sheet was never archived.**
+- **Yonmoque: the live page has been byte-stable for 8 years, yet the 2016 capture is a different,
+  materially more explicit document** — it alone sources the 8-direction flip and the bishop slide,
+  while the *current* page alone adds "no legal move ⇒ you lose". Each revision carries rules the
+  other lacks.
+- **Halfcut and Nakatta are CLEAN** (single captures, byte-identical). The streak is per-sheet.
+
+**Wave-20 lessons (transferable):**
+1. **A SIBLING SHEET IS BOTH AN ADJUDICATOR AND A CANDIDATE GAME.** Halfcut's two interpretive cruxes
+   were pinned by *contrast* with `Clearcut_rules.pdf` (the designer states the opposite clause in the
+   sibling sheet) — and fetching it revealed an unshipped game. **When the cross-sheet technique
+   fires, check whether the other sheet is in the library.**
+2. **The narrows caption shape recurred TWICE in one wave, in different disguises.** Onager's
+   `SEAT_NAMES` was never pinned to ground truth, so swapping it announced **the wrong winner** while
+   all 21 tests passed; Yonmoque's `five`/`stuck` captions name the loser via an inverted index that
+   **no test asserted**, and the mutant survived the selftest, `validate`, conformance, the render
+   sweep **and both differentials**. Ground truth must come from outside the engine (a printed
+   figure's setup), never from the engine's own constants.
+3. **A RULE THAT IS REDUNDANT MAKES ITS FIGURE ANCHOR BLIND.** Clearcut's removal clause ("remove the
+   two") is provably equivalent to Halfcut's ("remove those in smaller groups") *given* its stricter
+   legality rule, so Figures 6a/6b **cannot discriminate the two removal semantics at all** — Figure 4
+   is the only discriminator. Prove the redundancy, then say which anchor it kills.
+4. **Legality invariance limits what a coordinate control can prove.** Clearcut's *legality* relation
+   is D4-invariant, so a transposed map **cannot diverge on move sets — only on winner attribution**;
+   QA's first control falsely passed for exactly this reason. Yonmoque goes further: the whole D4
+   group is an automorphism of the tile map and every rule, so an orientation error is *unobservable*
+   — which is a lemma to assert, not a gap to close.
+5. **A builder reversing its own decision on measurement is the process working.** Nakatta's builder
+   set out to ship no heuristic, measured 56–60 of 60 through `MCTSBot` with the cutoff forced, and
+   shipped one — while documenting that it is indistinguishable at the default and only matters from
+   13×13 up. Onager and Halfcut measured theirs and shipped nothing.
+6. **Termination kept yielding to proof: 18 straight Steere games with no cap.** Clearcut is the
+   sharpest case — its *stricter* legality clause is precisely what lets Halfcut's monovariant survive
+   *unconditional* removal. Onager and Yonmoque genuinely need caps (freely reversible moves) and both
+   proved theirs non-load-bearing; Yonmoque proved its cap **required** (a pacifist policy reaches it
+   12/12 seeds).
+7. **"Drawless" can be a designer claim living outside the rule sheet.** Nakatta's BGG description
+   asserts drawlessness the sheet never mentions, which reframed its draw branch from a rule to
+   implement into a bug to disprove — and its proof step 2 (no legal position holds a crosscut) then
+   did all the work, verified on 118/118 and 21,150/21,150 winner-less full boards.
+8. **Ops:** builders left the repo root clean this time after being told to `git status`; the `DONE`
+   sentinel worked on all five; hash-pinning again caught a builder quoting a *stale* `selftest.py`
+   hash after QA had edited it (nothing was reverted). Per-agent gameslib copies removed last wave's
+   contention entirely.
+
+### ▶▶ NEXT (wave 21) — the Steere seam still has games, and one is BRAND NEW
+| game | source | gameslib uid | notes |
+|---|---|---|---|
+| **Nakatta Pro** | `marksteeregames.com/Nakatta_Pro_rules.pdf` (ModDate 2026-06-14) | — (not in the clone) | **Mark Steere, April 2026 — found by nakatta's QA, not in the library.** A prohibited-glyph rewrite by Bolaños Mures, described by Steere as *"the long undiscovered Middle-earth between Nakatta and Minefield"*. **Screen hard against both `nakatta` and `minefield`** — this is a third game in one lineage. No oracle: cover it with constructed inputs + exhaustive small boards. |
+| Conect | Steere, BGG 432207 | `conect` | **Still deferred deliberately** — played on the curved surface of a CONE; needs a bespoke conic projection or a wrapped-rhombus adjacency. A genuine new-board-shape project, worth doing on its own. |
+
+**Carry-over that applies to every game:** (a) budget for writing the termination proof yourself —
 `abstractgames.org/finitude.html` is a general essay, not a per-game index — and expect one to exist
-(16 for 16); (b) **check the Wayback CDX AND fetch the old revisions** — 6 consecutive waves, and the
-newest capture can still PREDATE the current sheet, so **compare the live PDF's md5/ModDate against
-the newest archived copy**, never assume Wayback is current; (c) `pdftocairo -svg` + parsing vector
-paths beats reading a raster; (d) sheets contradict themselves — adjudicate with the figures, and if
-the figures cannot settle it, **check the designer's other sheets for the same clause worded better**.
+(18 for 18); (b) **check the Wayback CDX AND fetch the old revisions**, and when a sheet was never
+archived, **look for other-LANGUAGE editions** (Onager's whole revision history came from the Spanish
+and Japanese PDFs); (c) `pdftocairo -svg` + parsing vector paths beats reading a raster, and pixel
+decoding is a genuinely independent second method for QA; (d) sheets contradict themselves — adjudicate
+with the figures, and if the figures cannot settle it, **check the designer's other sheets for the same
+clause worded better** (then check whether that sheet is itself a missing game).
 
-**B-tier (one fetch short):** Conect (Steere, `conect`, BGG 432207 — **deferred deliberately**: it is
-played on the curved surface of a CONE and needs either a bespoke conic-projection board or a
-wrapped-rhombus adjacency; a genuine new-board-shape project, worth doing but not as one of four) ·
-Slyde · Exxit · Onager · Quax · heXentafl · AlmaTafl · Carnac · Amoeba · Cairo Corridor · Yonmoque ·
-Hey That's My Fish! · Kulami · Six · Ploy.
+**B-tier (one fetch short):** Slyde · Exxit · Quax · heXentafl · AlmaTafl · Carnac · Amoeba ·
+Cairo Corridor · Hey That's My Fish! · Kulami · Six · Ploy. (`gameslib` has an implementation of every
+one of these — `slyde`, `exxit`, `quax`, `hexentafl`, `almatafl`, `carnac`, `amoeba`, `ccorridor`,
+`penguin` is *Penguin Soccer* not Hey That's My Fish, `yonmoque` ✅ done, `onager` ✅ done.)
 **Erik's greenlit optional items — 1 of 4 done** (Push Fight ✅): Khet (laser trace; `board.overlay`
 can probably express it), LYNGK (still unsourced — needs a Wayback hunt of gipf.com c. 2017-19),
 Homeworlds (needs an orchestrator-owned "system graph" primitive).
-**Trivial, not worth churn:** 4 of 405 manifests carry inert `designer`/`year` keys that nothing
-reads and SPEC.md does not define; `author` is the real convention.
+**Trivial, not worth churn:** 4 of 410 manifests carry inert `designer`/`year` keys that nothing
+reads and SPEC.md does not define; `author` is the real convention. Tag inconsistency `'pie rule'`
+(narrows, unane) vs `'pie-rule'` (konobi, minefield, nakatta, mirador) — tags feed lobby search.
+**`GAME_STATUS.md`'s ANCHOR/BROWSER columns are curated inside `engine/tools/gen_game_status.py`, not
+read from the packages**, and waves 18–19's eight games (bamboo, take, minefield, narrows, invector,
+unane, necklace, churn) were never added — they still read "conformance" despite deep verification.
+Wave 20's five are filled in. Cheap follow-up: back-fill from those waves' COMPLETE blocks.
 
 **⚠ PLATFORM FOLLOW-UP found in wave 19 (real, cosmetic, deliberately NOT fixed mid-wave):**
 `Board.jsx` renders **only** the highlight kinds `'goal'` and `'last-move'` (it builds `hl` at :270
