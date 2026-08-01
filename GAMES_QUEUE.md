@@ -6,7 +6,7 @@ universe map and capability gaps live in `GAME_BACKLOG.md`; this file is the
 
 ---
 
-## ⭐ SESSION HANDOFF (read this first) — updated 2026-07-31 (wave 18 → 401 games)
+## ⭐ SESSION HANDOFF (read this first) — updated 2026-07-31 (wave 19 → 405 games)
 
 ### ✅ WAVE 18 COMPLETE (2026-07-31) → **401 games**, #398–401
 The **Mark Steere seam, fourth wave** — four games spanning four mechanics and three board models.
@@ -101,38 +101,106 @@ digest across 5 and 7 captures; live PDFs byte-identical). So: 3 of 4 sheets mov
    use **`npx ts-node -T`** (transpile-only). Agents' finished background watchers re-fire stale
    completion notifications for a long time; `TaskStop` the agent to silence them.
 
-### ▶▶ NEXT (wave 19) — the Steere seam, **6 games left**, all pre-scouted
-All PDFs already downloaded and text-extracted; **all 6 are in `gameslib`** for a double anchor.
-The gameslib clone (patched + `npm install`ed, drivers written) is at wave 17's scratchpad
-`/tmp/claude-1000/-home-erik-abstract-games/28bd6301-.../scratchpad/gameslib`, and the PDFs are in
-its sibling `steere/` — **re-clone per the `gameslib-abstractplay-oracle` memory if reaped.**
-**Run drivers with `npx ts-node -T`.** And after this wave: **expect gameslib to be wrong about at
-least one of them.**
+### ✅ WAVE 19 COMPLETE (2026-07-31) → **405 games**, #402–405
+The **Mark Steere seam, fifth wave** — four games, three board models, four mechanics. 4 build agents,
+then an independent adversarial deep-QA agent each. **1 MERGE (invector, zero edits) + 3
+MERGE-WITH-FIX, every fix documentation-only.** Suite green (`all tests passed`), render-bounds sweep
+clean (806 combos / 405 games), all 4 browser-verified, one commit each, Opus 5 (1M), no model caps.
+
+| # | game | board | mechanic | win type | commit |
+|---|---|---|---|---|---|
+| 402 | invector | Kōnane 4×3–16×15 | adjacent capture + centre-seeking quiet steps | annihilation | `6642e79` |
+| 403 | unane | Kōnane 4×3–16×15 | capture-by-replacement OR remove an unthreatened friendly stone | one group per colour | `8b362c5` |
+| 404 | necklace | square 7–19 | orthogonal connection, crosscut ban + no enclosed empty region | connection | `153232c` |
+| 405 | churn | hexhex 2/3 + limping 3,4 | forced smallest-group placement + cascade removal | majority on a full board | `5e0210b` |
+
+**ALL FOUR SHIP NO PLY CAP AND NO REPETITION RULE** — 16 straight Steere games with clean monovariant
+proofs. **NO gameslib rule bugs found this wave** (contrast wave 18's four), and one agent explicitly
+concluded the oracle's odd-looking `seen = new Set()` reset in `necklace.ts` is **load-bearing and
+correct** — after a wave of finding real oracle bugs, *sceptical* is not the same as *assume wrong*.
+
+**⚠ 6th consecutive wave with unadvertised Steere revisions — TWO of them rule-bearing, and both
+sheets' decisive artefact is UNARCHIVED:**
+- **Invector: the ENTIRE PIE RULE was added** between the 2026-04-10 and 2026-04-15 revisions (plus
+  "starting with Black" and Figure 2's red dot). The live sheet (2026-05-20) postdates *every*
+  Wayback capture. Building from the archived April 10 sheet ⇒ **no pie rule at all**.
+- **Ūnane: the live sheet ADDED FIGURE 4 IN ITS ENTIRETY** — and Figure 4 is the single artefact that
+  decides the win condition. The only capture (2026-05-11) has no Figure 4. Never archived anywhere.
+- **Churn: the 2025-01-03 capture holds a superseded sheet whose Figures 3 AND 4 were completely
+  redrawn** (1 and 2 byte-identical). The old OBJECT text read *"Blue has won by occupying 10 of the
+  19 board cells"*; the revision exists precisely to settle **whether majority is counted before or
+  after removals**. Design notes also revised size 5 from "about 8,500" to "about 7,400" turns.
+- **Necklace is CLEAN** — live md5 == its only capture, never revised. So the streak is per-sheet,
+  not universal; check every one.
+
+**The wave's defining find — Necklace's `encloses()` bug, discovered INDEPENDENTLY by both agents
+from opposite directions.** A single `seen` set shared across four flood fills let a flood that
+exited early at an edge leave its frontier marked, so later floods refused to expand through it ⇒
+**false enclosures silently deleting legal moves on 29.2% / 48.8% / 71.9% of plies at 5×5 / 7×7 /
+9×9.** The builder found it because a position **contradicted step 1 of its own drawlessness proof**,
+and had *nearly shipped the resulting fabricated draw as "a genuine tie"*; QA found it by
+differential at ply 1 of seed 0. **Figure 3 is completely blind to it** (green dot illegal, both full
+illegal-placement sets identical) — only a local-vs-whole-board cross-check catches it.
+
+**Wave-19 lessons (transferable):**
+1. **A FORMAL PROOF IS A BUG DETECTOR, not documentation.** Necklace's drawlessness proof caught a
+   real, high-frequency move-generation bug that every figure anchor, the differential's own figure
+   tests and conformance all missed — because the buggy position *violated a lemma*. Write the proof,
+   then check live positions against its steps.
+2. **A "genuine tie" is a bug until proven otherwise.** The standing rule is that a real tie must be
+   an honest draw; the converse now has teeth — Necklace's draw was not genuine at all, it was
+   `encloses()` lying. Interrogate any draw a drawless game produces.
+3. **Cross-reference the DESIGNER'S OTHER SHEETS to settle a self-contradictory rule.** Ūnane's win
+   condition is symmetric in both colours yet claims you can win on your opponent's turn. The
+   *Narrows* sheet states the identical clause with the word **"simultaneously"**, proving it is a
+   tie-break awarded to the mover. Same designer, same phrasing, one sheet more explicit.
+4. **Measure the anchor, then act on the measurement.** Ūnane's Figure 4 kills only **1 of 5** wrong
+   readings; Invector's Figure 3 kills 8 of 10 wrong centre definitions (and its two survivors were
+   killed by a bracketed sentence and a *behavioural-identity proof*, not by more figures); Churn's
+   Figures 1+2 kill 7 of 9 and are blind to **both** "what counts as isolated" readings. In every
+   case the gap was closed deliberately.
+5. **A published NUMBER can anchor an entire ruleset.** Churn's side-5 game length measured 7,404
+   turns vs the designer's "about 7,400" (0.05%) — and it discriminates violently: a `<=` removal
+   threshold **never terminates** at that size, pre-merge minimisation gives ~660. Prefer such an
+   anchor to any number of random games.
+6. **The smallest-board blind spot recurred twice more** (wave 18's `take` lesson generalising):
+   Churn's exhaustive side-2 solve contains **0 multi-group and 0 multi-stone removals**, i.e. it
+   cannot see the game's signature mechanic; Invector's 4×3 is structurally unable to exhibit the
+   Manhattan-vs-blocked-path distinction (0.0% of plies vs 86.6% at 8×7). Always pair with a directed
+   search at a real size.
+7. **Hash-pinning fired in BOTH directions on one package** (churn): QA edited `game.py` after the
+   builder's pin, then the builder edited `selftest.py` after QA's. Both were caught only by hashes.
+   A verdict covers bytes. Also proved useful: reverse-applying a diff to **reproduce a pinned
+   hash exactly** is a cryptographic proof that a change is confined.
+8. **Ops:** the shared `gameslib` clone must be COPIED before an agent modifies it (4 agents shared
+   one). Build agents dropped two stray logs in `engine/games/` (`big.log`, `h8.log`) — `git status`
+   before `git add`. `DONE` sentinels can be **re-created by a re-invoked builder** after you delete
+   them; re-check immediately before committing.
+
+### ▶▶ NEXT (wave 20) — the Steere seam has **2 games left**, then the seam is closed
+The gameslib clone and all 6 PDFs were re-staged this wave (the wave-17 scratchpad had been reaped);
+re-clone per the `gameslib-abstractplay-oracle` memory if gone. **Run drivers with `npx ts-node -T`,
+and COPY the clone per agent.** These sheets have a **text layer** (`pdftotext -layout`) unlike the
+older Steere PDFs — but the figures are still load-bearing.
 
 | game | PDF stem | gameslib uid | BGG | notes |
 |---|---|---|---|---|
-| Invector | `Invector` | `invector` | 472199 | **2026**, Kōnane board, orthogonal adjacent captures + non-capturing moves strictly closer to centre (Manhattan); pie rule; annihilation. Sibling of narrows — read `narrows/rules.md` and clone-screen. |
-| Unane | `Unane` | `unane` | 472126 | **2026**, Kōnane board, move OR remove a friendly stone with no enemy orthogonal neighbours; win = one friendly group AND one enemy group; either player's turn. |
-| Halfcut | `Halfcut` | **`clearcut`** | 399723 | 2023, square connection + crosscut rule keyed on GROUP SIZES, with removal. **Note the uid mismatch.** |
-| Nakatta | `Nakatta` | `nakatta` | 420467 | 2024, Bolaños Mures **and** Steere; square connection, no hard corners + no naked attachments; pie rule. **Screen against minefield — the hard-corner ban is shared.** |
-| Necklace | `Necklace` | `necklace` | 419473 | 2024, Steere + Bolaños Mures; square connection, no crosscut + every empty region must touch an edge. Lowest-possible PDI. |
-| Churn | `Churn` | `churn` | 437052 | 2024, hexhex, place isolated if you can else smallest friendly group, then remove all smaller friendly groups; board fills, majority wins. **Designer says size 5 takes ~7,400 turns and size 7 ~950,000 — ship size 3 (19 cells) as default and think hard before offering big boards** (async playability + move-log length). Odd cell counts only, to prevent ties. |
+| Halfcut | `Halfcut` | **`clearcut`** | 399723 | 2023, square connection + crosscut rule keyed on GROUP SIZES, with removal. **Note the uid mismatch.** Oracle opens 361 ⇒ 19×19 default. |
+| Nakatta | `Nakatta` | `nakatta` | 420467 | 2024, Bolaños Mures **and** Steere; square connection, no hard corners + no naked attachments; pie rule. **Screen against minefield (shared hard-corner ban) AND necklace.** Oracle opens 484 ⇒ 22×22. |
 
-**Suggested wave 19 (4, keeping the diversity discipline):** `invector` + `unane` (finish the Kōnane
-sub-family now that narrows has established the board model and its rules.md is a template),
-`necklace` **or** `halfcut` (one square connection game, clone-screened against minefield/crossway/
-konobi/rhode/akimbo/okimba), and `churn` **only if** its board-size/playability question gets proper
-attention — otherwise a 4th from the square-connection group. **3 of the 6 remaining are square
-connection games in the crosscut/glyph family; do NOT batch them**, spread them and read the closest
-existing `rules.md` for each.
+**Both remaining are square connection games in the crosscut/glyph family, which now has TEN members**
+(crossway, cation, konobi, rhode, akimbo, okimba, minefield, flipway, keil, necklace). **Do not batch
+them** — clone-screen each individually and read the closest existing `rules.md`. Necklace's screen is
+the template: it earned its place as *the only game whose placement restriction is a global
+topological condition*. Consider pairing them with 2 non-Steere games from the B-tier for diversity.
 
 **Carry-over that applies to every one:** (a) budget for writing the termination proof yourself —
 `abstractgames.org/finitude.html` is a general essay, not a per-game index — and expect one to exist
-(12 for 12); (b) **check the Wayback CDX AND fetch the old revisions** — 5 consecutive waves, and
-note Minefield proves the newest capture can still predate the current sheet, so **compare the live
-PDF's md5/ModDate against the newest archived copy**, never assume Wayback is current; (c)
-`pdftocairo -svg` + parsing vector paths beats reading a raster; (d) sheets contradict themselves —
-adjudicate with the figures and say so.
+(16 for 16); (b) **check the Wayback CDX AND fetch the old revisions** — 6 consecutive waves, and the
+newest capture can still PREDATE the current sheet, so **compare the live PDF's md5/ModDate against
+the newest archived copy**, never assume Wayback is current; (c) `pdftocairo -svg` + parsing vector
+paths beats reading a raster; (d) sheets contradict themselves — adjudicate with the figures, and if
+the figures cannot settle it, **check the designer's other sheets for the same clause worded better**.
 
 **B-tier (one fetch short):** Conect (Steere, `conect`, BGG 432207 — **deferred deliberately**: it is
 played on the curved surface of a CONE and needs either a bespoke conic-projection board or a
@@ -142,8 +210,26 @@ Hey That's My Fish! · Kulami · Six · Ploy.
 **Erik's greenlit optional items — 1 of 4 done** (Push Fight ✅): Khet (laser trace; `board.overlay`
 can probably express it), LYNGK (still unsourced — needs a Wayback hunt of gipf.com c. 2017-19),
 Homeworlds (needs an orchestrator-owned "system graph" primitive).
-**Trivial, not worth churn:** 4 of 401 manifests carry inert `designer`/`year` keys that nothing
+**Trivial, not worth churn:** 4 of 405 manifests carry inert `designer`/`year` keys that nothing
 reads and SPEC.md does not define; `author` is the real convention.
+
+**⚠ PLATFORM FOLLOW-UP found in wave 19 (real, cosmetic, deliberately NOT fixed mid-wave):**
+`Board.jsx` renders **only** the highlight kinds `'goal'` and `'last-move'` (it builds `hl` at :270
+and reads it at :797-798). **Seven highlight emissions across five shipped games are therefore
+silently dropped** — `"target"` in `jeson_mor` and `kings_valley`, and
+`zone`/`step`/`selected`/`push`/`inline`/`broadside` in `abalone`, `king_of_the_hill` and `kamisado`.
+Nothing crashes; the highlight simply never draws. `target`→`goal` looks like a two-line intent
+mismatch in the first pair (both are "move your piece to the centre" games), but the abalone/kamisado
+group carries richer semantics that need real design. **Worth its own focused pass with a browser
+check per game** — changing five games' render semantics is not a drive-by. Found by necklace's QA
+after its builder fixed exactly this bug (`"target"`→`"goal"`) inside its own package, where it would
+have meant the winning chain was never drawn.
+
+**Also logged (not a defect):** the MCTS bot is weak on the largest offered boards of the newer
+connection games — necklace at 19×19 takes **6.8 s/move against the 3 s `AGP_BOT_MAX_TIME` budget**
+(one simulation exceeds it, so play there is near-random); minefield 3.87 s and crossway 3.03 s at
+the same size. Defaults are all fine (necklace 11×11 = 3.16 s). Raise the env knob or cap offered
+sizes if this ever matters.
 
 ### ✅ WAVE 17 COMPLETE (2026-07-30) → **397 games**, #394–397
 The **Mark Steere seam, third wave** — picked for mechanical and board diversity rather than taking
