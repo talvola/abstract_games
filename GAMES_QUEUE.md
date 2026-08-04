@@ -6,7 +6,108 @@ universe map and capability gaps live in `GAME_BACKLOG.md`; this file is the
 
 ---
 
-## ⭐ SESSION HANDOFF (read this first) — updated 2026-08-01 (wave 20 → 410 games)
+## ⭐ SESSION HANDOFF (read this first) — updated 2026-08-03 (wave 21 → 414 games)
+
+### ✅ WAVE 21 COMPLETE (2026-08-03) → **414 games**, #411–414
+**The first wave to prove a PUBLISHED RULE SHEET DEFECTIVE**, and the first to leave the Steere seam
+for a mixed B-tier slate. 4 build agents, then an independent adversarial deep-QA agent each.
+**All 4 MERGE-WITH-FIX; no shipped rule logic was wrong in any of the four.** Suite green,
+render-bounds sweep clean (848 combos / 414 games), all 4 browser-verified, Opus 5 (1M), no caps.
+
+| # | game | board | mechanic | win type | commit |
+|---|---|---|---|---|---|
+| 411 | nakatta_pro | square 9–25 | prohibited glyphs, strictly between Nakatta and Minefield | connection | `9ddc075` |
+| 412 | slyde | square 4–12, full | swap with an adjacent enemy, your own then FREEZES | largest group, cascading tiebreak | `6fafbab` |
+| 413 | cairo_corridor | **Cairo pentagonal tiling, 72 cells** | placement preserving a 4-side empty corridor | adjacency scoring | `558971f` |
+| 414 | hexentafl | hexhex 4/5 | hex tafl, no hostile cells, 2-piece king capture | escape / regicide | `dc7e127` |
+
+**THE HEADLINE: NAKATTA PRO'S RULE SHEET IS INTERNALLY INCONSISTENT — proved, not suspected.**
+Figure 3 marks 7 illegal placements where Figure 2's own glyph set implies **24** (17 omissions). Two
+agents decoded the figures by *unrelated* methods (vector-path parsing vs 600 dpi pixel classification)
+and converged. Three independent lines:
+1. **A passing control on the same template** — both pipelines reproduce the sibling *Minefield*
+   sheet's Figure 3 **exactly** (13/13 reds, 0 extras, both greens legal).
+2. **A figure-INTERNAL contradiction needing no pipeline at all** — Black at (5,4) and at (7,5)
+   produce a **byte-identical 3×2 window** with the placed stone at the same relative position, yet
+   only (7,5) is marked. Two more such pairs exist. No translation-invariant rule can do that.
+3. **A rigorous refutation** — legality is monotone in the glyph set, so if any closed set reproduces
+   Figure 3 the *maximal* admissible one does; it still leaves (0,1) and (7,5) legal. Isolating them
+   needs a **2×5** window, larger than anything Steere has ever printed (max 2×4). *Refinement: with
+   an UNCLOSED set all 7 are achievable — the impossibility rests on the sheet's own "reflections,
+   rotations, or color reversals" clause.*
+Figure 2 was implemented and all 17 omissions pinned. Steere's *"the long undiscovered Middle-earth
+between Nakatta and Minefield"* is **literally a theorem**: Nakatta-illegal ⊃ NP-illegal ⊃
+Minefield-illegal, 0 violations over 39,690 placements, divergences 2,688 and 6,587.
+
+**TWO MORE `gameslib` RULE BUGS (#11 and #12), one found independently by BOTH agents on its game:**
+- **`slyde.ts` `getGroupSizes` aggregates singletons into a trailing COUNT** and then compares that
+  count element-wise against real group sizes: `[5,1,1,1]` scores as `[5,3]`. **It flips the declared
+  winner** — QA: 6 of 400 games at 4×4; builder: 5 of 600, and 1.33% / 0.73% of terminal positions at
+  4×4 / 6×6 — in replays where both engines played identical moves. Kanare's rulebook decides it
+  against the oracle (*"multiple groups of the same color and size are taken as separate groups"*).
+- **`hexentafl.ts` `checkEOG` has no no-legal-move case** ⇒ **hard deadlock** (`gameover:false`, empty
+  move list, no result), ~1 per 6,800–8,200 plies. Minimal repro: `{c6:K, b2:D, e5:D}`, player 1 to
+  move. Same family as minefield/clearcut/nakatta but reached differently — this game has **no `pass`
+  move at all**, so the systemic `validateMove("pass")` dead-skip shape is absent. **`slyde.ts` and
+  `ccorridor.ts` are both clean of the dead-skip shape** (checked explicitly). Running total: **12
+  known gameslib rule bugs.**
+
+**THE UNPINNED-CAPTION SHAPE RECURRED TWICE MORE — 5th and 6th instances, and it is now the single
+most reliable defect in the library.** Both survived a full selftest:
+- **cairo_corridor**: `SEAT_NAMES[s.to_move]` → `[1 - s.to_move]` announces **the wrong player to
+  move on every ply of every game**. The *terminal* caption was pinned; the in-play one was not.
+- **nakatta_pro**: mutating `edge = "top–bottom" if s.to_move == BLACK else "left–right"` **survived
+  all 50,495 checks** — a board telling Black to aim at the *white* edges, every ply, every game.
+Both fixed by pinning to artwork ground truth (a printed figure's corner stone / Figure 1's chain),
+never to the engine's own naming. **Add a caption mutant to every future QA brief by default.**
+
+**A NEW PLATFORM DEFECT, found by QA, deliberately NOT fixed mid-wave:** `agp/mcts.py::_evaluate`
+wraps `heuristic()` in `except Exception: pass` and falls back to `[0.0]*n`, so **a heuristic that
+RAISES is scored as a perfect draw at every cutoff** — indistinguishable from shipping none, while
+`validate`, conformance and every functional test pass. The ambiguity is **one-directional**: a
+*load-bearing* measurement proves the eval doesn't throw, so only the *"indistinguishable from no
+eval"* claims in shipped `rules.md` files are suspect. Two QA agents were mid-flight measuring
+heuristics through that exact path, so the fix + a re-audit of those claims is the **first task of
+wave 22**.
+
+**Wave-21 lessons (transferable):**
+1. **A PRIMARY SOURCE CAN BE WRONG, AND YOU CAN PROVE IT — but only with a control that passes.**
+   The Minefield sheet reproducing exactly under the same pipeline is what turned "our decoder is
+   broken" into "the sheet is broken". Never claim a source defect without one.
+2. **The strongest evidence is a figure-INTERNAL contradiction**, because it survives any decoding
+   error: two identical local configurations marked differently need no pipeline to adjudicate.
+3. **MAKE THE RIVAL IMPLEMENTATION PLAY THE DISPUTED GAME.** Cairo Corridor's builder justified its
+   reading with a piece-count argument; QA refuted it by having AbstractPlay's *restricted*
+   implementation replay the 60-placement witness — **60/60 accepted, 0 rejected**, so restricted max
+   = open max = 60 and the box contents cannot discriminate at all. **The conclusion was still
+   right** (literal EN + JP text + BGA), but *a confident false justification for a correct conclusion
+   is a defect*, because it is what the next reader will rely on.
+4. **SEARCH FOR A THIRD IMPLEMENTATION when the oracle is your only tie-breaker.** heXentafl's two
+   figure ambiguities rested on gameslib agreement — the weakest adjudicator we accept — until QA
+   found **SkudPaiSho (2019)**, five years older, independent, and *announced by the designer
+   himself*, whose source names the alternating-triple rule outright.
+5. **A LEMMA'S TEST MUST COVER THE LEMMA'S WHOLE DOMAIN.** Slyde's anti-mirroring proof enumerated
+   only the left-right family (65,536) while `is_symmetric` is an OR over two axes — it never saw the
+   65,280 top-bottom-only positions, **half the domain of the lemma it was proving**. Widened to all
+   130,816 / 2,093,056 toggles.
+6. **THE PLY-0 SAMPLING ERROR hit TWO independent agents in one wave**: measuring a rollout statistic
+   from the opening position and reporting it as a whole-game rate (slyde's "100% cutoff-fire" is
+   46.8% over whole games; Cairo's QA nearly reported the builder wrong off an 82.5% ply-0 snapshot
+   that is 5.3% over complete games). **Rates must be measured over complete games.**
+7. **CALIBRATE A MEASUREMENT HARNESS ON A KNOWN-GOOD SUBJECT** before trusting a null result — Cairo's
+   QA measured its MCTS harness on shipped `blooms` (sign-flip 16/16, real-vs-none z=+3.20, A/A null
+   0.594±0.061) and refused to quote a verdict until the null was tight. This is the vacuity audit
+   applied to a measurement instead of a differential.
+8. **Both agents self-corrected in public** — the slyde builder withdrew three of its own claims, and
+   Cairo's QA withdrew a finding against the builder. Treat a retraction as the process working.
+9. **Ops:** the `pkill -f` self-match trap **also applies to `pgrep` wait-loops** (the waiting shell's
+   own command line matches, so the loop never exits — wait on a captured PID); a `nohup` launched
+   from a Bash call inherits that call's *shifted* cwd, so relative paths silently resolve wrong. A
+   **fifth** way mutation harnesses lie: a semantic no-op that a byte fingerprint cannot catch (a
+   `for…else: pass`). `DONE` sentinels + hash pinning worked on all four; every one of the 16 shipped
+   files matched its QA agent's pinned verdict at commit time.
+
+
 
 ### ✅ WAVE 18 COMPLETE (2026-07-31) → **401 games**, #398–401
 The **Mark Steere seam, fourth wave** — four games spanning four mechanics and three board models.
@@ -266,11 +367,36 @@ trustworthy nor untrustworthy in general, only per game.
    hash after QA had edited it (nothing was reverted). Per-agent gameslib copies removed last wave's
    contention entirely.
 
-### ▶▶ NEXT (wave 21) — the Steere seam still has games, and one is BRAND NEW
+### ▶▶ NEXT (wave 22) — PRE-STAGED
+
+**FIRST TASK, before any new game: the `agp/mcts.py::_evaluate` fix + re-audit.** It swallows every
+exception from `heuristic()` and returns `[0.0]*n`, so a THROWING heuristic is indistinguishable from
+no heuristic. Deferred out of wave 21 only because two QA agents were measuring through that path.
+Two parts: (a) make the failure visible without changing gameplay for a heuristic that *works* — a
+warning, or fail-fast on a wrong-shaped return (a bare float already crashes later in `_backprop`
+with a confusing traceback, so failing fast there is strictly better); (b) **re-audit every shipped
+`rules.md` that claims a heuristic is "indistinguishable from no eval"** — that claim is ambiguous
+between a weak eval and a throwing one. Known instances to check first: `bamboo`, `blast_radius`,
+`nakatta`. Run the full suite behind it; `heuristic` is consulted only at the rollout cutoff, so test
+with a low `max_rollout`.
+
+**Games (dedup-screened; all four wave-21 candidates came off this list):**
 | game | source | gameslib uid | notes |
 |---|---|---|---|
-| **Nakatta Pro** | `marksteeregames.com/Nakatta_Pro_rules.pdf` (ModDate 2026-06-14) | — (not in the clone) | **Mark Steere, April 2026 — found by nakatta's QA, not in the library.** A prohibited-glyph rewrite by Bolaños Mures, described by Steere as *"the long undiscovered Middle-earth between Nakatta and Minefield"*. **Screen hard against both `nakatta` and `minefield`** — this is a third game in one lineage. No oracle: cover it with constructed inputs + exhaustive small boards. |
+| Exxit | Vincent Everaert 2003, Jactalea | `exxit` | **Deferred once already, deliberately** — it is a BOARDLESS game (hex tiles laid on a table, unbounded growing board), which our fixed-board model cannot express directly. gameslib presumably bounds it; check how, and whether the bounded version is still the published game before committing. |
+| Quax | — | `quax` | Connection with bridges. **Screen hard against `bridg_it` and `twixt`** — mechanical-clone risk is real. Known: 121 opening moves. |
+| Carnac | Emiliano "Wentu" Venturini 2014 | `carnac` | Standing/lying two-cell megaliths on 8×5 / 10×7 / 14×9; own a square by showing your colour on top; score "dolmens" (groups of ≥3). Known: 280 opening moves. Distinct mechanic, and `piece.shape:"fill"` over two cells should express it. |
+| Six | Steffen Mühlhäuser 2003, nestorgames reprint | — (not in the clone) | Famous hex tile-placement (make a triangle, line or ring of 6). **No oracle** — anchor on the nestorgames rulebook + exhaustive small cases. A genuine gap in a 414-game library. |
+| AlmaTafl · Amoeba · Kulami · Ploy | — | `almatafl`, `amoeba`, — , — | B-tier remainder. Kulami and Ploy have no gameslib entry. |
 | Conect | Steere, BGG 432207 | `conect` | **Still deferred deliberately** — played on the curved surface of a CONE; needs a bespoke conic projection or a wrapped-rhombus adjacency. A genuine new-board-shape project, worth doing on its own. |
+
+**Erik's greenlit optional items — 1 of 4 done** (Push Fight ✅): Khet (laser trace; `board.overlay`
+can probably express it), LYNGK (still unsourced — needs a Wayback hunt of gipf.com c. 2017-19),
+Homeworlds (needs an orchestrator-owned "system graph" primitive).
+
+**Two upstream reports owed to `AbstractPlay/gameslib`** (12 bugs found, none reported yet): the
+`slyde.ts` singleton-aggregation winner flip and the `hexentafl.ts` stuck-side hard deadlock, both
+with minimal repros and measured rates in the wave-21 block above.
 
 **Carry-over that applies to every game:** (a) budget for writing the termination proof yourself —
 `abstractgames.org/finitude.html` is a general essay, not a per-game index — and expect one to exist
@@ -288,13 +414,17 @@ one of these — `slyde`, `exxit`, `quax`, `hexentafl`, `almatafl`, `carnac`, `a
 **Erik's greenlit optional items — 1 of 4 done** (Push Fight ✅): Khet (laser trace; `board.overlay`
 can probably express it), LYNGK (still unsourced — needs a Wayback hunt of gipf.com c. 2017-19),
 Homeworlds (needs an orchestrator-owned "system graph" primitive).
-**Trivial, not worth churn:** 4 of 410 manifests carry inert `designer`/`year` keys that nothing
-reads and SPEC.md does not define; `author` is the real convention. Tag inconsistency `'pie rule'`
-(narrows, unane) vs `'pie-rule'` (konobi, minefield, nakatta, mirador) — tags feed lobby search.
-**`GAME_STATUS.md`'s ANCHOR/BROWSER columns are curated inside `engine/tools/gen_game_status.py`, not
-read from the packages**, and waves 18–19's eight games (bamboo, take, minefield, narrows, invector,
-unane, necklace, churn) were never added — they still read "conformance" despite deep verification.
-Wave 20's five are filled in. Cheap follow-up: back-fill from those waves' COMPLETE blocks.
+**Trivial, not worth churn:** 4 of 414 manifests carry inert `designer`/`year` keys that nothing
+reads and SPEC.md does not define; `author` is the real convention.
+**✅ DONE in wave 21** (commit `019d007`): the `'pie rule'` → `'pie-rule'` tag split (invector,
+narrows, unane — 17 games now share it) and the **`GAME_STATUS.md` ANCHOR/BROWSER back-fill** for
+waves 18–19's eight games. Those columns are curated inside `engine/tools/gen_game_status.py`, **not
+read from the packages**, so every wave must add its own entries — wave 21's four are filled in.
+**Naming-vs-colour convention, logged not fixed:** many games caption seats "Black/White" while
+`colors.js` paints seat 0 red and seat 1 blue (nakatta_pro, slyde, nakatta, …), whereas
+cairo_corridor deliberately names them Red/Blue to match the renderer. Both readings are defensible;
+the split is library-wide and predates this wave. Worth ONE decision, applied everywhere, rather than
+per-game drift.
 
 **⚠ PLATFORM FOLLOW-UP found in wave 19 (real, cosmetic, deliberately NOT fixed mid-wave):**
 `Board.jsx` renders **only** the highlight kinds `'goal'` and `'last-move'` (it builds `hl` at :270
