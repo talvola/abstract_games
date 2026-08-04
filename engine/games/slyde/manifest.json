@@ -1,0 +1,26 @@
+{
+  "uid": "slyde",
+  "name": "Slyde",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Mike Zapawa (2020), published by Kanare Abstract / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Territory",
+  "tags": ["square", "territory", "majority", "swap", "zapawa", "kanare"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/308111/slyde",
+  "options": {
+    "size": { "choices": [4, 6, 8, 10, 12], "default": 12, "label": "Board size" },
+    "anti_mirror": {
+      "choices": ["on", "off"],
+      "default": "on",
+      "label": "Anti-mirroring rule",
+      "labels": {
+        "on": "On (state change in symmetric positions)",
+        "off": "Off (Kanare rulebook)"
+      }
+    }
+  },
+  "description": "Territory game (Mike Zapawa, 2020). The board starts FULL — a checkerboard of pieces, every one of them mobile. Swap one of your mobile pieces with an orthogonally adjacent mobile enemy piece and your own piece freezes for good, so the board slowly seizes up. When nobody can move, the biggest group wins; equal biggest groups cascade to the second biggest, then the third, and so on, and only identically partitioned armies draw."
+}
