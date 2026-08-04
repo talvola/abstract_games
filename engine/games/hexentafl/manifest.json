@@ -1,0 +1,29 @@
+{
+  "uid": "hexentafl",
+  "name": "heXentafl",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Kevin R. Kane",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Capture / annihilation",
+  "tags": ["hex", "asymmetric", "tafl", "hunt", "hnefatafl", "nestorgames"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/321175/hexentafl",
+  "options": {
+    "size": {
+      "choices": [4, 5],
+      "default": 4,
+      "label": "Hex grid",
+      "labels": { "4": "4x4 (37 cells)", "5": "5x5 (61 cells)" }
+    },
+    "first_player": {
+      "choices": ["defenders", "attackers"],
+      "default": "defenders",
+      "label": "Moves first",
+      "labels": { "defenders": "Defenders", "attackers": "Attackers" }
+    }
+  },
+  "max_random_plies": 1400,
+  "description": "heXentafl, Kevin R. Kane's hexagonal Hnefatafl (nestorgames, 2020). Asymmetric siege on a hexhex board: the King sits on the central throne with three defenders (seat 0, moving first) against six attackers on the six corners. Everything but the 4x4 King slides like a rook along the three hex lines; the King steps one space. A man is captured by being sandwiched on opposite sides, a man on a corner by the two rim cells flanking it, and the King on his throne only by three attackers on three non-adjacent sides. The defenders win by escorting the King to any corner, the attackers by taking him. A 5x5 option adds six more attackers, three more defenders and a rook-moving King."
+}
