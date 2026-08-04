@@ -1,0 +1,53 @@
+{
+  "uid": "cairo_corridor",
+  "name": "Cairo Corridor",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Markus Hagenauer (2012, nestorgames 2013)",
+  "players": {
+    "min": 2,
+    "max": 2
+  },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Territory",
+  "tags": [
+    "placement",
+    "connection",
+    "area",
+    "pentagon",
+    "cairo tiling",
+    "polygons",
+    "nestorgames"
+  ],
+  "bgg_url": "https://boardgamegeek.com/boardgame/137173/cairo-corridor",
+  "options": {
+    "size": {
+      "choices": [
+        4,
+        6,
+        8
+      ],
+      "default": 6,
+      "label": "Board size",
+      "labels": {
+        "4": "Small (32 pentagons)",
+        "6": "Standard (72 pentagons)",
+        "8": "Large (128 pentagons)"
+      }
+    },
+    "tie": {
+      "choices": [
+        "draw",
+        "mover_loses"
+      ],
+      "default": "draw",
+      "label": "Equal scores",
+      "labels": {
+        "draw": "Draw (rulebook)",
+        "mover_loses": "Last player to place loses (BGA)"
+      }
+    }
+  },
+  "description": "Placement on a Cairo pentagonal tiling of 72 pentagons. Every placement must leave at least one Corridor \u2014 a connected group of empty cells linking all four sides of the board. The game ends when only one Corridor remains and nothing more can be placed next to it; the player with more pentagons adjacent to that Corridor wins."
+}
