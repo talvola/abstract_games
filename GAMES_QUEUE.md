@@ -6,7 +6,92 @@ universe map and capability gaps live in `GAME_BACKLOG.md`; this file is the
 
 ---
 
-## ⭐ SESSION HANDOFF (read this first) — updated 2026-08-03 (wave 21 → 414 games)
+## ⭐ SESSION HANDOFF (read this first) — updated 2026-08-05 (wave 22 → 418 games)
+
+### ✅ WAVE 22 COMPLETE (2026-08-05) → **418 games**, #415–418
+**The wave that opened with a PLATFORM FIX and closed with the worst unpinned-attribution bug yet.**
+4 build agents, then an independent adversarial deep-QA agent each. **All 4 MERGE-WITH-FIX, and in all
+four `game.py` was byte-unchanged or docstring-only — no shipped rule logic was wrong in any of them.**
+Suite green, render-bounds sweep clean (861 combos / 418 games), heuristic sweep clean (405 combos /
+21,975 calls), all 4 browser-verified by the orchestrator, Opus 5 (1M), no model caps.
+All 16 shipped files matched their QA agent's pinned hashes at commit time.
+
+| # | game | board | mechanic | win type | commit |
+|---|---|---|---|---|---|
+| 415 | carnac | square 8×5/10×7/14×9 | two-cell megaliths, **I cut / you choose** toppling | dolmen scoring | `8ec842b` |
+| 416 | amoeba | hexhex 4 (37) | **sow a stack** bottom-first, co-opt by topping | kernel capture / immobilise | `2839298` |
+| 417 | six | **boardless, growing hex cluster** | lay 20 then MOVE; splitting captures all but the largest | row / circle / triangle of 6 | `186c0ab` |
+| 418 | quax | square 3–15 | connection where a **diagonal bar costs a whole turn** and cuts | connection | `988b249` |
+
+**FIRST TASK, DONE FIRST — the `agp/mcts.py::_evaluate` fix (`0f3471c`).** A raising `heuristic()` now
+emits a `HeuristicWarning` (once per game+exception) and still degrades to a draw so a live match
+can't crash; a wrong-SHAPE return now fails fast in the new `agp.mcts.check_payoffs`. **`conformance`
+exercises `heuristic()` at every ply of its first random game**, so `validate` catches this for every
+future game — proven non-vacuous (fails on a throwing subject and on a bare float, passes the real
+one), locked in by `tests/test_games.py::test_heuristic_failures_are_visible`, and swept library-wide
+by the new `tools/sweep_heuristics.py`. **The re-audit came back CLEAN: 196 of 418 games expose a
+heuristic, 405 (uid, options) combos, 21,975 calls, 0 failures** — so no shipped heuristic throws, and
+the three "indistinguishable from no eval" claims (bamboo, nakatta, blast_radius) return varying
+zero-sum values, i.e. genuine weak-eval measurements. halfcut/clearcut/invector/cairo_corridor/
+hexentafl ship none with the measurement that justifies it. **Nothing to correct.**
+
+**THE HEADLINE: `returns()` ITSELF WAS PINNED BY NOTHING (quax) — the worst instance of the library's
+most reliable defect family, now 9 instances.** The only assertions were *shape* (`in ([1,-1],[-1,1])`)
+and *zero-sum*, and **both are blind to WHICH seat gets +1**, so flipping `s.winner == BLACK` survived
+all 585,929 checks: 100% of finished games with every stored match result and Glicko update inverted
+and `MCTSBot` playing to LOSE, while the board reads correctly. The family also broadened past text —
+six's unpinned thing was a **NUMBER** (the attrition caption prints the *loser's* stock; a mutant
+printing the winner's survived 286,746 checks), and quax's other two were **colours**
+(`LINK_FILL[owner]` → `[1-owner]`, and a goal-edge tint swap).
+
+**TWO NEW gameslib issues (#13, #14) — AND TWO ORACLES CLEARED.** #13: `carnac.ts`'s
+`compareDolmenScores` omits the PRIMARY win criterion (the *number* of dolmens), flipping the winner
+on 46.0/33.3/17.3% of complete games; adjudicated against the oracle by four textual sources plus an
+internal contradiction in the rulebook's own GAME TIPS. #14: `amoeba.ts`'s `validateMove` accepts
+NON-STRAIGHT destinations at the right distance. But `carnac.ts` is **clean** of the systemic dead-skip
+(real tip position → `{valid:true}`, all 469 passes accepted) and `quax.ts`'s missing no-legal-move
+case is **provably vacuous**. Oracle trustworthiness remains per-game, in both directions.
+
+**Wave-22 lessons (transferable):**
+1. **THE "DECISIVE RESULT OUTRANKS THE COUNTERS" TEST CAN ITSELF BE VACUOUS** — 10th instance of that
+   family, new shape. Amoeba's cap adjudicates by a *scored* tiebreak, and both poison positions had
+   the winner **ahead** on it, so a mutant resolving repetition BEFORE the win conditions passed all
+   335,077 checks. **The poison position's tiebreak must DISAGREE with the real winner.**
+2. **AN OTHER-LANGUAGE EDITION CAN CARRY A RULE THE ENGLISH ONE OMITS OUTRIGHT.** `AMOEBA_JP.pdf` has
+   a whole end-of-game rule `AMOEBA_EN.pdf` lacks — and the builder had **already invented a ply-cap
+   draw** to fill the silence. **A sheet's silence on termination is an OMISSION to investigate, not a
+   licence to invent.**
+3. **A DEAD-LOOKING URL CAN BE A JS REDIRECT TO A LIVE PAGE WAYBACK NEVER CAPTURED.** Quax's 386-byte
+   stub redirects to a live 39,018-byte page carrying Taylor's **1992** rules — absent from all six
+   captures — and that text *reversed* the wave's apparent "designer contradicts every implementation"
+   finding. Read a stub's bytes before concluding a page is dead.
+4. **MEASURE WHETHER A RIVAL READING CAN DIFFER IN GAME VALUE AT ALL.** Quax's alternative crossing
+   rule offers an extra move on 16.594% of plies, **every one connectivity-redundant** ⇒ the readings
+   cannot differ in value, only in move-list size. That retires an interpretive question outright,
+   which no amount of differential agreement can do.
+5. **BOUNDS ARE NOT ENOUGH — PIN `render()`'s CONTENT.** Carnac's `owner in (RED, BLUE)` is trivially
+   satisfied by `1-top`, so a mutant drawing **every square in the opposite colour** survived (and in
+   Carnac the colour map *is* the score), along with six more in the same hole. QA's matrix found it
+   after the builder's own 28/28 pass missed it entirely.
+6. **PROVE A NECESSARY-LOOKING INVENTED RULE NECESSARY, CONSTRUCTIVELY.** Six's 100-ply capture-free
+   draw appears in no sheet; QA exhibited an explicit **4-ply cycle** returning a byte-identical
+   position with 0 tiles lost, and showed `PLY_CAP` is not independent of it. Necessary, and labelled.
+7. **A FALSE JUSTIFICATION FOR A CORRECT RULING IS STILL A DEFECT** (2nd wave running). Six justified
+   its symmetric below-six rule with an "otherwise a 0-token player deadlocks" argument that QA proved
+   **unreachable**, with a witness position — and the replacement also corrected the claim that the
+   measured 43.2% made the ruling load-bearing (both readings give the same winner).
+8. **Both agents retracted claims under adjudication** (3rd wave running): quax's QA had its own
+   diagram bit order wrong and said so after a control failed, conceding the builder was right;
+   amoeba's QA suspected a misattributed quote and withdrew it. Treat a retraction as the process
+   working.
+9. **Ops:** the byte-pinning protocol fired **twice** — six and quax both showed post-sentinel drift,
+   and in both cases it was the *QA agent* editing (legitimately, released on the sentinel), each
+   proving its `game.py` edit confined by **reverse-applying the diff to reproduce the builder's hash
+   exactly** plus a docstring-stripped AST comparison. Without hash-pinning that is indistinguishable
+   from a builder editing after its own `DONE`. Build agents again dropped scratch files in the repo
+   ROOT (`d_14x9.log`, `bgg.json`, `measure.py`) and each owner cleaned its own once flagged.
+
+
 
 ### ✅ WAVE 21 COMPLETE (2026-08-03) → **414 games**, #411–414
 **The first wave to prove a PUBLISHED RULE SHEET DEFECTIVE**, and the first to leave the Steere seam
@@ -367,36 +452,43 @@ trustworthy nor untrustworthy in general, only per game.
    hash after QA had edited it (nothing was reverted). Per-agent gameslib copies removed last wave's
    contention entirely.
 
-### ▶▶ NEXT (wave 22) — PRE-STAGED
+### ▶▶ NEXT (wave 23) — PRE-STAGED (Erik has NOT greenlit starting it; wave 22 closed 2026-08-05)
 
-**FIRST TASK, before any new game: the `agp/mcts.py::_evaluate` fix + re-audit.** It swallows every
-exception from `heuristic()` and returns `[0.0]*n`, so a THROWING heuristic is indistinguishable from
-no heuristic. Deferred out of wave 21 only because two QA agents were measuring through that path.
-Two parts: (a) make the failure visible without changing gameplay for a heuristic that *works* — a
-warning, or fail-fast on a wrong-shaped return (a bare float already crashes later in `_backprop`
-with a confusing traceback, so failing fast there is strictly better); (b) **re-audit every shipped
-`rules.md` that claims a heuristic is "indistinguishable from no eval"** — that claim is ambiguous
-between a weak eval and a throwing one. Known instances to check first: `bamboo`, `blast_radius`,
-`nakatta`. Run the full suite behind it; `heuristic` is consulted only at the rollout cutoff, so test
-with a low `max_rollout`.
+**No platform blocker outstanding.** Wave 22's mandated first task (the `mcts._evaluate` fix + the
+"indistinguishable from no eval" re-audit) is **DONE and clean** — see the wave-22 block above.
 
-**Games (dedup-screened; all four wave-21 candidates came off this list):**
+**Two candidate platform items, neither blocking, both orchestrator-owned (`Board.jsx`):**
+- **The growing-board minimum span** (found in wave 22's browser pass): the viewBox auto-fits with no
+  padding or minimum span, so an elongated cluster renders as an unreadable strip. Cosmetic; rules,
+  containment and clicking unaffected. Affects `six`, `hive`, `trax` — one padded-span pass plus a
+  browser check per game, not a per-game hack.
+- **The wave-19 highlight-kinds gap, still open:** `Board.jsx` renders only `'goal'` and `'last-move'`,
+  so **seven highlight emissions across five shipped games are silently dropped** (`"target"` in
+  `jeson_mor`/`kings_valley`; `zone`/`step`/`selected`/`push`/`inline`/`broadside` in `abalone`,
+  `king_of_the_hill`, `kamisado`). `target`→`goal` looks like a two-line intent fix in the first pair;
+  the abalone/kamisado group carries richer semantics needing real design.
+
+**Games (dedup-screened; all four wave-22 candidates came off this list, so it is thinning):**
 | game | source | gameslib uid | notes |
 |---|---|---|---|
-| Exxit | Vincent Everaert 2003, Jactalea | `exxit` | **Deferred once already, deliberately** — it is a BOARDLESS game (hex tiles laid on a table, unbounded growing board), which our fixed-board model cannot express directly. gameslib presumably bounds it; check how, and whether the bounded version is still the published game before committing. |
-| Quax | — | `quax` | Connection with bridges. **Screen hard against `bridg_it` and `twixt`** — mechanical-clone risk is real. Known: 121 opening moves. |
-| Carnac | Emiliano "Wentu" Venturini 2014 | `carnac` | Standing/lying two-cell megaliths on 8×5 / 10×7 / 14×9; own a square by showing your colour on top; score "dolmens" (groups of ≥3). Known: 280 opening moves. Distinct mechanic, and `piece.shape:"fill"` over two cells should express it. |
-| Six | Steffen Mühlhäuser 2003, nestorgames reprint | — (not in the clone) | Famous hex tile-placement (make a triangle, line or ring of 6). **No oracle** — anchor on the nestorgames rulebook + exhaustive small cases. A genuine gap in a 414-game library. |
-| AlmaTafl · Amoeba · Kulami · Ploy | — | `almatafl`, `amoeba`, — , — | B-tier remainder. Kulami and Ploy have no gameslib entry. |
+| Exxit | Vincent Everaert 2003, Jactalea | `exxit` | **Deferred twice, but the excuse is now GONE:** it is boardless (hex tiles on a table, unbounded), and wave 22's **`six` shipped exactly that** — a growing hex cluster with an explicit axial `cells` list, negative coordinates and an auto-fitting viewBox, browser-verified to 129 cells. Read `games/six` (and `hive`) as the template, derive the bound from the tile count in code, and mind the cosmetic minimum-span limit logged above. Best-value item on this list. |
+| Andantino | David L. Smith | — (not in the clone) | **NEW, found by six's builder inside Six's own BGG files section** — the other boardless hex game, playable with a Six set. No oracle. Screen against `six` first (both are hex-cluster placement), but the win conditions differ. Same render path as `six`, so cheap now. |
+| 36 | Néstor Romeral Andrés, nestorgames | — | **NEW, found by accident:** `nestorgames.com/rulebooks/6_EN.pdf` fuzzy-redirects to `36_EN.pdf`, which is this game — a 2-or-3-player **seeding** game on a MODULAR board (9 tiles assembled into a 3×3 square), race to shed your counters. Not in the library. Rulebook already fetched and readable (has a text layer). Note `num_players` is fixed, so pick one count. |
+| AlmaTafl | Paschalis Antoniou, BGG 401367 | `almatafl` | Hex tafl with STACKING, `advanced`/`plus` variants, 12 exit cells + 18 blocked cells hard-coded in the oracle. Deliberately skipped in wave 22 for diversity (we had just shipped `hexentafl`); fine to take now. |
+| Kulami · Ploy | — | — , — | **Neither has a gameslib entry**, so both need their own anchor. Kulami = 17 loose wooden tiles forming an irregular board, place a marble in the row/column of the last marble but not on the same tile; majority scoring per tile. Ploy (3M, 1970) = directional pieces that spend a turn ROTATING — **needs a new directional-prong render primitive, which would also unlock Octi**, so it is an orchestrator-owned `Board.jsx` job first. |
+| quadrex · quickway · stymie · torax · quikquax | Bill Taylor | — | **NEW, from Taylor's own 2×3 family table found while building `quax`** — none are in the library. Screen each against `quax`/`crossway`/`twixt`/`bridg_it`; the family is close-knit so expect one or two to be clones, but the table itself is the designer's own taxonomy and a good sourcing lead. |
 | Conect | Steere, BGG 432207 | `conect` | **Still deferred deliberately** — played on the curved surface of a CONE; needs a bespoke conic projection or a wrapped-rhombus adjacency. A genuine new-board-shape project, worth doing on its own. |
 
 **Erik's greenlit optional items — 1 of 4 done** (Push Fight ✅): Khet (laser trace; `board.overlay`
 can probably express it), LYNGK (still unsourced — needs a Wayback hunt of gipf.com c. 2017-19),
 Homeworlds (needs an orchestrator-owned "system graph" primitive).
 
-**Two upstream reports owed to `AbstractPlay/gameslib`** (12 bugs found, none reported yet): the
-`slyde.ts` singleton-aggregation winner flip and the `hexentafl.ts` stuck-side hard deadlock, both
-with minimal repros and measured rates in the wave-21 block above.
+**FOUR upstream reports now owed to `AbstractPlay/gameslib`** (14 issues found, **none reported yet —
+this needs Erik's go-ahead, since filing GitHub issues publishes outward**): the `slyde.ts`
+singleton-aggregation winner flip; the `hexentafl.ts` stuck-side hard deadlock; **wave 22's
+`carnac.ts` `compareDolmenScores` win-criterion omission** (46.0/33.3/17.3% winner flips, minimal
+repro `p1=[8]` vs `p2=[3,3,3]`); and **`amoeba.ts`'s `validateMove` accepting non-straight
+destinations**. All four have minimal repros and measured rates in the wave blocks above.
 
 **Carry-over that applies to every game:** (a) budget for writing the termination proof yourself —
 `abstractgames.org/finitude.html` is a general essay, not a per-game index — and expect one to exist
@@ -407,10 +499,13 @@ decoding is a genuinely independent second method for QA; (d) sheets contradict 
 with the figures, and if the figures cannot settle it, **check the designer's other sheets for the same
 clause worded better** (then check whether that sheet is itself a missing game).
 
-**B-tier (one fetch short):** Slyde · Exxit · Quax · heXentafl · AlmaTafl · Carnac · Amoeba ·
-Cairo Corridor · Hey That's My Fish! · Kulami · Six · Ploy. (`gameslib` has an implementation of every
-one of these — `slyde`, `exxit`, `quax`, `hexentafl`, `almatafl`, `carnac`, `amoeba`, `ccorridor`,
-`penguin` is *Penguin Soccer* not Hey That's My Fish, `yonmoque` ✅ done, `onager` ✅ done.)
+**B-tier, after wave 22:** ✅ done — Slyde, heXentafl, Cairo Corridor, Yonmoque, Onager (wave 21);
+**Quax, Carnac, Amoeba, Six (wave 22)**. ⏳ remaining — **Exxit** (now cheap, see above) · AlmaTafl ·
+Kulami · Ploy · Hey That's My Fish! (`penguin` in the clone is *Penguin Soccer*, a different game) ·
+plus the newly surfaced Andantino, 36, and Taylor's quadrex/quickway/stymie/torax/quikquax.
+**The oracle-backed seam is thinning** — Kulami, Ploy, Six-family and the Taylor variants have no
+gameslib entry, so expect more no-oracle waves like `six`, which cost more per game but worked fine
+(exhaustive enumeration + publisher sheets + a QA agent building its own independent engine).
 **Erik's greenlit optional items — 1 of 4 done** (Push Fight ✅): Khet (laser trace; `board.overlay`
 can probably express it), LYNGK (still unsourced — needs a Wayback hunt of gipf.com c. 2017-19),
 Homeworlds (needs an orchestrator-owned "system graph" primitive).
@@ -420,10 +515,12 @@ reads and SPEC.md does not define; `author` is the real convention.
 narrows, unane — 17 games now share it) and the **`GAME_STATUS.md` ANCHOR/BROWSER back-fill** for
 waves 18–19's eight games. Those columns are curated inside `engine/tools/gen_game_status.py`, **not
 read from the packages**, so every wave must add its own entries — wave 21's four are filled in.
-**Naming-vs-colour convention, logged not fixed:** many games caption seats "Black/White" while
-`colors.js` paints seat 0 red and seat 1 blue (nakatta_pro, slyde, nakatta, …), whereas
-cairo_corridor deliberately names them Red/Blue to match the renderer. Both readings are defensible;
-the split is library-wide and predates this wave. Worth ONE decision, applied everywhere, rather than
+**Naming-vs-colour convention, logged not fixed — and wave 22 shows it BOTH ways in one wave:**
+`six` and `amoeba` caption seats "Black/White" while `colors.js` paints seat 0 red and seat 1 blue,
+whereas `carnac` and `quax` name them Red/Blue (quax's captions read "Black to move (connect
+top-bottom)" but its *stones* are red — the same split inside one package). Confirmed live in wave
+22's browser pass. Both readings are defensible and the split is library-wide, but it is now visible
+enough to be worth ONE decision applied everywhere, rather than
 per-game drift.
 
 **⚠ PLATFORM FOLLOW-UP found in wave 19 (real, cosmetic, deliberately NOT fixed mid-wave):**
