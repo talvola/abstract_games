@@ -1,0 +1,27 @@
+{
+  "uid": "carnac",
+  "name": "Carnac",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory (game by Emiliano \"Wentu\" Venturini, 2014, HUCH! & friends)",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Territory",
+  "tags": ["square", "placement", "displacement", "territory", "groups", "scoring",
+           "i-cut-you-choose", "huch", "venturini"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/103061/carnac",
+  "options": {
+    "board": {
+      "choices": ["8x5", "10x7", "14x9"],
+      "default": "10x7",
+      "label": "Board size",
+      "labels": {
+        "8x5": "Small — 8×5",
+        "10x7": "Medium — 10×7 (recommended first)",
+        "14x9": "Large — 14×9"
+      }
+    }
+  },
+  "description": "Carnac (Emiliano \"Wentu\" Venturini, 2014): stand a two-cube megalith on any empty square from the common stock of 28 — and your opponent decides whether to push it over. Every megalith is painted the same: one square end and two opposite long faces in one colour, the other three faces in the other, so standing it shows one square end on a single square, while toppling it lays it flat over two squares that both show one of its long faces — and which colour that is depends on the axis it falls along, not on the colour that was standing. A DOLMEN is an orthogonally-connected group of at least three squares showing one colour, seen from above; whoever ends with the MOST dolmens wins, so letting your own dolmens grow together destroys points. If your opponent declines to topple, you simply place again."
+}
