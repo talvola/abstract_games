@@ -1,0 +1,15 @@
+{
+  "uid": "amoeba",
+  "name": "Amoeba",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Abstract Games factory (game by Masahiro Nakajima, 2010)",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Stacking",
+  "tags": ["hex", "hexhex-4", "stacking", "sowing", "royal-capture", "nakajima", "nestorgames"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/143387/amoeba",
+  "max_random_plies": 800,
+  "description": "Amoeba (Masahiro Nakajima, 2010; nestorgames): ten discs and a 'kernel' each on a 37-point hex board. A stack is controlled by whoever owns its top piece, so stacks change hands. Each turn either MOVE a stack you control in a straight line exactly as many points as it is high (nothing blocks it), or SOW it along that line -- bottom piece on the first point, next one up on the second, one per point -- which hands any enemy piece you were carrying straight back to its owner. Win by controlling a stack that contains the enemy kernel, or by leaving your opponent no legal move."
+}
