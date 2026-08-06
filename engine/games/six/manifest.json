@@ -1,0 +1,16 @@
+{
+  "uid": "six",
+  "name": "Six",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Steffen Mühlhäuser / Steffen-Spiele (2003) — AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "N-in-a-row",
+  "tags": ["six", "hex", "boardless", "tile", "placement", "movement",
+           "pattern", "muhlhauser", "steffen-spiele"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/20195/six",
+  "max_random_plies": 1200,
+  "description": "Steffen Mühlhäuser's boardless hexagon game (Steffen-Spiele, 2003): the tiles ARE the playing area. Lay your 20 tokens next to the growing cluster, then start picking your own tokens up and re-laying them — a pickup that cuts the field apart CAPTURES every group but the largest, your own tokens included. Win by getting six of your colour into a row, a triangle or a circle, or by cutting your opponent below six tokens."
+}
