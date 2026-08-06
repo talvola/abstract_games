@@ -13,6 +13,7 @@ import random
 from dataclasses import dataclass, field
 
 from .game import Game
+from .mcts import check_payoffs
 from .types import CHANCE
 
 
@@ -82,9 +83,14 @@ def check(game: Game, manifest: dict, games: int = 40, seed: int = 0,
         return r
 
     # --- random self-play ---
+    # The first game also exercises `heuristic()` at every ply. MCTS consults it
+    # only at a rollout cutoff and used to SWALLOW every exception there, so a
+    # heuristic that raises was indistinguishable from shipping none while this
+    # harness passed. Checking one full game keeps `validate` fast; breadth over
+    # the whole library is `tools/sweep_heuristics.py`.
     for g in range(games):
         rng = random.Random(seed * 1000 + g)
-        ok = _play_one(game, rng, r, max_moves)
+        ok = _play_one(game, rng, r, max_moves, check_heuristic=(g == 0))
         if not ok:
             break
         r.games_played += 1
@@ -169,10 +175,31 @@ def _check_freeform(game: Game, r: Report, s0) -> None:
                   "offer-draw -> accept-draw ends in a well-formed terminal")
 
 
-def _play_one(game: Game, rng, r: Report, max_moves: int) -> bool:
+def _play_one(game: Game, rng, r: Report, max_moves: int,
+              check_heuristic: bool = False) -> bool:
     state = game.initial_state(rng=rng)
+    h = getattr(game, "heuristic", None) if check_heuristic else None
+    h_calls = 0
     for n in range(max_moves):
         terminal = game.is_terminal(state)
+
+        # heuristic(): must not raise, and must honour the returns() convention
+        # (a list of num_players finite numbers -- a bare float dies later in
+        # MCTS back-prop with a traceback naming neither the game nor the rule).
+        if h is not None:
+            try:
+                val = h(state)
+            except Exception as e:  # noqa: BLE001
+                r.add(False, f"heuristic() raised at ply {n}: {e!r} -- MCTS would "
+                             f"silently score every rollout cutoff as a draw")
+                return False
+            if val is not None:
+                try:
+                    check_payoffs(game, val)
+                except TypeError as e:
+                    r.add(False, f"heuristic() at ply {n}: {e}")
+                    return False
+            h_calls += 1
 
         # serialize round-trips
         snap = game.serialize(state)
@@ -193,6 +220,9 @@ def _play_one(game: Game, rng, r: Report, max_moves: int) -> bool:
                 r.add(False, f"returns() malformed at terminal: {ret!r}")
                 return False
             r.move_lengths.append(n)
+            if h_calls:
+                r.add(True, f"heuristic() well-formed over {h_calls} plies "
+                            f"(no raise, {game.num_players} finite payoffs)")
             return True
 
         cp = game.current_player(state)

@@ -13,10 +13,57 @@ from __future__ import annotations
 
 import math
 import time
+import warnings
 from typing import Optional
 
 from .game import Game
 from .types import Move, State
+
+
+class HeuristicWarning(UserWarning):
+    """A game's ``heuristic()`` raised, so rollout cutoffs scored it as a draw.
+
+    Emitted once per (game class, exception type). Historically this failure was
+    swallowed silently, which made a *throwing* heuristic indistinguishable from
+    shipping none -- every rollout cutoff returned a perfect draw while
+    ``validate``, conformance and every functional test still passed.
+    """
+
+
+# (game class name, exception class name) pairs already warned about.
+_HEURISTIC_WARNED: set[tuple[str, str]] = set()
+
+
+def check_payoffs(game: Game, val, what: str = "heuristic") -> list[float]:
+    """Validate a payoff vector and return it, or raise ``TypeError``.
+
+    ``heuristic()`` must follow the ``returns()`` convention: a sequence of
+    ``num_players`` numbers. A bare float, a wrong length or a non-numeric entry
+    all used to survive to MCTS back-propagation and die there with a traceback
+    that named neither the game nor the contract; failing here says what is
+    wrong.
+    """
+    n = game.num_players
+    if isinstance(val, (str, bytes)) or not isinstance(val, (list, tuple)):
+        raise TypeError(
+            f"{type(game).__name__}.{what}() must return a list of {n} payoffs "
+            f"(one per player, like returns()), got {val!r}"
+        )
+    if len(val) != n:
+        raise TypeError(
+            f"{type(game).__name__}.{what}() returned {len(val)} payoffs, "
+            f"expected {n} (one per player)"
+        )
+    for i, x in enumerate(val):
+        if isinstance(x, bool) or not isinstance(x, (int, float)):
+            raise TypeError(
+                f"{type(game).__name__}.{what}() payoff[{i}] is not a number: {x!r}"
+            )
+        if x != x or x in (float("inf"), float("-inf")):
+            raise TypeError(
+                f"{type(game).__name__}.{what}() payoff[{i}] is not finite: {x!r}"
+            )
+    return list(val)
 
 
 class RandomBot:
@@ -134,14 +181,28 @@ class MCTSBot:
 
     def _evaluate(self, game: Game, state: State) -> list[float]:
         h = getattr(game, "heuristic", None)
-        if h is not None:
-            try:
-                val = h(state)
-                if val is not None:
-                    return val
-            except Exception:
-                pass
-        return [0.0] * game.num_players
+        if h is None:
+            return [0.0] * game.num_players
+        try:
+            val = h(state)
+        except Exception as e:  # noqa: BLE001
+            # Fall back to a draw so a live match degrades instead of crashing,
+            # but WARN: silence here made a throwing heuristic look exactly like
+            # no heuristic at all.
+            key = (type(game).__name__, type(e).__name__)
+            if key not in _HEURISTIC_WARNED:
+                _HEURISTIC_WARNED.add(key)
+                warnings.warn(
+                    f"{type(game).__name__}.heuristic() raised {e!r}; rollout "
+                    f"cutoffs are being scored as draws",
+                    HeuristicWarning, stacklevel=2,
+                )
+            return [0.0] * game.num_players
+        if val is None:                        # documented "no opinion"
+            return [0.0] * game.num_players
+        # A wrong SHAPE is a programming error that already crashed later (in
+        # back-prop, with a confusing traceback) -- fail fast and say why.
+        return check_payoffs(game, val)
 
 
 def play_match(game: Game, agents: list, rng, max_moves: int = 2000,

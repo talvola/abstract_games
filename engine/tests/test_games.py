@@ -416,6 +416,79 @@ def test_tictactoe_mcts_never_loses_as_x():
         assert res["returns"][0] >= 0.0  # X wins or draws, never loses
 
 
+def test_heuristic_failures_are_visible():
+    """A broken ``heuristic()`` must not masquerade as no heuristic at all.
+
+    ``mcts._evaluate`` used to wrap the call in ``except Exception: pass`` and
+    return ``[0.0] * num_players``, so a heuristic that RAISED scored every
+    rollout cutoff as a perfect draw -- indistinguishable from shipping none,
+    while ``validate``, conformance and every functional test passed. A wrong
+    SHAPE (the documented convention is a list of ``num_players`` payoffs, like
+    ``returns()``) died later in back-prop with a traceback that named neither
+    the game nor the rule.
+    """
+    import warnings
+
+    from agp.mcts import HeuristicWarning, check_payoffs
+
+    manifest, game = _load("tic_tac_toe")
+
+    class _Wrap:                                   # delegates everything but heuristic
+        num_players = game.num_players
+
+        def __getattr__(self, name):
+            return getattr(game, name)
+
+    class Throwing(_Wrap):
+        def heuristic(self, state):
+            raise ValueError("boom")
+
+    class BareFloat(_Wrap):
+        def heuristic(self, state):
+            return 0.5                             # not a per-player list
+
+    class Working(_Wrap):
+        def heuristic(self, state):
+            return [0.25, -0.25]
+
+    # A throwing heuristic still degrades to a draw (a live match must not crash)
+    # but now WARNS, and conformance rejects the package.
+    with warnings.catch_warnings(record=True) as caught:
+        warnings.simplefilter("always")
+        move = MCTSBot(random.Random(2), iterations=40, max_rollout=1).select(
+            Throwing(), game.initial_state())
+        assert move in game.legal_moves(game.initial_state())
+        assert any(issubclass(w.category, HeuristicWarning) for w in caught), \
+            "a raising heuristic must emit a HeuristicWarning, not be swallowed"
+    assert not check(Throwing(), manifest, games=1).ok
+
+    # A wrong-shaped return fails fast, naming the game and the convention.
+    for subject in (BareFloat(), Throwing()):
+        assert not check(subject, manifest, games=1).ok
+    try:
+        MCTSBot(random.Random(2), iterations=40, max_rollout=1).select(
+            BareFloat(), game.initial_state())
+        raise AssertionError("a bare float must raise, not reach back-prop")
+    except TypeError as e:
+        assert "payoffs" in str(e)
+
+    for bad in (0.5, [0.0], [0.0, 0.0, 0.0], "0.5", [float("nan"), 0.0],
+                [float("inf"), 0.0], [True, False]):
+        try:
+            check_payoffs(game, bad)
+            raise AssertionError(f"check_payoffs accepted {bad!r}")
+        except TypeError:
+            pass
+    assert check_payoffs(game, [0.5, -0.5]) == [0.5, -0.5]
+    assert check_payoffs(game, (1, -1)) == [1, -1]        # ints and tuples are fine
+
+    # A heuristic that WORKS is unaffected: no warning, and conformance passes.
+    with warnings.catch_warnings(record=True) as caught:
+        warnings.simplefilter("always")
+        assert check(Working(), manifest, games=2).ok
+        assert not [w for w in caught if issubclass(w.category, HeuristicWarning)]
+
+
 def test_xiangqi():
     manifest, game = _load("xiangqi")
     assert check(game, manifest, games=12).ok
