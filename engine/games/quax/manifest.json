@@ -1,0 +1,19 @@
+{
+  "uid": "quax",
+  "name": "Quax",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "Bill Taylor (2000) / AGP port",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Connection",
+  "tags": ["connection", "square", "bridges", "pie-rule", "drawless"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/36804/quax",
+  "options": {
+    "size": { "choices": [3, 5, 7, 9, 11, 13, 15], "default": 11, "label": "Board size" },
+    "pie": { "choices": ["on", "off"], "default": "on", "label": "Pie rule (swap)",
+             "labels": { "on": "On (White may swap)", "off": "Off" } }
+  },
+  "description": "Quax (Bill Taylor, 2000) - \"Quadrangular Hex\". Each turn drop a stone on any empty cell, or spend the whole turn placing a link between two diagonally adjacent stones of your own. Each 2x2 square holds at most one link, so every link you buy also permanently cuts your opponent's crossing diagonal. Black joins top to bottom, White joins left to right; the pie rule keeps the opening fair. Quax cannot be drawn."
+}
