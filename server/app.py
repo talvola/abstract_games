@@ -417,6 +417,30 @@ def create_seek(body: SeekBody, db: Session = Depends(get_db), user: User = Depe
     return {"id": seek.id}
 
 
+@app.get("/api/seeks/{seek_id}")
+def get_seek(seek_id: str, db: Session = Depends(get_db), user: User | None = Depends(optional_user)):
+    """One open challenge, for the shareable invite link (#/challenge/<id>).
+    Public: a friend who isn't signed in yet must be able to see what they were
+    invited to before registering. 410 once it's been accepted or cancelled."""
+    from .models import UserGameRating
+
+    seek = db.get(Seek, seek_id)
+    if not seek or db.get(User, seek.creator_id) is None:
+        raise HTTPException(410, "this challenge has already been accepted or withdrawn")
+    r = (db.query(UserGameRating).filter_by(user_id=seek.creator_id, game_uid=seek.game_uid).first())
+    return {
+        "id": seek.id,
+        "creator_name": seek.creator_name,
+        "creator_id": seek.creator_id,
+        "creator_rating": {"rating": round(r.rating), "provisional": r.rd > 110} if r else None,
+        "game_uid": seek.game_uid,
+        "game_name": game_name(seek.game_uid),
+        "options": seek.options,
+        "seat_pref": seek.seat_pref,
+        "mine": user is not None and seek.creator_id == user.id,
+    }
+
+
 @app.post("/api/seeks/{seek_id}/accept")
 def accept_seek(seek_id: str, db: Session = Depends(get_db), user: User = Depends(current_user)):
     seek = db.get(Seek, seek_id)

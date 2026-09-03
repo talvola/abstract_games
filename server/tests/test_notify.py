@@ -171,6 +171,20 @@ class NotifyTests(unittest.TestCase):
             kinds = [n.kind for n in db.query(Notification).filter_by(match_id=mid)]
         self.assertEqual(sorted(kinds), ["paired", "reminder"])
 
+    def test_public_seek_view_for_invite_links(self):
+        r = self.a.post("/api/seeks", json={"game_uid": self.game, "options": {}, "seat_pref": "first"})
+        sid = r.json()["id"]
+        anon = TestClient(appmod.app)
+        v = anon.get(f"/api/seeks/{sid}")
+        self.assertEqual(v.status_code, 200, v.text)
+        self.assertEqual(v.json()["creator_name"], "Alice")
+        self.assertEqual(v.json()["game_uid"], self.game)
+        self.assertFalse(v.json()["mine"])
+        self.assertTrue(self.a.get(f"/api/seeks/{sid}").json()["mine"])
+        self.b.post(f"/api/seeks/{sid}/accept")
+        self.assertEqual(anon.get(f"/api/seeks/{sid}").status_code, 410)
+        self.assertEqual(anon.get("/api/seeks/nope").status_code, 410)
+
     def test_bot_matches_never_email(self):
         r = self.a.post("/api/matches", json={"game_uid": self.game, "options": {}, "opponent": "bot", "seat": "first", "bot_iterations": 5})
         mid = r.json()["match_id"]

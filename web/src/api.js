@@ -35,6 +35,7 @@ export const api = {
   seeks: () => get('/api/seeks'),
   createSeek: (game_uid, options, seat_pref) =>
     post('/api/seeks', { game_uid, options, seat_pref }),
+  getSeek: (id) => get(`/api/seeks/${id}`),
   acceptSeek: (id) => post(`/api/seeks/${id}/accept`),
   cancelSeek: (id) => del(`/api/seeks/${id}`),
   quickPair: (game_uid, options) => post('/api/quickpair', { game_uid, options }),

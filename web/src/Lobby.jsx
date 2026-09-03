@@ -51,14 +51,17 @@ export default function Lobby({ me, games, go, refreshGames, config }) {
               {s.options?.size ? ` (size ${s.options.size})` : ''}
             </span>
             {s.mine ? (
-              <button
-                onClick={async () => {
-                  await api.cancelSeek(s.id)
-                  refresh()
-                }}
-              >
-                Cancel
-              </button>
+              <span className="seek-mine">
+                <CopyLink seekId={s.id} />
+                <button
+                  onClick={async () => {
+                    await api.cancelSeek(s.id)
+                    refresh()
+                  }}
+                >
+                  Cancel
+                </button>
+              </span>
             ) : (
               <button
                 className="accent"
@@ -153,6 +156,24 @@ function AddGame({ onUploaded }) {
   )
 }
 
+export function inviteUrl(seekId) {
+  return `${window.location.origin}${window.location.pathname}#/challenge/${seekId}`
+}
+
+// "Copy invite link" for a challenge you posted — the way to get a specific
+// friend into a game with you. Falls back to showing the URL where the
+// clipboard API is unavailable (http, old browsers).
+export function CopyLink({ seekId, label = 'Copy invite link' }) {
+  const [state, setState] = useState('') // '' | copied | show
+  const url = inviteUrl(seekId)
+  async function copy() {
+    try { await navigator.clipboard.writeText(url); setState('copied'); setTimeout(() => setState(''), 2000) }
+    catch { setState('show') }
+  }
+  if (state === 'show') return <input className="invite-url" readOnly value={url} onFocus={(e) => e.target.select()} />
+  return <button className="copy-link" onClick={copy}>{state === 'copied' ? 'Copied ✓' : label}</button>
+}
+
 function badgeText(m) {
   if (m.status === 'finished') {
     if (m.winner == null) return 'Draw'
@@ -173,12 +194,13 @@ function NewChallenge({ games, go, onCreated, config }) {
   const [difficulty, setDifficulty] = useState(300)
   const [busy, setBusy] = useState(false)
   const [note, setNote] = useState('')
+  const [postedId, setPostedId] = useState(null) // seek we just posted → show its invite link
 
   const game = games.find((g) => g.uid === uid)
   const freeform = !!game?.freeform
   useEffect(() => setOpts(defaultOptions(game?.options)), [uid]) // eslint-disable-line
   useEffect(() => { if (freeform) setOpponent('human') }, [freeform])
-  useEffect(() => setNote(''), [uid, opponent])
+  useEffect(() => { setNote(''); setPostedId(null) }, [uid, opponent])
 
   async function create() {
     setBusy(true); setNote('')
@@ -188,7 +210,9 @@ function NewChallenge({ games, go, onCreated, config }) {
         const r = await api.newBotMatch(uid, options, seat === 'random' ? 'random' : seat, difficulty)
         go({ name: 'match', id: r.match_id })
       } else {
-        await api.createSeek(uid, options, seat)
+        const r = await api.createSeek(uid, options, seat)
+        setPostedId(r.id)
+        setNote('Your challenge is posted under Open challenges. Send a friend the invite link and they land straight in the game with you.')
         onCreated()
       }
     } finally {
@@ -203,9 +227,11 @@ function NewChallenge({ games, go, onCreated, config }) {
       const r = await api.quickPair(uid, opts)
       if (r.paired) go({ name: 'match', id: r.match_id })
       else {
-        setNote(r.email
+        setPostedId(r.seek_id)
+        setNote((r.email
           ? 'Nobody is waiting for this game right now, so your challenge is posted under Open challenges. We’ll email you when someone accepts.'
           : 'Nobody is waiting for this game right now, so your challenge is posted under Open challenges. Check back to see when someone accepts.')
+          + ' Or send a friend the invite link:')
         onCreated()
       }
     } finally {
@@ -262,7 +288,11 @@ function NewChallenge({ games, go, onCreated, config }) {
           {opponent === 'computer' ? 'Start game' : 'Post challenge'}
         </button>
       </div>
-      {note && <div className="muted small" style={{ marginTop: 8 }}>{note}</div>}
+      {note && (
+        <div className="muted small posted-note">
+          {note}{postedId && <> <CopyLink seekId={postedId} /></>}
+        </div>
+      )}
     </section>
   )
 }

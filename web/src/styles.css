@@ -410,3 +410,19 @@ button.secondary:hover { color: var(--text); border-color: var(--accent); }
 .resume-box strong { color: var(--accent); }
 .resume-actions { display: flex; gap: 8px; }
 .resume-actions button { font-family: inherit; }
+
+/* invite links */
+.seek-mine { display: flex; gap: 6px; align-items: center; }
+.copy-link { background: transparent; border: 1px solid var(--line); color: var(--muted); border-radius: 6px;
+  padding: 5px 10px; font-size: 0.72rem; cursor: pointer; font-family: inherit; white-space: nowrap; }
+.copy-link:hover { border-color: var(--accent); color: var(--accent); }
+.invite-url { background: var(--bg); border: 1px solid var(--line); color: var(--text); border-radius: 6px;
+  padding: 5px 8px; font-family: inherit; font-size: 0.72rem; width: 100%; max-width: 380px; }
+.posted-note { margin-top: 8px; line-height: 1.6; }
+.posted-note .copy-link { margin-left: 6px; vertical-align: middle; }
+/* challenge (invite) screen */
+.challenge { max-width: 520px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
+.challenge-card { border: 1px solid var(--accent); border-radius: 10px; padding: 16px 18px; background: var(--panel); }
+.challenge-card h2 { margin: 0 0 6px; }
+.challenge-card .game-desc { display: block; margin: 8px 0; }
+.challenge-meta { display: flex; gap: 12px; flex-wrap: wrap; font-size: 0.8rem; color: var(--muted); }
