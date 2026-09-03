@@ -102,35 +102,33 @@ relay**. Nothing is sent until these env vars exist on the Render service:
 | `AGP_EMAIL_FROM` | `Abstract Games <you@example.com>` — must be a sender the relay has verified |
 | `AGP_BASE_URL` | `https://abstract-games.onrender.com` — used for the links in every email |
 
-**Provider (friends & family scale): Gmail SMTP with an App Password.** No
-domain, no DNS, no physical-address footer (Brevo requires one; Resend / SES /
-Mailgun / Postmark all want a verified domain, and onrender.com can't carry DNS
-records). ~500 mails/day, plenty for now.
+**⚠ Render's FREE tier blocks outbound SMTP (ports 25/465/587) since
+2025-09** — `[notify] … OSError(101, 'Network is unreachable')` in the logs is
+that block, not a credential problem. So on the free instance the SMTP vars
+above can never work. Two ways out:
 
-1. Make a **dedicated** Gmail account (e.g. `abstractgames.notify@gmail.com`) so
-   your personal address isn't the sender and replies land somewhere sensible.
-2. In that account: Google Account → Security → turn on **2-Step Verification**
-   → then **App passwords** (search for it in the account settings) → create one
-   named "abstract-games" → copy the 16-character password.
-3. Set on the Render service:
-   `AGP_SMTP_HOST=smtp.gmail.com`, `AGP_SMTP_PORT=587`,
-   `AGP_SMTP_USER=<the gmail address>`, `AGP_SMTP_PASS=<app password, no spaces>`,
-   `AGP_EMAIL_FROM=Abstract Games <the gmail address>` (Gmail rewrites any other
-   From to the account address anyway).
-
-**Yahoo Mail works identically** (Gmail signup may demand a phone number):
-Yahoo account → Account Security → turn on 2-step verification → **Generate app
-password** → set `AGP_SMTP_HOST=smtp.mail.yahoo.com`, `AGP_SMTP_PORT=587`,
-`AGP_SMTP_USER=<the yahoo address>`, `AGP_SMTP_PASS=<app password>`,
-`AGP_EMAIL_FROM=Abstract Games <the yahoo address>`. Yahoo also caps at ~500/day.
-(Currently in use: `abstractgames.notify@yahoo.com`.)
-
-When the site outgrows this (>~500/day, or you want `@yourdomain`), buy a cheap
-domain, attach it to Render (free) and move to Resend / Mailgun — same env vars.
+1. **Upgrade the web service to a paid instance** (Starter, ~$7/mo). SMTP
+   ports 465/587 open (25 stays blocked everywhere), and the instance no longer
+   sleeps, which also removes the cold start. Then Gmail SMTP with an **App
+   Password** is the simplest sender: dedicated Gmail account → 2-Step
+   Verification → myaccount.google.com/apppasswords → `AGP_SMTP_HOST=smtp.gmail.com`,
+   `AGP_SMTP_PORT=587`, `AGP_SMTP_USER=<the gmail>`, `AGP_SMTP_PASS=<app password>`,
+   `AGP_EMAIL_FROM=Abstract Games <the gmail>` (~500/day). Yahoo works the same
+   way (`smtp.mail.yahoo.com`) once the account is old enough to issue app
+   passwords.
+2. **Stay free and send over HTTPS**: set `AGP_RESEND_API_KEY` (Resend, free
+   3,000/mo; takes precedence over SMTP). Resend needs a **verified domain** to
+   send to arbitrary recipients — buy a cheap domain, add its DNS records, and
+   set `AGP_EMAIL_FROM=Abstract Games <notify@yourdomain>`. (The domain can
+   also be attached to Render for a nicer URL.) Brevo's HTTP API would work too
+   but requires a postal address in every mail.
 
 **Verify:** `curl https://abstract-games.onrender.com/api/cron/tick` returns
-`{"ok":true,"forfeited":N,"email":true}` once SMTP is configured (`email:false`
-before). Then accept a seek between two accounts and check the creator's inbox.
+`email:true`, `email_transport`, `email_sent_ok` (count) and `email_last_error`
+(the last delivery failure, or null). Trigger a send (accept a seek between two
+accounts, or "Forgot password?"), then re-check: `email_sent_ok` should go up
+and `email_last_error` stay null; if it shows `Network is unreachable` you are
+on the free tier's SMTP block.
 Locally, unset vars = the message is printed to the uvicorn log instead.
 
 **Scheduler:** there is no worker on the free tier. Forfeits and reminders run

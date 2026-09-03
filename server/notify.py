@@ -27,31 +27,89 @@ SMTP_PASS = os.environ.get("AGP_SMTP_PASS")
 EMAIL_FROM = os.environ.get("AGP_EMAIL_FROM", "Abstract Games <no-reply@localhost>")
 BASE_URL = os.environ.get("AGP_BASE_URL", "http://localhost:5173").rstrip("/")
 EMAIL_SYNC = os.environ.get("AGP_EMAIL_SYNC", "") not in ("", "0", "false")
+# HTTPS transport (Resend). Render's FREE tier blocks outbound SMTP ports
+# (25/465/587, since 2025-09), so an HTTPS mail API is the only way to send
+# from a free instance. Set AGP_RESEND_API_KEY (and AGP_EMAIL_FROM to a sender
+# on a domain verified in Resend) and it takes precedence over SMTP.
+RESEND_API_KEY = os.environ.get("AGP_RESEND_API_KEY")
+
+# Last delivery failure (repr), surfaced by /api/cron/tick so a blocked port
+# or bad credential is visible without reading server logs.
+LAST_ERROR: str | None = None
+SENT_OK = 0
 
 
 def configured() -> bool:
-    return bool(SMTP_HOST)
+    return bool(RESEND_API_KEY or SMTP_HOST)
+
+
+def transport() -> str:
+    return "resend" if RESEND_API_KEY else "smtp" if SMTP_HOST else "none"
 
 
 def send_email(to: str, subject: str, body: str) -> None:
     """Deliver one message now (blocking). Never raises — a notification
     failure must not break the move that triggered it."""
-    if not SMTP_HOST:
-        print(f"[notify] (no SMTP; would email) to={to} | {subject}\n{body}\n")
+    global LAST_ERROR, SENT_OK
+    if not configured():
+        print(f"[notify] (no mailer; would email) to={to} | {subject}\n{body}\n")
         return
+    try:
+        if RESEND_API_KEY:
+            _send_resend(to, subject, body)
+        else:
+            _send_smtp(to, subject, body)
+        SENT_OK += 1
+        LAST_ERROR = None
+    except Exception as e:  # noqa: BLE001 - never let notification failure break a move
+        LAST_ERROR = repr(e)
+        print(f"[notify] email to {to} failed: {e!r}")
+
+
+def _send_smtp(to: str, subject: str, body: str) -> None:
     msg = EmailMessage()
     msg["From"] = EMAIL_FROM
     msg["To"] = to
     msg["Subject"] = subject
     msg.set_content(body)
-    try:
-        with smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=15) as s:
-            s.starttls(context=ssl.create_default_context())
-            if SMTP_USER:
-                s.login(SMTP_USER, SMTP_PASS or "")
-            s.send_message(msg)
-    except Exception as e:  # noqa: BLE001 - never let notification failure break a move
-        print(f"[notify] email to {to} failed: {e!r}")
+    with _connect(SMTP_HOST, SMTP_PORT) as s:
+        s.starttls(context=ssl.create_default_context())
+        if SMTP_USER:
+            s.login(SMTP_USER, SMTP_PASS or "")
+        s.send_message(msg)
+
+
+def _send_resend(to: str, subject: str, body: str) -> None:
+    import json
+    import urllib.request
+
+    req = urllib.request.Request(
+        "https://api.resend.com/emails",
+        data=json.dumps({"from": EMAIL_FROM, "to": [to], "subject": subject, "text": body}).encode(),
+        headers={"Authorization": f"Bearer {RESEND_API_KEY}", "Content-Type": "application/json"},
+        method="POST",
+    )
+    with urllib.request.urlopen(req, timeout=15) as r:
+        if r.status >= 300:
+            raise RuntimeError(f"resend HTTP {r.status}")
+
+
+def _connect(host: str, port: int) -> smtplib.SMTP:
+    """Open the SMTP connection over IPv4 explicitly. Hosted containers (Render)
+    have no IPv6 route, and smtp.gmail.com resolves to an IPv6 address first;
+    the stdlib's fallback then reports the LAST failure, which on such a box is
+    'Network is unreachable' even though IPv4 would have worked. Keep the
+    hostname on the object so STARTTLS still verifies the certificate."""
+    import socket
+
+    infos = socket.getaddrinfo(host, port, socket.AF_INET, socket.SOCK_STREAM)
+    if not infos:
+        raise OSError(f"no IPv4 address for {host}")
+    ip = infos[0][4][0]
+    s = smtplib.SMTP(timeout=15)
+    s._host = host  # server_hostname for the TLS handshake (smtplib uses _host)
+    s.connect(ip, port)
+    return s
 
 
 def _dispatch(to: str, subject: str, body: str) -> None:

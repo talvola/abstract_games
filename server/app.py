@@ -983,7 +983,11 @@ def cron_tick(db: Session = Depends(get_db)):
     process on the free tier, so without a pinger these only run when someone
     opens the lobby."""
     forfeited = G.sweep_overdue(db)
-    return {"ok": True, "forfeited": forfeited, "email": notify.configured()}
+    return {
+        "ok": True, "forfeited": forfeited,
+        "email": notify.configured(), "email_transport": notify.transport(),
+        "email_sent_ok": notify.SENT_OK, "email_last_error": notify.LAST_ERROR,
+    }
 
 
 # ===========================================================================
