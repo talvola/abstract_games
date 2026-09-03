@@ -102,11 +102,24 @@ relay**. Nothing is sent until these env vars exist on the Render service:
 | `AGP_EMAIL_FROM` | `Abstract Games <you@example.com>` — must be a sender the relay has verified |
 | `AGP_BASE_URL` | `https://abstract-games.onrender.com` — used for the links in every email |
 
-**Provider:** Brevo's free tier (300 mails/day) lets you verify a plain *email
-address* as the sender, so no custom domain/DNS is needed — the onrender.com
-host can't carry DKIM records. Resend/SES/Mailgun all work too but want a
-verified domain. Set the vars with the Render API (`PUT …/env-vars/<KEY>`, see
-above); each change redeploys.
+**Provider (friends & family scale): Gmail SMTP with an App Password.** No
+domain, no DNS, no physical-address footer (Brevo requires one; Resend / SES /
+Mailgun / Postmark all want a verified domain, and onrender.com can't carry DNS
+records). ~500 mails/day, plenty for now.
+
+1. Make a **dedicated** Gmail account (e.g. `abstractgames.notify@gmail.com`) so
+   your personal address isn't the sender and replies land somewhere sensible.
+2. In that account: Google Account → Security → turn on **2-Step Verification**
+   → then **App passwords** (search for it in the account settings) → create one
+   named "abstract-games" → copy the 16-character password.
+3. Set on the Render service:
+   `AGP_SMTP_HOST=smtp.gmail.com`, `AGP_SMTP_PORT=587`,
+   `AGP_SMTP_USER=<the gmail address>`, `AGP_SMTP_PASS=<app password, no spaces>`,
+   `AGP_EMAIL_FROM=Abstract Games <the gmail address>` (Gmail rewrites any other
+   From to the account address anyway).
+
+When the site outgrows this (>~500/day, or you want `@yourdomain`), buy a cheap
+domain, attach it to Render (free) and move to Resend / Mailgun — same env vars.
 
 **Verify:** `curl https://abstract-games.onrender.com/api/cron/tick` returns
 `{"ok":true,"forfeited":N,"email":true}` once SMTP is configured (`email:false`
