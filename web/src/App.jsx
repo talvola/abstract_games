@@ -14,12 +14,31 @@ export default function App() {
   const [games, setGames] = useState(null)
   const [config, setConfig] = useState({ move_deadline_days: 7, email: false })
   const [screen, setScreen] = useState({ name: 'home' })
+  const [slow, setSlow] = useState(false) // first load taking long (server waking up)
 
   useEffect(() => {
     api.me().then(setMe).catch(() => setMe(null))
-    api.listGames().then((d) => { setGames(d.games); setConfig((c) => ({ ...c, ...d })) }).catch(() => setGames([]))
+    // The hosted instance sleeps when idle and takes ~a minute to wake (it
+    // loads 400+ game modules), during which requests fail or hang. Keep
+    // retrying with backoff rather than giving up, and tell the visitor why.
+    let cancelled = false
+    const slowTimer = setTimeout(() => setSlow(true), 3000)
+    ;(async () => {
+      for (let attempt = 0, delay = 1500; !cancelled; attempt++, delay = Math.min(delay * 1.6, 8000)) {
+        try {
+          const d = await api.listGames()
+          if (cancelled) return
+          setGames(d.games); setConfig((c) => ({ ...c, ...d }))
+          return
+        } catch {
+          if (attempt >= 30) { if (!cancelled) setGames([]); return } // ~3 min: give up
+          await new Promise((r) => setTimeout(r, delay))
+        }
+      }
+    })()
     const deep = new URLSearchParams(window.location.search).get('match')
     if (deep) setScreen({ name: 'match', id: deep })
+    return () => { cancelled = true; clearTimeout(slowTimer) }
   }, [])
 
   const go = (s) => setScreen(s)
@@ -34,7 +53,20 @@ export default function App() {
         <div className="tagline">classic &amp; modern board games · vs the computer or a friend</div>
       </header>
       <main>
-        {!games && <p>Loading…</p>}
+        {!games && (
+          <div className="loading">
+            <p>Loading…</p>
+            {slow && (
+              <p className="muted small">
+                Waking up the server — this takes about a minute after the site has been idle.
+                Hang on, the page will continue by itself.
+              </p>
+            )}
+          </div>
+        )}
+        {games && games.length === 0 && screen.name === 'home' && (
+          <p className="error small">Couldn’t reach the server. Please reload in a moment.</p>
+        )}
         {games && screen.name === 'home' && (
           <Home me={me} setMe={setMe} games={games} go={go} refreshGames={refreshGames} config={config} />
         )}

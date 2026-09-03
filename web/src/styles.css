@@ -395,3 +395,8 @@ button.secondary:hover { color: var(--text); border-color: var(--accent); }
 .how-it-works ol { margin: 10px 0 0; padding-left: 1.3em; font-size: 0.84rem; line-height: 1.55; color: var(--text); }
 .how-it-works li { margin-bottom: 8px; }
 .how-it-works strong { color: var(--accent); }
+
+/* first-load state (free-tier cold start) */
+.loading { text-align: center; padding: 40px 0; }
+.loading p { margin: 6px 0; }
+.loading .muted { max-width: 34em; margin: 8px auto 0; line-height: 1.5; }
