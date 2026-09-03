@@ -5,7 +5,7 @@ import { defaultGameUid } from './featured'
 import GameOptions, { defaultOptions } from './GameOptions'
 import { timeLeft, deadlineUrgent } from './timeleft'
 
-export default function Lobby({ me, games, go, refreshGames }) {
+export default function Lobby({ me, games, go, refreshGames, config }) {
   const [seeks, setSeeks] = useState([])
   const [matches, setMatches] = useState([])
   const [error, setError] = useState('')
@@ -107,7 +107,7 @@ export default function Lobby({ me, games, go, refreshGames }) {
         ))}
       </section>
 
-      <NewChallenge games={games} go={go} onCreated={refresh} />
+      <NewChallenge games={games} go={go} onCreated={refresh} config={config} />
 
       {me.can_upload && <AddGame onUploaded={() => { refreshGames(); refresh() }} />}
     </div>
@@ -165,7 +165,7 @@ function badgeClass(m) {
   return m.my_turn ? 'turn' : 'wait'
 }
 
-function NewChallenge({ games, go, onCreated }) {
+function NewChallenge({ games, go, onCreated, config }) {
   const [uid, setUid] = useState(defaultGameUid(games))
   const [opts, setOpts] = useState({})
   const [opponent, setOpponent] = useState('human') // human | computer
@@ -204,8 +204,8 @@ function NewChallenge({ games, go, onCreated }) {
       if (r.paired) go({ name: 'match', id: r.match_id })
       else {
         setNote(r.email
-          ? 'No opponent waiting — your challenge is posted. We’ll email you when someone accepts.'
-          : 'No opponent waiting — your challenge is posted. Check back here to see when someone accepts.')
+          ? 'Nobody is waiting for this game right now, so your challenge is posted under Open challenges. We’ll email you when someone accepts.'
+          : 'Nobody is waiting for this game right now, so your challenge is posted under Open challenges. Check back to see when someone accepts.')
         onCreated()
       }
     } finally {
@@ -226,6 +226,15 @@ function NewChallenge({ games, go, onCreated }) {
           {!freeform && <option value="computer">Computer</option>}
         </select>
         {freeform && <div className="muted small">Unenforced board — honor system, no computer opponent.</div>}
+        {opponent === 'human' && (
+          <div className="muted small form-hint">
+            Turn-based: play at your own pace, {config?.move_deadline_days ?? 7} days per move (missing it forfeits).
+            {config?.email ? ' You’ll be emailed when it’s your turn.' : ''} Rated.
+          </div>
+        )}
+        {opponent === 'computer' && (
+          <div className="muted small form-hint">Saved to your games list so you can come back to it. Not rated.</div>
+        )}
 
         <label>You play</label>
         <select value={seat} onChange={(e) => setSeat(e.target.value)}>
@@ -247,7 +256,7 @@ function NewChallenge({ games, go, onCreated }) {
       </div>
       <div className="challenge-actions">
         {opponent === 'human' && !freeform && (
-          <button className="start" onClick={playNow} disabled={busy}>⚡ Play now</button>
+          <button className="start" onClick={playNow} disabled={busy} title="Pair with someone already waiting for this game, or post a challenge">Find an opponent</button>
         )}
         <button className={opponent === 'human' && !freeform ? 'secondary' : 'start'} onClick={create} disabled={busy}>
           {opponent === 'computer' ? 'Start game' : 'Post challenge'}

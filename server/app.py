@@ -270,7 +270,12 @@ def list_games():
             "uploader": entry.get("uploader"),
             "has_rules": (entry["path"] / "rules.md").exists(),
         })
-    return {"games": out}
+    return {
+        "games": out,
+        # Site config the UI needs to explain itself (see the landing page).
+        "move_deadline_days": G.MOVE_DEADLINE_DAYS,
+        "email": notify.configured(),
+    }
 
 
 @app.get("/api/games/{uid}/rules")
