@@ -66,3 +66,33 @@ def current_user(user: User | None = Depends(optional_user)) -> User:
     if user is None:
         raise HTTPException(401, "not signed in")
     return user
+
+
+# ---------------------------------------------------------------------------
+#  password-reset tokens (emailed link; no table needed)
+# ---------------------------------------------------------------------------
+# The token carries the user id plus a fingerprint of the CURRENT password
+# hash, so it is single-use: once the password changes the fingerprint no
+# longer matches and the same link can't be replayed.
+RESET_MAX_AGE = 60 * 60  # 1 hour
+_reset_serializer = URLSafeTimedSerializer(SECRET_KEY, salt="agp-password-reset")
+
+
+def _hash_fingerprint(password_hash: str) -> str:
+    return hashlib.sha256(password_hash.encode()).hexdigest()[:16]
+
+
+def make_reset_token(user: User) -> str:
+    return _reset_serializer.dumps({"uid": user.id, "fp": _hash_fingerprint(user.password_hash)})
+
+
+def read_reset_token(token: str, db: Session) -> User | None:
+    """The user this token is for, or None if it's invalid, expired or already used."""
+    try:
+        data = _reset_serializer.loads(token, max_age=RESET_MAX_AGE)
+        user = db.get(User, int(data["uid"]))
+    except (BadSignature, SignatureExpired, KeyError, ValueError, TypeError):
+        return None
+    if user is None or not hmac.compare_digest(_hash_fingerprint(user.password_hash), str(data.get("fp", ""))):
+        return None
+    return user

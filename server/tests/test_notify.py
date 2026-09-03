@@ -21,7 +21,7 @@ os.environ["AGP_BASE_URL"] = "https://example.test"
 os.environ.pop("AGP_SMTP_HOST", None)
 # Every test registers users from the same fake IP; keep the limiter out of the
 # way except in the test that exercises it.
-for _b in ("REGISTER", "LOGIN", "SEEK", "MATCH", "MESSAGE"):
+for _b in ("REGISTER", "LOGIN", "SEEK", "MATCH", "MESSAGE", "FORGOT"):
     os.environ[f"AGP_RATE_LIMIT_{_b}"] = "100000"
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
@@ -220,6 +220,56 @@ class NotifyTests(unittest.TestCase):
         r = mk()
         self.assertEqual(r.status_code, 400)
         self.assertIn("vs the computer", r.json()["detail"])
+
+    def test_account_settings(self):
+        r = self.a.post("/api/auth/account", json={"display_name": "  Alicia "})
+        self.assertEqual(r.status_code, 200, r.text)
+        self.assertEqual(r.json()["display_name"], "Alicia")
+        self.assertEqual(self.a.get("/api/auth/me").json()["display_name"], "Alicia")
+        # Renames propagate to open seeks and active matches.
+        mid = self._pair("first")
+        sid = self.a.post("/api/seeks", json={"game_uid": self.game, "options": {}, "seat_pref": "first"}).json()["id"]
+        self.a.post("/api/auth/account", json={"display_name": "Alice2"})
+        self.assertEqual(self.b.get(f"/api/seeks/{sid}").json()["creator_name"], "Alice2")
+        self.assertIn("Alice2", [p["name"] for p in self.b.get(f"/api/matches/{mid}").json()["players"]])
+        self.a.delete(f"/api/seeks/{sid}")
+        # Password change needs the current password.
+        r = self.a.post("/api/auth/account", json={"current_password": "nope", "new_password": "newpass1"})
+        self.assertEqual(r.status_code, 400)
+        r = self.a.post("/api/auth/account", json={"current_password": "secret1", "new_password": "newpass1"})
+        self.assertEqual(r.status_code, 200, r.text)
+        fresh = TestClient(appmod.app)
+        self.assertEqual(fresh.post("/api/auth/login", json={"email": self.a_email, "password": "secret1"}).status_code, 401)
+        self.assertEqual(fresh.post("/api/auth/login", json={"email": self.a_email, "password": "newpass1"}).status_code, 200)
+
+    def test_password_reset_flow(self):
+        anon = TestClient(appmod.app)
+        # No mailer → honest 503, nothing sent.
+        r = anon.post("/api/auth/forgot", json={"email": self.a_email})
+        self.assertEqual(r.status_code, 503)
+        self.assertEqual(SENT, [])
+        notify.SMTP_HOST = "smtp.test"  # pretend a mailer is configured (send_email is still captured)
+        try:
+            # Unknown address: same answer, no email (no account enumeration).
+            self.assertEqual(anon.post("/api/auth/forgot", json={"email": "nobody@x.test"}).status_code, 200)
+            self.assertEqual(SENT, [])
+            self.assertEqual(anon.post("/api/auth/forgot", json={"email": self.a_email.upper()}).status_code, 200)
+            self.assertEqual(len(SENT), 1)
+            self.assertIn("Reset your", SENT[0][1])
+            import re
+            token = re.search(r"#/reset/(\S+)", SENT[0][2]).group(1)
+            self.assertEqual(anon.post("/api/auth/reset", json={"token": "garbage", "password": "newpass2"}).status_code, 400)
+            r = anon.post("/api/auth/reset", json={"token": token, "password": "newpass2"})
+            self.assertEqual(r.status_code, 200, r.text)
+            self.assertEqual(r.json()["display_name"], "Alice")
+            self.assertEqual(anon.get("/api/auth/me").json()["email"], self.a_email)  # signed in by the reset
+            # Old password dead, new one works, token is single-use.
+            fresh = TestClient(appmod.app)
+            self.assertEqual(fresh.post("/api/auth/login", json={"email": self.a_email, "password": "secret1"}).status_code, 401)
+            self.assertEqual(fresh.post("/api/auth/login", json={"email": self.a_email, "password": "newpass2"}).status_code, 200)
+            self.assertEqual(fresh.post("/api/auth/reset", json={"token": token, "password": "newpass3"}).status_code, 400)
+        finally:
+            notify.SMTP_HOST = None
 
     def test_bot_matches_never_email(self):
         r = self.a.post("/api/matches", json={"game_uid": self.game, "options": {}, "opponent": "bot", "seat": "first", "bot_iterations": 5})

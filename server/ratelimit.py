@@ -25,6 +25,7 @@ DEFAULTS = {
     "seek": 10,      # challenges posted / quick-pairs per IP per minute
     "match": 10,     # vs-computer matches created per IP per minute
     "message": 30,   # chat messages per IP per minute
+    "forgot": 3,     # password-reset emails per IP per minute
 }
 WINDOW = 60.0
 

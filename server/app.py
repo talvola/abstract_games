@@ -31,6 +31,8 @@ from . import notify
 from . import events, games as G, ratelimit
 from .ratelimit import rate_limited
 from .auth import (
+    make_reset_token,
+    read_reset_token,
     COOKIE_NAME,
     SESSION_MAX_AGE,
     current_user,
@@ -201,6 +203,21 @@ class RegisterBody(BaseModel):
     password: str
 
 
+class AccountBody(BaseModel):
+    display_name: str | None = None
+    current_password: str | None = None
+    new_password: str | None = None
+
+
+class ForgotBody(BaseModel):
+    email: str
+
+
+class ResetBody(BaseModel):
+    token: str
+    password: str
+
+
 class LoginBody(BaseModel):
     email: str
     password: str
@@ -357,6 +374,71 @@ def login(body: LoginBody, response: Response, db: Session = Depends(get_db),
         raise HTTPException(401, "invalid email or password")
     set_session_cookie(response, user)
     return user_public(user)
+
+
+@app.post("/api/auth/account")
+def update_account(body: AccountBody, db: Session = Depends(get_db), user: User = Depends(current_user)):
+    """Change display name and/or password. A password change needs the
+    current password (a stolen open session shouldn't be able to lock the
+    owner out)."""
+    changed = False
+    if body.display_name is not None:
+        name = body.display_name.strip()[:64]
+        if not name:
+            raise HTTPException(400, "display name can't be empty")
+        if name != user.display_name:
+            user.display_name = name
+            changed = True
+            # Seats and seeks store the name as JSON, so refresh the open ones.
+            for sk in db.query(Seek).filter(Seek.creator_id == user.id).all():
+                sk.creator_name = name
+            for m in db.query(Match).filter(Match.status == "active").all():
+                if seat_of(m, user.id) is not None:
+                    m.players = [
+                        {**p, "name": name} if p.get("user_id") == user.id else p for p in m.players
+                    ]
+    if body.new_password:
+        if len(body.new_password) < 6:
+            raise HTTPException(400, "new password must be at least 6 characters")
+        if not body.current_password or not verify_password(body.current_password, user.password_hash):
+            raise HTTPException(400, "current password is wrong")
+        user.password_hash = hash_password(body.new_password)
+        changed = True
+    if changed:
+        db.commit()
+        db.refresh(user)
+    return {**user_public(user), "can_upload": G.can_upload(user.email)}
+
+
+@app.post("/api/auth/forgot")
+def forgot_password(body: ForgotBody, db: Session = Depends(get_db),
+                    _rl: None = Depends(rate_limited("forgot"))):
+    """Email a one-hour reset link. Always answers ok so the endpoint can't be
+    used to check which addresses have accounts; 503 if the server has no
+    mailer (the UI then tells the visitor to contact the admin)."""
+    if not notify.configured():
+        raise HTTPException(503, "password reset needs email, which isn't set up on this server yet — contact the site admin")
+    user = db.query(User).filter(User.email == body.email.strip().lower()).first()
+    if user:
+        notify.notify_password_reset(
+            user.email, user.display_name, f"{notify.BASE_URL}/#/reset/{make_reset_token(user)}",
+        )
+    return {"ok": True}
+
+
+@app.post("/api/auth/reset")
+def reset_password(body: ResetBody, response: Response, db: Session = Depends(get_db),
+                   _rl: None = Depends(rate_limited("login"))):
+    user = read_reset_token(body.token, db)
+    if user is None:
+        raise HTTPException(400, "this reset link is invalid, expired, or has already been used")
+    if len(body.password) < 6:
+        raise HTTPException(400, "password must be at least 6 characters")
+    user.password_hash = hash_password(body.password)
+    db.commit()
+    db.refresh(user)
+    set_session_cookie(response, user)
+    return {**user_public(user), "can_upload": G.can_upload(user.email)}
 
 
 @app.post("/api/auth/logout")

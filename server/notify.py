@@ -135,3 +135,14 @@ def notify_deadline_reminder(to_email: str, to_name: str, opponent: str, game_na
         f"Play it here: {match_url(match_id)}" + _footer()
     )
     _dispatch(to_email, subject, body)
+
+
+def notify_password_reset(to_email: str, to_name: str, reset_url: str) -> None:
+    subject = "Reset your Abstract Games password"
+    body = (
+        f"Hi {to_name},\n\n"
+        f"Someone (hopefully you) asked to reset the password for this account. "
+        f"Open this link within the next hour to choose a new one:\n\n{reset_url}\n\n"
+        f"If you didn't ask for this, ignore this email — your password is unchanged." + _footer()
+    )
+    _dispatch(to_email, subject, body)

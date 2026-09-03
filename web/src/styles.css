@@ -430,3 +430,10 @@ button.secondary:hover { color: var(--text); border-color: var(--accent); }
 /* paired move log + seat colour tags */
 .movelog-ply { display: inline-flex; align-items: center; gap: 5px; margin-right: 12px; }
 .seat-colour { font-size: 0.68rem; color: var(--muted); margin-left: 4px; }
+
+/* auth: account panel + links */
+.auth-wrap { display: flex; flex-direction: column; gap: 8px; }
+.auth-actions { display: flex; gap: 6px; }
+.auth-links { display: flex; justify-content: flex-end; }
+.auth-links .link { font-size: 0.75rem; padding: 0; }
+.account-panel label { margin-top: 4px; }

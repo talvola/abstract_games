@@ -138,3 +138,27 @@ on every lobby load *and* on `GET /api/cron/tick` — point a free uptime pinger
 (UptimeRobot, cron-job.org) at that URL every 5–10 min. It is idempotent and
 unauthenticated on purpose, and as a bonus it keeps the instance warm (see the
 cold-start issue). Tests: `.venv/bin/python -m unittest server.tests.test_notify -v`.
+
+## Accounts: reset, rename, delete
+
+- Users can change their display name and password from the **Account** panel
+  (signed-in box on the home page) and request a reset link with **Forgot
+  password?** — the link (`#/reset/<token>`, 1 hour, single-use, no table)
+  needs the mailer above; without it the UI says to contact the admin.
+- **Deleting an account** has no UI. From the Neon SQL editor (or `psql`), with
+  the user's id from `select id, email from users where email = '…'`:
+
+  ```sql
+  begin;
+  delete from notifications where user_id = :id;
+  delete from match_rating_changes where user_id = :id;
+  delete from user_game_ratings where user_id = :id;
+  delete from messages where user_id = :id;
+  delete from seeks where creator_id = :id;
+  -- matches keep a JSON seat with the name; resign/finish them first if active:
+  update matches set status = 'finished' where status = 'active'
+     and players::text like '%"user_id": ' || :id || '%';
+  delete from users where id = :id;
+  commit;
+  ```
+  (Column names: check `server/models.py` if this drifts.)

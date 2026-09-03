@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { api } from './api'
-import Auth from './Auth'
+import Auth, { ResetPassword } from './Auth'
 import Lobby from './Lobby'
 import QuickPlay from './QuickPlay'
 import MatchPlay from './MatchPlay'
@@ -22,6 +22,7 @@ const HASH_OF = {
   replay: (s) => `#/replay/${s.id}`,
   match: (s) => `#/match/${s.id}`,
   challenge: (s) => `#/challenge/${s.id}`,
+  reset: (s) => `#/reset/${s.token}`,
 }
 export function parseHash(hash) {
   const p = (hash || '').replace(/^#\/?/, '').split('/').filter(Boolean)
@@ -33,6 +34,7 @@ export function parseHash(hash) {
     case 'replay': return p[1] ? { name: 'replay', id: p[1] } : { name: 'home' }
     case 'match': return p[1] ? { name: 'match', id: p[1] } : { name: 'home' }
     case 'challenge': return p[1] ? { name: 'challenge', id: p[1] } : { name: 'home' }
+    case 'reset': return p[1] ? { name: 'reset', token: p[1] } : { name: 'home' }
     default: return { name: 'home' }
   }
 }
@@ -116,6 +118,7 @@ export default function App() {
         {screen.name === 'profile' && <Profile id={screen.id} go={go} />}
         {screen.name === 'replay' && <Replay id={screen.id} go={go} />}
         {screen.name === 'match' && <MatchPlay id={screen.id} me={me} go={go} />}
+        {screen.name === 'reset' && <ResetPassword token={screen.token} setMe={setMe} go={go} />}
         {games && screen.name === 'challenge' && <Challenge id={screen.id} me={me} setMe={setMe} games={games} go={go} config={config} />}
       </main>
     </div>

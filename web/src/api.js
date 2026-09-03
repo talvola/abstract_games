@@ -30,6 +30,9 @@ export const api = {
     post('/api/auth/register', { email, display_name, password }),
   login: (email, password) => post('/api/auth/login', { email, password }),
   logout: () => post('/api/auth/logout'),
+  updateAccount: (fields) => post('/api/auth/account', fields),
+  forgotPassword: (email) => post('/api/auth/forgot', { email }),
+  resetPassword: (token, password) => post('/api/auth/reset', { token, password }),
 
   // correspondence
   seeks: () => get('/api/seeks'),
