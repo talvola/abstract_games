@@ -136,3 +136,19 @@ class Seek(Base):
     options: Mapped[dict] = mapped_column(JSON, default=dict)
     seat_pref: Mapped[str] = mapped_column(String(16), default="random")  # first|second|random
     created_at: Mapped[datetime] = mapped_column(DateTime, default=_now)
+
+
+class Notification(Base):
+    """One row per email we sent about a match, so a reminder for a given turn
+    goes out once and the send history is auditable. `turn_key` identifies the
+    turn (ply count) the notification was about; `kind` is turn|paired|over|reminder."""
+
+    __tablename__ = "notifications"
+    __table_args__ = (UniqueConstraint("match_id", "user_id", "kind", "turn_key"),)
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    match_id: Mapped[str] = mapped_column(ForeignKey("matches.id"), index=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
+    kind: Mapped[str] = mapped_column(String(16))
+    turn_key: Mapped[str] = mapped_column(String(32))
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=_now)

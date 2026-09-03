@@ -27,6 +27,13 @@ export default function Lobby({ me, games, go, refreshGames }) {
 
   const myTurnCount = matches.filter((m) => m.status === 'active' && m.my_turn).length
 
+  // Tab-title badge so an open tab shows "(2) Abstract Games" when games are waiting.
+  useEffect(() => {
+    const base = 'Abstract Games'
+    document.title = myTurnCount > 0 ? `(${myTurnCount}) ${base}` : base
+    return () => { document.title = base }
+  }, [myTurnCount])
+
   return (
     <div className="lobby">
       {error && <div className="error small">{error}</div>}
@@ -194,7 +201,12 @@ function NewChallenge({ games, go, onCreated }) {
     try {
       const r = await api.quickPair(uid, opts)
       if (r.paired) go({ name: 'match', id: r.match_id })
-      else { setNote('No opponent waiting — your challenge is posted. We’ll pair you when someone joins.'); onCreated() }
+      else {
+        setNote(r.email
+          ? 'No opponent waiting — your challenge is posted. We’ll email you when someone accepts.'
+          : 'No opponent waiting — your challenge is posted. Check back here to see when someone accepts.')
+        onCreated()
+      }
     } finally {
       setBusy(false)
     }

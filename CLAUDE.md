@@ -80,6 +80,7 @@ See PLATFORM_PLAN.md (roadmap) and engine/SPEC.md (game authoring contract).
 
 ## Testing
 - Engine: `cd engine && PYTHONPATH=. python3 tests/test_games.py`.
+- Server (routes + email notifications, TestClient on a temp SQLite DB, ~2s): `.venv/bin/python -m unittest server.tests.test_notify -v`. Run it after touching `server/{app,events,notify,games}.py`.
 - **Per-game `selftest.py`**: a game package may ship `games/<uid>/selftest.py` — a standalone script asserting its correctness anchor (perft / rule positions). `tests/test_games.py::test_package_selftests` runs every one. **Selftests MUST be pure-stdlib** (import only `agp` + their own game; no `python-chess`/numpy) and fast — the suite runs them under system `python3` where pip-only deps are absent.
 - **Probe a package outside the CLI:** `from agp.loader import load_from_dir; man, g = load_from_dir(Path("games/<uid>"))` — game classes take NO ctor args (uid comes from the manifest), so instantiating the class directly fails with "takes no arguments". If a board needs a one-off library to build (e.g. PIL image-segmentation), do it OFFLINE and ship the result as `board.json` loaded at runtime (see `games/pex`) so `game.py`/`selftest.py` stay pure-stdlib.
 - **Don't trust a piped suite exit code:** `python3 tests/test_games.py | tail` returns the pipe's (tail's) exit, always 0 — run it unpiped to a file with `echo SUITE_EXIT=$?`, or grep for `all tests passed`.

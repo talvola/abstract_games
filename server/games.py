@@ -456,16 +456,23 @@ def forfeit_if_overdue(db, match) -> bool:
     match.winner = 1 - match.current_player  # the stalling side loses
     db.commit()
     rate_finished_match(db, match)
+    from . import events  # lazy: events imports models + notify
+
+    events.on_finished(db, match, actor_id=None, reason="timeout")
     return True
 
 
 def sweep_overdue(db) -> int:
-    """Forfeit every correspondence match that has blown its deadline. Cheap: only
-    scans currently-active matches. Returns how many were forfeited."""
+    """Forfeit every correspondence match that has blown its deadline, then send
+    deadline reminders for the ones getting close. Cheap: only scans currently-
+    active matches. Returns how many were forfeited."""
+    from . import events
     from .models import Match
 
     n = 0
-    for m in db.query(Match).filter(Match.status == "active").all():
+    active = db.query(Match).filter(Match.status == "active").all()
+    for m in active:
         if forfeit_if_overdue(db, m):
             n += 1
+    events.send_deadline_reminders(db, [m for m in active if m.status == "active"])
     return n

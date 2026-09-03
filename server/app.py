@@ -19,7 +19,7 @@ import random
 
 from pathlib import Path
 
-from fastapi import BackgroundTasks, Depends, FastAPI, File, HTTPException, Response, UploadFile
+from fastapi import Depends, FastAPI, File, HTTPException, Response, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
@@ -28,7 +28,7 @@ from sqlalchemy.orm import Session
 
 from . import notify
 
-from . import games as G
+from . import events, games as G
 from .auth import (
     COOKIE_NAME,
     SESSION_MAX_AGE,
@@ -158,24 +158,6 @@ def match_view(match: Match, me_id: int | None, db: Session | None = None) -> di
         "history": G.build_history(game, match),
         **pos,
     }
-
-
-def notify_turn(db: Session, match: Match, actor_id: int | None, background: BackgroundTasks) -> None:
-    """If it's now a *different* human's turn, email them. No-op for bots/self."""
-    if match.status != "active":
-        return
-    seat = match.players[match.current_player]
-    if seat.get("type") != "user" or seat.get("user_id") == actor_id:
-        return
-    user = db.get(User, seat["user_id"])
-    if not user:
-        return
-    others = [s.get("name") for i, s in enumerate(match.players) if i != match.current_player]
-    opponent = others[0] if len(others) == 1 else "your opponent"
-    background.add_task(
-        notify.notify_your_turn,
-        user.email, user.display_name, opponent, game_name(match.game_uid), match.id,
-    )
 
 
 def create_match(db: Session, game_uid: str, options: dict, players: list[dict]) -> Match:
@@ -431,7 +413,7 @@ def create_seek(body: SeekBody, db: Session = Depends(get_db), user: User = Depe
 
 
 @app.post("/api/seeks/{seek_id}/accept")
-def accept_seek(seek_id: str, background: BackgroundTasks, db: Session = Depends(get_db), user: User = Depends(current_user)):
+def accept_seek(seek_id: str, db: Session = Depends(get_db), user: User = Depends(current_user)):
     seek = db.get(Seek, seek_id)
     if not seek:
         raise HTTPException(404, "seek not found")
@@ -446,7 +428,7 @@ def accept_seek(seek_id: str, background: BackgroundTasks, db: Session = Depends
     match = create_match(db, seek.game_uid, seek.options, players)
     db.delete(seek)
     db.commit()
-    notify_turn(db, match, user.id, background)  # if the creator is to move first
+    events.on_match_started(db, match, user.id)  # tell the creator; says whose move it is
     return {"match_id": match.id}
 
 
@@ -457,8 +439,7 @@ def _rating_value(db, user_id: int, game_uid: str) -> float:
 
 
 @app.post("/api/quickpair")
-def quick_pair(body: QuickPairBody, background: BackgroundTasks,
-               db: Session = Depends(get_db), user: User = Depends(current_user)):
+def quick_pair(body: QuickPairBody, db: Session = Depends(get_db), user: User = Depends(current_user)):
     """One-click pairing. If an open seek for this game (+options) exists from
     another player, pair with the CLOSEST-rated one immediately and return the
     match. Otherwise post a seek and return paired=false (the caller waits)."""
@@ -477,14 +458,14 @@ def quick_pair(body: QuickPairBody, background: BackgroundTasks,
         match = create_match(db, seek.game_uid, seek.options, players)
         db.delete(seek)
         db.commit()
-        notify_turn(db, match, user.id, background)
+        events.on_match_started(db, match, user.id)
         return {"paired": True, "match_id": match.id}
     # No opponent waiting — post our own seek.
     seek = Seek(id=G.new_id(), creator_id=user.id, creator_name=user.display_name,
                 game_uid=body.game_uid, options=opts, seat_pref="random")
     db.add(seek)
     db.commit()
-    return {"paired": False, "seek_id": seek.id}
+    return {"paired": False, "seek_id": seek.id, "email": notify.configured()}
 
 
 @app.delete("/api/seeks/{seek_id}")
@@ -595,7 +576,6 @@ def get_match(match_id: str, db: Session = Depends(get_db), user: User | None = 
 def make_match_move(
     match_id: str,
     body: MoveBody,
-    background: BackgroundTasks,
     db: Session = Depends(get_db),
     user: User = Depends(current_user),
 ):
@@ -625,7 +605,7 @@ def make_match_move(
     db.commit()
     db.refresh(match)
     G.rate_finished_match(db, match)  # idempotent; only fires on human-vs-human finish
-    notify_turn(db, match, user.id, background)
+    events.on_move(db, match, user.id)  # your-turn email, or the result if that move ended it
     return match_view(match, user.id, db)
 
 
@@ -663,6 +643,7 @@ def resign_match(match_id: str, db: Session = Depends(get_db), user: User = Depe
     db.commit()
     db.refresh(match)
     G.rate_finished_match(db, match)
+    events.on_finished(db, match, user.id, reason="resignation")
     return match_view(match, user.id, db)
 
 
@@ -850,6 +831,18 @@ def stateless_bot(uid: str, body: BotBody):
 @app.get("/api/health")
 def health():
     return {"ok": True, "games": list(registry.entries)}
+
+
+@app.api_route("/api/cron/tick", methods=["GET", "POST"])
+def cron_tick(db: Session = Depends(get_db)):
+    """Housekeeping for an external pinger (UptimeRobot etc., every ~5-10 min):
+    forfeit overdue correspondence games and send deadline reminders. Idempotent
+    and unauthenticated on purpose — it does nothing a lobby load doesn't already
+    do — and hitting it also keeps a free-tier instance warm. There is no worker
+    process on the free tier, so without a pinger these only run when someone
+    opens the lobby."""
+    forfeited = G.sweep_overdue(db)
+    return {"ok": True, "forfeited": forfeited, "email": notify.configured()}
 
 
 # ===========================================================================
