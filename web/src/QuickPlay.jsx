@@ -5,28 +5,57 @@ import MoveLog from './MoveLog'
 import { SEAT_FILL } from './colors'
 import GameOptions, { defaultOptions } from './GameOptions'
 import GamePicker from './GamePicker'
-import { defaultGameUid } from './featured'
 import RulesModal from './RulesModal'
+import { defaultGameUid } from './featured'
 
 // Anonymous, no-account play using the stateless endpoints. Hotseat or vs the
-// MCTS bot; game state lives in the browser.
+// MCTS bot; game state lives in the browser — and, so a refresh or a stray tap
+// on Back doesn't lose it, in localStorage too (one game at a time).
+const SAVE_KEY = 'agp.quickplay.v1'
+
+function loadSaved() {
+  try {
+    const m = JSON.parse(localStorage.getItem(SAVE_KEY) || 'null')
+    return m && m.uid && m.state && m.view ? m : null
+  } catch { return null }
+}
+function save(m) {
+  try { m ? localStorage.setItem(SAVE_KEY, JSON.stringify(m)) : localStorage.removeItem(SAVE_KEY) } catch { /* private mode etc. */ }
+}
+
 export default function QuickPlay({ games, go }) {
   const [match, setMatch] = useState(null)
+  useEffect(() => { if (match) save(match) }, [match])
   if (!match) return <Menu games={games} go={go} onStart={setMatch} />
-  return <Play match={match} setMatch={setMatch} onExit={() => setMatch(null)} go={go} />
+  return <Play match={match} setMatch={setMatch} onExit={() => { save(null); setMatch(null) }} go={go} />
 }
 
 function Menu({ games, go, onStart }) {
   const [uid, setUid] = useState(defaultGameUid(games))
   const [mode, setMode] = useState('hotseat') // hotseat | bot
   const [opts, setOpts] = useState({})
+  const [saved, setSaved] = useState(loadSaved)
   const game = games.find((g) => g.uid === uid)
   const freeform = !!game?.freeform
   useEffect(() => setOpts(defaultOptions(game?.options)), [uid]) // eslint-disable-line
   useEffect(() => { if (freeform) setMode('hotseat') }, [freeform])
 
+  const resumable = saved && !saved.view.terminal && games.some((g) => g.uid === saved.uid)
+
   return (
     <div className="menu">
+      {resumable && (
+        <div className="resume-box">
+          <span>
+            Unfinished game: <strong>{saved.name}</strong> {saved.mode === 'bot' ? 'vs the computer' : 'pass-and-play'}
+            {saved.log?.length ? ` · ${saved.log.length} move${saved.log.length === 1 ? '' : 's'}` : ''}
+          </span>
+          <span className="resume-actions">
+            <button className="start" onClick={() => onStart(saved)}>Resume</button>
+            <button onClick={() => { save(null); setSaved(null) }}>Discard</button>
+          </span>
+        </div>
+      )}
       <label>Game</label>
       <GamePicker games={games} value={uid} onChange={setUid} />
 
@@ -49,7 +78,7 @@ function Menu({ games, go, onStart }) {
         className="start"
         onClick={async () => {
           const r = await api.newGame(uid, opts)
-          onStart({ uid, name: game.name, mode, botSeat: mode === 'bot' ? 1 : null, state: r.state, view: r.view })
+          onStart({ uid, name: game.name, mode, botSeat: mode === 'bot' ? 1 : null, state: r.state, view: r.view, log: [] })
         }}
       >
         Start
@@ -62,17 +91,16 @@ function Menu({ games, go, onStart }) {
 function Play({ match, setMatch, onExit }) {
   const { uid, view } = match
   const busy = useRef(false)
-  const [log, setLog] = useState([])
   const [rules, setRules] = useState(false)
-  const addLog = (r) => setLog((prev) => [...prev, { seat: r.mover, label: r.label }])
+  const log = match.log || []
+  const withMove = (m, r) => ({ ...m, state: r.state, view: r.view, log: [...(m.log || []), { seat: r.mover, label: r.label }] })
 
   async function applyMove(move) {
     if (busy.current || view.terminal) return
     busy.current = true
     try {
       const r = await api.move(uid, match.state, move)
-      addLog(r)
-      setMatch((m) => ({ ...m, state: r.state, view: r.view }))
+      setMatch((m) => withMove(m, r))
     } finally {
       busy.current = false
     }
@@ -88,11 +116,19 @@ function Play({ match, setMatch, onExit }) {
       if (cancelled) return
       const r = await api.move(uid, match.state, b.move)
       if (cancelled) return
-      addLog(r)
-      setMatch((m) => ({ ...m, state: r.state, view: r.view }))
+      setMatch((m) => withMove(m, r))
     })()
     return () => { cancelled = true }
   }, [match.state, view.current_player, view.terminal]) // eslint-disable-line
+
+  // Ask before leaving the page mid-game (the game is also saved, but the
+  // prompt stops an accidental swipe-back from feeling like a loss).
+  useEffect(() => {
+    if (view.terminal) return
+    const warn = (e) => { e.preventDefault(); e.returnValue = '' }
+    window.addEventListener('beforeunload', warn)
+    return () => window.removeEventListener('beforeunload', warn)
+  }, [view.terminal])
 
   const cp = view.current_player
   const thinking = match.mode === 'bot' && !view.terminal && cp !== 0

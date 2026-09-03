@@ -400,3 +400,13 @@ button.secondary:hover { color: var(--text); border-color: var(--accent); }
 .loading { text-align: center; padding: 40px 0; }
 .loading p { margin: 6px 0; }
 .loading .muted { max-width: 34em; margin: 8px auto 0; line-height: 1.5; }
+
+/* quick-play: unfinished-game resume offer */
+.resume-box {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;
+  border: 1px solid var(--accent); border-radius: 8px; padding: 10px 12px; background: rgba(201,169,110,0.08);
+  font-size: 0.85rem;
+}
+.resume-box strong { color: var(--accent); }
+.resume-actions { display: flex; gap: 8px; }
+.resume-actions button { font-family: inherit; }

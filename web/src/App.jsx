@@ -9,11 +9,44 @@ import Profile from './Profile'
 import Replay from './Replay'
 import Spectate from './Spectate'
 
+// Hash routing: every screen has a URL, so refresh and the Back button keep
+// your place and any screen can be linked. `go()` only sets the hash; the
+// hashchange listener is the single place that changes `screen`.
+const HASH_OF = {
+  home: () => '#/',
+  quickplay: () => '#/play',
+  leaderboard: (s) => (s.uid ? `#/leaderboard/${s.uid}` : '#/leaderboard'),
+  spectate: () => '#/watch',
+  profile: (s) => `#/user/${s.id}`,
+  replay: (s) => `#/replay/${s.id}`,
+  match: (s) => `#/match/${s.id}`,
+}
+export function parseHash(hash) {
+  const p = (hash || '').replace(/^#\/?/, '').split('/').filter(Boolean)
+  switch (p[0]) {
+    case 'play': return { name: 'quickplay' }
+    case 'leaderboard': return { name: 'leaderboard', uid: p[1] }
+    case 'watch': return { name: 'spectate' }
+    case 'user': return p[1] ? { name: 'profile', id: p[1] } : { name: 'home' }
+    case 'replay': return p[1] ? { name: 'replay', id: p[1] } : { name: 'home' }
+    case 'match': return p[1] ? { name: 'match', id: p[1] } : { name: 'home' }
+    default: return { name: 'home' }
+  }
+}
+function initialScreen() {
+  // Legacy deep link used in notification emails: /?match=<id> → #/match/<id>
+  const deep = new URLSearchParams(window.location.search).get('match')
+  if (deep) {
+    window.history.replaceState(null, '', `${window.location.pathname}#/match/${deep}`)
+  }
+  return parseHash(window.location.hash)
+}
+
 export default function App() {
   const [me, setMe] = useState(undefined) // undefined = loading, null = anonymous
   const [games, setGames] = useState(null)
   const [config, setConfig] = useState({ move_deadline_days: 7, email: false })
-  const [screen, setScreen] = useState({ name: 'home' })
+  const [screen, setScreen] = useState(initialScreen)
   const [slow, setSlow] = useState(false) // first load taking long (server waking up)
 
   useEffect(() => {
@@ -36,12 +69,16 @@ export default function App() {
         }
       }
     })()
-    const deep = new URLSearchParams(window.location.search).get('match')
-    if (deep) setScreen({ name: 'match', id: deep })
-    return () => { cancelled = true; clearTimeout(slowTimer) }
+    const onHash = () => setScreen(parseHash(window.location.hash))
+    window.addEventListener('hashchange', onHash)
+    return () => { cancelled = true; clearTimeout(slowTimer); window.removeEventListener('hashchange', onHash) }
   }, [])
 
-  const go = (s) => setScreen(s)
+  const go = (s) => {
+    const h = (HASH_OF[s.name] || HASH_OF.home)(s)
+    if (window.location.hash === h) setScreen(s) // same URL: no hashchange event
+    else window.location.hash = h
+  }
   const refreshGames = () => api.listGames().then((d) => setGames(d.games)).catch(() => {})
 
   return (
