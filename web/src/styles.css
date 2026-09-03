@@ -45,19 +45,56 @@ main { display: flex; flex-direction: column; align-items: center; padding-top: 
 }
 .cat-chip:hover { border-color: var(--accent); color: var(--text); }
 .cat-chip.on { border-color: var(--accent); background: rgba(201,169,110,0.16); color: var(--accent); }
-.game-list { display: flex; flex-direction: column; gap: 8px; max-height: 380px; overflow-y: auto; }
-.game-card {
-  display: flex; align-items: stretch; gap: 8px; background: var(--panel);
-  border: 1px solid var(--line); border-radius: 8px; color: var(--text);
+.game-list { display: flex; flex-direction: column; gap: 2px; max-height: 420px; overflow-y: auto; min-width: 0; }
+/* one game = one line; the selected row expands in place */
+.game-row {
+  display: flex; align-items: stretch; gap: 6px; min-width: 0;
+  border: 1px solid transparent; border-radius: 6px; color: var(--text);
 }
-.game-card.active { border-color: var(--accent); background: rgba(201,169,110,0.1); }
-.game-card-main { flex: 1; text-align: left; background: transparent; border: none; color: var(--text); padding: 12px; cursor: pointer; }
+.game-row:hover { background: rgba(255,255,255,0.03); }
+.game-row.active { border-color: var(--accent); background: rgba(201,169,110,0.1); }
+.game-row-main {
+  flex: 1; min-width: 0; text-align: left; background: transparent; border: none;
+  color: var(--text); padding: 6px 8px; cursor: pointer; font-family: inherit;
+}
+.game-row-line { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
+.game-row-name { font-weight: 700; color: var(--accent); white-space: nowrap; }
+.game-row-players {
+  font-size: 0.62rem; color: var(--muted); border: 1px solid var(--line); border-radius: 999px;
+  padding: 1px 6px; white-space: nowrap; letter-spacing: 0.04em;
+}
+.game-row-blurb {
+  flex: 1; min-width: 0; font-size: 0.76rem; color: var(--muted);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.game-row-detail { display: block; margin-top: 6px; }
+.game-row-detail .game-desc, .game-row-detail .game-tags { display: block; }
+.game-row-detail .game-tags { margin-top: 4px; }
 .game-rules-btn {
-  align-self: center; margin-right: 10px; background: transparent; border: 1px solid var(--line);
-  color: var(--muted); border-radius: 6px; padding: 5px 11px; font-size: 0.68rem; cursor: pointer;
-  text-transform: uppercase; letter-spacing: 0.08em; white-space: nowrap;
+  align-self: center; margin-right: 6px; background: transparent; border: 1px solid var(--line);
+  color: var(--muted); border-radius: 6px; padding: 3px 9px; font-size: 0.62rem; cursor: pointer;
+  text-transform: uppercase; letter-spacing: 0.08em; white-space: nowrap; font-family: inherit;
 }
 .game-rules-btn:hover { border-color: var(--accent); color: var(--accent); }
+/* collapsible category headers */
+.cat-head {
+  display: flex; align-items: center; gap: 8px; width: 100%; text-align: left;
+  background: transparent; border: none; border-top: 1px solid var(--line); padding: 8px 6px 6px;
+  cursor: pointer; color: var(--text); font-family: inherit;
+}
+.cat-head .cat-label { margin: 0; }
+.cat-head:hover .cat-label { opacity: 1; }
+.cat-chevron { font-size: 0.7rem; color: var(--muted); width: 0.8em; }
+.cat-count { font-size: 0.66rem; color: var(--muted); }
+.cat-chip.players { margin-left: auto; }
+/* always-visible "what's selected" bar under the list */
+.picker-selected {
+  display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap;
+  border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; background: var(--panel);
+}
+.picker-selected-label { font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); }
+.picker-selected strong { color: var(--accent); }
+.picker-selected .link { padding: 0; font-size: 0.72rem; }
 
 /* Rules dialog + Markdown */
 .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.72); display: flex;

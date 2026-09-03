@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { api } from './api'
 import GamePicker from './GamePicker'
+import { defaultGameUid } from './featured'
 import GameOptions, { defaultOptions } from './GameOptions'
 import { timeLeft, deadlineUrgent } from './timeleft'
 
@@ -165,7 +166,7 @@ function badgeClass(m) {
 }
 
 function NewChallenge({ games, go, onCreated }) {
-  const [uid, setUid] = useState(games[0]?.uid)
+  const [uid, setUid] = useState(defaultGameUid(games))
   const [opts, setOpts] = useState({})
   const [opponent, setOpponent] = useState('human') // human | computer
   const [seat, setSeat] = useState('random')

@@ -5,6 +5,7 @@ import MoveLog from './MoveLog'
 import { SEAT_FILL } from './colors'
 import GameOptions, { defaultOptions } from './GameOptions'
 import GamePicker from './GamePicker'
+import { defaultGameUid } from './featured'
 import RulesModal from './RulesModal'
 
 // Anonymous, no-account play using the stateless endpoints. Hotseat or vs the
@@ -16,7 +17,7 @@ export default function QuickPlay({ games, go }) {
 }
 
 function Menu({ games, go, onStart }) {
-  const [uid, setUid] = useState(games[0]?.uid)
+  const [uid, setUid] = useState(defaultGameUid(games))
   const [mode, setMode] = useState('hotseat') // hotseat | bot
   const [opts, setOpts] = useState({})
   const game = games.find((g) => g.uid === uid)
