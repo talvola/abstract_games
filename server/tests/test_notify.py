@@ -19,12 +19,16 @@ os.environ["DATABASE_URL"] = f"sqlite:///{_TMP}/test.db"
 os.environ["AGP_EMAIL_SYNC"] = "1"
 os.environ["AGP_BASE_URL"] = "https://example.test"
 os.environ.pop("AGP_SMTP_HOST", None)
+# Every test registers users from the same fake IP; keep the limiter out of the
+# way except in the test that exercises it.
+for _b in ("REGISTER", "LOGIN", "SEEK", "MATCH", "MESSAGE"):
+    os.environ[f"AGP_RATE_LIMIT_{_b}"] = "100000"
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 from fastapi.testclient import TestClient  # noqa: E402
 
-from server import app as appmod, db as dbmod, events, games as G, notify  # noqa: E402
+from server import app as appmod, db as dbmod, events, games as G, notify, ratelimit  # noqa: E402
 from server.models import Match, Notification  # noqa: E402
 
 SENT: list[tuple[str, str, str]] = []
@@ -184,6 +188,38 @@ class NotifyTests(unittest.TestCase):
         self.b.post(f"/api/seeks/{sid}/accept")
         self.assertEqual(anon.get(f"/api/seeks/{sid}").status_code, 410)
         self.assertEqual(anon.get("/api/seeks/nope").status_code, 410)
+
+    def test_rate_limit_and_caps(self):
+        ratelimit.LIMITS["login"] = 3
+        ratelimit.reset()
+        try:
+            anon = TestClient(appmod.app)
+            codes = [anon.post("/api/auth/login", json={"email": self.a_email, "password": "wrong"}).status_code for _ in range(4)]
+            self.assertEqual(codes, [401, 401, 401, 429])
+            r = anon.post("/api/auth/login", json={"email": self.a_email, "password": "secret1"})
+            self.assertEqual(r.status_code, 429)  # even a correct password: the IP is throttled
+            self.assertIn("Retry-After", r.headers)
+        finally:
+            ratelimit.LIMITS["login"] = 100000
+            ratelimit.reset()
+        # Open-seek cap
+        for _ in range(appmod.MAX_OPEN_SEEKS):
+            self.assertEqual(self.a.post("/api/seeks", json={"game_uid": self.game, "options": {}, "seat_pref": "first"}).status_code, 200)
+        r = self.a.post("/api/seeks", json={"game_uid": self.game, "options": {}, "seat_pref": "first"})
+        self.assertEqual(r.status_code, 400)
+        self.assertIn("open challenges", r.json()["detail"])
+        r = self.a.post("/api/quickpair", json={"game_uid": self.game, "options": {"size": 99}})
+        self.assertEqual(r.status_code, 400)
+        for sk in self.a.get("/api/seeks").json()["seeks"]:
+            if sk["mine"]:
+                self.a.delete(f"/api/seeks/{sk['id']}")
+        # Bot-match cap
+        mk = lambda: self.b.post("/api/matches", json={"game_uid": self.game, "options": {}, "opponent": "bot", "seat": "first", "bot_iterations": 5})
+        for _ in range(appmod.MAX_ACTIVE_BOT_MATCHES):
+            self.assertEqual(mk().status_code, 200)
+        r = mk()
+        self.assertEqual(r.status_code, 400)
+        self.assertIn("vs the computer", r.json()["detail"])
 
     def test_bot_matches_never_email(self):
         r = self.a.post("/api/matches", json={"game_uid": self.game, "options": {}, "opponent": "bot", "seat": "first", "bot_iterations": 5})

@@ -28,7 +28,8 @@ from sqlalchemy.orm import Session
 
 from . import notify
 
-from . import events, games as G
+from . import events, games as G, ratelimit
+from .ratelimit import rate_limited
 from .auth import (
     COOKIE_NAME,
     SESSION_MAX_AGE,
@@ -329,7 +330,8 @@ def download_devkit():
 #  auth
 # ===========================================================================
 @app.post("/api/auth/register")
-def register(body: RegisterBody, response: Response, db: Session = Depends(get_db)):
+def register(body: RegisterBody, response: Response, db: Session = Depends(get_db),
+             _rl: None = Depends(rate_limited("register"))):
     email = body.email.strip().lower()
     if "@" not in email or len(body.password) < 6 or not body.display_name.strip():
         raise HTTPException(400, "valid email, display name, and 6+ char password required")
@@ -348,7 +350,8 @@ def register(body: RegisterBody, response: Response, db: Session = Depends(get_d
 
 
 @app.post("/api/auth/login")
-def login(body: LoginBody, response: Response, db: Session = Depends(get_db)):
+def login(body: LoginBody, response: Response, db: Session = Depends(get_db),
+          _rl: None = Depends(rate_limited("login"))):
     user = db.query(User).filter(User.email == body.email.strip().lower()).first()
     if not user or not verify_password(body.password, user.password_hash):
         raise HTTPException(401, "invalid email or password")
@@ -372,6 +375,26 @@ def me(user: User | None = Depends(optional_user)):
 # ===========================================================================
 #  seeks (open challenges)
 # ===========================================================================
+# Per-user caps: keep one person from filling the lobby / the DB / the CPU.
+MAX_OPEN_SEEKS = int(os.environ.get("AGP_MAX_OPEN_SEEKS", "5"))
+MAX_ACTIVE_BOT_MATCHES = int(os.environ.get("AGP_MAX_ACTIVE_BOT_MATCHES", "10"))
+
+
+def _check_open_seek_cap(db: Session, user: User) -> None:
+    n = db.query(Seek).filter(Seek.creator_id == user.id).count()
+    if n >= MAX_OPEN_SEEKS:
+        raise HTTPException(400, f"you already have {n} open challenges — cancel one first")
+
+
+def _check_bot_match_cap(db: Session, user: User) -> None:
+    n = sum(
+        1 for m in db.query(Match).filter(Match.status == "active").all()
+        if seat_of(m, user.id) is not None and any(p.get("type") == "bot" for p in m.players)
+    )
+    if n >= MAX_ACTIVE_BOT_MATCHES:
+        raise HTTPException(400, f"you already have {n} games vs the computer going — finish or resign one first")
+
+
 @app.get("/api/seeks")
 def list_seeks(db: Session = Depends(get_db), user: User | None = Depends(optional_user)):
     from .models import UserGameRating
@@ -402,8 +425,10 @@ def list_seeks(db: Session = Depends(get_db), user: User | None = Depends(option
 
 
 @app.post("/api/seeks")
-def create_seek(body: SeekBody, db: Session = Depends(get_db), user: User = Depends(current_user)):
+def create_seek(body: SeekBody, db: Session = Depends(get_db), user: User = Depends(current_user),
+                _rl: None = Depends(rate_limited("seek"))):
     registry.get(body.game_uid)  # validate game exists
+    _check_open_seek_cap(db, user)
     seek = Seek(
         id=G.new_id(),
         creator_id=user.id,
@@ -468,7 +493,8 @@ def _rating_value(db, user_id: int, game_uid: str) -> float:
 
 
 @app.post("/api/quickpair")
-def quick_pair(body: QuickPairBody, db: Session = Depends(get_db), user: User = Depends(current_user)):
+def quick_pair(body: QuickPairBody, db: Session = Depends(get_db), user: User = Depends(current_user),
+               _rl: None = Depends(rate_limited("seek"))):
     """One-click pairing. If an open seek for this game (+options) exists from
     another player, pair with the CLOSEST-rated one immediately and return the
     match. Otherwise post a seek and return paired=false (the caller waits)."""
@@ -490,6 +516,7 @@ def quick_pair(body: QuickPairBody, db: Session = Depends(get_db), user: User = 
         events.on_match_started(db, match, user.id)
         return {"paired": True, "match_id": match.id}
     # No opponent waiting — post our own seek.
+    _check_open_seek_cap(db, user)
     seek = Seek(id=G.new_id(), creator_id=user.id, creator_name=user.display_name,
                 game_uid=body.game_uid, options=opts, seat_pref="random")
     db.add(seek)
@@ -510,9 +537,11 @@ def cancel_seek(seek_id: str, db: Session = Depends(get_db), user: User = Depend
 #  matches
 # ===========================================================================
 @app.post("/api/matches")
-def new_match(body: NewMatchBody, db: Session = Depends(get_db), user: User = Depends(current_user)):
+def new_match(body: NewMatchBody, db: Session = Depends(get_db), user: User = Depends(current_user),
+              _rl: None = Depends(rate_limited("match"))):
     _, game = registry.get(body.game_uid)
     if body.opponent == "bot":
+        _check_bot_match_cap(db, user)
         if G.is_freeform(game):
             raise HTTPException(400, "freeform (unenforced) games have no computer opponent")
         bot = seat_bot(body.bot_iterations)
@@ -709,6 +738,7 @@ def list_messages(match_id: str, db: Session = Depends(get_db)):
 
 @app.post("/api/matches/{match_id}/messages")
 def post_message(match_id: str, body: MessageBody, db: Session = Depends(get_db),
+                 _rl: None = Depends(rate_limited("message")),
                  user: User = Depends(current_user)):
     """Post to a match thread. Only the match's players may chat."""
     from .models import Message
