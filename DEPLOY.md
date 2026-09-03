@@ -118,6 +118,13 @@ records). ~500 mails/day, plenty for now.
    `AGP_EMAIL_FROM=Abstract Games <the gmail address>` (Gmail rewrites any other
    From to the account address anyway).
 
+**Yahoo Mail works identically** (Gmail signup may demand a phone number):
+Yahoo account → Account Security → turn on 2-step verification → **Generate app
+password** → set `AGP_SMTP_HOST=smtp.mail.yahoo.com`, `AGP_SMTP_PORT=587`,
+`AGP_SMTP_USER=<the yahoo address>`, `AGP_SMTP_PASS=<app password>`,
+`AGP_EMAIL_FROM=Abstract Games <the yahoo address>`. Yahoo also caps at ~500/day.
+(Currently in use: `abstractgames.notify@yahoo.com`.)
+
 When the site outgrows this (>~500/day, or you want `@yourdomain`), buy a cheap
 domain, attach it to Render (free) and move to Resend / Mailgun — same env vars.
 
