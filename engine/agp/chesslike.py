@@ -777,10 +777,14 @@ class ChessLike(Game):
         else:
             caption = f"{names[state.to_move]} to move"
         spec = {
-            "board": {"type": "square", "width": self.WIDTH, "height": self.HEIGHT},
+            # checker: readable light/dark squares (Board.jsx opt-in);
+            # seat_names: the UI labels seats "White"/"Black" instead of
+            # "Player 1"/"Player 2" and pairs the move log by turn.
+            "board": {"type": "square", "width": self.WIDTH, "height": self.HEIGHT, "checker": True},
             "pieces": pieces,
             "highlights": [],
             "caption": caption,
+            "seat_names": [names[WHITE], names[BLACK]],
         }
         if self.PIECESET:
             spec["pieceset"] = self.PIECESET

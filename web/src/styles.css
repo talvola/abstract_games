@@ -296,7 +296,7 @@ button.secondary:hover { color: var(--text); border-color: var(--accent); }
 .movelog-row { display: flex; align-items: center; gap: 7px; padding: 2px 0; }
 .movelog-n { color: var(--muted); min-width: 24px; text-align: right; font-size: 0.78rem; }
 .movelog-dot { width: 9px; height: 9px; border-radius: 50%; flex: 0 0 auto; }
-.movelog-label { color: var(--text); font-family: 'Courier New', monospace; }
+.movelog-label { color: var(--text); font-family: 'Courier New', monospace; white-space: nowrap; }
 
 .board-wrap { position: relative; display: flex; flex-direction: column; align-items: center; width: 100%; }
 .promo-picker { margin-top: 10px; background: var(--panel); border: 1px solid var(--accent);
@@ -426,3 +426,7 @@ button.secondary:hover { color: var(--text); border-color: var(--accent); }
 .challenge-card h2 { margin: 0 0 6px; }
 .challenge-card .game-desc { display: block; margin: 8px 0; }
 .challenge-meta { display: flex; gap: 12px; flex-wrap: wrap; font-size: 0.8rem; color: var(--muted); }
+
+/* paired move log + seat colour tags */
+.movelog-ply { display: inline-flex; align-items: center; gap: 5px; margin-right: 12px; }
+.seat-colour { font-size: 0.68rem; color: var(--muted); margin-left: 4px; }

@@ -427,3 +427,18 @@ agp validate games/yourgame          # must print RESULT: OK
 agp render   games/yourgame --moves 8 # eyeball the board + a few random moves
 agp playtest games/yourgame --bot     # MCTS self-play; check results look sane
 ```
+
+
+### Seat names and checkerboards (chess family)
+
+Two optional RenderSpec fields, both emitted by `agp.chesslike.ChessLike.render`:
+
+- `board.checker: true` — asks `Board.jsx` for a readable light/dark
+  checkerboard (the default square board is near-uniform on purpose so
+  game-supplied `tints` read clearly). A game's own `tints` still win per cell.
+- `seat_names: ["White", "Black"]` — one label per seat. The UI then shows
+  "White"/"Black" instead of "Player 1"/"Player 2" (bot mode: "You (White)"),
+  appends the colour to player chips in correspondence matches, and renders
+  the move log **paired by turn** (`1. e4 a5`). Only opt in when the game is
+  2-seat and strictly alternates one move per turn — games with multi-move
+  turns (Arimaa) would pair wrongly.

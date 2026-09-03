@@ -162,7 +162,7 @@ function Play({ match, setMatch, onExit }) {
           <Board spec={view.render} legalMoves={myTurn ? view.legal_moves : []} onMove={applyMove} disabled={!myTurn} freeform={view.freeform} currentPlayer={view.current_player} />
           {view.render.caption && <div className="caption">{view.render.caption}</div>}
         </div>
-        <MoveLog moves={log} />
+        <MoveLog moves={log} paired={!!view.render.seat_names} />
       </div>
       <div className="controls">
         <button onClick={onExit}>← New game</button>
@@ -173,7 +173,11 @@ function Play({ match, setMatch, onExit }) {
   )
 }
 
+// Seat label: games may name their seats (chess: White/Black) via
+// render.seat_names; otherwise Player 1/2. Bot mode keeps You/Computer.
 function seat(match, idx) {
-  if (match.mode === 'bot') return idx === 0 ? 'You' : 'Computer'
-  return `Player ${idx + 1}`
+  const names = match.view?.render?.seat_names
+  const colour = names?.[idx]
+  if (match.mode === 'bot') return (idx === 0 ? 'You' : 'Computer') + (colour ? ` (${colour})` : '')
+  return colour || `Player ${idx + 1}`
 }

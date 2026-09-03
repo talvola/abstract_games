@@ -91,6 +91,7 @@ export default function MatchPlay({ id, me, go }) {
               {p.type === 'user' && p.user_id
                 ? <a className="seat-link" onClick={() => go({ name: 'profile', id: p.user_id })}>{p.name}</a>
                 : p.name}{p.type === 'bot' ? ' 🤖' : ''}{m.my_seat === i ? ' (you)' : ''}
+              {m.render?.seat_names?.[i] && <span className="seat-colour">{m.render.seat_names[i]}</span>}
               {p.rating != null && <span className="seat-rating">{p.rating}{p.provisional ? '?' : ''}</span>}
               {p.delta != null && (
                 <span className="seat-delta" style={{ color: p.delta >= 0 ? '#5cba6b' : '#e86050' }}>
@@ -122,7 +123,7 @@ export default function MatchPlay({ id, me, go }) {
           {m.render.caption && <div className="caption">{m.render.caption}</div>}
         </div>
         <div className="side-col">
-          <MoveLog moves={(m.history || []).map((h) => ({ seat: h.seat, label: h.label, player: h.player }))} />
+          <MoveLog moves={(m.history || []).map((h) => ({ seat: h.seat, label: h.label, player: h.player }))} paired={!!m.render?.seat_names} />
           <Chat matchId={id} meId={me?.id} canPost={m.my_seat != null} />
         </div>
       </div>

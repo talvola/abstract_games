@@ -796,7 +796,17 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
           const clickable = selected || isTarget || isSource || freeTarget
           const isGoal = hl[s.id] === 'goal'
           const isLast = hl[s.id] === 'last-move'
-          const baseFill = tints[s.id] || (s.parity ? '#332e27' : '#2a2620')
+          // `board.checker: true` (chess family) asks for a readable light/dark
+          // checkerboard instead of the near-uniform default; a game's own
+          // `tints` still win, and the last-move marker is unaffected.
+          // Chess convention: the bottom-left square is DARK ("light on the
+          // right"). parity = (x+y)%2 with row 0 drawn at the bottom, so for
+          // an even-height board parity 0 is dark; the (height-1)%2 term keeps
+          // the same rule for odd heights.
+          const lightSq = board.checker && s.parity !== ((board.height - 1) % 2)
+          const baseFill = tints[s.id] || (board.checker
+            ? (lightSq ? '#4a3f30' : '#242019')
+            : (s.parity ? '#332e27' : '#2a2620'))
           // The last-move marker is carried by a DASHED STROKE, not by fill
           // alone: a fill-only marker is ~1.1:1 against the board and vanishes
           // outright when a game tints the very squares moves land on (found in

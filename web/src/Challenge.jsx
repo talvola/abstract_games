@@ -26,7 +26,7 @@ export default function Challenge({ id, me, setMe, games, go, config }) {
       <div className="challenge">
         <div className="challenge-card">
           <h2>This challenge is no longer open</h2>
-          <p className="muted small">{gone}. It was probably accepted already, or withdrawn.</p>
+          <p className="muted small">Someone else got there first, or the challenger withdrew it.</p>
         </div>
         <div className="controls">
           <button className="start" onClick={() => go({ name: 'home' })}>Go to the lobby</button>
