@@ -529,8 +529,14 @@ trustworthy nor untrustworthy in general, only per game.
 can probably express it), LYNGK (still unsourced — needs a Wayback hunt of gipf.com c. 2017-19),
 Homeworlds (needs an orchestrator-owned "system graph" primitive).
 
-**FOUR upstream reports now owed to `AbstractPlay/gameslib`** (14 issues found, **none reported yet —
-this needs Erik's go-ahead, since filing GitHub issues publishes outward**): the `slyde.ts`
+**✅ SUPERSEDED 2026-09-17 — the reports are now WRITTEN UP in `GAMESLIB_ISSUES.md`** (repo root),
+re-verified against gameslib HEAD `641db366`. Delivery channel is Erik's call: upstream appears to use
+**Discord**, not GitHub issues (the repo is active — 555 commits in 90 days — but has not tagged a
+release since v1.0.0-beta in 2023). **Two corrections came out of that re-verification:** `carnac.ts`
+was REAL and is **fixed upstream** (`2e5dabb4`, 2026-08-19), and the "systemic dead-skip" trio is
+**RETRACTED — it never existed** (the `pass` guard predates our waves by months to years). Seven bugs
+remain confirmed-live: slyde, hexentafl, bamboo, minefield, onager, take, amoeba. The original
+(now partly stale) list follows: the `slyde.ts`
 singleton-aggregation winner flip; the `hexentafl.ts` stuck-side hard deadlock; **wave 22's
 `carnac.ts` `compareDolmenScores` win-criterion omission** (46.0/33.3/17.3% winner flips, minimal
 repro `p1=[8]` vs `p2=[3,3,3]`); and **`amoeba.ts`'s `validateMove` accepting non-straight
