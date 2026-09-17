@@ -6,7 +6,53 @@ universe map and capability gaps live in `GAME_BACKLOG.md`; this file is the
 
 ---
 
-## ⭐ SESSION HANDOFF (read this first) — updated 2026-08-05 (wave 22 → 418 games)
+## ⭐ SESSION HANDOFF (read this first) — updated 2026-09-17 (→ 419 games)
+
+### ✅ ONE-OFF (2026-09-17) → **419 games**, #419 `tawlbwrdd` — a DISCARD DECISION OVERTURNED
+Not a wave. Erik compared our library against the 35 games on **playabstractgames.com**
+(a rival site posted to Reddit). **We covered 34 of 35**; the one name missing was
+**Tawlbwrdd**, which batch 7 had discarded as *"AST-identical to Hnefatafl"*.
+
+**That discard was wrong, and the reason is a reusable lesson: a clone check
+compares the CODE WE WROTE, not the GAME.** The batch-7 builder had implemented
+Copenhagen Hnefatafl and put a Welsh name on it, so of course the ASTs matched.
+The actual game, from the primary source (Murray's translation of **Robert ap
+Ifan, 1587**), differs from Copenhagen on three rules at once:
+
+* the **King is captured between TWO attackers**, like any other man (not four);
+* the King **escapes to ANY EDGE square** (not a corner);
+* there are **NO special squares** at all — the centre shelters nobody and the
+  corners are ordinary.
+
+Those are not cosmetic: the defenders take **78.5%** of decided random games
+(596–163 over 800), where Copenhagen's corner escape is the modern *fix* for
+exactly that bias. **When an implementation looks like a clone, check the SOURCE
+before concluding the GAME is one** — a builder who copied the wrong ruleset
+produces the identical symptom.
+
+Shipped with both reconstructions of the disputed attacker formation as manifest
+options (Cyningstan's T-shape, Bell's 1969 arrow) plus an optional Tablut-style
+throne. 16 selftest checks, **19/19 mutants killed**, browser-verified.
+
+**Own-dogfooding note:** the mutation harness caught a **vacuous test of mine** —
+my "stuck side loses" position was actually won by *king escape*, because the
+square the king moved to was on the edge. The `stuck_side_wins` mutant survived
+until I rebuilt the position to be closed by an ordinary soldier. Same family as
+the unpinned-caption defect: the assertion ran, passed, and proved nothing.
+
+Also done: an **alternate-name tag pass** on the tafl family (`viking`,
+`kings-table`, `brandubh`, `high-king`, `sami`, `linnaeus`, `tawlbrdd`) — tags
+score 600/500/400 in `GamePicker.relevance` vs a description's 100, so a player
+typing a game's other name now lands on it. Tags are also DISPLAYED on the card,
+so they were kept short.
+
+**Not done / open:** the wave-22 items below are still open — four upstream
+`gameslib` bug reports owed but unfiled (needs Erik's go-ahead to publish
+outward), and wave 23 pre-staged but not greenlit.
+
+---
+
+## Earlier handoff — updated 2026-08-05 (wave 22 → 418 games)
 
 ### ✅ WAVE 22 COMPLETE (2026-08-05) → **418 games**, #415–418
 **The wave that opened with a PLATFORM FIX and closed with the worst unpinned-attribution bug yet.**
@@ -3177,7 +3223,7 @@ signals above.)
 |---|---|---|---|
 | Atari Go (Capture Go) | review→auto | independent re-derivation; liberty/group-capture + positional superko; my capture/suicide probes | **done → main** |
 | NoGo (anti-Go) | review→auto | independent re-derivation; capture & suicide both illegal | **done → main** |
-| Tawlbwrdd (11×11 tafl) | — | review found it AST-identical to Hnefatafl | **DISCARDED (clone, not shipped)** |
+| Tawlbwrdd (11×11 tafl) | — | review found it AST-identical to Hnefatafl | **DISCARDED (clone, not shipped)** — ⚠ **OVERTURNED 2026-09-17, now shipped as `tawlbwrdd`** (see below) |
 
 ## Batch 8 — connection + draughts + wide chess (2026-06-21)
 | Game | Lane | Anchor | Status |

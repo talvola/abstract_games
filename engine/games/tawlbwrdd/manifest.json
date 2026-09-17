@@ -1,0 +1,28 @@
+{
+  "uid": "tawlbwrdd",
+  "name": "Tawlbwrdd",
+  "version": "1.0.0",
+  "engine_api": "1",
+  "author": "AGP (after Robert ap Ifan, 1587; reconstruction per Cyningstan)",
+  "players": { "min": 2, "max": 2 },
+  "has_randomness": false,
+  "hidden_info": false,
+  "category": "Capture / annihilation",
+  "tags": ["square", "asymmetric", "tafl", "hunt", "hnefatafl", "welsh", "tawlbrdd"],
+  "bgg_url": "https://boardgamegeek.com/boardgame/27171/tawlbwrdd",
+  "description": "The Welsh tafl, on an 11x11 board, from Robert ap Ifan's 1587 manuscript. A King and 12 defenders in a diamond against 24 attackers in four groups of six at the edges (attackers move first); every piece moves like a rook and is captured by custodial flanking. Unlike Copenhagen Hnefatafl there are NO special squares, the King is caught between just TWO attackers like any other man, and he wins by reaching ANY edge square rather than a corner -- a faster, sharper siege in which the King is a weak piece who must be escorted the whole way. Options pick the attackers' formation (the T-shape of Cyningstan's diagram, or R. C. Bell's 3-2-1 arrow) and whether the central square is reserved to the King.",
+  "options": {
+    "layout": {
+      "choices": ["t", "bell"],
+      "default": "t",
+      "label": "Attackers' formation",
+      "labels": { "t": "T-shape (Cyningstan)", "bell": "Arrow (Bell 1969)" }
+    },
+    "throne": {
+      "choices": ["none", "restricted"],
+      "default": "none",
+      "label": "Central square",
+      "labels": { "none": "Ordinary square", "restricted": "Reserved to the King" }
+    }
+  }
+}
