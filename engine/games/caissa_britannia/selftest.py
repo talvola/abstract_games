@@ -292,8 +292,13 @@ for s in (s0, s1):
     check(G._poskey_state(rt) == G._poskey_state(s) and rt.ply == s.ply,
           "serialize round-trips")
 spec = G.render(s0)
-check(spec["board"] == {"type": "square", "width": 10, "height": 10},
+# Assert the fields this game is responsible for, not the whole dict: the
+# ChessLike core may add presentation-only keys (it added "checker" in e2e6e18,
+# which broke the old exact-dict comparison here without any rule changing).
+board = spec["board"]
+check((board["type"], board["width"], board["height"]) == ("square", 10, 10),
       "render: 10x10 square board")
+check(board.get("checker") is True, "render: chess-style checkered board")
 check(len(spec["pieces"]) == 44 and all(len(p["label"]) == 1 for p in spec["pieces"]),
       "render: 44 one-letter pieces")
 
