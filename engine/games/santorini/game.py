@@ -280,4 +280,6 @@ class Santorini(Game):
             "pieces": pieces,
             "highlights": [],
             "caption": cap,
+            # UI seat labels (+ traditional piece colours, web/src/colors.js).
+            "seat_names": ["Red", "Blue"],
         }

@@ -4,7 +4,7 @@ import Board from './Board'
 import MoveLog from './MoveLog'
 import RulesModal from './RulesModal'
 import Chat from './Chat'
-import { SEAT_FILL } from './colors'
+import { seatDotStyle } from './colors'
 import { timeLeft, deadlineUrgent } from './timeleft'
 
 // Correspondence match screen. Polls while waiting so an opponent's (or bot's)
@@ -87,7 +87,7 @@ export default function MatchPlay({ id, me, go }) {
         <div className="vs">
           {m.players.map((p, i) => (
             <span key={i} className={`seat-chip ${i === m.current_player && !m.terminal ? 'active-seat' : ''}`}>
-              <span className="seat-dot" style={{ background: SEAT_FILL[i] }} />
+              <span className="seat-dot" style={seatDotStyle(i, m.render?.seat_colors)} />
               {p.type === 'user' && p.user_id
                 ? <a className="seat-link" onClick={() => go({ name: 'profile', id: p.user_id })}>{p.name}</a>
                 : p.name}{p.type === 'bot' ? ' 🤖' : ''}{m.my_seat === i ? ' (you)' : ''}
@@ -123,7 +123,7 @@ export default function MatchPlay({ id, me, go }) {
           {m.render.caption && <div className="caption">{m.render.caption}</div>}
         </div>
         <div className="side-col">
-          <MoveLog moves={(m.history || []).map((h) => ({ seat: h.seat, label: h.label, player: h.player }))} paired={!!m.render?.seat_names} />
+          <MoveLog moves={(m.history || []).map((h) => ({ seat: h.seat, label: h.label, player: h.player }))} paired={!!m.render?.seat_names} seatColors={m.render?.seat_colors} />
           <Chat matchId={id} meId={me?.id} canPost={m.my_seat != null} />
         </div>
       </div>

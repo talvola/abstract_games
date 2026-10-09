@@ -14,6 +14,7 @@ Run (from repo root):
 
 from __future__ import annotations
 
+import json
 import os
 import random
 
@@ -268,10 +269,25 @@ class BotBody(BaseModel):
 # ===========================================================================
 #  catalogue
 # ===========================================================================
+# The catalogue only changes when the registry reloads (startup / upload), so it
+# is built and JSON-encoded once per registry generation: every page load fetches
+# this ~100 KB list, and re-encoding it each time was measurable CPU on the
+# half-core instance while bots were thinking (see server/games.py capacity note).
+_games_cache: dict = {"entries": None, "body": b""}
+
+
 @app.get("/api/games")
 def list_games():
+    entries = registry.entries
+    if _games_cache["entries"] is not entries:
+        _games_cache["body"] = json.dumps(_build_games_list(entries)).encode()
+        _games_cache["entries"] = entries
+    return Response(_games_cache["body"], media_type="application/json")
+
+
+def _build_games_list(entries) -> dict:
     out = []
-    for uid, entry in registry.entries.items():
+    for uid, entry in entries.items():
         m = entry["manifest"]
         out.append({
             "uid": uid,
@@ -957,15 +973,15 @@ def stateless_move(uid: str, body: StatelessMoveBody):
 
 
 @app.post("/api/games/{uid}/bot")
-def stateless_bot(uid: str, body: BotBody):
-    from agp import MCTSBot
-
+async def stateless_bot(uid: str, body: BotBody, _rl: None = Depends(rate_limited("bot"))):
+    # async + the bot executor: a request queued behind other bots' thinking
+    # holds no web worker thread (see server/games.py BOT_CONCURRENCY).
     _, game = registry.get(uid)
     state = game.deserialize(body.state)
     if game.is_terminal(state):
         raise HTTPException(400, "game is over")
     iters = max(1, min(body.iterations, 5000))
-    move = MCTSBot(_rng, iterations=iters, max_time=G.BOT_MAX_TIME).select(game, state)
+    move = await G.bot_move_async(game, state, iters)
     return {"move": move}
 
 

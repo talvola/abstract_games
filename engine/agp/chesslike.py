@@ -779,12 +779,15 @@ class ChessLike(Game):
         spec = {
             # checker: readable light/dark squares (Board.jsx opt-in);
             # seat_names: the UI labels seats "White"/"Black" instead of
-            # "Player 1"/"Player 2" and pairs the move log by turn.
+            # "Player 1"/"Player 2" and pairs the move log by turn;
+            # seat_colors: draw White's pieces white and Black's black (a
+            # named palette in web/src/colors.js) instead of seat red/blue.
             "board": {"type": "square", "width": self.WIDTH, "height": self.HEIGHT, "checker": True},
             "pieces": pieces,
             "highlights": [],
             "caption": caption,
             "seat_names": [names[WHITE], names[BLACK]],
+            "seat_colors": ["white", "black"],
         }
         if self.PIECESET:
             spec["pieceset"] = self.PIECESET

@@ -272,4 +272,7 @@ class NineMensMorris(Game):
             "pieces": pieces,
             "highlights": [],
             "caption": cap,
+            # UI seat labels (+ traditional piece colours, web/src/colors.js).
+            "seat_names": ["White", "Black"],
+            "seat_colors": ["white", "black"],
         }

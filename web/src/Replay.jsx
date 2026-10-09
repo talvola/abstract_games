@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { api } from './api'
 import Board from './Board'
-import { SEAT_FILL } from './colors'
+import { seatColor, seatDotStyle } from './colors'
 
 // Step-through replay of a finished (or ongoing) match. Fetches one render frame
 // per ply from the server and scrubs through them with first/prev/next/last + a
@@ -45,7 +45,7 @@ export default function Replay({ id, go }) {
         <div className="vs">
           {data.players.map((p, s) => (
             <span key={s} className="seat-chip">
-              <span className="seat-dot" style={{ background: SEAT_FILL[s] }} />
+              <span className="seat-dot" style={seatDotStyle(s, f.render?.seat_colors)} />
               {p.name}{p.type === 'bot' ? ' 🤖' : ''}
             </span>
           ))}
@@ -55,7 +55,7 @@ export default function Replay({ id, go }) {
 
       <div className="replay-status">
         Move {i} / {last}
-        {f.mover && <> — <strong style={{ color: SEAT_FILL[data.players.findIndex((p) => p.name === f.mover)] }}>{f.mover}</strong>: {f.label}</>}
+        {f.mover && <> — <strong style={{ color: seatColor(data.players.findIndex((p) => p.name === f.mover), f.render?.seat_colors).fill }}>{f.mover}</strong>: {f.label}</>}
         {i === 0 && <> — starting position</>}
       </div>
 

@@ -10,6 +10,7 @@ against zip-slip on extraction. Real isolation (container/WASM) is future work.
 
 from __future__ import annotations
 
+import asyncio
 import json
 import os
 import random
@@ -17,8 +18,10 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import threading
 import uuid
 import zipfile
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 from fastapi import HTTPException
@@ -37,6 +40,51 @@ UPLOAD_DIR = Path(os.environ.get("AGP_UPLOAD_DIR", ROOT / "data" / "games"))
 # game weight or CPU so /advance never blocks past the HTTP timeout. Tunable via
 # env for the constrained free-tier instance. See KNOWN_ISSUES.md.
 BOT_MAX_TIME = float(os.environ.get("AGP_BOT_MAX_TIME", "3.0"))
+
+# CAPACITY — bot thinking is pure-Python CPU, and the hosted instance has half a
+# core. Measured on prod (2026-10-08 load test): with N bots thinking at once,
+# every other request shares the GIL with them, so a newcomer's page load went
+# 0.4s -> 7s at 10 concurrent bot players and 26s (with errors) at 40, while the
+# bots themselves still took ~3-5s (the wall-clock budget hides the overload by
+# making each bot weaker instead of slower). So at most BOT_CONCURRENCY moves
+# think at a time (others wait, costing no CPU), and a queued move gets a
+# SHORTER budget — under load the bot plays faster and weaker, but the site
+# stays responsive. Raise AGP_BOT_CONCURRENCY with the CPU count.
+BOT_CONCURRENCY = max(1, int(os.environ.get("AGP_BOT_CONCURRENCY", "1")))
+BOT_MIN_TIME = float(os.environ.get("AGP_BOT_MIN_TIME", "0.5"))
+_bot_slots = threading.BoundedSemaphore(BOT_CONCURRENCY)
+_bot_waiting = 0
+_bot_lock = threading.Lock()
+
+
+# Requests WAITING for a bot slot park here, not in the web server's shared
+# worker-thread pool (anyio's, 40 threads): otherwise a queue of 40 bot moves
+# would starve every other sync endpoint — the game list, logins, moves.
+_bot_executor = ThreadPoolExecutor(max_workers=64, thread_name_prefix="bot")
+
+
+async def bot_move_async(game, state, iterations: int):
+    loop = asyncio.get_running_loop()
+    return await loop.run_in_executor(_bot_executor, bot_move, game, state, iterations)
+
+
+def bot_move(game, state, iterations: int):
+    """Pick a bot move through the shared CPU gate (see BOT_CONCURRENCY)."""
+    global _bot_waiting
+    with _bot_lock:
+        _bot_waiting += 1
+    try:
+        _bot_slots.acquire()
+    finally:
+        with _bot_lock:
+            _bot_waiting -= 1
+            queued = _bot_waiting
+    try:
+        # Budget shrinks with the queue behind us, never below BOT_MIN_TIME.
+        budget = max(min(BOT_MIN_TIME, BOT_MAX_TIME), BOT_MAX_TIME / (1 + queued))
+        return MCTSBot(_rng, iterations=iterations, max_time=budget).select(game, state)
+    finally:
+        _bot_slots.release()
 
 # SECURITY — uploads are remote code execution.
 # A registered game's game.py is imported and executed IN-PROCESS by this API
@@ -334,8 +382,7 @@ def advance_bots(match, game) -> None:
         seat = match.players[seat_idx]
         if seat.get("type") != "bot":
             break
-        move = MCTSBot(_rng, iterations=int(seat.get("iterations", 300)),
-                       max_time=BOT_MAX_TIME).select(game, state)
+        move = bot_move(game, state, int(seat.get("iterations", 300)))
         state = game.apply_move(state, move, rng=_rng)
         match.moves.append(_move_record(match.id, ply, seat_idx, move))
         ply += 1

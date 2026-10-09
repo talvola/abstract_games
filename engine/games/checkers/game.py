@@ -198,4 +198,7 @@ class Checkers(Game):
             "pieces": pieces,
             "highlights": [],
             "caption": caption,
+            # UI seat labels (+ traditional piece colours, web/src/colors.js).
+            "seat_names": ["Red", "White"],
+            "seat_colors": ["red", "white"],
         }

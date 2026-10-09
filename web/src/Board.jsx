@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { SEAT_FILL, SEAT_STROKE } from './colors'
+import { seatColor } from './colors'
 import { pieceImageHref } from './pieceImages'
 
 // Generic renderer + move input. Draws ANY game from its RenderSpec and derives
@@ -10,7 +10,6 @@ import { pieceImageHref } from './pieceImages'
 //   * from-to games    -> "from>to"        -> click source, then target.
 //   * choice moves     -> a picker appears when a destination has >1 option.
 
-const colors = (o) => ({ fill: SEAT_FILL[o] ?? '#aaa', stroke: SEAT_STROKE[o] ?? '#555' })
 const PIECE_NAMES = { Q: 'Queen', R: 'Rook', N: 'Knight', B: 'Bishop', K: 'King', P: 'Pawn' }
 // Real piece glyphs per `spec.pieceset` (opt-in, set by the engine). The chess
 // family maps its standard letters to solid Unicode chess silhouettes so they
@@ -144,7 +143,12 @@ function lum(hex) {
 // True when a cell is light enough that light-on-dark ink stops reading.
 const isLightCell = (hex) => lum(hex) > 0.18
 
-export default function Board({ spec, legalMoves, onMove, disabled, freeform, currentPlayer }) {
+export default function Board({ spec, legalMoves, onMove, disabled, freeform, currentPlayer, thumb = false }) {
+  // Seat colours honour the game's optional `seat_colors` (e.g. chess's
+  // ["white","black"]); `named` marks that override so text-only and ring
+  // pieces get a contrasting outline (a black letter would vanish otherwise).
+  const named = Array.isArray(spec.seat_colors)
+  const colors = (o) => seatColor(o, spec.seat_colors)
   const [sel, setSel] = useState([])
   const [promo, setPromo] = useState(null) // { cells, options: [{choice, move}] }
   const [drop, setDrop] = useState(null)   // selected reserve piece letter (for a drop)
@@ -405,7 +409,7 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
     const cnr = (c, r) => [px(SQRT3 * (c + r / 2)), px(1.5 * r)]
     const [tl, tr, bl, br] = [cnr(0, 0), cnr(W, 0), cnr(0, H), cnr(W, H)]
     const seg = (a, b, dx, dy, owner) => ({
-      x1: a[0] + dx, y1: a[1] + dy, x2: b[0] + dx, y2: b[1] + dy, c: SEAT_FILL[owner],
+      x1: a[0] + dx, y1: a[1] + dy, x2: b[0] + dx, y2: b[1] + dy, c: colors(owner).fill,
     })
     const e = board.edges
     edgeLines = [
@@ -430,7 +434,7 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
       [maxX + off, minY - R, maxX + off, maxY + R, e.right],
     ].filter((s) => s[4] != null).map((s, i) => (
       <line key={`edge${i}`} x1={s[0]} y1={s[1]} x2={s[2]} y2={s[3]}
-        stroke={SEAT_FILL[s[4]]} strokeWidth={R * 0.5} strokeLinecap="round" opacity="0.9" />
+        stroke={colors(s[4]).fill} strokeWidth={R * 0.5} strokeLinecap="round" opacity="0.9" />
     ))
   }
 
@@ -439,7 +443,7 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
   // the side to move may arm a drop.
   const reserve = spec.reserve
   function tray(seat, where) {
-    if (!reserve) return null
+    if (!reserve || thumb) return null
     const hand = reserve[String(seat)] || {}
     const entries = Object.entries(hand).filter(([, n]) => n > 0)
     const active = !disabled && currentPlayer === seat
@@ -449,19 +453,23 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
     // put on the board, not by whose tray it sits in:
     //   spec.reserveOwners = {"<letter>": <seatIndex>}
     // Absent (every other drop game) ⇒ the owning seat's colour, as before.
-    const chipColor = (letter) => {
+    const chipColors = (letter) => {
       const o = (spec.reserveOwners || {})[letter]
-      return (o === undefined ? c : colors(o)).fill
+      return o === undefined ? c : colors(o)
+    }
+    const chipStyle = (letter) => {
+      const cc = chipColors(letter)
+      return named ? { color: cc.fill, WebkitTextStroke: `0.6px ${cc.stroke}`, paintOrder: 'stroke' } : { color: cc.fill }
     }
     return (
       <div className={`reserve-tray ${where}`}>
-        <span className="reserve-label">P{seat + 1}</span>
+        <span className="reserve-label">{spec.seat_names?.[seat] || `P${seat + 1}`}</span>
         {entries.length === 0 && <span className="reserve-empty">empty</span>}
         {entries.map(([letter, n]) => (
           <button key={letter} disabled={!active}
             className={`reserve-chip${active ? ' active' : ''}${drop === letter && active ? ' selected' : ''}`}
             onClick={active ? () => { setDrop(drop === letter ? null : letter); setSel([]); setPromo(null) } : undefined}>
-            <span style={{ color: chipColor(letter) }}>{glyphFor(spec, letter) || letter}</span>
+            <span style={chipStyle(letter)}>{glyphFor(spec, letter) || letter}</span>
             {n > 1 && <span className="reserve-count">×{n}</span>}
           </button>
         ))}
@@ -775,7 +783,9 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
   return (
     <div className="board-wrap">
       {tray(1, 'top')}
-      <svg viewBox={vb} style={{ width: '100%', maxWidth: 540, height: 'auto', touchAction: 'manipulation' }}>
+      <svg viewBox={vb} style={thumb
+        ? { width: '100%', height: '100%', pointerEvents: 'none' }
+        : { width: '100%', maxWidth: 540, height: 'auto', touchAction: 'manipulation' }}>
         {edgeLines}
         {boardLines}
         {shapes.map((s) => {
@@ -854,6 +864,8 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
                   // Hollow ring (YINSH/GIPF). `piece.inner` (a seat index) draws a
                   // marker sitting inside the ring; `piece.label` centres text.
                   ? <g>
+                      {named && <circle cx={s.cx} cy={s.cy} r={s.r * 0.8} fill="none"
+                        stroke={colors(piece.owner).stroke} strokeWidth={s.r * 0.3} />}
                       <circle cx={s.cx} cy={s.cy} r={s.r * 0.8} fill="none"
                         stroke={colors(piece.owner).fill} strokeWidth={s.r * 0.2} />
                       {piece.inner != null && <circle cx={s.cx} cy={s.cy} r={s.r * 0.4}
@@ -902,7 +914,8 @@ export default function Board({ spec, legalMoves, onMove, disabled, freeform, cu
                         : glyphFor(spec, piece.label)
                           ? pieceGlyph(s, piece, glyphFor(spec, piece.label))
                         : piece.label
-                          ? <text x={s.cx} y={s.cy} textAnchor="middle" dominantBaseline="central" fontSize={s.r * 1.0} fontWeight="bold" fill={colors(piece.owner).fill}>{piece.label}</text>
+                          ? <text x={s.cx} y={s.cy} textAnchor="middle" dominantBaseline="central" fontSize={s.r * 1.0} fontWeight="bold" fill={colors(piece.owner).fill}
+                              {...(named ? { stroke: colors(piece.owner).stroke, strokeWidth: s.r * 0.06, paintOrder: 'stroke' } : {})}>{piece.label}</text>
                           // `piece.fill`/`piece.stroke` override the seat colour — e.g. ZÈRTZ's
                           // neutral white/grey/black marbles, which aren't tied to a player.
                           : <circle cx={s.cx} cy={s.cy} r={s.r * 0.6}

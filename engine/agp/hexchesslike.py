@@ -504,6 +504,9 @@ class HexChessLike(Game):
             "highlights": highlights,
             "caption": caption,
             "pieceset": "chess",
+            # UI seat labels + colours (see agp/chesslike.py render()).
+            "seat_names": [self.NAME_OF[0], self.NAME_OF[1]],
+            "seat_colors": [self.NAME_OF[0].lower(), self.NAME_OF[1].lower()],
         }
 
     def board_spec(self, s) -> dict:            # pragma: no cover - abstract

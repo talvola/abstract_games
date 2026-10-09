@@ -439,6 +439,17 @@ Two optional RenderSpec fields, both emitted by `agp.chesslike.ChessLike.render`
 - `seat_names: ["White", "Black"]` — one label per seat. The UI then shows
   "White"/"Black" instead of "Player 1"/"Player 2" (bot mode: "You (White)"),
   appends the colour to player chips in correspondence matches, and renders
-  the move log **paired by turn** (`1. e4 a5`). Only opt in when the game is
-  2-seat and strictly alternates one move per turn — games with multi-move
-  turns (Arimaa) would pair wrongly.
+  the move log **paired by turn** (`1. e4 a5`). Pairing is applied only while
+  the log actually alternates seat 0, 1, 0, 1 — a game where one side makes
+  several plies in a row (backgammon dice, Arimaa steps, a mill's removal)
+  automatically falls back to one row per ply, so any 2-seat game may opt in.
+- `seat_colors: ["white", "black"]` — draw each seat in a NAMED colour instead
+  of the seat-index red/blue (`web/src/colors.js` `NAMED_COLORS`: `white`,
+  `black`, `red`, `blue`, `yellow`, `gold`, `silver`; an unknown name falls back
+  to the seat colour). Use it whenever the game names its sides by colour, so a
+  side called "White" is not drawn red. Applies to pieces, stacks, rings, label
+  glyphs, reserve chips, hex edges, player chips and the move log; with it set,
+  label-only and ring pieces also get an outline in the stroke colour (a black
+  letter would otherwise vanish on the dark board). Emitted by the chess and
+  hex-chess cores and the landing page's "Start here" games; ~150 other games
+  still name colours in their captions without it (a cheap follow-up pass).

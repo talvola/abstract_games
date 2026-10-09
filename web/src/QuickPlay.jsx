@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { api } from './api'
 import Board from './Board'
 import MoveLog from './MoveLog'
-import { SEAT_FILL } from './colors'
+import { seatDotStyle } from './colors'
 import GameOptions, { defaultOptions } from './GameOptions'
 import GamePicker from './GamePicker'
 import RulesModal from './RulesModal'
@@ -23,15 +23,16 @@ function save(m) {
   try { m ? localStorage.setItem(SAVE_KEY, JSON.stringify(m)) : localStorage.removeItem(SAVE_KEY) } catch { /* private mode etc. */ }
 }
 
-export default function QuickPlay({ games, go }) {
+export default function QuickPlay({ games, go, initialUid }) {
   const [match, setMatch] = useState(null)
   useEffect(() => { if (match) save(match) }, [match])
-  if (!match) return <Menu games={games} go={go} onStart={setMatch} />
+  if (!match) return <Menu games={games} go={go} onStart={setMatch} initialUid={initialUid} />
   return <Play match={match} setMatch={setMatch} onExit={() => { save(null); setMatch(null) }} go={go} />
 }
 
-function Menu({ games, go, onStart }) {
-  const [uid, setUid] = useState(defaultGameUid(games))
+function Menu({ games, go, onStart, initialUid }) {
+  const [uid, setUid] = useState(
+    games.some((g) => g.uid === initialUid) ? initialUid : defaultGameUid(games))
   const [mode, setMode] = useState('hotseat') // hotseat | bot
   const [opts, setOpts] = useState({})
   const [saved, setSaved] = useState(loadSaved)
@@ -151,7 +152,7 @@ function Play({ match, setMatch, onExit }) {
       <div className="vs">
         {Array.from({ length: view.num_players || 2 }, (_, i) => i).map((i) => (
           <span key={i} className={`seat-chip ${i === cp && !view.terminal ? 'active-seat' : ''}`}>
-            <span className="seat-dot" style={{ background: SEAT_FILL[i] }} />
+            <span className="seat-dot" style={seatDotStyle(i, view.render.seat_colors)} />
             {seat(match, i)}
           </span>
         ))}
@@ -162,7 +163,7 @@ function Play({ match, setMatch, onExit }) {
           <Board spec={view.render} legalMoves={myTurn ? view.legal_moves : []} onMove={applyMove} disabled={!myTurn} freeform={view.freeform} currentPlayer={view.current_player} />
           {view.render.caption && <div className="caption">{view.render.caption}</div>}
         </div>
-        <MoveLog moves={log} paired={!!view.render.seat_names} />
+        <MoveLog moves={log} paired={!!view.render.seat_names} seatColors={view.render.seat_colors} />
       </div>
       <div className="controls">
         <button onClick={onExit}>← New game</button>

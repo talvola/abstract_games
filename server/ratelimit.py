@@ -26,6 +26,8 @@ DEFAULTS = {
     "match": 10,     # vs-computer matches created per IP per minute
     "message": 30,   # chat messages per IP per minute
     "forgot": 3,     # password-reset emails per IP per minute
+    "bot": 40,       # anonymous vs-computer bot moves per IP per minute (each
+                     # is up to AGP_BOT_MAX_TIME seconds of CPU)
 }
 WINDOW = 60.0
 

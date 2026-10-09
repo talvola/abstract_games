@@ -543,6 +543,9 @@ class Arimaa(Game):
             "pieces": pieces,
             "highlights": [],
             "caption": caption,
+            # UI seat labels (+ traditional piece colours, web/src/colors.js).
+            "seat_names": ["Gold", "Silver"],
+            "seat_colors": ["gold", "silver"],
         }
         # Setup reserve trays.
         if s.setup:

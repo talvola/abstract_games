@@ -9,13 +9,15 @@ import Profile from './Profile'
 import Replay from './Replay'
 import Spectate from './Spectate'
 import Challenge from './Challenge'
+import Board from './Board'
+import { FEATURED } from './featured'
 
 // Hash routing: every screen has a URL, so refresh and the Back button keep
 // your place and any screen can be linked. `go()` only sets the hash; the
 // hashchange listener is the single place that changes `screen`.
 const HASH_OF = {
   home: () => '#/',
-  quickplay: () => '#/play',
+  quickplay: (s) => (s.uid ? `#/play/${s.uid}` : '#/play'),
   leaderboard: (s) => (s.uid ? `#/leaderboard/${s.uid}` : '#/leaderboard'),
   spectate: () => '#/watch',
   profile: (s) => `#/user/${s.id}`,
@@ -27,7 +29,7 @@ const HASH_OF = {
 export function parseHash(hash) {
   const p = (hash || '').replace(/^#\/?/, '').split('/').filter(Boolean)
   switch (p[0]) {
-    case 'play': return { name: 'quickplay' }
+    case 'play': return { name: 'quickplay', uid: p[1] }
     case 'leaderboard': return { name: 'leaderboard', uid: p[1] }
     case 'watch': return { name: 'spectate' }
     case 'user': return p[1] ? { name: 'profile', id: p[1] } : { name: 'home' }
@@ -112,7 +114,7 @@ export default function App() {
         {games && screen.name === 'home' && (
           <Home me={me} setMe={setMe} games={games} go={go} refreshGames={refreshGames} config={config} />
         )}
-        {games && screen.name === 'quickplay' && <QuickPlay games={games} go={go} />}
+        {games && screen.name === 'quickplay' && <QuickPlay key={screen.uid || ''} games={games} go={go} initialUid={screen.uid} />}
         {games && screen.name === 'leaderboard' && <Leaderboard games={games} uid={screen.uid} go={go} />}
         {screen.name === 'spectate' && <Spectate go={go} />}
         {screen.name === 'profile' && <Profile id={screen.id} go={go} />}
@@ -141,7 +143,9 @@ function Home({ me, setMe, games, go, refreshGames, config }) {
         </div>
       )}
 
-      <Auth me={me} setMe={setMe} />
+      {!me && <StartShelf games={games} go={go} />}
+
+      {me && <Auth me={me} setMe={setMe} />}
 
       <div className="quick-launch">
         <button className="start" onClick={() => go({ name: 'quickplay' })}>
@@ -155,13 +159,49 @@ function Home({ me, setMe, games, go, refreshGames, config }) {
       {me ? (
         <Lobby me={me} games={games} go={go} refreshGames={refreshGames} config={config} />
       ) : (
-        <p className="muted">
-          Sign in to play turn-based games against other people and track ongoing matches.
-        </p>
+        <section className="play-people">
+          <h2 className="section-title">Play people</h2>
+          <p className="muted">
+            A free account lets you play turn-based games against other people, with ratings
+            {config.email ? ' and an email when it’s your move' : ''}.
+          </p>
+          <Auth me={me} setMe={setMe} />
+        </section>
       )}
 
       <HowItWorks config={config} open={!me} />
     </div>
+  )
+}
+
+// The landing page's "Start here" shelf: a tile per curated game with a real
+// board thumbnail (the generic Board in thumb mode, from the static specs that
+// engine/tools/gen_featured_previews.py writes at build time). A tile opens
+// Quick Play with that game selected. Tiles still work without the previews.
+function StartShelf({ games, go }) {
+  const [previews, setPreviews] = useState({})
+  useEffect(() => {
+    fetch('/featured-previews.json').then((r) => (r.ok ? r.json() : {})).then(setPreviews).catch(() => {})
+  }, [])
+  const byUid = Object.fromEntries(games.map((g) => [g.uid, g]))
+  const shelf = FEATURED.filter((uid) => byUid[uid])
+  return (
+    <section className="start-shelf">
+      <div className="shelf-head">
+        <h2 className="section-title">Start here</h2>
+        <button className="link" onClick={() => go({ name: 'quickplay' })}>Browse all {games.length} games →</button>
+      </div>
+      <div className="shelf-grid">
+        {shelf.map((uid) => (
+          <button key={uid} className="shelf-tile" onClick={() => go({ name: 'quickplay', uid })}>
+            <div className="shelf-thumb">
+              {previews[uid] && <Board spec={previews[uid]} legalMoves={[]} onMove={() => {}} disabled thumb currentPlayer={-1} />}
+            </div>
+            <span className="shelf-name">{byUid[uid].name}</span>
+          </button>
+        ))}
+      </div>
+    </section>
   )
 }
 

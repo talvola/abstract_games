@@ -6,6 +6,10 @@ set -o errexit
 
 pip install -r server/requirements.txt
 
+# Board thumbnails for the landing page's "Start here" shelf (static JSON in
+# web/public, regenerated every deploy so it can't drift from the games).
+python3 engine/tools/gen_featured_previews.py
+
 # Build the SPA. Render's native build environment includes Node + npm.
 cd web
 npm ci
