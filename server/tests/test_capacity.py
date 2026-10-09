@@ -81,14 +81,28 @@ class CapacityTests(unittest.TestCase):
 
     def test_full_bot_queue_answers_503_fast(self):
         d = self._new()
-        saved = G._bot_waiting
+        saved = G._bot_inflight
         try:
-            G._bot_waiting = G.BOT_MAX_QUEUE
+            G._bot_inflight = G.BOT_CONCURRENCY + G.BOT_MAX_QUEUE
             r = self.c.post("/api/games/tic_tac_toe/bot", json={"state": d["state"], "iterations": 5})
             self.assertEqual(r.status_code, 503)
             self.assertIn("Retry-After", r.headers)
         finally:
-            G._bot_waiting = saved
+            G._bot_inflight = saved
+
+    def test_a_simultaneous_burst_cannot_overfill_the_queue(self):
+        # All 40 arrive before any worker thread has started: admission must
+        # still stop at exactly CONCURRENCY + MAX_QUEUE.
+        import asyncio
+        cap = G.BOT_CONCURRENCY + G.BOT_MAX_QUEUE
+
+        async def burst():
+            res = await asyncio.gather(*[G.bot_move_async(time.sleep, 0.05) for _ in range(cap + 15)],
+                                       return_exceptions=True)
+            return sum(isinstance(r, G.BotBusy) for r in res)
+
+        self.assertEqual(asyncio.run(burst()), 15)
+        self.assertEqual(G._bot_inflight, 0)
 
     def test_bot_on_a_finished_game_is_400(self):
         d = self._new()

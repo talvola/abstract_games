@@ -20,7 +20,7 @@ import random
 
 from pathlib import Path
 
-from fastapi import Depends, FastAPI, File, HTTPException, Response, UploadFile
+from fastapi import Depends, FastAPI, File, HTTPException, Request, Response, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
@@ -1101,6 +1101,17 @@ async def stateless_bot(uid: str, body: BotBody, _rl: None = Depends(rate_limite
     if move is None:
         raise HTTPException(400, "game is over")
     return {"move": move}
+
+
+@app.get("/api/client-ip")
+def client_ip_echo(request: Request):
+    """Echo the CALLER'S OWN forwarding chain and the address the rate limiter
+    keys them on — lets an operator verify AGP_TRUSTED_PROXY_HOPS against the
+    real proxy topology (one visitor must never share a bucket with everyone)."""
+    xff = request.headers.get("x-forwarded-for", "")
+    return {"rate_limit_key": ratelimit.client_ip(request),
+            "xff_entries": len([h for h in xff.split(",") if h.strip()]),
+            "xff": xff}
 
 
 @app.get("/api/health")

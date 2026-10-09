@@ -71,14 +71,27 @@ class BotBusy(Exception):
     """The bot queue is full; the caller should answer 503 / retry later."""
 
 
+# Admission counter for bot_move_async, touched ONLY on the event loop (single-
+# threaded, and no await between test and increment), so a burst of concurrent
+# requests cannot all pass the check before any of them is counted — which a
+# counter bumped later on a worker thread allowed.
+_bot_inflight = 0
+
+
 async def bot_move_async(fn, *args):
     """Run `fn(*args)` — a callable that ends in bot_move() — on the bot
     executor. ALL game work (deserialize, is_terminal, search) belongs inside
-    `fn`: on the event loop it would stall every other request."""
-    if _bot_waiting >= BOT_MAX_QUEUE:
+    `fn`: on the event loop it would stall every other request. At most
+    BOT_CONCURRENCY + BOT_MAX_QUEUE are admitted; the rest get BotBusy."""
+    global _bot_inflight
+    if _bot_inflight >= BOT_CONCURRENCY + BOT_MAX_QUEUE:
         raise BotBusy()
-    loop = asyncio.get_running_loop()
-    return await loop.run_in_executor(_bot_executor, fn, *args)
+    _bot_inflight += 1
+    try:
+        loop = asyncio.get_running_loop()
+        return await loop.run_in_executor(_bot_executor, fn, *args)
+    finally:
+        _bot_inflight -= 1
 
 
 def bot_move(game, state, iterations: int):
