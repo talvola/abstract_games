@@ -58,8 +58,9 @@ class CapacityTests(unittest.TestCase):
             ratelimit.reset()
 
     def test_spoofed_forwarded_for_cannot_dodge_the_limiter(self):
-        # A client can put anything in X-Forwarded-For; our proxy appends the
-        # address it really saw. Rotating the client-supplied part must not
+        # A client can put anything in X-Forwarded-For; Cloudflare appends the
+        # visitor's real address and Render's balancer appends the CF edge's
+        # (the real prod chain shape, see ratelimit.TRUSTED_PROXY_HOPS). Rotating the client-supplied part must not
         # mint a fresh rate-limit bucket (it did until 2026-10-08).
         d = self._new()
         old = ratelimit.LIMITS.get("bot")
@@ -68,12 +69,12 @@ class CapacityTests(unittest.TestCase):
             ratelimit.reset()
             codes = [self.c.post("/api/games/tic_tac_toe/bot",
                                  json={"state": d["state"], "iterations": 5},
-                                 headers={"X-Forwarded-For": f"198.51.100.{i}, 192.0.2.7"}).status_code
+                                 headers={"X-Forwarded-For": f"198.51.100.{i}, 192.0.2.7, 172.64.0.1"}).status_code
                      for i in range(3)]
             self.assertEqual(codes, [200, 200, 429])
             # ...while a genuinely different client (proxy-appended entry) is its own bucket.
             r = self.c.post("/api/games/tic_tac_toe/bot", json={"state": d["state"], "iterations": 5},
-                            headers={"X-Forwarded-For": "192.0.2.8"})
+                            headers={"X-Forwarded-For": "192.0.2.8, 172.64.0.1"})
             self.assertEqual(r.status_code, 200)
         finally:
             ratelimit.LIMITS["bot"] = old

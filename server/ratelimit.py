@@ -38,8 +38,14 @@ _lock = threading.Lock()
 _hits: dict[tuple[str, str], list[float]] = defaultdict(list)
 
 
-# How many reverse proxies in front of us APPEND to X-Forwarded-For (Render: 1).
-TRUSTED_PROXY_HOPS = max(1, int(os.environ.get("AGP_TRUSTED_PROXY_HOPS", "1")))
+# How many reverse proxies in front of us APPEND to X-Forwarded-For. Render =
+# 2, measured 2026-10-08 via /api/client-ip: Cloudflare appends the visitor's
+# address, then Render's balancer appends the Cloudflare edge's, e.g.
+#   "<anything the client sent>, 75.84.240.181, 172.64.217.24"
+# so the visitor is the 2nd entry from the right. With 1, every visitor behind
+# the same Cloudflare edge would share ONE bucket (10 bad logins anywhere would
+# lock everyone out); with "leftmost", anyone could mint buckets at will.
+TRUSTED_PROXY_HOPS = max(1, int(os.environ.get("AGP_TRUSTED_PROXY_HOPS", "2")))
 
 
 def client_ip(request: Request) -> str:
