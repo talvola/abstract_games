@@ -151,6 +151,8 @@ cold-start issue). Tests: `.venv/bin/python -m unittest server.tests.test_notify
   delete from notifications where user_id = :id;
   delete from match_rating_changes where user_id = :id;
   delete from user_game_ratings where user_id = :id;
+  delete from user_blocks where blocker_id = :id or blocked_id = :id;
+  delete from message_reports where reporter_id = :id;  -- reports AGAINST them keep a snapshot
   delete from messages where user_id = :id;
   delete from seeks where creator_id = :id;
   -- matches keep a JSON seat with the name; resign/finish them first if active:
@@ -160,3 +162,25 @@ cold-start issue). Tests: `.venv/bin/python -m unittest server.tests.test_notify
   commit;
   ```
   (Column names: check `server/models.py` if this drifts.)
+
+## Chat moderation: report & block
+
+Every chat message from someone else shows small **Report** / **Block** links.
+
+- **Report** (`POST /api/messages/<id>/report`, optional reason) stores a row in
+  `message_reports` with a *snapshot* of the message (author, match, text), so
+  the evidence survives the message or match being deleted. One report per
+  (message, reporter); rate-limited per IP (`AGP_RATE_LIMIT_REPORT`, default
+  10/min). Every report is logged as a `[moderation]` line; it is also
+  **emailed to `AGP_REPORT_EMAIL`** when that is set (needs the mailer above).
+  Use this var, **never `AGP_ADMIN_EMAILS`** — that one also opens the RCE
+  upload endpoint and must stay unset on the hosted service.
+  Review: `select * from message_reports order by created_at desc;`, or the
+  logs: `GET …/v1/logs?…&text=moderation`.
+- **Block** (`POST`/`DELETE /api/users/<id>/block`, `GET /api/blocks`, table
+  `user_blocks`) hides the blocked user's chat messages from the blocker
+  (server-side filter; everyone else still sees them), hides open challenges
+  between the two from each other's lobby, and quick-pair never matches them.
+  Unblock is in the **Account** panel. A block is silent — the blocked user is
+  not told.
+- There is no mute/ban/delete-message admin UI; act from SQL if needed.

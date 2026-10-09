@@ -25,6 +25,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from . import notify
@@ -498,6 +499,9 @@ def list_seeks(db: Session = Depends(get_db), user: User | None = Depends(option
     from .models import UserGameRating
 
     seeks = db.query(Seek).order_by(Seek.created_at.desc()).all()
+    if user is not None:
+        hidden = block_related_ids(db, user.id)
+        seeks = [s for s in seeks if s.creator_id not in hidden]
 
     def creator_rating(s):
         r = (db.query(UserGameRating)
@@ -571,6 +575,8 @@ def accept_seek(seek_id: str, db: Session = Depends(get_db), user: User = Depend
         raise HTTPException(404, "seek not found")
     if seek.creator_id == user.id:
         raise HTTPException(400, "cannot accept your own challenge")
+    if seek.creator_id in block_related_ids(db, user.id):
+        raise HTTPException(404, "seek not found")  # don't reveal the block
     creator = db.get(User, seek.creator_id)
     if not creator:
         db.delete(seek)
@@ -598,9 +604,10 @@ def quick_pair(body: QuickPairBody, db: Session = Depends(get_db), user: User = 
     match. Otherwise post a seek and return paired=false (the caller waits)."""
     registry.get(body.game_uid)  # validate game exists
     opts = body.options or {}
+    avoid = block_related_ids(db, user.id)
     candidates = [
         s for s in db.query(Seek).filter(Seek.game_uid == body.game_uid).all()
-        if s.creator_id != user.id and (s.options or {}) == opts
+        if s.creator_id != user.id and s.creator_id not in avoid and (s.options or {}) == opts
         and db.get(User, s.creator_id) is not None
     ]
     if candidates:
@@ -822,15 +829,18 @@ def delete_match(match_id: str, db: Session = Depends(get_db), user: User = Depe
 
 
 @app.get("/api/matches/{match_id}/messages")
-def list_messages(match_id: str, db: Session = Depends(get_db)):
-    """Chat thread for a match (public — spectators can read)."""
+def list_messages(match_id: str, db: Session = Depends(get_db),
+                  user: User | None = Depends(optional_user)):
+    """Chat thread for a match (public — spectators can read). A signed-in
+    viewer never sees messages from users they have blocked."""
     from .models import Message
 
     msgs = (db.query(Message).filter_by(match_id=match_id)
-              .order_by(Message.created_at.asc()).all())
+              .order_by(Message.created_at.asc(), Message.id.asc()).all())
+    hidden = blocked_ids(db, user.id) if user else set()
     return {"messages": [
-        {"user_id": m.user_id, "name": m.name, "body": m.body,
-         "ts": m.created_at.isoformat()} for m in msgs
+        {"id": m.id, "user_id": m.user_id, "name": m.name, "body": m.body,
+         "ts": m.created_at.isoformat()} for m in msgs if m.user_id not in hidden
     ]}
 
 
@@ -853,6 +863,103 @@ def post_message(match_id: str, body: MessageBody, db: Session = Depends(get_db)
     db.add(msg)
     db.commit()
     return {"ok": True}
+
+
+# ===========================================================================
+#  moderation: report a chat message, block a user
+# ===========================================================================
+class ReportBody(BaseModel):
+    reason: str = ""
+
+
+def blocked_ids(db: Session, user_id: int) -> set[int]:
+    """Users `user_id` has blocked."""
+    from .models import UserBlock
+
+    return {b.blocked_id for b in db.query(UserBlock).filter_by(blocker_id=user_id).all()}
+
+
+def block_related_ids(db: Session, user_id: int) -> set[int]:
+    """Users in a block relation with `user_id` in EITHER direction (for
+    pairing: neither side should be matched with the other)."""
+    from .models import UserBlock
+
+    rows = db.query(UserBlock).filter(
+        (UserBlock.blocker_id == user_id) | (UserBlock.blocked_id == user_id)).all()
+    return {b.blocked_id if b.blocker_id == user_id else b.blocker_id for b in rows}
+
+
+@app.post("/api/messages/{message_id}/report")
+def report_message(message_id: int, body: ReportBody | None = None, db: Session = Depends(get_db),
+                   _rl: None = Depends(rate_limited("report")),
+                   user: User = Depends(current_user)):
+    """Flag a chat message for the moderator. Idempotent per (message, reporter):
+    a repeat returns ok without a second row or a second email."""
+    from .models import Message, MessageReport
+
+    msg = db.get(Message, message_id)
+    if not msg:
+        raise HTTPException(404, "message not found")
+    if msg.user_id == user.id:
+        raise HTTPException(400, "you can't report your own message")
+    existing = db.query(MessageReport).filter_by(message_id=msg.id, reporter_id=user.id).first()
+    if existing:
+        return {"ok": True, "already_reported": True}
+    reason = ((body.reason if body else "") or "").strip()[:500]
+    rep = MessageReport(message_id=msg.id, reporter_id=user.id, author_id=msg.user_id,
+                        match_id=msg.match_id, body=msg.body, reason=reason)
+    db.add(rep)
+    try:
+        db.commit()
+    except IntegrityError:  # lost a race with a concurrent identical report
+        db.rollback()
+        return {"ok": True, "already_reported": True}
+    notify.notify_message_report(
+        report_id=rep.id, reporter=user.display_name, reporter_id=user.id,
+        author=msg.name, author_id=msg.user_id, match_id=msg.match_id,
+        body=msg.body, reason=reason)
+    return {"ok": True, "already_reported": False}
+
+
+@app.get("/api/blocks")
+def list_blocks(db: Session = Depends(get_db), user: User = Depends(current_user)):
+    from .models import UserBlock
+
+    rows = (db.query(UserBlock, User).join(User, User.id == UserBlock.blocked_id)
+              .filter(UserBlock.blocker_id == user.id)
+              .order_by(UserBlock.created_at.desc()).all())
+    return {"blocks": [
+        {"user_id": u.id, "name": u.display_name, "ts": b.created_at.isoformat()}
+        for b, u in rows
+    ]}
+
+
+@app.post("/api/users/{user_id}/block")
+def block_user(user_id: int, db: Session = Depends(get_db), user: User = Depends(current_user)):
+    """Hide `user_id`'s chat and open challenges from me; never quick-pair us.
+    Idempotent."""
+    from .models import UserBlock
+
+    if user_id == user.id:
+        raise HTTPException(400, "you can't block yourself")
+    if db.get(User, user_id) is None:
+        raise HTTPException(404, "user not found")
+    if not db.query(UserBlock).filter_by(blocker_id=user.id, blocked_id=user_id).first():
+        db.add(UserBlock(blocker_id=user.id, blocked_id=user_id))
+        try:
+            db.commit()
+        except IntegrityError:  # concurrent duplicate; the pair is unique
+            db.rollback()
+    return {"ok": True, "blocked": True}
+
+
+@app.delete("/api/users/{user_id}/block")
+def unblock_user(user_id: int, db: Session = Depends(get_db), user: User = Depends(current_user)):
+    from .models import UserBlock
+
+    db.query(UserBlock).filter_by(blocker_id=user.id, blocked_id=user_id).delete()
+    db.commit()
+    return {"ok": True, "blocked": False}
 
 
 # ===========================================================================

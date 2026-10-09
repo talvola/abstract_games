@@ -58,6 +58,10 @@ export const api = {
   matchReplay: (id) => get(`/api/matches/${id}/replay`),
   matchMessages: (id) => get(`/api/matches/${id}/messages`),
   postMessage: (id, body) => post(`/api/matches/${id}/messages`, { body }),
+  reportMessage: (messageId, reason) => post(`/api/messages/${messageId}/report`, { reason: reason || '' }),
+  blockUser: (userId) => post(`/api/users/${userId}/block`),
+  unblockUser: (userId) => del(`/api/users/${userId}/block`),
+  blocks: () => get('/api/blocks'),
 
   // upload a game package (.zip)
   uploadGame: async (file) => {

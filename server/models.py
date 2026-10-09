@@ -152,3 +152,36 @@ class Notification(Base):
     kind: Mapped[str] = mapped_column(String(16))
     turn_key: Mapped[str] = mapped_column(String(32))
     created_at: Mapped[datetime] = mapped_column(DateTime, default=_now)
+
+
+class MessageReport(Base):
+    """A user flagged a chat message for moderation. NEW table (create_all won't
+    ALTER `messages`). The message's author/match/body are SNAPSHOTTED here so
+    the report stays meaningful even if the message or match is later deleted —
+    hence `message_id` is a plain integer, not a foreign key. One row per
+    (message, reporter): re-reporting is idempotent."""
+
+    __tablename__ = "message_reports"
+    __table_args__ = (UniqueConstraint("message_id", "reporter_id", name="uq_report_once"),)
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    message_id: Mapped[int] = mapped_column(Integer, index=True)
+    reporter_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
+    author_id: Mapped[int] = mapped_column(Integer, index=True)
+    match_id: Mapped[str] = mapped_column(String(32))
+    body: Mapped[str] = mapped_column(Text)  # the reported text, as it was
+    reason: Mapped[str] = mapped_column(String(500), default="")
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=_now)
+
+
+class UserBlock(Base):
+    """`blocker` no longer sees `blocked`'s chat messages or open challenges,
+    and quick-pair never matches the two. NEW table (no ALTER on `users`)."""
+
+    __tablename__ = "user_blocks"
+    __table_args__ = (UniqueConstraint("blocker_id", "blocked_id", name="uq_block_pair"),)
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    blocker_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
+    blocked_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=_now)

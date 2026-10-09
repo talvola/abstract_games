@@ -21,7 +21,7 @@ os.environ["AGP_BASE_URL"] = "https://example.test"
 os.environ.pop("AGP_SMTP_HOST", None)
 # Every test registers users from the same fake IP; keep the limiter out of the
 # way except in the test that exercises it.
-for _b in ("REGISTER", "LOGIN", "SEEK", "MATCH", "MESSAGE", "FORGOT"):
+for _b in ("REGISTER", "LOGIN", "SEEK", "MATCH", "MESSAGE", "FORGOT", "REPORT"):
     os.environ[f"AGP_RATE_LIMIT_{_b}"] = "100000"
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))

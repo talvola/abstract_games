@@ -1,8 +1,8 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { api } from './api'
 
 // Sign-in box (login / register / forgot password) and, once signed in, the
-// identity line with an inline account panel (display name, password).
+// identity line with an inline account panel (display name, password, blocked players).
 export default function Auth({ me, setMe }) {
   const [mode, setMode] = useState('login') // login | register | forgot
   const [email, setEmail] = useState('')
@@ -143,7 +143,29 @@ function AccountPanel({ me, setMe, onDone }) {
       </div>
       {msg && <div className="muted small">{msg}</div>}
       {error && <div className="error small">{error}</div>}
+      <BlockedList />
     </form>
+  )
+}
+
+// Players you've blocked from chat (block is done from a chat message).
+function BlockedList() {
+  const [blocks, setBlocks] = useState(null)
+  const load = () => api.blocks().then((d) => setBlocks(d.blocks)).catch(() => setBlocks([]))
+  useEffect(() => { load() }, [])
+  if (!blocks || blocks.length === 0) return null
+  return (
+    <>
+      <label className="small muted">Blocked players</label>
+      <div className="blocked-list small">
+        {blocks.map((b) => (
+          <div key={b.user_id}>
+            {b.name}
+            <button type="button" className="link" onClick={() => api.unblockUser(b.user_id).then(load)}>Unblock</button>
+          </div>
+        ))}
+      </div>
+    </>
   )
 }
 
