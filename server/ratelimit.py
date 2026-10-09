@@ -38,11 +38,21 @@ _lock = threading.Lock()
 _hits: dict[tuple[str, str], list[float]] = defaultdict(list)
 
 
+# How many reverse proxies in front of us APPEND to X-Forwarded-For (Render: 1).
+TRUSTED_PROXY_HOPS = max(1, int(os.environ.get("AGP_TRUSTED_PROXY_HOPS", "1")))
+
+
 def client_ip(request: Request) -> str:
-    # Render (and any reverse proxy) puts the real client first in X-Forwarded-For.
+    # The client controls everything it sends in X-Forwarded-For; each proxy
+    # APPENDS the address it saw. So the trustworthy entry is the one our own
+    # proxy added — counted from the RIGHT, never the left. (The leftmost entry
+    # was used until 2026-10-08, and a prod probe confirmed it let anyone dodge
+    # every rate limit, login included, by sending a fresh fake XFF each time.)
     xff = request.headers.get("x-forwarded-for")
     if xff:
-        return xff.split(",")[0].strip()
+        hops = [h.strip() for h in xff.split(",") if h.strip()]
+        if hops:
+            return hops[-min(TRUSTED_PROXY_HOPS, len(hops))]
     return request.client.host if request.client else "?"
 
 

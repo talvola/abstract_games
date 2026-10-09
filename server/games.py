@@ -52,6 +52,10 @@ BOT_MAX_TIME = float(os.environ.get("AGP_BOT_MAX_TIME", "3.0"))
 # stays responsive. Raise AGP_BOT_CONCURRENCY with the CPU count.
 BOT_CONCURRENCY = max(1, int(os.environ.get("AGP_BOT_CONCURRENCY", "1")))
 BOT_MIN_TIME = float(os.environ.get("AGP_BOT_MIN_TIME", "0.5"))
+# Beyond this many moves already WAITING for a slot, an anonymous bot request is
+# refused at once (503) rather than queued: an unbounded queue only converts a
+# flood into minutes-long waits that every real player then sits behind.
+BOT_MAX_QUEUE = max(1, int(os.environ.get("AGP_BOT_MAX_QUEUE", "24")))
 _bot_slots = threading.BoundedSemaphore(BOT_CONCURRENCY)
 _bot_waiting = 0
 _bot_lock = threading.Lock()
@@ -63,9 +67,18 @@ _bot_lock = threading.Lock()
 _bot_executor = ThreadPoolExecutor(max_workers=64, thread_name_prefix="bot")
 
 
-async def bot_move_async(game, state, iterations: int):
+class BotBusy(Exception):
+    """The bot queue is full; the caller should answer 503 / retry later."""
+
+
+async def bot_move_async(fn, *args):
+    """Run `fn(*args)` — a callable that ends in bot_move() — on the bot
+    executor. ALL game work (deserialize, is_terminal, search) belongs inside
+    `fn`: on the event loop it would stall every other request."""
+    if _bot_waiting >= BOT_MAX_QUEUE:
+        raise BotBusy()
     loop = asyncio.get_running_loop()
-    return await loop.run_in_executor(_bot_executor, bot_move, game, state, iterations)
+    return await loop.run_in_executor(_bot_executor, fn, *args)
 
 
 def bot_move(game, state, iterations: int):

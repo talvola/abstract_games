@@ -11,9 +11,15 @@ from sqlalchemy.orm import DeclarativeBase, sessionmaker
 
 DATABASE_URL = os.environ.get("DATABASE_URL", "sqlite:///./agp.db")
 
-# Render/Heroku hand out postgres:// URLs; SQLAlchemy wants postgresql://.
-if DATABASE_URL.startswith("postgres://"):
-    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+# Render/Heroku/Neon hand out postgres:// or postgresql:// URLs with no driver.
+# Name the driver explicitly: SQLAlchemy 2.1 changed the DEFAULT postgresql
+# driver from psycopg2 to psycopg (v3), so a bare URL crashed prod at startup
+# ("No module named 'psycopg'") the first time a deploy picked up 2.1. We ship
+# psycopg2-binary (server/requirements.txt).
+for _bare in ("postgres://", "postgresql://"):
+    if DATABASE_URL.startswith(_bare):
+        DATABASE_URL = "postgresql+psycopg2://" + DATABASE_URL[len(_bare):]
+        break
 
 _connect_args = {"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {}
 engine = create_engine(DATABASE_URL, connect_args=_connect_args, future=True)

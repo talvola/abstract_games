@@ -1,7 +1,12 @@
-fastapi>=0.110
-uvicorn[standard]>=0.29
-pydantic>=2
-sqlalchemy>=2.0
-itsdangerous>=2.1
-python-multipart>=0.0.9
-psycopg2-binary>=2.9
+# Upper bounds = the versions the test suite last ran against. Every deploy
+# re-resolves these, so an unbounded spec silently pulls new majors into prod:
+# SQLAlchemy 2.1 (2026-10) changed the default postgresql driver and crashed
+# the service at startup. Raise a bound only after running server/tests.
+fastapi>=0.110,<0.144
+starlette<1.4
+uvicorn[standard]>=0.29,<0.55
+pydantic>=2,<2.15
+sqlalchemy>=2.0,<2.1
+itsdangerous>=2.1,<3
+python-multipart>=0.0.9,<0.1
+psycopg2-binary>=2.9,<3

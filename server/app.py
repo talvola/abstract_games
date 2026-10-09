@@ -1082,13 +1082,24 @@ def stateless_move(uid: str, body: StatelessMoveBody):
 @app.post("/api/games/{uid}/bot")
 async def stateless_bot(uid: str, body: BotBody, _rl: None = Depends(rate_limited("bot"))):
     # async + the bot executor: a request queued behind other bots' thinking
-    # holds no web worker thread (see server/games.py BOT_CONCURRENCY).
+    # holds no web worker thread, and every bit of game work runs off the event
+    # loop (see server/games.py BOT_CONCURRENCY / BOT_MAX_QUEUE).
     _, game = registry.get(uid)
-    state = game.deserialize(body.state)
-    if game.is_terminal(state):
-        raise HTTPException(400, "game is over")
     iters = max(1, min(body.iterations, 5000))
-    move = await G.bot_move_async(game, state, iters)
+
+    def think():
+        state = game.deserialize(body.state)
+        if game.is_terminal(state):
+            return None
+        return G.bot_move(game, state, iters)
+
+    try:
+        move = await G.bot_move_async(think)
+    except G.BotBusy:
+        raise HTTPException(503, "the computer is busy right now — try again in a moment",
+                            headers={"Retry-After": "5"})
+    if move is None:
+        raise HTTPException(400, "game is over")
     return {"move": move}
 
 
