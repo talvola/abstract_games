@@ -185,3 +185,19 @@ class UserBlock(Base):
     blocker_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
     blocked_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=_now)
+
+
+class MatchHide(Base):
+    """`user` removed this match from their own lobby. A match against another
+    person is shared history — the opponent's lobby, both profiles, replays and
+    rating history all point at it — so "remove" HIDES it for one player instead
+    of deleting it for both. NEW table (no ALTER on `matches`); `match_id` is a
+    plain string, not a foreign key, so it can never block a later delete."""
+
+    __tablename__ = "match_hides"
+    __table_args__ = (UniqueConstraint("user_id", "match_id", name="uq_hide_once"),)
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
+    match_id: Mapped[str] = mapped_column(String(32), index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=_now)

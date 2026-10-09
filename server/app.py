@@ -658,15 +658,16 @@ def new_match(body: NewMatchBody, db: Session = Depends(get_db), user: User = De
 
 @app.get("/api/matches")
 def my_matches(db: Session = Depends(get_db), user: User = Depends(current_user)):
-    from .models import MatchRatingChange
+    from .models import MatchHide, MatchRatingChange
 
     G.sweep_overdue(db)  # opportunistic: clear rotted correspondence games on lobby load
+    hidden = {h.match_id for h in db.query(MatchHide).filter_by(user_id=user.id).all()}
     # Small-scale: scan recent matches and filter by membership in Python.
     rows = db.query(Match).order_by(Match.updated_at.desc()).limit(200).all()
     out = []
     for m in rows:
         seat = seat_of(m, user.id)
-        if seat is None:
+        if seat is None or m.id in hidden:
             continue
         opp = next((s.get("name") for i, s in enumerate(m.players) if i != seat), "?")
         dl = G.match_deadline(m)
@@ -813,7 +814,16 @@ def resign_match(match_id: str, db: Session = Depends(get_db), user: User = Depe
 @app.delete("/api/matches/{match_id}")
 def delete_match(match_id: str, db: Session = Depends(get_db), user: User = Depends(current_user)):
     """Remove a match from your lobby. Allowed when it's finished or your only
-    opponents are bots; for a live game against a person, resign first."""
+    opponents are bots; for a live game against a person, resign first.
+
+    A game against a person is only HIDDEN for you (`MatchHide`): it is also
+    the opponent's game, profile entry, replay and rating history. A game with
+    no other person in it is deleted outright, child rows first — Postgres
+    enforces the foreign keys (until 2026-10-08 this route 500'd on any rated
+    game, because only `moves` cascaded)."""
+    from .models import (MatchHide, MatchRatingChange, Message, MoveRecord,
+                         Notification)
+
     match = db.get(Match, match_id)
     if not match:
         return {"ok": True}
@@ -823,6 +833,17 @@ def delete_match(match_id: str, db: Session = Depends(get_db), user: User = Depe
     others_bots = all(s.get("type") == "bot" for i, s in enumerate(match.players) if i != seat)
     if match.status == "active" and not others_bots:
         raise HTTPException(400, "resign this game before removing it")
+    if not others_bots:
+        if not db.query(MatchHide).filter_by(user_id=user.id, match_id=match.id).first():
+            db.add(MatchHide(user_id=user.id, match_id=match.id))
+            try:
+                db.commit()
+            except IntegrityError:  # a double-click raced us; already hidden
+                db.rollback()
+        return {"ok": True}
+    for model in (Message, Notification, MatchRatingChange, MoveRecord):
+        db.query(model).filter(model.match_id == match.id).delete(synchronize_session=False)
+    db.query(MatchHide).filter_by(match_id=match.id).delete(synchronize_session=False)
     db.delete(match)
     db.commit()
     return {"ok": True}

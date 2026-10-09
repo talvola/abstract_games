@@ -23,6 +23,18 @@ for _bare in ("postgres://", "postgresql://"):
 
 _connect_args = {"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {}
 engine = create_engine(DATABASE_URL, connect_args=_connect_args, future=True)
+
+# SQLite ignores FOREIGN KEY constraints unless asked, Postgres always enforces
+# them -- so a delete that strands child rows passed every local test and 500'd
+# in production (DELETE /api/matches/{id} on any rated game, until 2026-10-08).
+# Enforce them here too so tests and dev behave like prod.
+if engine.dialect.name == "sqlite":
+    from sqlalchemy import event
+
+    @event.listens_for(engine, "connect")
+    def _sqlite_fk_on(dbapi_conn, _record):
+        dbapi_conn.execute("PRAGMA foreign_keys=ON")
+
 SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False, future=True)
 
 
