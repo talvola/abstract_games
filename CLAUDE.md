@@ -1,6 +1,7 @@
 # Abstract Games Platform
 
 Generic platform for abstract board games (async-vs-human + vs-bot), games added as modular packages.
+**Public display name: Plyground** (since 2026-10-08; header, tab title, OG/meta tags, email From/signature via `AGP_EMAIL_FROM` on Render). The URL, repo and code names stay `abstract-games`/`agp` — no domain bought yet.
 See PLATFORM_PLAN.md (roadmap) and engine/SPEC.md (game authoring contract).
 
 ## Layout

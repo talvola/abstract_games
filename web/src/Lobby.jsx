@@ -28,9 +28,9 @@ export default function Lobby({ me, games, go, refreshGames, config }) {
 
   const myTurnCount = matches.filter((m) => m.status === 'active' && m.my_turn).length
 
-  // Tab-title badge so an open tab shows "(2) Abstract Games" when games are waiting.
+  // Tab-title badge so an open tab shows "(2) Plyground" when games are waiting.
   useEffect(() => {
-    const base = 'Abstract Games'
+    const base = 'Plyground'
     document.title = myTurnCount > 0 ? `(${myTurnCount}) ${base}` : base
     return () => { document.title = base }
   }, [myTurnCount])

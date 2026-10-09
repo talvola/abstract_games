@@ -92,9 +92,9 @@ export default function App() {
     <div className="app">
       <header>
         <h1 onClick={() => go({ name: 'home' })} style={{ cursor: 'pointer' }}>
-          ABSTRACT GAMES
+          PLYGROUND
         </h1>
-        <div className="tagline">classic &amp; modern board games · vs the computer or a friend</div>
+        <div className="tagline">classic &amp; modern abstract strategy games · vs the computer or a friend</div>
       </header>
       <main>
         {!games && (

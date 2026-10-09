@@ -24,7 +24,7 @@ SMTP_HOST = os.environ.get("AGP_SMTP_HOST")
 SMTP_PORT = int(os.environ.get("AGP_SMTP_PORT", "587"))
 SMTP_USER = os.environ.get("AGP_SMTP_USER")
 SMTP_PASS = os.environ.get("AGP_SMTP_PASS")
-EMAIL_FROM = os.environ.get("AGP_EMAIL_FROM", "Abstract Games <no-reply@localhost>")
+EMAIL_FROM = os.environ.get("AGP_EMAIL_FROM", "Plyground <no-reply@localhost>")
 BASE_URL = os.environ.get("AGP_BASE_URL", "http://localhost:5173").rstrip("/")
 EMAIL_SYNC = os.environ.get("AGP_EMAIL_SYNC", "") not in ("", "0", "false")
 # HTTPS transport (Resend). Render's FREE tier blocks outbound SMTP ports
@@ -125,7 +125,7 @@ def match_url(match_id: str) -> str:
 
 
 _FOOTER = (
-    "\n\n— Abstract Games\n"
+    "\n\n— Plyground\n"
     "You're getting this because you have an account at {base}. "
     "Games time out after {days:g} days without a move."
 )
@@ -222,7 +222,7 @@ def notify_message_report(*, report_id: int, reporter: str, reporter_id: int, au
 
 
 def notify_password_reset(to_email: str, to_name: str, reset_url: str) -> None:
-    subject = "Reset your Abstract Games password"
+    subject = "Reset your Plyground password"
     body = (
         f"Hi {to_name},\n\n"
         f"Someone (hopefully you) asked to reset the password for this account. "

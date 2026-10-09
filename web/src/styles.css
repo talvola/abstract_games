@@ -398,9 +398,9 @@ button.secondary:hover { color: var(--text); border-color: var(--accent); }
 @media (max-width: 560px) {
   .app { padding: 12px 10px; }
   .shelf-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
-  /* "ABSTRACT GAMES" at 1.8rem + 0.4em spacing is ~400px wide → horizontal
-     scroll on a phone. Shrink it so it fits a ~343px content width. */
-  header h1 { font-size: 1.2rem; letter-spacing: 0.22em; }
+  /* Keep the wordmark and its long tagline inside a ~343px content width
+     (the old 14-letter "ABSTRACT GAMES" at desktop size scrolled sideways). */
+  header h1 { font-size: 1.5rem; letter-spacing: 0.3em; }
   .tagline { font-size: 0.62rem; letter-spacing: 0.12em; }
   /* When the play-area wraps, let the move log + chat span the full width
      instead of a cramped 190px column under the board. */

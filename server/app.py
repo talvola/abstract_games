@@ -47,7 +47,7 @@ from .db import get_db, init_db
 from .games import registry, sanitize_options
 from .models import Match, Seek, User
 
-app = FastAPI(title="Abstract Games Platform", version="0.2.0")
+app = FastAPI(title="Plyground", version="0.2.0")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173", "http://localhost:5174"],
