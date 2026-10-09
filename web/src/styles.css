@@ -271,6 +271,11 @@ button.secondary:hover { color: var(--text); border-color: var(--accent); }
 .chat-msg.mine .chat-name { color: var(--accent); }
 .chat-name { font-weight: bold; color: var(--muted); }
 .chat-body { color: var(--text); word-break: break-word; }
+.chat-actions { margin-left: 6px; font-size: 0.72rem; opacity: 0.45; white-space: nowrap; }
+.chat-msg:hover .chat-actions, .chat-actions:focus-within { opacity: 1; }
+.chat-actions .link { padding: 0 3px; font-size: inherit; }
+.blocked-list { display: flex; flex-direction: column; gap: 2px; }
+.blocked-list .link { padding: 0 4px; font-size: 0.75rem; }
 .chat-input { display: flex; gap: 6px; margin-top: 8px; }
 .chat-input input { flex: 1; padding: 6px 8px; background: var(--panel, #2a2620); color: var(--text);
   border: 1px solid var(--line); border-radius: 6px; font-family: inherit; }

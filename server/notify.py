@@ -195,6 +195,32 @@ def notify_deadline_reminder(to_email: str, to_name: str, opponent: str, game_na
     _dispatch(to_email, subject, body)
 
 
+def report_recipient() -> str | None:
+    """Where chat reports go. Deliberately NOT AGP_ADMIN_EMAILS: setting that
+    opens the in-process (RCE) upload endpoint, so it must stay unset on the
+    hosted instance. Read at call time (tests set it per case)."""
+    to = (os.environ.get("AGP_REPORT_EMAIL") or "").strip()
+    return to or None
+
+
+def notify_message_report(*, report_id: int, reporter: str, reporter_id: int, author: str,
+                          author_id: int, match_id: str, body: str, reason: str) -> None:
+    """Tell the moderator a chat message was reported. Always logged; emailed
+    only when AGP_REPORT_EMAIL is set."""
+    subject = f"Chat report #{report_id}: {reporter} reported {author}"
+    text = (
+        f"{reporter} (user {reporter_id}) reported a chat message.\n\n"
+        f"Author: {author} (user {author_id})\n"
+        f"Match:  {match_url(match_id)}\n"
+        f"Reason: {reason or '(none given)'}\n\n"
+        f"Message:\n{body}\n"
+    )
+    print(f"[moderation] {subject} | match={match_id} | reason={reason!r} | body={body[:200]!r}")
+    to = report_recipient()
+    if to:
+        _dispatch(to, subject, text)
+
+
 def notify_password_reset(to_email: str, to_name: str, reset_url: str) -> None:
     subject = "Reset your Abstract Games password"
     body = (

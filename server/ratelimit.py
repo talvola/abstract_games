@@ -1,5 +1,5 @@
 """Tiny in-memory per-IP rate limiter (fixed window) for the abuse-prone
-routes: registration, login, challenge/match creation and chat.
+routes: registration, login, challenge/match creation, chat and chat reports.
 
 Single-process by design — the hosted instance is one uvicorn worker, and the
 point is to blunt password guessing and sign-up spam, not to be a precise
@@ -26,6 +26,7 @@ DEFAULTS = {
     "match": 10,     # vs-computer matches created per IP per minute
     "message": 30,   # chat messages per IP per minute
     "forgot": 3,     # password-reset emails per IP per minute
+    "report": 10,    # chat-message reports per IP per minute
 }
 WINDOW = 60.0
 
