@@ -93,6 +93,7 @@ function Play({ match, setMatch, onExit }) {
   const { uid, view } = match
   const busy = useRef(false)
   const [rules, setRules] = useState(false)
+  const [botNote, setBotNote] = useState(null)
   const log = match.log || []
   const withMove = (m, r) => ({ ...m, state: r.state, view: r.view, log: [...(m.log || []), { seat: r.mover, label: r.label }] })
 
@@ -113,11 +114,24 @@ function Play({ match, setMatch, onExit }) {
     if (match.mode !== 'bot' || view.terminal || view.current_player === 0) return
     let cancelled = false
     ;(async () => {
-      const b = await api.bot(uid, match.state, 300)
-      if (cancelled) return
-      const r = await api.move(uid, match.state, b.move)
-      if (cancelled) return
-      setMatch((m) => withMove(m, r))
+      // Retry with backoff: under load the server answers 503 ("busy") rather
+      // than queueing forever, and a dropped request used to strand the game
+      // on the computer's turn with no way forward but a reload.
+      for (let attempt = 0; !cancelled; attempt++) {
+        try {
+          const b = await api.bot(uid, match.state, 300)
+          if (cancelled) return
+          const r = await api.move(uid, match.state, b.move)
+          if (cancelled) return
+          setBotNote(null)
+          setMatch((m) => withMove(m, r))
+          return
+        } catch {
+          if (cancelled) return
+          setBotNote('The computer is busy — retrying…')
+          await new Promise((res) => setTimeout(res, Math.min(15000, 3000 * (attempt + 1))))
+        }
+      }
     })()
     return () => { cancelled = true }
   }, [match.state, view.current_player, view.terminal]) // eslint-disable-line
@@ -158,6 +172,7 @@ function Play({ match, setMatch, onExit }) {
         ))}
       </div>
       <div className="status" style={{ borderColor: view.terminal ? '#c9a96e' : '#888' }}>{status}</div>
+      {botNote && thinking && <div className="muted small">{botNote}</div>}
       <div className="play-area">
         <div className="board-col">
           <Board spec={view.render} legalMoves={myTurn ? view.legal_moves : []} onMove={applyMove} disabled={!myTurn} freeform={view.freeform} currentPlayer={view.current_player} />
