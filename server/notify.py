@@ -20,6 +20,8 @@ import ssl
 import threading
 from email.message import EmailMessage
 
+import certifi
+
 SMTP_HOST = os.environ.get("AGP_SMTP_HOST")
 SMTP_PORT = int(os.environ.get("AGP_SMTP_PORT", "587"))
 SMTP_USER = os.environ.get("AGP_SMTP_USER")
@@ -32,6 +34,12 @@ EMAIL_SYNC = os.environ.get("AGP_EMAIL_SYNC", "") not in ("", "0", "false")
 # from a free instance. Set AGP_RESEND_API_KEY (and AGP_EMAIL_FROM to a sender
 # on a domain verified in Resend) and it takes precedence over SMTP.
 RESEND_API_KEY = os.environ.get("AGP_RESEND_API_KEY")
+
+# Verify the relay against certifi's bundle, not the host's OS store: the SMTP
+# password and password-reset links cross this connection, and we can't vouch
+# for what Render's image trusts (emSign ECC Root CA - G3 compromise, 2026-10).
+# A context built with cafile= never loads the OS defaults.
+_TLS = ssl.create_default_context(cafile=certifi.where())
 
 # Last delivery failure (repr), surfaced by /api/cron/tick so a blocked port
 # or bad credential is visible without reading server logs.
@@ -73,7 +81,7 @@ def _send_smtp(to: str, subject: str, body: str) -> None:
     msg["Subject"] = subject
     msg.set_content(body)
     with _connect(SMTP_HOST, SMTP_PORT) as s:
-        s.starttls(context=ssl.create_default_context())
+        s.starttls(context=_TLS)
         if SMTP_USER:
             s.login(SMTP_USER, SMTP_PASS or "")
         s.send_message(msg)
@@ -89,7 +97,7 @@ def _send_resend(to: str, subject: str, body: str) -> None:
         headers={"Authorization": f"Bearer {RESEND_API_KEY}", "Content-Type": "application/json"},
         method="POST",
     )
-    with urllib.request.urlopen(req, timeout=15) as r:
+    with urllib.request.urlopen(req, timeout=15, context=_TLS) as r:
         if r.status >= 300:
             raise RuntimeError(f"resend HTTP {r.status}")
 
