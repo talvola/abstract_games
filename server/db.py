@@ -6,7 +6,7 @@ from __future__ import annotations
 
 import os
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, make_url
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
 
 DATABASE_URL = os.environ.get("DATABASE_URL", "sqlite:///./agp.db")
@@ -22,7 +22,18 @@ for _bare in ("postgres://", "postgresql://"):
         break
 
 _connect_args = {"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {}
-engine = create_engine(DATABASE_URL, connect_args=_connect_args, future=True)
+if make_url(DATABASE_URL).host not in (None, "localhost", "127.0.0.1", "::1"):
+    import certifi
+
+    # Verify the remote server's certificate (Neon): the URL's sslmode=require
+    # encrypts but accepts ANY cert. psycopg2-binary's bundled OpenSSL has a
+    # build-machine cert dir, so sslrootcert=system finds no roots and every
+    # connection fails; point it at certifi's bundle (pinned to a release
+    # without the compromised emSign ECC Root CA - G3). These override the URL.
+    # Local servers (a pgserver repro over a unix socket) are left alone.
+    _connect_args = {"sslmode": "verify-full", "sslrootcert": certifi.where(),
+                     "channel_binding": "require"}
+engine =create_engine(DATABASE_URL, connect_args=_connect_args, future=True)
 
 # SQLite ignores FOREIGN KEY constraints unless asked, Postgres always enforces
 # them -- so a delete that strands child rows passed every local test and 500'd
