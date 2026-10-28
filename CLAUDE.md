@@ -1,7 +1,7 @@
 # Abstract Games Platform
 
 Generic platform for abstract board games (async-vs-human + vs-bot), games added as modular packages.
-**Public display name: Plyground** (since 2026-10-08; header, tab title, OG/meta tags, email From/signature via `AGP_EMAIL_FROM` on Render). The URL, repo and code names stay `abstract-games`/`agp` — no domain bought yet.
+**Public display name: Plyground** (since 2026-10-08; header, tab title, OG/meta tags, email From/signature via `AGP_EMAIL_FROM` on Render). The URL, repo and code names stay `abstract-games`/`agp` — no domain bought yet. **`plyground.onrender.com` is a separate free Render STATIC SITE (`srv-dbgl6a3bc2fs73b19670`, autoDeploy off) whose only job is a 301 `/*` → `https://abstract-games.onrender.com/*`** (path, query and `#/` hash links survive). Never make it a proxy/rewrite instead: every visitor would arrive via Render's proxy, collapse into ONE rate-limit bucket (see the XFF rule below) and lock each other out.
 See PLATFORM_PLAN.md (roadmap) and engine/SPEC.md (game authoring contract).
 
 ## Layout
